@@ -583,7 +583,7 @@ Dscourse.prototype.getDiscussions=function()	 			// Get a list of discussions
  		var o = main.data.allDiscussions[i];
 		$('#tableBodyDiscussions').append(
 		    	  		  "<tr>"
-		    	  		+ "<td> <a href='discussion.php'> " + o.dTitle			+ " </a></td>" 
+		    	  		+ "<td> <a class='discussionLink'> " + o.dTitle			+ " </a></td>" 
 			            + "<td>  " + main.listDiscussionCourses(o.dID) +"</td>" 
 			            + "<td> " + o.dStartDate		+ "</td>" 
 			            + "<td> " + o.dEndDate + "</td>" 

@@ -51,7 +51,7 @@ $(document).ready(function() {										// Wait for everything to load.
 		  $('#profilePage').show();
 		  $('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
 
-	});
+	});    
 	
 	$('.courseLink').live('click', function () {						// Home link
 		$('.page').hide();
@@ -61,7 +61,16 @@ $(document).ready(function() {										// Wait for everything to load.
 		$('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
 
 	});
+
+	$('.discussionLink').live('click', function () {						// Home link
+		$('.page').hide();
+		$('#footerFixed').hide();
+		$('#discussionWrap').show();
+		$('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
+
+	});
 	
+		
 	function showHome(){
 		$('.page').hide();			
 		$('#homePage').show();

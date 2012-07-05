@@ -241,7 +241,47 @@ a {
 	margin-top: 20px;
 }
 
+/*  Discussions Page */
 
+		.rounded-corners { -moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;border-radius:8px;border:1px solid;padding:8px; overflow: hidden;}
+		#dragImage {
+			background:#ccc url(../img/dots.png) no-repeat top left;
+			width: 7px;
+			height: 14px; 
+			margin-left: 3px;
+		}
+		#sizeBut {cursor:move; margin-top:-10px;}
+		.feedDiv {padding: 0 5px; margin-top: -5px;}
+		.allPanes {font-size: 12px;}
+		.threads {padding:10px 25px 0 25px !important;}
+		.thread2{margin-left: 25px;}
+		.thread3{margin-left: 50px;}
+		#timePane {
+				background: -webkit-linear-gradient(top, rgba(126,195,238,0.34) 0%, rgba(126,161,222,0.75) 100%);
+				border: 1px solid #ccc;
+				font-size: 12px;
+		}
+		.sayBut {
+			border-radius: 10px;
+			width: 20px;
+			height: 20px;
+			padding: 0 2px 0 1px; 
+			font-size: 12px;
+		}
+		.boxHeaders {
+			font-weight: bold;
+			font-size: 16px;
+			margin: 10px 10px 2px 30px;
+		}
+		.boxHeaders small {
+			font-weight: normal;
+			font-style: italic;
+			font-size: 15px;
+			margin-left: 15px;
+		}
+		.feedDiv{
+			font-size: 12px;
+		}
 
 /* SPECIFIC TO file uploader script */
 
