@@ -1,0 +1,279 @@
+/*
+ *
+ * 	Site specific style sheet for dscourse. It's loaded last and overrrides bootstrap stylesheets. 
+ *
+ *
+ *
+ */
+ 
+
+/* GLOBAL */
+
+body {
+	padding-top: 90px;
+}
+
+a {
+	cursor: pointer;
+	
+}
+.table td {
+	vertical-align: middle;
+}
+
+.headerLinks {
+	text-decoration: none;
+	cursor: pointer;
+	padding-left: 20px;
+}
+
+.headerLinks:hover {
+	text-decoration: none;
+}
+
+.headerText {
+	font-size: 12px;
+	font-style: italic;
+	padding-top: 10px;
+	padding-right: 10px;
+}
+
+.linkGrey {
+	color: grey;
+}
+
+
+#addUserForm, #courseForm, #saveCourses {  /* Bootstrap has hide class - check that */
+	display: none;
+}
+
+.help-inline {
+	color: #999;
+	font-style: italic;
+	padding-top: 5px;
+}
+
+
+.ui-datepicker {
+	background: #eee;
+	padding: 15px;
+	border-color: #fff;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 0 0 5px 0 #666;
+	-moz-box-shadow: 0 0 5px 0 #666;
+	box-shadow: 0 0 5px 0 #666;
+}
+
+.ui-datepicker-prev {
+	float: left;
+}
+
+.ui-datepicker-next {
+	float: right;
+}
+
+.ui-datepicker-title {
+	padding-top: 20px;
+}
+
+.ui-datepicker-calendar td {
+	border:1px solid #ffffff;
+}
+
+.textareaFixed {
+	height: 100px;
+	resize: none;	
+}
+
+.ui-slider-horizontal {
+	background: #5BC0DE;
+	height: 8px;
+	border: 1px solid #aaa;
+	//margin-left: 10px;
+}
+
+.ui-slider-horizontal .ui-slider-range {
+		background: #2F96B4;
+}
+
+
+.ui-slider-horizontal .ui-slider-handle {
+	border-radius: 10px;
+	margin-top: -2px;
+	background: -webkit-linear-gradient(top,#5BC0DE,#2F96B4);
+	border: 1px solid #7eaab7;
+}
+.ui-slider-horizontal .ui-slider-handle:focus {
+	outline:none;
+}
+
+
+
+
+/* GLOBAL LAYOUT */
+
+#logo {
+	margin: -100px auto;
+	width: 400px;
+	height: 150px;
+	padding-bottom: 50px;
+	
+}
+
+.navbar-fixed-top {
+	-webkit-box-shadow: 0 0px 10px 0px #000;
+	-moz-box-shadow: 0 0px 10px 0px #000;
+	box-shadow: 0 0px 10px 0px #000;
+	height: 40px;
+}
+
+.wrap {
+	min-height: 600px;
+}
+
+#footerFixed {
+	width: 100%;
+	background: #eee;
+	padding: 20px ;
+	box-shadow: inset 0px 3px 5px #CCC;
+	-webkit-box-shadow: inset 0px 3px 5px #CCC;
+	-moz-box-shadow: inset 0px 3px 5px #CCC;
+	height: 40px;
+	position: relative;
+}
+
+#footerBrand {
+	font-weight: bold;
+	color: #333333
+	
+}
+
+#u_first, #u_last, #u_email {
+	width: 120px;
+}
+
+
+
+#imgPath {
+	margin-bottom: 5px;
+	
+}
+
+
+
+
+/* SPECIFIC TO INDEX.PHP */
+#loginModal {		
+	width: 400px;	
+	margin-left: -160px;	
+}
+
+.index-page h2 {
+	padding-top: 40px;
+	margin-bottom: 20px;
+}
+
+.index-text, .index-text p {
+	font-size: 15px;
+	line-height: 20px;	
+	
+}
+
+#indexSubtext {
+	font-size: 17px;
+	line-height: 24px;
+	width: 80%;
+	margin: auto;
+	padding-bottom: 20px;
+}
+
+
+
+
+
+/* SPECIFIC TO USERS.PHP */
+
+#userList {
+	height: 600px;
+	overflow:auto;
+}
+
+
+
+/* SPECIFIC TO DISCUSSION.PHP */
+
+#overlay {
+	display: none;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	background-color: white;
+	z-index:1001;
+	-moz-opacity: 0.7;
+	opacity:.70;
+	filter: alpha(opacity=70);
+}
+
+
+
+
+/* SPECIFIC TO HOME.PHP */
+
+.todoFeed li, .discussionFeed li {
+	border-bottom: 1px solid #e8e8e8;
+	padding: 3px;
+	list-style-image: ;
+}
+
+.timeLog {
+	color: #999;
+	
+}
+
+
+/* SPECIFIC TO PROFILE.PHP */
+
+#userInfo {
+	margin-top: 20px;
+}
+
+
+
+/* SPECIFIC TO file uploader script */
+
+.qq-uploader { position:relative; width: 100%;}
+
+.qq-upload-button {
+    display:block; /* or inline-block */
+    width: 105px; padding: 7px 0; text-align:center;    
+    background:#880000; border-bottom:1px solid #ddd;color:#fff;
+}
+.qq-upload-button-hover {background:#cc0000;}
+.qq-upload-button-focus {outline:1px dotted black;}
+
+.qq-upload-drop-area {
+    position:absolute; top:0; left:0; width:100%; height:100%; min-height: 70px; z-index:2;
+    background:#FF9797; text-align:center; 
+}
+.qq-upload-drop-area span {
+    display:block; position:absolute; top: 50%; width:100%; margin-top:-8px; font-size:16px;
+}
+.qq-upload-drop-area-active {background:#FF7171;}
+
+.qq-upload-list {margin:15px 35px; padding:0; list-style:disc;}
+.qq-upload-list li { margin:0; padding:0; line-height:15px; font-size:12px;}
+.qq-upload-file, .qq-upload-spinner, .qq-upload-size, .qq-upload-cancel, .qq-upload-failed-text {
+    margin-right: 7px;
+}
+
+.qq-upload-file {}
+.qq-upload-spinner {display:inline-block; background: url("../img/loading.gif"); width:15px; height:15px; vertical-align:text-bottom;}
+.qq-upload-size,.qq-upload-cancel {font-size:11px;}
+
+.qq-upload-failed-text {display:none;}
+.qq-upload-fail .qq-upload-failed-text {display:inline;}
+
