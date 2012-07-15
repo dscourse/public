@@ -10,28 +10,29 @@ function Dscourse ()
 	this.data.allUsers	= new Array();
 	this.data.allCourses = new Array();
 	this.data.allDiscussions = new Array();
+	this.data.allPosts = new Array();
 	
 	
 // Courses 
 
 	this.course = { }; 
-	//this.allCourses = []; 
 	this.courseDataStatus = 'empty';
 
-	//this.getCourses();
 
 // Discussions
 
 	this.discussion = { }; 	
-	//this.allDiscussions = []; 
  
 	this.courseList = [];
 	this.courseListName = {};
 	
 	this.discussionDataStatus = 'empty';
 	
-	//this.getDiscussions();
-	
+// Posts
+	this.post = { };
+
+// Get all Data
+
 	this.GetData();
 
 }
@@ -478,7 +479,7 @@ Dscourse.prototype.saveCourses=function()									// Sends the new data into the
 			},
 			  success: function(data) {						// If connection is successful . 
 			    	  console.log(data);
-			    	  main.getCourses();							// Get up to date info from server the course list
+			    	  main.GetData();							// Get up to date info from server the course list
 			    	  main.listCourses('all');					// Refresh list to show all courses.
 			    	  
 			    	  saved('Everything saved! ') 			// Remove save button and send save success message 
@@ -543,30 +544,6 @@ Dscourse.prototype.getCourseList=function()				// Gets course information, this 
 		});	
 } 
 
- 	
-Dscourse.prototype.getDiscussions=function()	 			// Get a list of discussions
- {
-	 	var main = this;
-
-
-	 	$.ajax({											// Ajax talking to the getCourses.php file												
-			type: "POST",
-			url: "scripts/php/getDiscussions.php",
-			data: {
-				action: 'getAll'
-			},
-			  success: function(data) {					// If connection is successful the data will be put into an object. 
-			    	  main.allDiscussions = data;				// The data from php is now available to us as json array allDiscussions
-			    	  main.discussionDataStatus = 'loaded';
-			    	  main.listDiscussions();				// run the function to show all discussions.
-	   
-			    }, 
-			  error: function() {					// If connection is not successful.  
-					console.log("dscourse Log: the connection to discussions.php failed.");  
-			  }
-		});
-	 
- }
  
  
  Dscourse.prototype.listDiscussions=function()	 			  // Show a table of all discussions
@@ -583,7 +560,7 @@ Dscourse.prototype.getDiscussions=function()	 			// Get a list of discussions
  		var o = main.data.allDiscussions[i];
 		$('#tableBodyDiscussions').append(
 		    	  		  "<tr>"
-		    	  		+ "<td> <a class='discussionLink'> " + o.dTitle			+ " </a></td>" 
+		    	  		+ "<td> <a class='discussionLink' discID='" + o.dID + "'> " + o.dTitle			+ " </a></td>" 
 			            + "<td>  " + main.listDiscussionCourses(o.dID) +"</td>" 
 			            + "<td> " + o.dStartDate		+ "</td>" 
 			            + "<td> " + o.dEndDate + "</td>" 
@@ -638,7 +615,7 @@ Dscourse.prototype.getDiscussions=function()	 			// Get a list of discussions
 
 
 
-Dscourse.prototype.addDiscussions=function()	 			  // Add discussion
+Dscourse.prototype.addDiscussion=function()	 			  // Add discussion
  {
 	var main = this;		
 
@@ -663,7 +640,7 @@ Dscourse.prototype.addDiscussions=function()	 			  // Add discussion
 			
 		
 							
-		main.discussion = {
+		discussion = {
 				'dTitle': dTitle,
 				'dPrompt': dPrompt,
 				'dStartDate': dStartDate,
@@ -793,7 +770,7 @@ Dscourse.prototype.saveDiscussions=function()	 	// Save Discussion
 			},
 			  success: function(data) {							// If connection is successful . 
 			    	  console.log(data);
-			    	  main.getDiscussions();							// Get up to date info from server the discussion list
+			    	  main.GetData();							// Get up to date info from server the discussion list
 			    	  main.listDiscussions();						// Refresh list to show all discussions.
 			    	  
 			    	  saved('Everything saved! ') 				// Remove save button and send save success message 
@@ -806,3 +783,201 @@ Dscourse.prototype.saveDiscussions=function()	 	// Save Discussion
 		});	
 	
 }
+
+
+ Dscourse.prototype.SingleDiscussion=function(discID)	 			  // View for the Individual discussions. 
+ {
+	 var main = this;
+	 	$('.levelWrapper[level="0"]').html('');
+
+ 		var i;
+	 	for (i = 0; i < main.data.allDiscussions.length; i++){
+	 		o = main.data.allDiscussions[i];
+	 		if(o.dID == discID){
+	 			$('#dTitleView').html(o.dTitle);
+	 			$('#dIDhidden').val(o.dID);
+	 			main.CurrentDiscussion = o.dID;	
+	 			console.log("Curent Discussion ID: " + main.CurrentDiscussion);
+	 			main.ListDiscussionPosts(o.dPosts);
+	 		}
+	 	
+	 	}	 
+}
+
+
+/********** POSTS ****************/
+
+
+Dscourse.prototype.AddPost=function(){
+	
+		 var main = this;
+
+
+	// Get post values from the form.
+		// postID -- postFromId
+		var postFromId = $('#postIDhidden').val();	
+		console.log('Post id : ' + postFromId);
+		
+		// author ID -- postAuthorId -- this is the session user
+		var postAuthorId = $('#userIDhidden').val();	
+		console.log('Author Id : ' + postAuthorId);
+		
+		// message -- postMessage
+		var postMessage = $('#text').val();	
+		console.log('Post id : ' + postMessage);
+
+		// type -- postType
+		var postType = 'comment';	
+		var formVal = $('input[type=radio]:checked').val();
+		
+		if(formVal !== undefined){
+			postType = formVal;
+		} 
+		console.log('Post id : ' + postType);
+	
+	// Create post object and append it to allPosts
+	
+			post = {
+				'postFromId': postFromId,
+				'postAuthorId': postAuthorId,
+				'postMessage': postMessage,
+				'postType': postType,
+			};
+	
+	// run Ajax to save the post object
+	
+	$.ajax({																						
+			type: "POST",
+			url: "scripts/php/posts.php",
+			data: {
+				post: post,							
+				action: 'addPost'							
+			},
+			  success: function(data) {						// If connection is successful . 
+			    	  console.log(data);
+			    	  addPostDisc(data);
+			    	  
+			    }, 
+			  error: function() {					// If connection is not successful.  
+					console.log("Dscourse Log: the connection to posts.php failed.");  
+			  }
+		});	
+	
+	function addPostDisc(pID){
+		// add post id to the relevant discussion section
+		var currentDisc = $('#dIDhidden').val();
+		
+		var i;
+	 	for (i = 0; i < main.data.allDiscussions.length; i++)
+	 	{		
+	 		var o = main.data.allDiscussions[i];
+	 		if(o.dID === currentDisc ){
+		 		var discPosts = o.dPosts.split(",");
+		 		discPosts.push(pID); 
+		 		discPostList = discPosts.toString(); 
+		 		o.dPosts = discPostList;
+		 		
+		 		$.ajax({												// Ajax talking to the saveDiscussions.php file												
+					type: "POST",
+					url: "scripts/php/saveDiscussions.php",
+					data: {
+						discussions: main.data.allDiscussions							// All discussion data is sent
+													
+					},
+					  success: function(data) {							// If connection is successful . 
+					    	console.log(data);					    }, 
+					  error: function() {					// If connection is not successful.  
+							console.log("dscourse Log: the connection to saveDiscussions.php failed.");  
+					  }
+				});	
+	
+
+	 		}
+	 	}
+	 	main.SingleDiscussion(pID);
+ 	}
+	
+	// run Ajax to update that specific discussion
+		
+}
+
+
+ Dscourse.prototype.ListDiscussionPosts=function(posts)	 			  // View for the Individual discussions. 
+ {
+	 var main = this;
+
+	 var discPosts = o.dPosts.split(",");
+	 
+	 var i, j, p, d, typeText, authorID, message;
+	 for(i = 1; i < discPosts.length; i++){							// Take one post at a time
+		 p = discPosts[i];
+		 
+		 for (j = 0; j < main.data.allPosts.length; j++){			// Go through all the posts
+			 d = main.data.allPosts[j];			 
+
+			 
+			 if(d.postID == p){										// Find the post we want to get the details of 
+			 
+			 														// Prepare the data for display
+				 authorID = main.getName(d.postAuthorId); 			// Get Authors name			
+				 switch(d.postType)									// Get what kind of post this is 
+					{
+					case 'agree':
+					  typeText = ' agreed';
+					  break;
+					case 'clarify':
+					  typeText = ' asked to clarify';
+					  break;
+					case 'offTopic':
+					  typeText = ' marked as off topic';
+					  break;		  
+					default:
+					  typeText = ' commented';
+					}
+				 if(d.postMessage){									// Proper presentation of the message
+					message = ' "' + d.postMessage + '".'; 
+				 }
+				 
+				 console.log('author id: ' + authorID + ' - typetext: ' + typeText + ' - message: ' + message);	// Check to see if all is well
+				 
+				 var selector = 'div[level="'+ d.postFromId +'"]';	
+				 $(selector).append(						// Add post data to the view
+				 	  '<div class="threadText" level="'+ d.postID + '">' 
+				 	+  authorID + typeText +  message 
+				 	+ ' <div class="sayBut2" postID="'+ d.postID + '">say</div>'	
+				 	+ '</div>'
+				 );
+			 }	 
+		 }
+	 }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -16,17 +16,29 @@
 		$dTitle 	= 	$discussions[$i]['dTitle'];	// Set variables for common fields
 		$dPrompt	= 	$discussions[$i]['dPrompt'];
 		$dStartDate	= 	$discussions[$i]['dStartDate'];
-		$dEndDate		= 	$discussions[$i]['dEndDate'];		
+		$dEndDate	= 	$discussions[$i]['dEndDate'];		
+		$dPosts		=   $discussions[$i]['dPosts'];
 		
 		$dCourses		= 	$discussions[$i]['dCourses'];		
 		$courseIDs = explode(",", $dCourses);
 		$cTotal = count($courseIDs);						// Go through all discussions to see if they need update or save. 
 		
-		print_r($courseIDs);
-		
+		//print_r($courseIDs);
 		if($discussions[$i]['dID'])				// In this case do an update on the database
 		{	
+			$dID = $discussions[$i]['dID'];
 			
+				$updateDiscussionQuery = mysql_query("UPDATE `discussions` SET  `dTitle` =  '".$dTitle."', `dPrompt` =  '".$dPrompt."', `dStartDate` =  '".$dStartDate."', `dEndDate` =  '".$dEndDate."', `dPosts` =  '".$dPosts."' WHERE `dID` = '".$dID."' ");  
+				
+				if($updateDiscussionQuery)
+				{
+					echo " ID: " . $dID . " updated. "; 
+					
+				} else 
+				{
+					echo " ID " . $dID . " NOT updated. ";
+					
+				}	
 			
 																
 		} else {								// In this case insert new row 

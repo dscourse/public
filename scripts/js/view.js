@@ -63,6 +63,8 @@ $(document).ready(function() {										// Wait for everything to load.
 	});
 
 	$('.discussionLink').live('click', function () {						// Home link
+		var discID = $(this).attr('discID');
+		dscourse.SingleDiscussion(discID);
 		$('.page').hide();
 		$('#footerFixed').hide();
 		$('#discussionWrap').show();
@@ -86,9 +88,36 @@ $(document).ready(function() {										// Wait for everything to load.
 	$("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
 	$("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd" });
 
+		$("#commentWrap").draggable();
 
 });
 
+	$('#text').live('click', function () {
+		var value = $('#text').val(); 
+		if (value == 'Your comment...'){
+			$('#text').val(''); 
+		}
+	});
+	
+	$('.sayBut2').live('click', function () {
+		var postID = $(this).attr("postID");
+		$('#postIDhidden').val(postID);			
+		$('#overlay').show();
+		$('#commentWrap').fadeIn('fast');
+	});
+	
+	$('#postCancel').live('click', function () {
+		$('#commentWrap').fadeOut('fast');
+		$('#overlay').hide();
+		clearPostForm();
+	});
+
+	$('#overlay').live('click', function () {
+		$('#commentWrap').fadeOut('fast');
+		$('#overlay').hide();
+		clearPostForm();
+	});
+	
 
 /************ USERS  ******************/
 		
@@ -261,7 +290,7 @@ $(document).ready(function() {										// Wait for everything to load.
 	});
 
 	$('#discussionPrompt').live('keyup', function() {  			  	
-			CheckDiscussionPrompt();
+			checkDiscussionPrompt();
 	});
 	
 	$('#allDiscussionView').live('click', function() {  					
@@ -292,3 +321,47 @@ $(document).ready(function() {										// Wait for everything to load.
 	$('.removeCourses').live('click', function() {
 		  			$(this).closest('tr').remove();
 		  });
+		  
+/************ DISCUSSIONS ******************/
+
+
+	$('#addPost').live('click', function() {
+
+		dscourse.AddPost();
+		var discussionID = $('#dIDhidden').val();
+		$('#commentWrap').fadeOut('fast');
+		$('#overlay').hide();
+		clearPostForm();
+		dscourse.SingleDiscussion(discussionID);
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -54,3 +54,7 @@ function clearDiscussionForm(){
 		$('#discussionForm').find('input:text, input:password, input:file, select, textarea').val('');
 		$('#addCoursesBody').html('');
 }
+
+function clearPostForm(){
+		$('#commentWrap').find('input:text, input:password, input:file, select, textarea').val('');
+}

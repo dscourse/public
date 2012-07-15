@@ -769,9 +769,12 @@
 <!-- Begin individual discussion page -->
 
 
-
+	
 <div id="discussionWrap" class="page">
 
+
+
+	
 <div class="rounded-corners allPanes" id="newsPane" style="position: absolute; display: block; left: 8px; top: 72px; width: 339px; height: 277.7062937062937px; border: 1px solid rgb(153, 153, 153); background-image: -webkit-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(237, 237, 237) 100%); background-position: initial initial; background-repeat: initial initial; ">
 		<span class="boxHeaders">News Feed</span>
 		<div class="feedDiv"> 	
@@ -788,23 +791,15 @@
 	
 
 	<div class="rounded-corners" id="discPane" style="position: absolute; top: 72px; left: 374px; width: 744px; height: 403px; border: 1px solid rgb(153, 153, 153); background-image: -webkit-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(237, 237, 237) 100%); background-position: initial initial; background-repeat: initial initial; ">
-		<span class="boxHeaders">Discussion<small>What are the stakeholder perspectives in the Burrough County case? </small></span> 
+		<span class="boxHeaders">Discussion<small><span id="dTitleView" ></span> <div class="sayBut2" postID="0">say</div> <input id="dIDhidden" type="hidden" name="discID" value="">
+</small></span> 
 			
-			<hr class="soften">
 	<div id="discFeedDiv"></div><div style="position:absolute;left:6px;top:6px;width:20px;height:20px;padding:0px;border:2px solid #1e5799;border-radius:20px;moz-border-radius;20px;color:#1e5799;text-align:center;line-height:20px;font-size:8px"><b>see</b><div></div></div>
-	
-	<div id="discussionDivs">
-						</p><ul class="unstyled discussionFeed">
-				<li class="thread1 threads"> <b>Mable</b> said  I think the point Jake makes <a href="#"> here </a>truly captures the essence of what Mr. Stake's perception is on the topic. What are some of the concerns he is bringing up in the discussion?  <em class="timeLog">2 hours ago.</em><div class="btn btn-info sayBut">say</div> </li>
-				<li class="thread2 threads"> <b>Bill </b> said: this is a very interesting point, but it's not exactly what I had in mind. What Ms. Jenkins adds to the table is her years of experience in the district... <div class="btn btn-info sayBut">say</div></li>
-				<li class="thread1 threads"> <b>Glen </b> annotated <a href="#">your comment</a> at <a href="#">Possible issues regarding...</a>. Okay this sounds good but what about the growing problem of underfunding in schools. I think Jake had a resource on this... <em class="timeLog">2 days ago.</em><div class="btn btn-info sayBut">say</div></li>
-				
-				<li class="thread2 threads"> <b>Jake</b> replied to <a href="#">Glen</a>: There is a graph on the New York Times  <a href="#">website</a> that can give a better representation of the trend I was talking about. This is an important topic when we consider... <em class="timeLog">2 days ago.</em><div class="btn btn-info sayBut">say</div></li>
-				
-				<li class="thread3 threads"> <b> Sara</b> said: this graph is very helpful but we need to come back to the question of whether such large scale statistics are important in the case of the Burrough County. My take on this is that...  <em class="timeLog">2 days ago.</em><div class="btn btn-info sayBut">say</div></li>
-				</ul>
-			<p></p>
-		
+	<hr class="soften" />
+	<div id="discussionDivs"> 
+		<div class="levelWrapper" level="0">
+			<p>There are no discussions. Be the first by clicking the Say button at the top right corner.</p>
+		</div>
 	</div>
 	
 	</div>
@@ -827,6 +822,39 @@
 	<div id="TimeSliderDiv">	</div>
 	<div id="nowBar" style="position: absolute; height: 4px; top: 16px; width: 2px; background-color: #666; left: 315px; "></div><span id="nowText" style="position: absolute; top: 4px;  left: 306px; margin-top: -5px;">now<span></span></span><span id="beginText" style="position:absolute;left:48px;top:18px;"><b>6/17 12pm</b></span><span id="endText" style="position:absolute;left:545px;top:18px;"><b>6/25 12pm</b></span><span id="sliderText1" style="position: absolute; top: 33px; left: 196px; ">6/19 12pm</span><span id="sliderText2" style="position: absolute; top: 33px; left: 396px; ">6/23 12pm</span><div style="position:absolute;left:8px;top:12px;width:20px;height:20px;padding:0px;border:2px solid #fff;border-radius:20px;moz-border-radius;20px;text-align:center;line-height:20px;font-size:8px"><b>set</b><div></div></div></div>
 	<div id="sizeBut" style="position: absolute; color: rgb(153, 153, 153); font-size: 16px; text-align: center; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; left: 362px; top: 366.7062937062937px; " class="ui-draggable"><div id="dragImage"></div></div>
+
+
+	<div id="commentWrap">
+			<input id="postIDhidden" type="hidden" name="postIDhidden" value="">
+			<input id="userIDhidden" type="hidden" name="userIDhidden" value="<?php echo $_SESSION['UserID'];?>">
+			<div id="top">	
+				<textarea id="text">Your comment...</textarea>
+					<div id="quick">
+					<ul>
+					<li> <input type="radio" id="agree" name="type" value="agree" /> Agree</li>
+					<li> <input type="radio" id="clarify" name="type" value="clarify" /> Ask to Clarify</li>
+					<li> <input type="radio" id="offTopic" name="type" value="offTopic" /> Mark as Off topic</li>
+					</ul>
+					</div>
+			</div>
+			
+			<div id="bottom">	
+				<div id="media">
+					<ul>
+					<li id="media"> <a href="#"> Attach media</a></li>
+					<li id="link"> <a href="#"> Add  link</a></li>
+					<li id="draw"> <a href="#">Draw </a></li>
+					</ul>
+				</div>
+				
+				<div id="buttons">
+					<input type="button" id="postCancel" class="buttons btn btn-info" value="Cancel">
+					<input id="addPost" type="button" class="buttons btn btn-primary" value="Add to dscourse">
+				</div>
+			</div>
+			
+	</div> <!-- close commentWrap --> 
+
 
 </div><!-- End individual discussion page --> 
 

@@ -41,7 +41,9 @@
     	$discussionData = GetDiscussions();
     	$data['allDiscussions'] =  $discussionData;
     	
-
+    	$postData = GetPosts();
+    	$data['allPosts'] =  $postData;
+    	
     	echo json_encode($data);								// Covert data into a json file.
 	    
 	    
@@ -94,6 +96,20 @@ function GetDiscussions()
 
 }
 
+function GetPosts()
+{
+
+
+ 		$postData = mysql_query("SELECT * FROM `posts` ");  	// Get everything 
+	
+		while($r = mysql_fetch_assoc($postData)) 
+		{					
+			$posts[] = $r; 									// Put mysql results into an array 
+		}
+
+		return $posts;
+
+}
 
 
 function SaveCourses()
@@ -108,3 +124,15 @@ function SaveDiscussions()
 
 
 }
+
+
+function SavePosts()
+{
+
+
+}
+
+
+
+
+

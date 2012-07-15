@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Testing out the box</title>
+		
+		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+		<script type="text/javascript">google.load("jquery", "1");</script>
+	
+		<link href="assets/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
+		<link href="assets/css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css" />
+	
+		
+
+		<style> 
+			/* Eric Meyer's Reset Reloaded */
+			html, body, div, span, applet, object, iframe,
+			h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+			a, abbr, acronym, address, big, cite, code,
+			del, dfn, em, font, img, ins, kbd, q, s, samp,
+			small, strike, strong, sub, sup, tt, var,
+			b, u, i, center,
+			dl, dt, dd, ol, ul, li,
+			fieldset, form, label, legend,
+			table, caption, tbody, tfoot, thead, tr, th, td {
+				margin: 0;
+				padding: 0;
+				border: 0;
+				outline: 0;
+				font-size: 100%;
+				vertical-align: baseline;
+				background: transparent;
+			}
+			body {
+				line-height: 1;
+			}
+			ol, ul {
+				list-style: none;
+			}
+			blockquote, q {
+				quotes: none;
+			}
+			/* remember to define focus styles! */
+			:focus {
+				outline: 0;
+			}
+			/* remember to highlight inserts somehow! */
+			ins {
+				text-decoration: none;
+			}
+			del {
+				text-decoration: line-through;
+			}
+			/* tables still need 'cellspacing="0"' in the markup */
+			table {
+				border-collapse: collapse;
+				border-spacing: 0;
+			}
+			
+			#commentWrap {
+				margin: 100px auto;
+				height: 110px;
+				width: 460px;
+				background-color: #eeeeee;
+				border-style: solid;
+				border-width: 2px;
+				border-color: #eeeeee;
+				-webkit-border-radius: 5px;
+				-moz-border-radius: 5px;
+				border-radius: 5px;
+				-webkit-box-shadow: 0 0 8px 0 #999;
+				-moz-box-shadow: 0 0 8px 0 #999;
+				box-shadow: 0 0 8px 0 #999;				
+				padding: 10px;
+				font-family: Helvetica, sans-serif; 
+				font-size: 12px;
+				
+			}
+			
+			#commentWrap p {
+				margin-bottom: 20px;
+				
+			}
+			
+			#text {
+				width: 340px;
+				height: 60px;
+				border: 1px solid #ccc;
+				padding: 5px;
+				-webkit-border-radius: 5px;
+				-moz-border-radius: 5px;
+				border-radius: 5px;
+				float: left;
+			}
+			
+			#quick {
+				width: 100px;
+				float: right;
+				padding: 0px;
+				
+			}
+			
+			#quick li {
+				margin-bottom: 5px;
+				
+			}
+			
+			#top {
+				clear: both;
+			} 
+			
+			
+			#media {
+				float: left;
+			}
+			
+			#media li {
+				display: inline-block;
+				padding: 5px 0px 5px 20px; 
+			}	
+			
+			.buttons {
+				float: right;
+				margin-right: 5px;
+			}
+			
+			.logos {
+				width: 16px;
+				height: 16px;
+				float: left;
+				margin-right: 3px;
+				margin-top: 1px;
+			}
+			#agree .logos {
+				background: url(assets/img/glyphicons-halflings.png) -70px -95px;
+			}
+
+			#clarify .logos{
+				background: url(assets/img/glyphicons-halflings.png) -94px -95px;
+			}
+			#offtopic .logos{
+				background: url(assets/img/glyphicons-halflings.png) -22px -95px;
+			}
+			#media .logos{
+				background: url(assets/img/glyphicons-halflings.png) -453px -49px;
+			}
+			#link .logos{
+				background: url(assets/img/glyphicons-halflings.png) -333px -144px;  
+			}
+			#draw .logos {
+				background: url(assets/img/glyphicons-halflings.png) -95px -74px; 
+			}
+		
+		</style>
+		 
+	</head>
+	<body>
+	<div id="commentWrap">
+ 
+	<div id="top">	
+		<textarea id="text">Your comment</textarea>
+			<div id="quick">
+			<ul>
+			<li id="agree">	  <div class="logos"></div><a href="#">Agree</a></li>
+			<li id="clarify"> <div class="logos"></div><a href="#">Clarify</a></li>
+			<li id="offtopic"><div class="logos"></div><a href="#">Off topic</a></li>
+			<li></li>
+			</ul>
+			</div>
+	</div>
+	
+	<div id="bottom">	
+		<div id="media">
+			<ul>
+			<li id="media"> <div class="logos"></div><a href="#"> Attach media</a></li>
+			<li id="link"> <div class="logos"></div><a href="#"> Add  link</a></li>
+			<li id="draw"> <div class="logos"></div><a href="#">Draw </a></li>
+			</ul>
+		</div>
+		
+		<div id="buttons">
+			<input type="button" class="buttons btn" value="Cancel">
+			<input type="button" class="buttons btn" value="Add to dscourse">
+		</div>
+	</div>
+			
+	</div> <!-- close commentWrap --> 
+
+		<script type="text/javascript">
+			$('#text').click(function(){
+				var value = $('#text').val(); 
+				if (value == 'Your comment'){
+					$('#text').val(''); 
+				}
+			});
+			
+		</script>	
+	</body>
+</html>

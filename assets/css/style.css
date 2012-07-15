@@ -55,6 +55,7 @@ a {
 
 
 .ui-datepicker {
+	display: none;
 	background: #eee;
 	padding: 15px;
 	border-color: #fff;
@@ -243,7 +244,7 @@ a {
 
 /*  Discussions Page */
 
-		.rounded-corners { -moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;border-radius:8px;border:1px solid;padding:8px; overflow: hidden;}
+		.rounded-corners { -moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;border-radius:8px;border:1px solid;padding:8px; overflow: hidden; z-index: 99;}
 		#dragImage {
 			background:#ccc url(../img/dots.png) no-repeat top left;
 			width: 7px;
@@ -271,7 +272,7 @@ a {
 		.boxHeaders {
 			font-weight: bold;
 			font-size: 16px;
-			margin: 10px 10px 2px 30px;
+			margin: 10px 10px 20px 30px;
 		}
 		.boxHeaders small {
 			font-weight: normal;
@@ -282,6 +283,119 @@ a {
 		.feedDiv{
 			font-size: 12px;
 		}
+		
+		.sayBut2 {
+			width: 20px;
+			height: 30px;
+			background: url(../img/icons/sayL.png) center;
+			padding: 5px 6px;
+			font-weight: bold;
+			font-size: 12px;
+			margin-left: 10px;
+			//float: right;
+			display: inline;
+			text-align: top;
+		}
+		.sayBut2:hover {
+			background: url(../img/icons/sayD.png) center;
+			color: #eee;
+		}
+		
+		.threadText {
+			float: left;
+			padding: 10px 0px 0px 20px;
+			margin-top: 10px; 
+			width: 100%;
+			border-top: 1px solid #eee;
+			
+		}
+		
+		#dTitleView {
+			color: #002cb8;
+			
+		}
+
+/* Caner's version of the Discussion box */
+
+			#commentWrap {
+				position:relative;
+				display: none;
+				margin: 100px auto;
+				height: 110px;
+				width: 480px;
+				background-color: #eeeeee;
+				border-style: solid;
+				border-width: 2px;
+				border-color: #eeeeee;
+				-webkit-border-radius: 5px;
+				-moz-border-radius: 5px;
+				border-radius: 5px;
+				-webkit-box-shadow: 0 0 15px 0 #666;
+				-moz-box-shadow: 0 0 15px 0 #666;
+				box-shadow: 0 0 15px 0 #666;				
+				padding: 10px;
+				font-family: Helvetica, sans-serif; 
+				font-size: 12px;
+				z-index: 1099;
+			}
+			
+			#commentWrap p {
+				margin-bottom: 20px;
+				
+			}
+			
+			#text {
+				width: 320px;
+				height: 60px;
+				border: 1px solid #ccc;
+				padding: 5px;
+				-webkit-border-radius: 5px;
+				-moz-border-radius: 5px;
+				border-radius: 5px;
+				float: left;
+				resize: none;
+			}
+			
+			#quick {
+				width: 140px;
+				float: right;
+				padding: 0px;
+				
+			}
+			
+			#quick li {
+				margin-bottom: 5px;
+				list-style: none;
+			}
+			
+			#top {
+				clear: both;
+			} 
+			
+			
+			#media {
+				float: left;
+			}
+			
+			#media li {
+				display: inline-block;
+				padding: 5px 5px 5px 5px; 
+			}	
+			
+			.buttons {
+				float: right;
+				margin-right: 5px;
+			}
+			
+			.logos {
+				width: 16px;
+				height: 16px;
+				float: left;
+				margin-right: 3px;
+				margin-top: 1px;
+			}
+
+
 
 /* SPECIFIC TO file uploader script */
 
