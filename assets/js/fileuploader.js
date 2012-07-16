@@ -1217,12 +1217,12 @@ qq.extend(qq.UploadHandlerXhr.prototype, {
             this.log("responseText = " + xhr.responseText);
             var fileURL = xhr.responseText.replace(/\"/g,"");
             this.log(fileURL);
-            if (document.getElementById('userPicture')){
+            if (dscourse.imgUpload == 'user'){
                 document.getElementById('imgPath').innerHTML = "<img src='data/uploads/userimg/" + fileURL + "' />" ; 
             	document.getElementById('userPicture').value =  "data/uploads/userimg/" + fileURL;
             }
             
-            if (document.getElementById('courseImage')){
+            if (dscourse.imgUpload == 'course'){
                 document.getElementById('imgPath').innerHTML = "<img src='data/uploads/courseimg/" + fileURL + "' />" ; 
             	document.getElementById('courseImage').value =  "data/uploads/courseimg/" + fileURL;
             }

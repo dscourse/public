@@ -201,6 +201,12 @@ a {
 	overflow:auto;
 }
 
+.userThumbS {
+	width: 32px;
+	height: 32px;
+	margin-right: 10px;
+}
+
 
 
 /* SPECIFIC TO DISCUSSION.PHP */
@@ -287,14 +293,14 @@ a {
 		.sayBut2 {
 			width: 20px;
 			height: 30px;
-			background: url(../img/icons/sayL.png) center;
-			padding: 5px 6px;
+			background: url(../img/icons/sayL.png) top;
+			padding: 7px 6px;
 			font-weight: bold;
 			font-size: 12px;
 			margin-left: 10px;
 			//float: right;
 			display: inline;
-			text-align: top;
+			vertical-align: top;
 		}
 		.sayBut2:hover {
 			background: url(../img/icons/sayD.png) center;
@@ -315,14 +321,18 @@ a {
 			
 		}
 
+.postAuthorView {color: #5caac1}
+.postTypeView   {color: #707070; font-style: italic}
+.postMessageView{}
+
 /* Caner's version of the Discussion box */
 
 			#commentWrap {
 				position:relative;
 				display: none;
 				margin: 100px auto;
-				height: 110px;
-				width: 480px;
+				height: 140px;
+				width: 500px;
 				background-color: #eeeeee;
 				border-style: solid;
 				border-width: 2px;
@@ -343,43 +353,49 @@ a {
 				margin-bottom: 20px;
 				
 			}
-			
+			#commentWrap input[type="radio"]{
+				margin-right: 5px;
+				vertical-align: baseline;
+			}
 			#text {
-				width: 320px;
+				width: 490px;
 				height: 60px;
 				border: 1px solid #ccc;
 				padding: 5px;
 				-webkit-border-radius: 5px;
 				-moz-border-radius: 5px;
 				border-radius: 5px;
-				float: left;
 				resize: none;
 			}
 			
 			#quick {
-				width: 140px;
-				float: right;
+				width: 100%;
+				//float: right;
 				padding: 0px;
 				
 			}
 			
 			#quick li {
 				margin-bottom: 5px;
+				margin-right: 10px;
 				list-style: none;
+				display: inline-block;
 			}
 			
-			#top {
-				clear: both;
-			} 
 			
+
 			
-			#media {
+			#bottomlinks {
 				float: left;
 			}
 			
-			#media li {
+			#bottomlinks ul {
+				margin:5px 0px;
+			}
+			
+			#bottomlinks li {
 				display: inline-block;
-				padding: 5px 5px 5px 5px; 
+				width: 95px;
 			}	
 			
 			.buttons {
@@ -394,6 +410,9 @@ a {
 				margin-right: 3px;
 				margin-top: 1px;
 			}
+			#media {background: url(../img/icons/addmedia.png) left top  no-repeat; float: left; width: 20px; height: 20px;}
+			#link {background: url(../img/icons/addlink.png) left top    no-repeat; float: left; width: 20px; height: 20px;}
+			#draw {background: url(../img/icons/adddrawing.png) left top no-repeat; float: left; width: 20px; height: 20px;}
 
 
 

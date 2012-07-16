@@ -15,25 +15,31 @@ var nameListName = {};
 			
 (function() { 													// Auto runs everything inside when this script is loaded
 		
-		viewUsers ();											// Render the table of users from function declared below	
 		
 		$('#addUserButton').live('click', function() {  		// Add user when Form is submitted
 			
-			var firstName = $('#firstName').val();				// Populates the fields needed for the database. Validation is done through Crystal's code. 
-			var lastName  = $('#lastName').val();
-			var username  = $('#email').val();
-			var sysRole   = $('#sysRole option:selected').val();
-			var password  = $('#password').val();
-			var facebook  = $('#facebook').val();
-			var userPicture  = $('#userPicture').val();
-			var userAbout  = $('#userAbout').val();
-			var twitter   = $('#twitter').val();
-			var phone 	  = $('#phone').val();
-			var website   = $('#website').val();	
-			var status   = $('#userStatus').val();
-				
-			addUser(firstName, lastName, username, password, sysRole, facebook, twitter, phone, website, status, userPicture, userAbout); // Call the function
-			viewUsers ();										// Refresh the list of users
+			var valState = ValidateUsers();						// Checks validation
+			console.log('Val State is : ' + valState);
+			
+			if(valState == 'pass'){			
+				var firstName = $('#firstName').val();				// Populates the fields needed for the database. Validation is done through Crystal's code. 
+				var lastName  = $('#lastName').val();
+				var username  = $('#email').val();
+				var sysRole   = $('#sysRole option:selected').val();
+				var password  = $('#password').val();
+				var facebook  = $('#facebook').val();
+				var userPicture  = $('#userPicture').val();
+				var userAbout  = $('#userAbout').val();
+				var twitter   = $('#twitter').val();
+				var phone 	  = $('#phone').val();
+				var website   = $('#website').val();	
+				var status   = $('#userStatus').val();
+					
+				addUser(firstName, lastName, username, password, sysRole, facebook, twitter, phone, website, status, userPicture, userAbout); // Call the function
+				dscourse.GetData (); // Refresh the list of users
+			} else {
+				alert('Oops! It looks like you did not enter some information correctly. Check the error messages on the page for details.');
+			}									
 		});
 		
 				
@@ -82,41 +88,6 @@ function addUser(firstName, lastName, username, password, sysRole, facebook, twi
 }
 
 
-function viewUsers () 											// Gets the latest list of all users from database
-{																// This function gets utilized often but it's a bit overkill (gets all user data every time)
-
-		$.ajax({
-			type: "POST",													
-			url: "scripts/php/userAdmin.php",					// The php file get the user list
-			data: {
-					action: 'getAll'
-				},
-			success: function(data) {								 
-		    	allUsers = data;
-		    	console.log(allUsers);
-		    	$('#userData').html(" ");
-				$.each(allUsers, function(index, element) {	// If view is not specified Construct the table for each element
-		    		$('#userData').append(
-		    	  		  "<tr>"
-		    	  		+ "<td> <a class='showProfile' userid='" + element.UserID + "'>" + element.firstName			+ "</a></td>" 
-			            + "<td> " + element.lastName	+ "</td>" 
-			            + "<td> " + element.username		+ "</td>" 
-			            + "<td> " + element.sysRole	+ "</td>" 
-			            + "<td> " + element.userStatus		+ "</td>"
-			            + "<td> <button id='" + element.UserID		+ "' class='btn btn-info editUser'>Edit</button></td>"
-			            + "</tr>" 
-		    	  	);
-		    	  	nameListName = { ID: element.UserID, Name : element.firstName + " " + element.lastName, Email : element.username}; 
-		    	  	nameList.push(nameListName);
-			    		
-			     });
-		    }, 
-		    error: function() {									 
-				$('#userList').html("<h3>Oops, there was a problem.</h3> <p>We couldn't access the users at this time. Please try again later.</p>")  
-			}			
-		});
-	
-}
 
 function filterUsers(searchTerm)
 {
@@ -166,7 +137,7 @@ function filterUsers(searchTerm)
 
 function editUser(id)											// shows user details in the form
 {
-		$.each(allUsers, function(index, element) {	// If view is not specified Construct the table for each element
+		$.each(dscourse.data.allUsers, function(index, element) {	// If view is not specified Construct the table for each element
 			
 			if (id == element.UserID)					// Search for the object to edit
 			{

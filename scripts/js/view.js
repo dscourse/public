@@ -23,9 +23,11 @@ $(document).ready(function() {										// Wait for everything to load.
 		{
 		case 'usersNav':
 		  $('#usersPage').show();
+		  dscourse.imgUpload = 'user';
 		  break;
 		case 'coursesNav':
 		  $('#coursesPage').show();
+		  dscourse.imgUpload = 'course';
 		  break;
 		case 'discussionsNav':
 		  $('#discussionsPage').show();
@@ -76,7 +78,6 @@ $(document).ready(function() {										// Wait for everything to load.
 	function showHome(){
 		$('.page').hide();			
 		$('#homePage').show();
-		viewUsers();
 	}
 
 
@@ -88,9 +89,18 @@ $(document).ready(function() {										// Wait for everything to load.
 	$("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
 	$("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd" });
 
+	$("#courseStartDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
+	$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
+
+
 		$("#commentWrap").draggable();
 
+
+		$('#quickButtons').button();
 });
+
+
+
 
 	$('#text').live('click', function () {
 		var value = $('#text').val(); 
@@ -121,17 +131,13 @@ $(document).ready(function() {										// Wait for everything to load.
 
 /************ USERS  ******************/
 		
-	$('#addUserButton').live('click', function() {  		// Add user when Form is submitted
-			addUser(); // Call the function
-			viewUsers ();										// Refresh the list of users
-		});
 	
 	$("#addUserLink").live('click', function() {					// User button and click events 
 		$('#userListLink').addClass('linkGrey');
 		$(this).removeClass('linkGrey');
 		$("#userList").fadeOut();
 		$("#addUserForm").delay(200).fadeIn();
-		$('#userButtonDiv').html('<button class="btn btn-primary" id="addUserButton">Add User</button>');
+		$('#userButtonDiv').html('<button class="btn btn-primary" id="addUserButton">Add User</button> <button class="btn btn-info" id="cancelUser">Cancel</button>');
 		clearUserForm();	 // Fields are emptied to reuse
 	});
 	$("#userListLink").live('click', function() {
@@ -144,7 +150,7 @@ $(document).ready(function() {										// Wait for everything to load.
 	$('.editUser').live('click', function() {  					// When edit button is clicked. 	
 		$("#userList").fadeOut();
 		$("#addUserForm").delay(200).fadeIn();
-		$('#userButtonDiv').html('<button class="btn btn-primary" id="updateUser">Update User Information</button>');
+		$('#userButtonDiv').html('<button class="btn btn-primary" id="updateUser">Update User Information</button> <button class="btn btn-info" id="cancelUser">Cancel</button>');
 		var courseID = $(this).attr("id");						// Get the id for this course. 
 		editUser(courseID);										// Edit the course with the specific id. 	
 		$('html, body').animate({scrollTop:0});					// The page scrolls to the top to see the notification
@@ -152,12 +158,20 @@ $(document).ready(function() {										// Wait for everything to load.
 	
 	$('#updateUser').live('click', function() {  				// When edit button is clicked. 	
 		updateUser();											// Edit the course with the specific id.
-		viewUsers();
+		dscourse.GetData();
 		$("#addUserForm").fadeOut();
 		$("#userList").delay(200).fadeIn();
 		
 		$('html, body').animate({scrollTop:0});					// The page scrolls to the top to see the notification
 	});	
+	
+	$('#cancelUser').live('click', function() {  
+		//dscourse.GetData();
+		$("#addUserForm").fadeOut();
+		$("#userList").delay(200).fadeIn();
+		
+		$('html, body').animate({scrollTop:0});		
+	});
 	
 	
 	$('#firstName').live('change', function() { 				// User form validations
@@ -275,7 +289,6 @@ $(document).ready(function() {										// Wait for everything to load.
 	});
 
 
-
 /************ DISCUSSIONS ******************/
 
 
@@ -332,7 +345,6 @@ $(document).ready(function() {										// Wait for everything to load.
 		$('#commentWrap').fadeOut('fast');
 		$('#overlay').hide();
 		clearPostForm();
-		dscourse.SingleDiscussion(discussionID);
 	});
 
 

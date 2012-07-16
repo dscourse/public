@@ -22,8 +22,8 @@
 	<script type="text/javascript" >
 		(function() { 														// Auto runs everything inside when this script is loaded
 	
-		$('#loginSubmit').live('click', function() {  					// Execute login function when clicked
-			
+		
+		function Login(){
 			var username = $('#username').val();						// Gets username and password 
 			var password  = $('#password').val(); 
 			
@@ -51,8 +51,19 @@
 							console.log("dscourse Log: There was a problem connecting to the login script. ");  
 					  }
 				});				
-			}		 									
+			}	
+			
+		}
+		
+		$('#loginSubmit').live('click', function() {  					// Execute login function when clicked
+			Login()		 									
 		});	
+		
+		$(document).keypress(function(e) {
+		    if(e.which == 13) {
+		        Login();
+		    }
+		});
 	
 	})();																// End of self invoking anonymous function
 	

@@ -11,7 +11,11 @@ function Dscourse ()
 	this.data.allCourses = new Array();
 	this.data.allDiscussions = new Array();
 	this.data.allPosts = new Array();
-	
+
+// Users 
+
+	this.nameList = new Array ();
+	this.nameListName = new Object;	
 	
 // Courses 
 
@@ -31,6 +35,9 @@ function Dscourse ()
 // Posts
 	this.post = { };
 
+// Fix for multiple image uploads 
+	this.imgUpload = '';
+	
 // Get all Data
 
 	this.GetData();
@@ -53,7 +60,8 @@ Dscourse.prototype.GetData=function()
 			  		main.data = data;
 			  		main.listCourses('all');
 			  		main.listDiscussions();						// Refresh list to show all discussions.
-
+			  		main.ListUsers();
+			  		
 			  		main.courseDataStatus = 'loaded';
 			  		console.log(data);
 			  	}, 
@@ -65,13 +73,44 @@ Dscourse.prototype.GetData=function()
 
 }
 
+Dscourse.prototype.ListUsers=function()
+{
+	var main = this;
+
+	$('#userData').html(" ");
+	var i, o; 
+	for(i = 0; i < main.data.allUsers.length; i++ ){	// If view is not specified Construct the table for each element
+		o =  main.data.allUsers[i] ;  			
+			$('#userData').append(
+			    	  		  "<tr>"
+			    	  		+ "<td> <img class='userThumbS' src='" + o.userPictureURL +"' /><a class='showProfile' userid='" + o.UserID + "'>" + o.firstName + "</a></td>" 
+				            + "<td> " + o.lastName	+ "</td>" 
+				            + "<td> " + o.username		+ "</td>" 
+				            + "<td> " + o.sysRole	+ "</td>" 
+				            + "<td> " + o.userStatus		+ "</td>"
+				            + "<td> <button id='" + o.UserID		+ "' class='btn btn-info editUser'>Edit</button></td>"
+				            + "</tr>" 
+			    );
+			    	  	nameListName = { ID: o.UserID, Name : o.firstName + " " + o.lastName, Email : o.username}; 
+			    	  	main.nameList.push(nameListName);
+			}
+}
+
+
+
 Dscourse.prototype.UserProfile=function(id)
 {
 	var main = this; 
-	var i; 
+	var userInst = new Array();
+	var userTA 	 = new Array();
+	var userStudent = new Array();
+	
+	$('#profileCourses').html('');
+	
+	var i, o; 
 	for(i = 0; i < main.data.allUsers.length; i++ )	// If view is not specified Construct the table for each element
 			{  
-				var o = main.data.allUsers[i];
+				o = main.data.allUsers[i];
 				
 				if(o.UserID === id) 
 				{
@@ -86,7 +125,56 @@ Dscourse.prototype.UserProfile=function(id)
 			  	  	//$('#userStatus').html(singleUser.status);
 			  	  	$('#profilePicture').html("<img src=\"" + o.userPictureURL + "\" width=\"120\">");		
 			  	  }						
-	}			
+	}
+	
+	var j, k, listInst;
+	for(j = 0; j < main.data.allCourses.length; j++){
+		k = main.data.allCourses[j];
+		
+		
+		listInst = k.courseInstructors.split(",");					// Courses user is an instructor in
+		var m;
+		for (m = 0; m < listInst.length; m++){
+			if(listInst[m] == id){
+				$('#profileCourses').append(
+					'<tr>'
+					+ '	<td> <a class="courseLink" courseid="' + k.courseID +'">' + k.courseName + '</a></td>'
+					+ '	<td>Instructor</td>'
+					+ '</tr>'
+				);
+			}
+		}
+		
+		listTAs = k.courseTAs.split(",");					// Courses user is a TA in
+		var n;
+		for (n = 0; n < listTAs.length; n++){
+			if(listTAs[n] == id){
+				$('#profileCourses').append(
+					'<tr>'
+					+ '	<td> <a class="courseLink" courseid="' + k.courseID +'">' + k.courseName + '</a></td>'
+					+ '	<td>Teaching Assistant</td>'
+					+ '</tr>'
+				);
+			}
+		}
+
+
+		listStudents = k.courseStudents.split(",");					// Courses user is a Student in
+		var n;
+		for (n = 0; n < listStudents.length; n++){
+			if(listStudents[n] == id){
+				$('#profileCourses').append(
+					'<tr>'
+					+ '	<td> <a class="courseLink" courseid="' + k.courseID +'">' + k.courseName + '</a></td>'
+					+ '	<td>Student</td>'
+					+ '</tr>'
+				);
+			}
+		}		
+		
+		
+	}
+				
 }
 
 /********** COURSES ****************/
@@ -155,7 +243,7 @@ Dscourse.prototype.listCourses=function(view)
 		    			    			
 		    	  	$('#tablebody').append(
 		    	  		  "<tr>"
-		    	  		+ "<td> <a href='course.php?cid=" + o.courseID + "'> " + o.courseName			+ "</a></td>" 
+		    	  		+ "<td> <a class='courseLink' courseid='" + o.courseID + "'> " + o.courseName			+ "</a></td>" 
 			            + "<td> " + truncateText(o.courseDescription)	+ "</td>" 
 			            + "<td> " + o.courseStatus		+ "</td>" 
 			            + "<td><strong> " + fullName	+ "</strong><br/>" + TAName +" </td>" 
@@ -206,7 +294,9 @@ Dscourse.prototype.listCourses=function(view)
 				        + "<td> <button id='" + o.courseID		+ "' class='btn btn-info editCourse'>Edit</button></td>"
 			            + "</tr>" 
 		    	  	);
-	    	  
+		    	  		
+		    	  		courseListCourse = { ID: o.courseID, Name : o.courseName}; 
+			    	  	main.courseList.push(courseListCourse);
 	    		
 	    		}
 
@@ -787,7 +877,7 @@ Dscourse.prototype.saveDiscussions=function()	 	// Save Discussion
 
  Dscourse.prototype.SingleDiscussion=function(discID)	 			  // View for the Individual discussions. 
  {
-	 var main = this;
+	    var main = this;
 	 	$('.levelWrapper[level="0"]').html('');
 
  		var i;
@@ -843,7 +933,8 @@ Dscourse.prototype.AddPost=function(){
 				'postMessage': postMessage,
 				'postType': postType,
 			};
-	
+		
+		
 	// run Ajax to save the post object
 	
 	$.ajax({																						
@@ -856,7 +947,7 @@ Dscourse.prototype.AddPost=function(){
 			  success: function(data) {						// If connection is successful . 
 			    	  console.log(data);
 			    	  addPostDisc(data);
-			    	  
+
 			    }, 
 			  error: function() {					// If connection is not successful.  
 					console.log("Dscourse Log: the connection to posts.php failed.");  
@@ -885,7 +976,10 @@ Dscourse.prototype.AddPost=function(){
 													
 					},
 					  success: function(data) {							// If connection is successful . 
-					    	console.log(data);					    }, 
+					    	console.log(data);
+					    	main.data.allPosts.push(post); 
+					    	main.SingleDiscussion(currentDisc);
+						    }, 
 					  error: function() {					// If connection is not successful.  
 							console.log("dscourse Log: the connection to saveDiscussions.php failed.");  
 					  }
@@ -894,7 +988,6 @@ Dscourse.prototype.AddPost=function(){
 
 	 		}
 	 	}
-	 	main.SingleDiscussion(pID);
  	}
 	
 	// run Ajax to update that specific discussion
@@ -905,6 +998,7 @@ Dscourse.prototype.AddPost=function(){
  Dscourse.prototype.ListDiscussionPosts=function(posts)	 			  // View for the Individual discussions. 
  {
 	 var main = this;
+	 console.log(posts);
 
 	 var discPosts = o.dPosts.split(",");
 	 
@@ -925,6 +1019,9 @@ Dscourse.prototype.AddPost=function(){
 					case 'agree':
 					  typeText = ' agreed';
 					  break;
+					case 'disagree':
+					  typeText = ' disagreed';
+					  break;
 					case 'clarify':
 					  typeText = ' asked to clarify';
 					  break;
@@ -943,7 +1040,9 @@ Dscourse.prototype.AddPost=function(){
 				 var selector = 'div[level="'+ d.postFromId +'"]';	
 				 $(selector).append(						// Add post data to the view
 				 	  '<div class="threadText" level="'+ d.postID + '">' 
-				 	+  authorID + typeText +  message 
+				 	+  '<span class="postAuthorView"> ' + authorID + '</span>'
+				 	+  '<span class="postTypeView"> ' + typeText + '</span>'
+				 	+  '<span class="postMessageView"> ' + message  + '</span>'
 				 	+ ' <div class="sayBut2" postID="'+ d.postID + '">say</div>'	
 				 	+ '</div>'
 				 );
@@ -953,7 +1052,11 @@ Dscourse.prototype.AddPost=function(){
 }
 
 
-
+ Dscourse.prototype.UserTypeahead=function()	 			  // View for the Individual discussions. 
+ {
+	 var main = this;
+	 
+}
 
 
 

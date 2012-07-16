@@ -19,7 +19,6 @@
 	<script type="text/javascript" src="assets/js/jquery-1.7.1.min.js"></script>
 	<script type="text/javascript" src="assets/js/bootstrap.js"></script>
 	<script type="text/javascript" src="assets/js/bootstrap-typeahead.js"></script>
-	<script type="text/javascript" src="assets/js/fileuploader.js"></script>
 	<script type="text/javascript" src="assets/js/jquery-ui-1.8.21.custom.min.js"></script>
 		
 	<link href="assets/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
@@ -35,6 +34,7 @@
 	
 
 	<script type="text/javascript" src="scripts/js/view.js"></script>
+	<script type="text/javascript" src="assets/js/fileuploader.js"></script>
 
 <script type="text/javascript">
 		var dscourse = new Dscourse();
@@ -212,7 +212,7 @@
 				      <div class="controls">
 				      	<div id="imgPath"></div>
 				      	<input type="hidden" name="userPicture" id="userPicture" value="assets/img/dscourse_logo4.png">				
-					 <div id="file-uploader">
+					 <div id="file-uploader-user">
 								<noscript>
 								        <p>Please enable JavaScript to use file uploader.</p>
 								        <!-- or put a simple form for upload here -->
@@ -276,7 +276,7 @@
 				      </div>
 				    </div>	
 				    
-					<div id="userButtonDiv"><button class="btn btn-primary" id="addUserButton">Add User</button></div>
+					<div id="userButtonDiv"><button class="btn btn-primary" id="addUserButton">Add User</button> <button class="btn btn-info id="cancelUser">Cancel</button></div>
 					
 				    				  
 				</div>							
@@ -427,7 +427,7 @@
 				      <div class="controls">
 				      	<div id="imgPath"></div>
 				      	<input type="hidden" name="courseImage" id="courseImage" value="/assets/img/dscourse_logo4.png">				
-					 <div id="file-uploader">
+					 <div id="file-uploader-course">
 								<noscript>
 								        <p>Please enable JavaScript to use file uploader.</p>
 								        <!-- or put a simple form for upload here -->
@@ -668,23 +668,14 @@
 		<div> 
 			<h2>My Courses:</h2>
 			<table class="table table-striped">
-		
-		        <tbody>
-		          <tr>
-		            <td>Course Title </td>
-		            <td>Other information about the course</td>
-		            <td>More stuff</td>
-		          </tr>
-		          <tr>
-		            <td>Course Title </td>
-		            <td>Other information about the course</td>
-		            <td>More stuff</td>
-		          </tr>
-		          <tr>
-		            <td>Course Title </td>
-		            <td>Other information about the course</td>
-		            <td>More stuff</td>
-		          </tr>
+				<thead>
+					<tr>
+						<th>Course Title</th>
+						<th>Role </th>
+					</tr>
+				</thead>
+		        <tbody id="profileCourses">
+		         
 		        </tbody>
 		      </table>
   	
@@ -798,7 +789,7 @@
 	<hr class="soften" />
 	<div id="discussionDivs"> 
 		<div class="levelWrapper" level="0">
-			<p>There are no discussions. Be the first by clicking the Say button at the top right corner.</p>
+
 		</div>
 	</div>
 	
@@ -828,25 +819,31 @@
 			<input id="postIDhidden" type="hidden" name="postIDhidden" value="">
 			<input id="userIDhidden" type="hidden" name="userIDhidden" value="<?php echo $_SESSION['UserID'];?>">
 			<div id="top">	
-				<textarea id="text">Your comment...</textarea>
 					<div id="quick">
-					<ul>
-					<li> <input type="radio" id="agree" name="type" value="agree" /> Agree</li>
-					<li> <input type="radio" id="clarify" name="type" value="clarify" /> Ask to Clarify</li>
-					<li> <input type="radio" id="offTopic" name="type" value="offTopic" /> Mark as Off topic</li>
-					</ul>
+						<ul>
+						<li> <input type="radio" id="comment" name="type" value="comment" checked="checked"/> Comment</li>
+						<li> <input type="radio" id="agree" name="type" value="agree" /> Agree</li>
+						<li> <input type="radio" id="disagree" name="type" value="disagree" /> Disagree</li>
+						<li> <input type="radio" id="clarify" name="type" value="clarify" /> Ask to Clarify</li>
+						<li> <input type="radio" id="offTopic" name="type" value="offTopic" /> Mark as Off topic</li>
+						</ul>
+
 					</div>
+					
+
 			</div>
 			
-			<div id="bottom">	
-				<div id="media">
+			<div id="middle">
+				<textarea id="text">Your comment...</textarea>	
+				<div id="bottomlinks">
 					<ul>
-					<li id="media"> <a href="#"> Attach media</a></li>
-					<li id="link"> <a href="#"> Add  link</a></li>
-					<li id="draw"> <a href="#">Draw </a></li>
+					<li><div id="media"></div>  <a href="#"> Add Media</a></li>
+					<li><div id="link"> </div> <a href="#"> Add Link</a></li>
+					<li><div id="draw"> </div> <a href="#">Add Drawing </a></li>
 					</ul>
 				</div>
-				
+			</div>
+			<div id="bottom">	
 				<div id="buttons">
 					<input type="button" id="postCancel" class="buttons btn btn-info" value="Cancel">
 					<input id="addPost" type="button" class="buttons btn btn-primary" value="Add to dscourse">
@@ -1330,48 +1327,35 @@ DSC_RadialMenu.prototype.Draw=function(dat, x, y, id) 					//	DRAW DOT
 </script>
 
 <script type="text/javascript">
-				  // Typeahead bootstrap stuff for courses.php
+/************* TYPEAHEAD ***********************/ 
+
 $(function() {
 
- 	waitForFnc();
-	
-	function waitForFnc(){
-	  if(typeof nameList == "undefined"){
-	    window.setTimeout(waitForFnc,50);
-	  }
-	  else{
 	  		$('.coursePeople').typeahead({
-				source: nameList,							// The source, it's defined in users.js
+				source: dscourse.nameList,							// The source, it's defined in users.js
 				matchProp: 'Name',							// Match to this
 				sortProp: 'Name',							// Sort by 
 				valueProp: 'ID',							// The content of the val variable below comes from this attribute
 				itemSelected: function(item, val, text) {
-					$.each(allUsers, function(index, element) {		//Go through each person to get their usernae
-						if (element.UserID == val) {
-							var currentEmail = element.username;	// We get the username info, we can get any other information as well here
+					var i; 
+					for(i = 0; i < dscourse.data.allUsers.length; i++ ){
+						o = dscourse.data.allUsers[i];
+						if (o.UserID == val) {
+							var currentEmail = o.username;	// We get the username info, we can get any other information as well here
 						
 							$('#addPeopleBody').append('<tr><td>' + text + ' </td><td>' + currentEmail  + ' </td><td><div class="btn-group" data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" userid="'+ val + '">Instructor</button><button class="btn roleB" userid="'+ val + '">TA</button><button class="btn active roleB" userid="'+ val + '">Student</button></div></td><td><button class="btn removePeople">Remove</button>	</td></tr>'); // Build the row of users. 
 						
 						
 						}
-					});
-					
+					}
 					
 					$('.coursePeople').val(' ').focus();
 				}
 			}); 
-	  }
-	}
 
- 	waitForFncD();
-		
-	function waitForFncD(){
-	  if(typeof courseList == "undefined"){
-	    window.setTimeout(waitForFnc,50);
-	  }
-	  else{
+
 	  		$('.discussionCourses').typeahead({
-				source: courseList,							// The source, it's defined in courses.js
+				source: dscourse.courseList,							// The source, it's defined in courses.js
 				matchProp: 'Name',							// Match to this
 				sortProp: 'Name',							// Sort by 
 				valueProp: 'ID',							// The content of the val variable below comes from this attribute
@@ -1380,13 +1364,32 @@ $(function() {
 					$('.discussionCourses').val(' ').focus();
 				}
 			}); 
-	  }
-	}
+
 
 });
+
+/************* IMAGE UPLOADER ***********************/ 
+
+			var userUploader = new qq.FileUploader ({
+			    element: document.getElementById('file-uploader-user'),
+			    action: 'scripts/php/imgUpload.php',
+			    // additional data to send, name-value pairs
+			    allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'], 
+			    sizeLimit: 100000, // max size 
+			    debug: true
+			});
+			var courseUploader = new qq.FileUploader ({
+			    element: document.getElementById('file-uploader-course'),
+			    action: 'scripts/php/cimgUpload.php',
+			    // additional data to send, name-value pairs
+			    allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'], 
+			    sizeLimit: 100000, // max size 
+			    debug: true
+			});
+			window.onload = userUploader;
+			window.onload = courseUploader;
+
 </script>
-
-
 
 </body>
 </html>
