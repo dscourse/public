@@ -16,7 +16,7 @@ function checkFirstName(){																//defines checkFirstName function
 		var check = 'fail';
 		var firstName = $('#firstName').val();											//get the first name input value
 		console.log("The user's first name is:" + firstName);							//check the first name value for debugging
-		var firstNameVal = new RegExp(/^[A-Za-z]{3,20}$/);								//RegEx check for first name
+		var firstNameVal = new RegExp(/^[A-Za-z]{2,20}$/);								//RegEx check for first name
 		if(firstName == ''){
 			$('#firstNameControl').removeClass('success').addClass('error');				//add error class to control group
 			$('#firstNameControl').find('.help-inline').html('Please enter your name using alphabetical characters (A-Z) only.');	//Feedback to user for resubmit if empty
@@ -28,6 +28,7 @@ function checkFirstName(){																//defines checkFirstName function
 			$('#firstNameControl').find('.help-inline').html('Your entry has been successfully validated') 	//Feedback to user = Successful Validation
 			check = 'pass';
 		}
+		console.log('firstname check: ' + check);
 		return check; 
 	}
 		
@@ -48,6 +49,8 @@ function checkLastName(){														//defines checkLastName function
 			$('#lastNameControl').find('.help-inline').html('Your entry has been successfully validated.') 	//Feedback to user = Successful Validation
 			check = 'pass';	
 		}
+				console.log('lastname check: ' + check);
+
 		return check; 
 
 	}	
@@ -70,6 +73,8 @@ function checkEmail(){
 			check = 'pass';
 
 		}
+				console.log('email check: ' + check);
+
 		return check; 
 
 	}
@@ -94,6 +99,8 @@ function checkPassword(){
 			check = 'pass';
 
 		}
+				console.log('password check: ' + check);
+
 		return check; 
 	}
 	
@@ -112,8 +119,12 @@ function checkAbout(){
 			  else 
 			  {
 				  	$('#aboutControl').removeClass('error');	
-				  	$('#aboutControl').find('.help-inline').html('Briefly introduce yourself. Please limit your text to 1000 characters. You have: <strong>' + aboutSize + ' </strong> characters left.');	 
+				  	$('#aboutControl').find('.help-inline').html('Briefly introduce yourself. Please limit your text to 1000 characters. You have: <strong>' + aboutSize + ' </strong> characters left.');
+				  	check = 'pass';	
+	 
 			  } 
+			  		console.log('about check: ' + check);
+
 		return check; 
 
 }
@@ -134,8 +145,12 @@ function checkFacebook()
 		else{																			//if the value of facebook meets criteria
 				$('#facebookControl').removeClass('error').addClass('success');				//Change text color to green
 				$('#facebookControl').find('.help-inline').html('Your Facebook account has been successfully validated.'); //Feedback to user = Successful validation
+		var check = 'pass';															
+
 			}
 		}
+				console.log('facebook check: ' + check);
+
 		return check; 
 
 	}	
@@ -155,8 +170,13 @@ function checkTwitter(){
 			else{																				//if the value of twitter meets format criteria
 				$('#twitterControl').removeClass('error').addClass('success');					//change the text to green
 				$('#twitterControl').find('.help-inline').html('Your Twitter account has been successfully validated.');//feedback to user = Successful validation
+		var check = 'pass';															
+
 				}	
 			}
+			
+					console.log('twitter check: ' + check);
+
 		return check; 
 
 	}
@@ -176,15 +196,18 @@ function checkPhone(){
 		   	else{ 																				//if the value of phone meets the format criteria
 				$('#phoneControl').removeClass('error').addClass('success');							//change the text to green
 				$('#phoneControl').find('.help-inline').html('Your phone number has been successfully validated.');// feedback to user = Successful validation
+		var check = 'pass';															
 			
 		}
 	}
+			console.log('phone check: ' + check);
+
 		return check; 
 
 	}
 		
 function checkWebsite(){
-		var check = 'fail';															
+		var check = 'pass';															
 		var website = $('#website').val();															//defines website
 		console.log("The website url is " + website);												//debugging check
 		var websiteVal = new RegExp(/((ftp|https?):\/\/)?(www\.)?[a-z0-9\-\.]{3,}\.[a-z]{3}$/);											//regex check for website (extremely lenient)		
@@ -197,8 +220,12 @@ function checkWebsite(){
 			else{																					//if the value of website meets the format criteria
 				$('#websiteControl').removeClass('error').addClass('success');						//change the text color to green
 				$('#websiteControl').find('.help-inline').html('Your website has been successfully validated.');	//feedback to user = Successful validation
+		var check = 'pass';															
+
 		}
 	}
+			console.log('website check: ' + check);
+
 		return check; 
 
 }

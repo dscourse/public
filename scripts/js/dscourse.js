@@ -244,7 +244,7 @@ Dscourse.prototype.listCourses=function(view)
 		    	  	$('#tablebody').append(
 		    	  		  "<tr>"
 		    	  		+ "<td> <a class='courseLink' courseid='" + o.courseID + "'> " + o.courseName			+ "</a></td>" 
-			            + "<td> " + truncateText(o.courseDescription)	+ "</td>" 
+			            + "<td> " + o.courseDescription	+ "</td>" 
 			            + "<td> " + o.courseStatus		+ "</td>" 
 			            + "<td><strong> " + fullName	+ "</strong><br/>" + TAName +" </td>" 
 			            + "<td> " + stuNum + "</td>"
@@ -287,7 +287,7 @@ Dscourse.prototype.listCourses=function(view)
 		    	  	$('#tablebody').append(
 		    	  		  "<tr>"
 		    	  		+ "<td> <a class='courseLink' courseid='" + o.courseID + "'> " + o.courseName			+ "</a></td>" 
-			            + "<td> " + truncateText(o.courseDescription)	+ "</td>" 
+			            + "<td> " + o.courseDescription	+ "</td>" 
 			            + "<td> " + o.courseStatus		+ "</td>" 
 			            + "<td><strong> " + fullName	+ "</strong><br/>" + TAName +" </td>" 
 			            + "<td> " + stuNum + "</td>"
@@ -930,7 +930,7 @@ Dscourse.prototype.AddPost=function(){
 				'postFromId': postFromId,
 				'postAuthorId': postAuthorId,
 				'postMessage': postMessage,
-				'postType': postType,
+				'postType': postType
 			};
 		
 		
@@ -958,15 +958,19 @@ Dscourse.prototype.AddPost=function(){
 		// add post id to the relevant discussion section
 		currentDisc = $('#dIDhidden').val();
 		
+		post.postID = pID; 
+		
 		var i;
 	 	for (i = 0; i < main.data.allDiscussions.length; i++)
 	 	{		
 	 		var o = main.data.allDiscussions[i];
 	 		if(o.dID === currentDisc ){
-		 		var discPosts = o.dPosts.split(",");
-		 		discPosts.push(pID); 
-		 		discPostList = discPosts.toString(); 
-		 		o.dPosts = discPostList;
+	
+			 	if(o.dPosts){
+				 	o.dPosts += ",";
+			 	}
+			 	o.dPosts += pID;
+
 		 		
 		 		$.ajax({												// Ajax talking to the saveDiscussions.php file												
 					type: "POST",
@@ -977,8 +981,7 @@ Dscourse.prototype.AddPost=function(){
 					},
 					  success: function(data) {							// If connection is successful . 
 					    	console.log(data);
-					    	//main.data.allPosts.push(post); 
-					    	main.GetData();
+					    	main.data.allPosts.push(post); 
 					    	$('.levelWrapper[level="0"]').html('');
 					    	main.SingleDiscussion(currentDisc);
 						    }, 
@@ -999,13 +1002,21 @@ Dscourse.prototype.AddPost=function(){
  Dscourse.prototype.ListDiscussionPosts=function(posts)	 			  // View for the Individual discussions. 
  {
 	 var main = this;
+	 
+	 console.log('Posts : ' + posts); 
 
 	 var discPosts = posts.split(",");
+	 
+	 console.log('Array: ' + discPosts); 
+	 
+	 console.log(main.data.allPosts); 
+	 
 	 var i, j, p, d, typeText, authorID, message;
-	 for(i = 1; i < discPosts.length; i++){							// Take one post at a time
+	 for(i = 0; i < discPosts.length; i++){							// Take one post at a time
 		 p = discPosts[i];
 		 for (j = 0; j < main.data.allPosts.length; j++){			// Go through all the posts
-			 d = main.data.allPosts[j];			 
+			 d = main.data.allPosts[j];		
+			 	 
 			 if(d.postID == p){										// Find the post we want to get the details of 
 			 														// Prepare the data for display
 				 authorID = main.getName(d.postAuthorId); 			// Get Authors name			

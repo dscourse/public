@@ -732,7 +732,7 @@
   <div class="span8 ">
 		<div> 
 			<h3>About this course:</h3>
-			<p id="courseDescription"></p>  	
+			<p id="iCourseDescription"></p>  	
 		</div>
 		<div id="courseDiscussions"> 
 			<h3>Discussions in this course:</h3>

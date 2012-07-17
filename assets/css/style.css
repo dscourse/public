@@ -248,6 +248,14 @@ a {
 	margin-top: 20px;
 }
 
+
+#profilePicture img {
+	margin-bottom: 10px;
+	border: 1px solid #CCC;
+	padding: 5px;
+	background: #EEE;
+	
+}
 /*  Discussions Page */
 
 		.rounded-corners { -moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;border-radius:8px;border:1px solid;padding:8px; overflow: hidden; z-index: 99;}
