@@ -59,9 +59,10 @@ $(document).ready(function() {										// Wait for everything to load.
 		$('.page').hide();
 		var courseid = $(this).attr('courseid');
 		dscourse.getCourse(courseid);
+				dscourse.listCourseDiscussions(courseid);
+
 		$('#coursePage').show();
 		$('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
-
 	});
 
 	$('.discussionLink').live('click', function () {						// Home link
@@ -93,10 +94,22 @@ $(document).ready(function() {										// Wait for everything to load.
 	$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
 
 
-		$("#commentWrap").draggable();
+		$("#commentWrap").draggable();									// Makes the comment posting tool draggable. Needs Jquery ui. 
+		
+		//fixing the buttons for roles so we don't need bootstrap files. 
+		$('#roleButtons .btn').live('click', function () {
+				var buttonUserId = $(this).attr('userid');
+				
+				var selectorText = '#roleButtons .btn[userid="' + buttonUserId + '"]';
+				$(selectorText).removeClass('active');
+				$(this).addClass('active');
+		});
+		
+		
+			  $('.removePeople').live('click', function() {
+			  			$(this).closest('tr').remove();
+			  });	
 
-
-		$('#quickButtons').button();
 });
 
 
@@ -111,6 +124,7 @@ $(document).ready(function() {										// Wait for everything to load.
 	
 	$('.sayBut2').live('click', function () {
 		var postID = $(this).attr("postID");
+		console.log('Post id i got is:'  + postID);
 		$('#postIDhidden').val(postID);			
 		$('#overlay').show();
 		$('#commentWrap').fadeIn('fast');

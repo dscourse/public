@@ -17,7 +17,7 @@
 
 	
 	<script type="text/javascript" src="assets/js/jquery-1.7.1.min.js"></script>
-	<script type="text/javascript" src="assets/js/bootstrap.js"></script>
+	<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="assets/js/bootstrap-typeahead.js"></script>
 	<script type="text/javascript" src="assets/js/jquery-ui-1.8.21.custom.min.js"></script>
 		
@@ -230,7 +230,7 @@
 				       
 		                <textarea class="span6 textareaFixed" id="userAbout" name="userAbout" ></textarea>
 		              
-				        <p class="help-inline">Briefly introduce yourself. Please limit your text to 1000 characters.</p>
+				       <br /> <p class="help-inline">Briefly introduce yourself. Please limit your text to 1000 characters.</p>
 				      </div>
 				    </div>	
 					
@@ -783,7 +783,7 @@
 
 	<div class="rounded-corners" id="discPane" style="position: absolute; top: 72px; left: 374px; width: 744px; height: 403px; border: 1px solid rgb(153, 153, 153); background-image: -webkit-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(237, 237, 237) 100%); background-position: initial initial; background-repeat: initial initial; ">
 		<span class="boxHeaders">Discussion<small><span id="dTitleView" ></span> <div class="sayBut2" postID="0">say</div> <input id="dIDhidden" type="hidden" name="discID" value="">
-</small></span> 
+</small></span> <p><div id="dPromptView" ></div></p>
 			
 	<div id="discFeedDiv"></div><div style="position:absolute;left:6px;top:6px;width:20px;height:20px;padding:0px;border:2px solid #1e5799;border-radius:20px;moz-border-radius;20px;color:#1e5799;text-align:center;line-height:20px;font-size:8px"><b>see</b><div></div></div>
 	<hr class="soften" />

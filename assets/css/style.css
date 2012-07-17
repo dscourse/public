@@ -325,6 +325,9 @@ a {
 .postTypeView   {color: #707070; font-style: italic}
 .postMessageView{}
 
+#dPromptView {
+	margin-top: 20px;;
+}
 /* Caner's version of the Discussion box */
 
 			#commentWrap {

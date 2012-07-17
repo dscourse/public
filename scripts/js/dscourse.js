@@ -366,7 +366,7 @@ Dscourse.prototype.addCourse=function()
 				'courseURL' :  courseURL
 			};
 			
-			main.allCourses.push(course);
+			main.data.allCourses.push(course);
 			main.saveCourses();
 			saved('Your new course is added.');
 			$('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
@@ -550,7 +550,7 @@ Dscourse.prototype.getCourse=function(cid)									// Gets individual course inf
 				  	$('#iCourseInstructors').html(instNameString);
 
 				  }
-		
+			
 		}	
 }
 
@@ -564,7 +564,7 @@ Dscourse.prototype.saveCourses=function()									// Sends the new data into the
 			type: "POST",
 			url: "scripts/php/saveCourses.php",
 			data: {
-				courses: main.allCourses							// All course data is sent
+				courses: main.data.allCourses							// All course data is sent
 											
 			},
 			  success: function(data) {						// If connection is successful . 
@@ -666,15 +666,13 @@ Dscourse.prototype.getCourseList=function()				// Gets course information, this 
  Dscourse.prototype.listCourseDiscussions=function(cid)	 			  // Listing Discussions of a course with the given cid. 
  {
 	 var main = this;
-
-	 //main.allCourses[0]; 
 	 
-	var o, m, i, j, k;  
-	for (var i = 0; i < main.data.allCourses.length; i++)
+	var o, m, i, j, k; 
+	var n = new Array; 
+	for (i = 0; i < main.data.allCourses.length; i++)
 	{	
 		o = main.data.allCourses[i];		
 		if (o.courseID == cid){
-				var n = new Array();
 				var ds = o.courseDiscussions;
 				n=ds.split(",");
 		}
@@ -682,10 +680,10 @@ Dscourse.prototype.getCourseList=function()				// Gets course information, this 
 	
  	$('#courseDiscussionsBody').html(" ");
 	
-	for (j = o; j < main.data.allDiscussions.length; j++)
+	for (j = 0; j < main.data.allDiscussions.length; j++)
 	{
 		m = main.data.allDiscussions[j]; 		
-		for(var k = 1;  k < n.length; k++)
+		for(k = 1;  k < n.length; k++)
 		{ 
 			
 			if (m.dID == n[k]) {
@@ -885,6 +883,7 @@ Dscourse.prototype.saveDiscussions=function()	 	// Save Discussion
 	 		o = main.data.allDiscussions[i];
 	 		if(o.dID == discID){
 	 			$('#dTitleView').html(o.dTitle);
+	 			$('#dPromptView').html('<b> Prompt: </b>' + o.dPrompt);
 	 			$('#dIDhidden').val(o.dID);
 	 			main.CurrentDiscussion = o.dID;	
 	 			console.log("Curent Discussion ID: " + main.CurrentDiscussion);
@@ -901,7 +900,7 @@ Dscourse.prototype.saveDiscussions=function()	 	// Save Discussion
 Dscourse.prototype.AddPost=function(){
 	
 		 var main = this;
-
+		 var currentDisc; 
 
 	// Get post values from the form.
 		// postID -- postFromId
@@ -914,7 +913,7 @@ Dscourse.prototype.AddPost=function(){
 		
 		// message -- postMessage
 		var postMessage = $('#text').val();	
-		console.log('Post id : ' + postMessage);
+		console.log('Post message : ' + postMessage);
 
 		// type -- postType
 		var postType = 'comment';	
@@ -947,6 +946,7 @@ Dscourse.prototype.AddPost=function(){
 			  success: function(data) {						// If connection is successful . 
 			    	  console.log(data);
 			    	  addPostDisc(data);
+	
 
 			    }, 
 			  error: function() {					// If connection is not successful.  
@@ -956,7 +956,7 @@ Dscourse.prototype.AddPost=function(){
 	
 	function addPostDisc(pID){
 		// add post id to the relevant discussion section
-		var currentDisc = $('#dIDhidden').val();
+		currentDisc = $('#dIDhidden').val();
 		
 		var i;
 	 	for (i = 0; i < main.data.allDiscussions.length; i++)
@@ -977,7 +977,9 @@ Dscourse.prototype.AddPost=function(){
 					},
 					  success: function(data) {							// If connection is successful . 
 					    	console.log(data);
-					    	main.data.allPosts.push(post); 
+					    	//main.data.allPosts.push(post); 
+					    	main.GetData();
+					    	$('.levelWrapper[level="0"]').html('');
 					    	main.SingleDiscussion(currentDisc);
 						    }, 
 					  error: function() {					// If connection is not successful.  
@@ -990,28 +992,21 @@ Dscourse.prototype.AddPost=function(){
 	 	}
  	}
 	
-	// run Ajax to update that specific discussion
-		
+	
 }
 
 
  Dscourse.prototype.ListDiscussionPosts=function(posts)	 			  // View for the Individual discussions. 
  {
 	 var main = this;
-	 console.log(posts);
 
-	 var discPosts = o.dPosts.split(",");
-	 
+	 var discPosts = posts.split(",");
 	 var i, j, p, d, typeText, authorID, message;
 	 for(i = 1; i < discPosts.length; i++){							// Take one post at a time
 		 p = discPosts[i];
-		 
 		 for (j = 0; j < main.data.allPosts.length; j++){			// Go through all the posts
 			 d = main.data.allPosts[j];			 
-
-			 
 			 if(d.postID == p){										// Find the post we want to get the details of 
-			 
 			 														// Prepare the data for display
 				 authorID = main.getName(d.postAuthorId); 			// Get Authors name			
 				 switch(d.postType)									// Get what kind of post this is 
@@ -1052,11 +1047,6 @@ Dscourse.prototype.AddPost=function(){
 }
 
 
- Dscourse.prototype.UserTypeahead=function()	 			  // View for the Individual discussions. 
- {
-	 var main = this;
-	 
-}
 
 
 
