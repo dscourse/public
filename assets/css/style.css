@@ -24,7 +24,17 @@ a {
 .headerLinks {
 	text-decoration: none;
 	cursor: pointer;
-	padding-left: 20px;
+	border: 1px solid #CCC;
+	padding: 7px 15px;
+	margin-left: 10px;
+	-webkit-border-radius: 8px 8px 0px 0px;
+	-moz-border-radius: 8px 8px 0px 0px;
+	border-radius: 8px 8px 0px 0px;
+	background: white; 
+	border-bottom: 1px solid white;
+	-webkit-box-shadow: 0px -2px 5px 0px #CCC;
+	-moz-box-shadow: 0px -2px 5px 0px #CCC;
+	box-shadow: 0px -2px 5px 0px #CCC;
 }
 
 .headerLinks:hover {
@@ -40,6 +50,19 @@ a {
 
 .linkGrey {
 	color: grey;
+	border-bottom: 1px solid #ccc;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;	
+}
+
+.page-header {
+padding-bottom: 7px;
+}
+
+.page-header small {
+	margin-left: 50px;
+	
 }
 
 
@@ -110,9 +133,6 @@ a {
 	outline:none;
 }
 
-
-
-
 /* GLOBAL LAYOUT */
 
 #logo {
@@ -165,7 +185,7 @@ a {
 
 
 
-/* SPECIFIC TO INDEX.PHP */
+/* SPECIFIC TO info.php */
 #loginModal {		
 	width: 400px;	
 	margin-left: -160px;	
@@ -190,11 +210,7 @@ a {
 	padding-bottom: 20px;
 }
 
-
-
-
-
-/* SPECIFIC TO USERS.PHP */
+/* Users Page */
 
 #userList {
 	height: 600px;
@@ -209,7 +225,7 @@ a {
 
 
 
-/* SPECIFIC TO DISCUSSION.PHP */
+/* Single Discussion Page with Posts */
 
 #overlay {
 	display: none;
@@ -220,15 +236,17 @@ a {
 	height: 100%;
 	background-color: white;
 	z-index:1001;
-	-moz-opacity: 0.7;
-	opacity:.70;
-	filter: alpha(opacity=70);
+	-moz-opacity: 0.1;
+	opacity:.10;
+	filter: alpha(opacity=10);
 }
 
+.levelWrapper {
+	height: 100%;
+	
+} 
 
-
-
-/* SPECIFIC TO HOME.PHP */
+/* Home Page */
 
 .todoFeed li, .discussionFeed li {
 	border-bottom: 1px solid #e8e8e8;
@@ -242,7 +260,7 @@ a {
 }
 
 
-/* SPECIFIC TO PROFILE.PHP */
+/* Profile Page */
 
 #userInfo {
 	margin-top: 20px;
@@ -256,6 +274,7 @@ a {
 	background: #EEE;
 	
 }
+
 /*  Discussions Page */
 
 		.rounded-corners { -moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;border-radius:8px;border:1px solid;padding:8px; overflow: hidden; z-index: 99;}
@@ -342,8 +361,8 @@ a {
 				position:relative;
 				display: none;
 				margin: 100px auto;
-				height: 140px;
-				width: 500px;
+				height: 160px;
+				width: 520px;
 				background-color: #eeeeee;
 				border-style: solid;
 				border-width: 2px;
@@ -351,9 +370,9 @@ a {
 				-webkit-border-radius: 5px;
 				-moz-border-radius: 5px;
 				border-radius: 5px;
-				-webkit-box-shadow: 0 0 15px 0 #666;
-				-moz-box-shadow: 0 0 15px 0 #666;
-				box-shadow: 0 0 15px 0 #666;				
+				-webkit-box-shadow: 0 0 30px 0px #666;
+				-moz-box-shadow: 0 0 30px 0px #666;
+				box-shadow:0 0 30px 0px #666;				
 				padding: 10px;
 				font-family: Helvetica, sans-serif; 
 				font-size: 12px;
@@ -369,7 +388,7 @@ a {
 				vertical-align: baseline;
 			}
 			#text {
-				width: 490px;
+				width: 500px;
 				height: 60px;
 				border: 1px solid #ccc;
 				padding: 5px;
@@ -381,9 +400,9 @@ a {
 			
 			#quick {
 				width: 100%;
-				//float: right;
 				padding: 0px;
-				
+				margin: 10px auto;
+				margin-top: 0px;
 			}
 			
 			#quick li {
@@ -392,9 +411,6 @@ a {
 				list-style: none;
 				display: inline-block;
 			}
-			
-			
-
 			
 			#bottomlinks {
 				float: left;
@@ -424,7 +440,10 @@ a {
 			#media {background: url(../img/icons/addmedia.png) left top  no-repeat; float: left; width: 20px; height: 20px;}
 			#link {background: url(../img/icons/addlink.png) left top    no-repeat; float: left; width: 20px; height: 20px;}
 			#draw {background: url(../img/icons/adddrawing.png) left top no-repeat; float: left; width: 20px; height: 20px;}
-
+			
+			.highlight {
+				background-color: rgba(255,255,176,0.65);
+			}
 
 
 /* SPECIFIC TO file uploader script */

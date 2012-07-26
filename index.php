@@ -17,7 +17,6 @@
 
 	
 	<script type="text/javascript" src="assets/js/jquery-1.7.1.min.js"></script>
-	<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="assets/js/bootstrap-typeahead.js"></script>
 	<script type="text/javascript" src="assets/js/jquery-ui-1.8.21.custom.min.js"></script>
 		
@@ -25,20 +24,16 @@
 	<link href="assets/css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css" />	
 
-
-	<script type="text/javascript" src="scripts/js/helpers.js"></script>
 	<script type="text/javascript" src="scripts/js/validation.js"></script>
 	<script type="text/javascript" src="scripts/js/users.js"></script>
 
 	<script type="text/javascript" src="scripts/js/dscourse.js"></script>
-	
-
-	<script type="text/javascript" src="scripts/js/view.js"></script>
 	<script type="text/javascript" src="assets/js/fileuploader.js"></script>
 
 <script type="text/javascript">
-		var dscourse = new Dscourse();
-		
+	
+	var dscourse = new Dscourse();				// Fasten seat belts, dscourse is starting...
+
 </script> 
 
 </head>
@@ -135,7 +130,7 @@
 <div id="usersPage" class="container wrap page">
 
 	<div class="page-header">
-	  <h1>Users <small> <a id="userListLink" class="headerLinks">User List</a> </small><small> <a id="addUserLink" class="linkGrey headerLinks">Add User</a> </small></h1> 
+	  <h1>Users <small> <a id="userListLink" class="headerLinks">User List</a> <a id="addUserLink" class="linkGrey headerLinks">Add User</a> </small></h1> 
 	</div>	
 			
 	<div class="row">	
@@ -162,7 +157,7 @@
 				      <label class="control-label" for="lastName">Last Name</label>
 				      <div class="controls">
 				        <input type="text" class="input-large" id="lastName" name="lastName">
-				        <p class="help-inline"Provide the last name of the user. </p>
+				        <p class="help-inline">Provide the last name of the user. </p>
 				      </div>
 				    </div>
 
@@ -378,26 +373,7 @@
 					        <p class="help-inline">Enter a name for the course</p>
 					      </div>
 					    </div>	
-					   
-					   <?php /*  
-					    <div class="control-group">
-					      <label class="control-label" for="courseInstructors">Course Instructors</label>
-					      <div class="controls">
-					        <input type="text" class="input-large" id="courseInstructors" name="courseInstructors">
-					        <p class="help-inline">Enter at least one name, you can add more in the course page. </p>
-					      </div>
-					    </div>	
-	
-					    <div class="control-group">
-					      <label class="control-label" for="courseTAs">Course TAs</label>
-					      <div class="controls">
-					        <input type="text" class="input-large" id="courseTAs" name="courseTAs">
-					        <p class="help-inline">Optional, you can add and change these values in the course page.  </p>
-					      </div>
-					    </div>	
-					    */ ?>
-					    
-					    
+					  				    
 					     <div class="control-group">
 					      <label class="control-label" for="courseDescription">Course Description</label>
 					      	<div class="controls">
@@ -538,10 +514,6 @@
 			<!-- Discussion Form layer // Both ADD and EDIT use the same form  -->				
 			<div id="discussionForm">
 				<div class="form-horizontal well">
-	
-	
-	
-		
 				    <div class="control-group" id="discussionQuestionControl">
 				      <label class="control-label" for="discussionQuestion">Discussion Question</label>
 				      <div class="controls">
@@ -626,63 +598,61 @@
 <div id="profilePage" class="container wrap page">
 
   	<div class="page-header">
-    <h1><span id="profileName"></span><small><span id="profileEmail"> </span></small>
+	    <h1>
+	    	<span id="profileName"></span>
+	    	<small><span id="profileEmail"> </span></small>
+	    	<button id="profilePageEdit" class="btn btn-info pull-right" profilePageID=""> Edit Profile </button>
+	    </h1>
+    </div>
+    <div class="row" id="profileDetails">
+		<div class="span4 offset4" id="notify"></div>
+		<div class="span4">
+  			<div id="profilePicture"></div>
+	  		<div id="profileInfo"> 
+	  			<table class="table">	
+			        <tbody>
+			          <tr>
+			            <td class="profileHead" >About Me:</td>
+			            <td id="profileAbout1"></td>
+			          </tr>
+			          <tr>
+			          	<td class="profileHead" >Facebook Account</td>
+			            <td id="profileFacebook"></td>
+			          </tr>
+			          <tr>
+			          	<td class="profileHead" >Twitter Account</td>
+			            <td id="profileTwitter"></td>
+			          </tr>
+			          <tr>
+			          	<td class="profileHead" >Phone Number</td>
+			            <td id="profilePhone"></td>
+			          </tr>
+			          <tr>
+			          	<td class="profileHead" >Website</td>
+			            <td id="profileWebsite"></td>
+			          </tr>
+			        </tbody>
+			     </table>
+		    </div> 
+		</div><!-- end span4 -->  
+		<div class="span8 ">
+				<h2>My Courses:</h2>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Course Title</th>
+							<th>Role </th>
+						</tr>
+					</thead>
+			        <tbody id="profileCourses">
+			         
+			        </tbody>
+			      </table>
+		 </div>
+    </div><!-- end profileDetails-->
 
-    </h1>
-  </div>
-  
-<div class="row">
+   		      
 
-	<div class="span4 offset4" id="notify"></div>
-  <div class="span4">
-  	
-  	<div id="profilePicture"></div>
-  	<div id="profileInfo"> <table class="table">
-		
-        <tbody>
-          <tr>
-            <td class="profileHead" >About Me:</td>
-            <td id="profileAbout1"></td>
-          </tr>
-          <tr>
-          	<td class="profileHead" >Facebook Account</td>
-            <td id="profileFacebook"></td>
-          </tr>
-          <tr>
-          	<td class="profileHead" >Twitter Account</td>
-            <td id="profileTwitter"></td>
-          </tr>
-          <tr>
-          	<td class="profileHead" >Phone Number</td>
-            <td id="profilePhone"></td>
-          </tr>
-          <tr>
-          	<td class="profileHead" >Website</td>
-            <td id="profileWebsite"></td>
-          </tr>
-        </tbody>
-      </table>
-   </div>
-  </div>
-  <div class="span8 ">
-		<div> 
-			<h2>My Courses:</h2>
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>Course Title</th>
-						<th>Role </th>
-					</tr>
-				</thead>
-		        <tbody id="profileCourses">
-		         
-		        </tbody>
-		      </table>
-  	
-   </div>
-</div>
-
-</div>
 </div><!-- end profile -->
 
 
@@ -755,8 +725,9 @@
 
 
 </div>
-</div><!-- end course -->
-
+</div>
+    
+    
 <!-- Begin individual discussion page -->
 
 
@@ -786,7 +757,6 @@
 </small></span> <p><div id="dPromptView" ></div></p>
 			
 	<div id="discFeedDiv"></div><div style="position:absolute;left:6px;top:6px;width:20px;height:20px;padding:0px;border:2px solid #1e5799;border-radius:20px;moz-border-radius;20px;color:#1e5799;text-align:center;line-height:20px;font-size:8px"><b>see</b><div></div></div>
-	<hr class="soften" />
 	<div id="discussionDivs"> 
 		<div class="levelWrapper" level="0">
 
@@ -819,18 +789,16 @@
 			<input id="postIDhidden" type="hidden" name="postIDhidden" value="">
 			<input id="userIDhidden" type="hidden" name="userIDhidden" value="<?php echo $_SESSION['UserID'];?>">
 			<div id="top">	
-					<div id="quick">
-						<ul>
-						<li> <input type="radio" id="comment" name="type" value="comment" checked="checked"/> Comment</li>
-						<li> <input type="radio" id="agree" name="type" value="agree" /> Agree</li>
-						<li> <input type="radio" id="disagree" name="type" value="disagree" /> Disagree</li>
-						<li> <input type="radio" id="clarify" name="type" value="clarify" /> Ask to Clarify</li>
-						<li> <input type="radio" id="offTopic" name="type" value="offTopic" /> Mark as Off topic</li>
-						</ul>
+			<div id="quick">
 
+				<div class="btn-group" id="postTypeID">
+				  <button class="btn postTypeOptions active" id="comment" > <i class="icon-comment"></i> Comment</button>
+				  <button class="btn postTypeOptions" id="agree" > <i class="icon-thumbs-up"></i> Agree</button>
+				  <button class="btn postTypeOptions" id="disagree" > <i class="icon-thumbs-down"></i> Disagree</button>
+				  <button class="btn postTypeOptions" id="clarify" > <i class="icon-question-sign"></i> Ask to Clarify</button>
+				  <button class="btn postTypeOptions" id="offTopic" > <i class="icon-share-alt"></i> Mark Off Topic</button>
+				</div>
 					</div>
-					
-
 			</div>
 			
 			<div id="middle">
@@ -1086,245 +1054,6 @@ function trace(str) { console.log(str) };
 	
 </script>
 
-<script>
-	
-	$('.sayBut').click(function(e){
-			console.log(e);
-			menuCSS.left=e.pageX + 'px';
-			menuCSS.top=e.pageY + 'px';
-			$('#overlay').show();
-			new DSC_RadialMenu("",menuCSS,testMenu);
-	});
-	
-	var menuCSS={ "background-color":"#006dcc", "border":".25px  #666 solid", left:"400px", top:"200px", width:"100px", "font-weight":"bold", "font-size":"15px", "color":"#fff", "z-index": "1099" };
-	
-	var testMenu={ lab:"Say",size:1, sub:[
-					{ lab:"Comment",	size:.5, sub:[
-						{ lab:"Respond",	size:.5, cb:function() { alert("Respond!!!"); }},
-						{ lab:"Question",	size:.5, cb:function() { alert("Question???"); }},
-						{ lab:"Summary",	size:.5, cb:function() { alert("Summary..."); }}
-						]},
-					{ lab:"Feedback",	size:.5, sub:[
-						{ lab:"Agree",	size:.5, cb:function() { alert("Agree+++"); }},
-						{ lab:"Clarify",	size:.5, cb:function() { alert("Clarify???"); }},
-						{ lab:"Off-topic",	size:.5, cb:function() { alert("Off Topic *&^"); }}
-						]},
-					{ lab:"Media",	size:.5, sub:[
-						{ lab:"Document",	size:.5, cb:function() { alert("Document []"); }},
-						{ lab:"Web page",	size:.5, cb:function() { alert("Web-page ()"); }},
-						{ lab:"Video",		size:.5, cb:function() { alert("Video >>"); }}
-						]},
-					{ lab:"Draw",		size:.5, sub:[
-						{ lab:"White board",	size:.5, cb:function() { alert("Whiteboard!"); }},
-						{ lab:"Concept map",	size:.5, cb:function() { alert("Concept map!"); }}
-						]}
-				]
-				 };
-
-	$(document).ready(function() {
-		//new DSC_RadialMenu("",menuCSS,testMenu);
-	});
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//   RADIAL MENU  
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-function DSC_RadialMenu(container, format, data)						// CONSTRUCTOR
-{
-	var i;
-	this.data=data;															// Set menu structure
-	this.format=format;														// Set menu formatting
-	this.container="#"+container;											// Container that hold menu
-	this.cx=format.left.replace(/px/,"");									// Center x
-	this.cy=format.top.replace(/px/,"");									// Center y
-	this.rad=format.width.replace(/px/,"")/2;								// Radius
-	if (!container)															// If no container defined
-		this.container="body";												// Append to body
-	$("#DSCMenuDiv").remove();												// Remove old one, if there
-	var str="<div id='DSCMenuDiv' style='position:absolute;left:"+this.cx+"px;top:"+this.cy+"px'/>";
-	$(this.container).append(str);											// Add menu div to container
-	if (data)																// If a structure defined
-		this.Draw(this.data,0,0,0);											// Draw it via recursion
-	var thisObj=this;														// Point to this		
-	
-	for (i=1;i<=data.sub.length;++i) {										// For each submenu
-		$("#DSCDotDiv-"+(100*i)).mouseover(function(e) {					// Over sub dot
-			for (var j=1;j<=data.sub.length;++j)							// For each submenu
-				thisObj.Color(100*j,(this.id.substr(10) != 100*j));			// Grey all other buttons
-			thisObj.ShowSub(this.id.substr(10));							// Show sub-submenu
-			});
-		}	
-
-	$("#DSCDotDiv-0").mouseover(function(e) {								// Over main dot
-		thisObj.Init("first");												// Show first level
-		});
-
-	$("#DSCDotDiv-0").click(function(e) {									// Click on main dot
-			thisObj.Init("close");											// Close all
-		});
-
-	$("#DSCDotDiv-0").hide();												// First dot is closed
-	this.Init("open");														// Init with main dot showing
-}
-
-DSC_RadialMenu.prototype.Init=function(mode) 							//	INIT BUTTON STATE
-{
-	var i;
-	var thisObj=this;														// Point to this		
-	var data=this.data;														// Point to data
-	for (i=1;i<=this.data.sub.length;++i) {									// For each submenu
-		$("#DSCTreeDiv-"+(100*i)).hide();									// Hide trees	
-		thisObj.Color(100*i,false);											// All buttons colored
-		if (mode == "first")												// If showing 1st level
-			$("#DSCDotDiv-"+(100*i)).fadeIn(500);							// Show them	
-		else																// Hiding everything
-			$("#DSCDotDiv-"+(100*i)).hide();								// Hide them	
-		if (data.sub[i-1].sub) {											// If sub-submenus
-			for (j=1;j<=data.sub[i-1].sub.length;++j)						// For each sub-submenu
-				$("#DSCDotDiv-"+((100*i)+j)).hide();						// Hide them	
-			}
-		}
-	if (mode == "open")	{													// If opening
-		$("#DSCDotDiv-0").show("scale",{}, 400);
-		$('#overlay').fadeIn('slow');
-		}								// Zoom in
-	else if (mode == "close"){												// If closing
-		$("#DSCDotDiv-0").hide("scale",{}, 400);
-		$('#overlay').fadeOut('slow');
-		}									// Hide them	
-}
-
-DSC_RadialMenu.prototype.ShowSub=function(id) 							//	SHOW SUB-SUBMENU
-{
-	var i,j;
-	for (i=1;i<=this.data.sub.length;++i) {									// For each submenu
-		if (this.data.sub[i-1].sub) {										// If sub-submenus
-			if (Math.floor(id/100) == i)									// If the selected one
-				$("#DSCTreeDiv-"+(100*i)).fadeIn(0);						// Show them
-			else															// Others
-				$("#DSCTreeDiv-"+(100*i)).hide();							// Hide them	
-			for (j=1;j<=this.data.sub[i-1].sub.length;++j) {				// For each sub-submenu
-				if (Math.floor(id/100) == i)								// If the selected one
-					$("#DSCDotDiv-"+((100*i)+j)).fadeIn(0);					// Show them
-				else														// Others
-					$("#DSCDotDiv-"+((100*i)+j)).hide();					// Hide them	
-				}
-			}
-		}
-}
-
-DSC_RadialMenu.prototype.Color=function(id, gray) 						//	COLOR DOT
-{
-	var o=$("#DSCDotDiv-"+id);												// ID of base dot
-	if (gray)																// If graying it
-		o.css({border:"solid 1px #ddd",										// Gray rim
-		background:"#eee",													// Gray interior
-		"text-shadow":"0 0px 0px"											// No shadow
-		});
-	else{																	// Colored dot
-		background:this.format["background-color"],
-		o.css({border:"solid 1px rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25)",			// Gradient
-		"text-shadow":"0 1px 1px rgba(0,0,0,.5)",
-		});
-		if ($.browser.mozilla)												
-			o.css("background","-moz-linear-gradient(top,#5BC0DE,#2F96B4)");
-		else 
-			o.css("background","-webkit-linear-gradient(top,#5BC0DE,#2F96B4)")
-		}
-}
-
-DSC_RadialMenu.prototype.Draw=function(dat, x, y, id) 					//	DRAW DOT
-{
-	var i,j;
-	if (!dat)																// No data
-		return;																// Quit
-	var thisObj=this;														// Point to this		
-	var r=this.rad*dat.size;												// Scaled radius	
-	var fs=this.format["font-size"].replace(/px/,"")*dat.size;				// Scaled font size										
-	var str="<div id='DSCDotDiv-"+id+"' style='position:absolute;text-align:center'>";		// Div start
-	str+=dat.lab+"</div>";													// Add label and end div
-	$("#DSCMenuDiv").append(str);											// Add menu div
-	$("#DSCDotDiv-"+id).mouseover(function(){$(this).css("color","yellow") });	
-	$("#DSCDotDiv-"+id).mouseout(function(){$(this).css("color","white") });	
-	var o=$("#DSCDotDiv-"+id);												// ID of base dot
-	o.css(this.format);														// Set format
-	var x1=x-r;			var y1=y-r;											// Position											
-	if (id%100) {															// If 2nd selector
-		o.css({"border-radius":"8px","moz-border-radius":"8px"});			// Set corners to make circle
-		o.css("font-size",fs+"px");											// Adjust font size
-		o.css({ width:(r*3)+"px",height:r/2+"px"});							// Set size
-		}
-	else{
-		o.css({ width:(r+r)+"px",height:(r+r)+"px"});						// Set size
-		o.css({"border-radius":r+"px","moz-border-radius":r+"px"});			// Set corners to make circle
-		o.css("line-height",(r+r)+"px");									// Center vertically
-		}
-	o.css({border:"solid 1px "+this.format["background-color"],				// Gradient
-		background:this.format["background-color"],
-		"text-shadow":"0 1px 1px rgba(0,0,0,.5)",
-		"box-shadow":"0 4px 8px rgba(0,0,0,.3)",
-		});
-	if ($.browser.mozilla)	
-		o.css("background","-moz-linear-gradient(top,#5BC0DE,#2F96B4)");
-	else 
-		o.css("background","-webkit-linear-gradient(top,#5BC0DE,#2F96B4)")
-	o.css({left:x1+"px",top:y1+"px"});										// Set position
-	if (id == 0)															// If main dot
-		o.css("font-size",fs*2+"px");										// Double font size
-	else																	// A sub dor=t
-		o.css("font-size",fs+"px");											// Adjust font size
-	if ((dat.sub) && (id == 0)) {											// If first ring of sub menus												
-		var d=Number(r+(r/2)+12);											// Diameter
-		var a=-(Math.PI/2);													// Start at top (radians)
-		var step=(2*Math.PI)/(Math.PI*2*d/(r+24));							// Step size
-		for (i=1;i<=dat.sub.length;++i)	{									// For each sub menu
-			x1=x+d*Math.cos(a);			y1=x+d*Math.sin(a);					// Circle around
-			a+=step;														// Next angle
-			this.Draw(dat.sub[i-1],x1,y1,(100*i));							// Draw it recursively
-			}
-		}	
-	else if ((dat.sub) && (id != 0)) {										// If 2nd ring of sub menus												
-		x1=(r*6.5);															// To the right
-		y1=(dat.sub.length-3)*r/-2;								
-		var base="<div style='position:absolute;background-color:"+this.format["background-color"]+";";	
-		$("#DSCDotDiv-"+id).append("<div id='DSCTreeDiv-"+id+"' style='position:absolute;top:0px'/>");
-		str=base+"left:"+(r+r)+"px;top:"+r+"px;height:3px;width:"+(x1-r-r-12-x)+"px'/>";
-		$("#DSCTreeDiv-"+id).append(str);									// Add first line
-		str=base+"left:"+(x1-12-x)+"px;top:"+y1+"px;width:3px;height:"+((dat.sub.length-1)*r)+"px'/>";
-		$("#DSCTreeDiv-"+id).append(str);									// Add first line
-
-		for (j=0;j<dat.sub.length;++j)	{									// For each sub menu
-			str=base+"left:"+(x1-12-x)+"px;top:"+y1+"px;height:3px;width:12px'/>";
-			$("#DSCTreeDiv-"+id).append(str);								// Add it
-			y1+=r;															// Advance down
-			}
-		$("#DSCTreeDiv-"+id).hide();										// Hide dot
-		y1=y-((dat.sub.length*r)/2)+r+fs;									// Top
-		for (j=0;j<dat.sub.length;++j)	{									// For each sub menu
-			this.Draw(dat.sub[j],x1,y1,(id+(j+1)));							// Draw it recursively
-			str=base+"left:"+(x1-12)+"px;top:"+(j*r)+"px;height:3px;width:12px'/>";
-			y1+=r;															// Stack vertically
-			}
-		}
-
-	$("#DSCDotDiv-"+id).hide();												// Hide dot
-	dat=this.data;															// Point at data set
-	
-	$("#DSCDotDiv-"+id).click(function(e) {									// Click on main dot
-		var a=Math.floor((this.id.substr(10)/100))-1;						// First layer		
-		if (a < 0)															// First dot
-			return;															// Quit
-		var b=(this.id.substr(10)%100)-1;									// Second layer		
-		if ((b < 0) && (dat.sub[a].cb))										// First level dot w/ cb
-			dat.sub[a].cb();												// Run callback
-		else if ((b != -1) && (dat.sub[a].sub[b].cb))						// 2nd level dot w/ cb
-			dat.sub[a].sub[b].cb();											// Run callback
-			thisObj.Init("close");											// Close all
-		});
-}
-
-	
-</script>
 
 <script type="text/javascript">
 /************* TYPEAHEAD ***********************/ 
@@ -1354,16 +1083,7 @@ $(function() {
 			}); 
 
 
-	  		$('.discussionCourses').typeahead({
-				source: dscourse.courseList,							// The source, it's defined in courses.js
-				matchProp: 'Name',							// Match to this
-				sortProp: 'Name',							// Sort by 
-				valueProp: 'ID',							// The content of the val variable below comes from this attribute
-				itemSelected: function(item, val, text) {
-					$('#addCoursesBody').append('<tr id="' + val + '" class="dCourseList"><td>' + text + ' </td><td><button class="btn removeCourses" >Remove</button>	</td></tr>'); 				// Build the row of users. 
-					$('.discussionCourses').val(' ').focus();
-				}
-			}); 
+	  		
 
 
 });

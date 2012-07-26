@@ -94,36 +94,37 @@ function filterUsers(searchTerm)
 				$('#userData').html('');
 				var userDataState = 'empty'; 
 				searchTerm=searchTerm.toLowerCase();
-				$.each(allUsers, function(index, element) {	// If view is not specified Construct the table for each element
+				
+				var i, o; 
+				for(i = 0; i < dscourse.data.allUsers.length; i++){
+					o = dscourse.data.allUsers[i];
 					
-					var	termFirst = element.firstName.toLowerCase();
+					var	termFirst = o.firstName.toLowerCase();
 					var a=termFirst.indexOf(searchTerm);
-					console.log('first name: ' + a);
 					
-					var	termLast = element.lastName.toLowerCase();
+					var	termLast = o.lastName.toLowerCase();
 					var b=termLast.indexOf(searchTerm);
 
-					var	termUser = element.username.toLowerCase();
+					var	termUser = o.username.toLowerCase();
 					var c=termUser.indexOf(searchTerm);
 										
-					console.log('a is : ' + a  + 'b is : ' + b  + 'c is : ' + c  );
-					console.log(searchTerm);
 					if ( a != -1 || b != -1 || c != -1)
 						{
 						$('#userData').append(
 				    	  		  "<tr>"
-				    	  		+ "<td> <a href='profile.php?id=" + element.UserID + "'>" + element.firstName			+ "</a></td>" 
-					            + "<td> " + element.lastName	+ "</td>" 
-					            + "<td> " + element.username		+ "</td>" 
-					            + "<td> " + element.sysRole	+ "</td>" 
-					            + "<td> " + element.userStatus		+ "</td>"
-					            + "<td> <button id='" + element.UserID		+ "' class='btn btn-info editUser'>Edit</button></td>"
+				    	  		+ "<td> <a href='profile.php?id=" + o.UserID + "'>" + o.firstName			+ "</a></td>" 
+					            + "<td> " + o.lastName	+ "</td>" 
+					            + "<td> " + o.username		+ "</td>" 
+					            + "<td> " + o.sysRole	+ "</td>" 
+					            + "<td> " + o.userStatus		+ "</td>"
+					            + "<td> <button id='" + o.UserID		+ "' class='btn btn-info editUser'>Edit</button></td>"
 					            + "</tr>" 
 				    	  	);
 				    	  userDataState = 'set';
 				    	 }
 
-			     });
+				   }
+			     
 			     if (userDataState == 'empty')
 					{
 						$('#userData').append('<tr><td colspan=6> No records matched your query.</td></tr>');

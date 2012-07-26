@@ -1,5 +1,5 @@
 
-/********************************* VALIDATION FOR USER.PHP *********************************/
+/********************************* VALIDATION FOR Users *********************************/
 
 function ValidateUsers(){
 	var validationState = 'fail';
@@ -230,11 +230,26 @@ function checkWebsite(){
 
 }
 
-/********************************* VALIDATION FOR DISCUSSION.PHP *********************************/
+/********************************* VALIDATION FOR Discussions *********************************/
+
+
+function ValidateDiscussions(){
+	var validationState = 'fail';
+
+	 
+	if(checkDiscussionQuestion() == 'pass' && checkDiscussionPrompt() == 'pass'){
+		validationState = 'pass';
+	}
+	
+	return validationState;
+}
+
 
 function checkDiscussionQuestion(){	
-		var dSize = $('#discussionQuestion').val().length; 						
-			 if (dSize == 0) 
+		var check ="fail"; 
+		var dSize = $('#discussionQuestion').val().length; 	
+		console.log(dSize);					
+			 if (dSize == 0 || dSize == undefined) 
 			 {
 					$('#discussionQuestionControl').removeClass('success').addClass('error');
 					$('#discussionQuestionControl').find('.help-inline').text('Please enter a discussion question');	 
@@ -243,24 +258,31 @@ function checkDiscussionQuestion(){
 			  {
 				  	$('#discussionQuestionControl').removeClass('error').addClass('success');	
 					$('#discussionQuestionControl').find('.help-inline').text('That works.');	 
+					var check ="pass"; 
 				  	
 			  } 
+		return check; 
 }
 
 
-function checkDiscussionPrompt(){		
+function checkDiscussionPrompt(){	
+		var check ="pass"; 	
 		var pSize = $('#discussionPrompt').val().length;
 			pSize = 1000 - pSize; 
 			 if (pSize < 0) 
 			 {
 					$('#discussionPromptControl').addClass('error');
-					$('#discussionPromptControl').find('.help-inline').html('You have exceeded 1000 characters, please revise. You have  <strong>' + pSize + '</strong> characters left.');	 
+					$('#discussionPromptControl').find('.help-inline').html('You have exceeded 1000 characters, please revise. You have  <strong>' + pSize + '</strong> characters left.');	
+					check = "fail"; 
 			  }
 			  else 
 			  {
 				  	$('#discussionPromptControl').removeClass('error');	
 				  	$('#discussionPromptControl').find('.help-inline').html('If you like you can provide prompts to get into details or explain directions for the discussion. Please limit your text to 1000 characters. You have <strong>' + pSize + '</strong> characters left.');	 
+				  	check = "pass"
 			  } 
+	
+		return check;
 }
 
 
