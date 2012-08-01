@@ -77,7 +77,7 @@ function addUser(firstName, lastName, username, password, sysRole, facebook, twi
 			  	console.log("Data is" + data);
 			    $('#notify').fadeIn().html(data).delay(5000).fadeOut(400);							// The notify div is filled with the notification
 			    $('html, body').animate({scrollTop:0}, 'slow');		// The page scrolls to the top to see the notification
-			    clearUserForm(); // Fields are emptied to reuse
+			    dscourse.ClearUserForm(); // Fields are emptied to reuse
 	
 			  }, 
 			  error: function() {									// If there was an error

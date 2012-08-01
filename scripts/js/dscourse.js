@@ -33,13 +33,17 @@ function Dscourse ()
  
 	this.courseList = [];
 	this.courseListName = {};
-	
+	this.courseListStatus = 'off';
 	
 	// Posts
 	this.post = { };
+	this.currentSelected = ''; 
+
 
 	// Fix for multiple image uploads 
 	this.imgUpload = '';
+	
+	
 	
 	// Get all Data
 
@@ -159,7 +163,15 @@ function Dscourse ()
 			  {
 			    return "This will take you away from Dscourse.";
 			    }
-			  	
+		
+		$('.postMessageView').live('mouseup', function () {
+			top.currentSelected = top.GetSelectedText(); 
+			console.log('mouse up text is: ' + top.currentSelected);
+		});
+
+		$('#discussionDivs').tooltip({ selector: "a" });  
+
+
 	
 	});
 
@@ -385,8 +397,13 @@ function Dscourse ()
 
 
 	$('#addPost').live('click', function() {
-		$('.threadText').removeClass('highlight');		
-		top.AddPost();
+		$('.threadText').removeClass('highlight');	
+		var checkDefault = $('#text').val();				// Check to see if the user is adding default comment text. 
+		if(checkDefault == 'Why do you agree?' || checkDefault == 'Why do you disagree?' || checkDefault == 'What is unclear?' || checkDefault == 'Why is it off topic?' || checkDefault == 'Your comment...'){
+			$('#text').val(' '); 
+		}
+		
+		top.AddPost();										// Function to add post 
 		var discussionID = $('#dIDhidden').val();
 		$('#commentWrap').fadeOut('fast');
 		$('#overlay').hide();
@@ -396,23 +413,31 @@ function Dscourse ()
 	});
 	$('#text').live('click', function () {
 		var value = $('#text').val(); 
-		if (value == 'Your comment...'){
+		if (value == 'Why do you agree?' || value == 'Why do you disagree?' || value == 'What is unclear?' || value == 'Why is it off topic?' || value == 'Your comment...'){
 			$('#text').val(''); 
 		}
 	});
 	
 	$('.sayBut2').live('click', function (e) {
+		var highlight = top.currentSelected;
 		var xLoc = e.pageX-800; 
-		var yLoc = e.pageY-165; 
+		var yLoc = e.pageY-80; 
 		console.log('x is : ' + xLoc + ' y is: ' + yLoc);
 		$('#commentWrap').css({'top' : yLoc, 'left' : xLoc});
 		$('.threadText').removeClass('highlight');		
 		var postID = $(this).attr("postID");
 		console.log('Post id i got is:'  + postID);
+		console.log('highlight is: ' + highlight);
+		if(highlight !== ''){
+			$('#highlightShow').html('Your selection:  <span id="selectedText" class="highlight"><i>" ' +  highlight + ' "</i></span>');
+			}
 		$('#postIDhidden').val(postID);			
 		$('#overlay').show();
 		$('#commentWrap').fadeIn('fast');
 		$(this).parent().addClass('highlight');
+		top.currentSelected = ''; 
+		$('#text').val('Your comment...');
+
 	});
 	
 	$('#postCancel').live('click', function () {
@@ -432,9 +457,41 @@ function Dscourse ()
 	$('.postTypeOptions').live('click', function () {
 		$('.postTypeOptions').removeClass('active');
 		$(this).addClass('active');
+		var thisID = $(this).attr('id');
+		switch(thisID)									// Get what kind of post this is 
+					{
+					case 'agree':
+					  $('#text').val('Why do you agree?');
+					  break;
+					case 'disagree':
+					  $('#text').val('Why do you disagree?');
+					  break;
+					case 'clarify':
+					  $('#text').val('What is unclear?');
+					  break;
+					case 'offTopic':
+					  $('#text').val('Why is it off topic?');
+					  break;		  
+					default:
+					  $('#text').val('Your comment...');
+					}
+
 	});
 	
-
+		$('.postTypeWrap').live('click', function () {
+				var currentType = $(this).attr('typeID'); 
+				var thisLink = $(this).children('i'); 
+				currentType = '.threadText[postTypeID="' + currentType + '"]';
+				var parentDiv = $(this).parent('div');
+				$(parentDiv).children(currentType).fadeToggle('fast', function() {
+						if(thisLink.hasClass('icon-white') == true){
+							   thisLink.removeClass('icon-white');
+						   } else {
+							    thisLink.addClass('icon-white');
+						   }
+						  });
+			
+			});
 
 } /* end function Dscourse
 
@@ -694,11 +751,12 @@ Dscourse.prototype.listCourses=function(view)
 	    		}
 	     }
 		
-		}	
-		
+	}
+	
+					   $('#discInputDiv').html('<input type="text" class="input-large discussionCourses" id="discussionCourses" name="discussionCourses" >');
 					   console.log(main.courseList);
 					   $('.discussionCourses').typeahead({
-							source: main.courseList,				// The source, it's defined in courses.js
+							source: main.courseList,				// The source, 
 							matchProp: 'Name',							// Match to this
 							sortProp: 'Name',							// Sort by 
 							valueProp: 'ID',							// The content of the val variable below comes from this attribute
@@ -707,7 +765,9 @@ Dscourse.prototype.listCourses=function(view)
 								$('#addCoursesBody').append('<tr id="' + val + '" class="dCourseList"><td>' + text + ' </td><td><button class="btn removeCourses" >Remove</button>	</td></tr>'); 				// Build the row of courses. 
 								$('.discussionCourses').val(' ').focus();
 							}
-						}); 
+						});
+		
+ 
 }
 
 
@@ -1269,7 +1329,8 @@ Dscourse.prototype.AddPost=function(){
 		console.log('Author Id : ' + postAuthorId);
 		
 		// message -- postMessage
-		var postMessage = $('#text').val();	
+		var postMessage = ''; 
+		postMessage = $('#text').val();	
 		console.log('Post message : ' + postMessage);
 
 		// type -- postType
@@ -1394,27 +1455,89 @@ Dscourse.prototype.AddPost=function(){
 					default:
 					  typeText = ' commented';
 					}
-				 if(d.postMessage){									// Proper presentation of the message
+				 
+				 if(d.postMessage != ' '){									// Proper presentation of the message URL
 					message = ' "' + d.postMessage + '".'; 
 					message = main.showURL(message);
+				 } else {
+					 message = '';
 				 }
 				 
 				 console.log('author id: ' + authorID + ' - typetext: ' + typeText + ' - message: ' + message);	// Check to see if all is well
 				 
-				 var selector = 'div[level="'+ d.postFromId +'"]';	
+				 var selector = 'div[level="'+ d.postFromId +'"]';
+				 var responses = main.ResponseCounters(d.postID);	
 				 $(selector).append(						// Add post data to the view
-				 	  '<div class="threadText" level="'+ d.postID + '">' 
+				 	  '<div class="threadText" level="'+ d.postID + '" postTypeID="'+ d.postType+ '">' 
 				 	+  '<span class="postAuthorView"> ' + authorID + '</span>'
 				 	+  '<span class="postTypeView"> ' + typeText + '</span>'
 				 	+  '<span class="postMessageView"> ' + message  + '</span>'
-				 	+ ' <div class="sayBut2" postID="'+ d.postID + '">say</div>'	
-				 	+ '</div>'
+				 	+ ' <div class="sayBut2" postID="'+ d.postID + '">say</div> '
+				 	+ responses 
+				 	+ ' </div>'
 				 );
 			 }	 
 		 }
 	 }
 }
 
+
+Dscourse.prototype.ResponseCounters=function(postId){
+	
+		 var main = this;
+		 
+		 var comment = 0;    var commentPeople = '';
+		 var agree 	= 0; 	 var agreePeople = '';
+		 var disagree = 0; 	 var disagreePeople = '';
+		 var clarify = 0;	 var clarifyPeople = '';
+		 var offTopic = 0; 	 var offTopicPeople = '';
+		 
+		 var i, o; 
+		 
+		  for(i = 0; i < main.data.allPosts.length; i++){
+		  		o = main.data.allPosts[i];
+		  		if(o.postFromId == postId){
+			  		var postAuthor = main.getName(o.postAuthorId);
+			  		
+			  		switch(o.postType)									// Get what kind of post this is 
+					{
+					case 'agree':  
+					  agreePeople += postAuthor + ', '; 
+					  agree++;
+					  break;
+					case 'disagree':
+					  disagreePeople += postAuthor + ', '; 
+					  disagree++;
+					  break;
+					case 'clarify':
+					  clarifyPeople += postAuthor + ', '; 
+					  clarify++;					  
+					  break;
+					case 'offTopic':
+					  offTopicPeople += postAuthor + ', '; 
+					  offTopic++;
+					  break;		  
+					default:
+					  commentPeople += postAuthor + ', '; 
+					  comment++;
+					}
+			  		
+		  		}
+		  }	
+		  var commentText = ' ', agreeText = ' ', disagreeText = ' ', clarifyText = ' ', offTopicText = ' '; 
+		  if(comment 	> 0){commentText 	= '<a href="#" rel="tooltip" class="postTypeWrap" typeID="comment" title="Commented: ' + commentPeople +'" > ' + comment 	+ '  <i class="icon-comment "></i> </a>  ';} 
+		  if(agree 	 	> 0){agreeText 		= '<a href="#" rel="tooltip" class="postTypeWrap" typeID="agree" title="agreed: ' + agreePeople + '"> ' + agree 	+ '  <i class="icon-thumbs-up"></i> </a> '	 ;}
+		  if(disagree	> 0){disagreeText 	= '<a href="#" rel="tooltip" class="postTypeWrap" typeID="disagree" title="disagreed: ' + disagreePeople + '"> ' + disagree 	+ '  <i class="icon-thumbs-down"></i> </a> ';}
+		  if(clarify 	> 0){clarifyText 	= '<a href="#" rel="tooltip" class="postTypeWrap" typeID="clarify" title="asked to clarify: ' + clarifyPeople + '"> ' + clarify 	+ '  <i class="icon-question-sign"></i> </a> ' ;}
+		  if(offTopic 	> 0){offTopicText 	= '<a href="#" rel="tooltip" class="postTypeWrap" typeID="offTopic" title="marked off topic: ' + offTopicPeople + '"> ' + offTopic 	+ '  <i class="icon-share-alt"></i> </a>  ' ;}
+
+		  var text =   commentText + agreeText + disagreeText + clarifyText + offTopicText ; 
+		 
+		 return text; 
+		 
+
+
+}
 
 /***********************************************************************************************/ 
 /*                					HELPER FUNCTIONS 									   */
@@ -1450,6 +1573,23 @@ Dscourse.prototype.getName=function(id)
 			return main.data.allUsers[n].firstName + " " + main.data.allUsers[n].lastName;
 	}	
 }
+
+
+Dscourse.prototype.GetSelectedText=function()
+{
+	 var main = this;
+
+  	 var text = '';
+
+	 if (window.getSelection) {
+	        text = window.getSelection().toString();
+	    } else if (document.selection && document.selection.type != "Control") {
+	        text = document.selection.createRange().text;
+	    }
+	  
+	    return text; 
+}
+
 
 
 
@@ -1507,6 +1647,7 @@ Dscourse.prototype.saved=function(message)
 		$('.postBoxRadio').removeAttr('checked'); 								// Restore checked status to comment. 
 		$('#postTypeID > button').removeClass('active');
 		$('#postTypeID > #comment').addClass('active');
+		$('#highlightShow').html(' ');
  }
  	
 // Function to get the links embedded in comments appear as links.

@@ -14,8 +14,10 @@ body {
 }
 
 a {
-	cursor: pointer;
-	
+	cursor: pointer;	
+}
+a:hover {
+		text-decoration: none;
 }
 .table td {
 	vertical-align: middle;
@@ -112,22 +114,34 @@ padding-bottom: 7px;
 }
 
 .ui-slider-horizontal {
-	background: #5BC0DE;
+	background: #ccc;
 	height: 8px;
 	border: 1px solid #aaa;
 	//margin-left: 10px;
+	border-radius: 4px; 
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
 }
 
-.ui-slider-horizontal .ui-slider-range {
-		background: #2F96B4;
-}
-
+.ui-slider-horizontal .ui-slider-range{
+	background: #2F96B4;
+	position:relative;
+	height: inherit;
+	}
 
 .ui-slider-horizontal .ui-slider-handle {
+	
 	border-radius: 10px;
-	margin-top: -2px;
-	background: -webkit-linear-gradient(top,#5BC0DE,#2F96B4);
-	border: 1px solid #7eaab7;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+margin-top: -11px;
+background: -webkit-linear-gradient(top,#5BC0DE,#2F96B4);
+border: 1px solid #7EAAB7;
+position: absolute;
+padding: 6px;
+	-webkit-box-shadow:0px 0px 4px #333 ;
+	-moz-box-shadow:0px 0px 4px #333 ;
+	box-shadow: 0px 0px 4px #333;
 }
 .ui-slider-horizontal .ui-slider-handle:focus {
 	outline:none;
@@ -243,8 +257,13 @@ padding-bottom: 7px;
 
 .levelWrapper {
 	height: 100%;
-	
+	padding-right: 10px;
 } 
+
+#discPane {
+	overflow-y: auto;
+	overflow-x: none;
+}
 
 /* Home Page */
 
@@ -256,7 +275,6 @@ padding-bottom: 7px;
 
 .timeLog {
 	color: #999;
-	
 }
 
 
@@ -284,7 +302,7 @@ padding-bottom: 7px;
 			height: 14px; 
 			margin-left: 3px;
 		}
-		#sizeBut {cursor:move; margin-top:-10px;}
+		#sizeBut {cursor:move; margin-top:-100px;}
 		.feedDiv {padding: 0 5px; margin-top: -5px;}
 		.allPanes {font-size: 12px;}
 		.threads {padding:10px 25px 0 25px !important;}
@@ -335,12 +353,11 @@ padding-bottom: 7px;
 		}
 		
 		.threadText {
-			float: left;
-			padding: 10px 0px 0px 20px;
-			margin-top: 10px; 
-			width: 100%;
-			border-top: 1px solid #eee;
-			
+			padding: 5px 0px 5px 10px;
+			margin-top: 13px;
+			width: 96%;
+			border-left: 1px solid #CCC;
+			margin-left: 10px;
 		}
 		
 		#dTitleView {
@@ -351,6 +368,10 @@ padding-bottom: 7px;
 .postAuthorView {color: #5caac1}
 .postTypeView   {color: #707070; font-style: italic}
 .postMessageView{}
+
+.postTypeWrap {
+	padding-left: 5px;
+}
 
 #dPromptView {
 	margin-top: 20px;;

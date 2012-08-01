@@ -17,6 +17,7 @@
 
 	
 	<script type="text/javascript" src="assets/js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="assets/js/bootstrap-tooltip.js"></script>
 	<script type="text/javascript" src="assets/js/bootstrap-typeahead.js"></script>
 	<script type="text/javascript" src="assets/js/jquery-ui-1.8.21.custom.min.js"></script>
 		
@@ -34,6 +35,7 @@
 	
 	var dscourse = new Dscourse();				// Fasten seat belts, dscourse is starting...
 
+	
 </script> 
 
 </head>
@@ -85,7 +87,7 @@
 			<div class="well">
 				<h2>Dscourse</h2>
 				<hr class="soften" />
-				<p>Welcome to Dscourse development area. You are now in the admin view similar to a dashboard. After logging in users will be able to see an overview of their courses and discussions. This page provides a stream for discussion activities and to-do's, which users will be able to customize to their needs.</p>
+				<p>Welcome to Dscourse development area.  You are now in the admin view similar to a dashboard. After logging in users will be able to see an overview of their courses and discussions. This page provides a stream for discussion activities and to-do's, which users will be able to customize to their needs.</p>
 			</div>		
 		</div>
 
@@ -120,7 +122,7 @@
 		</div>
 				
 	</div>
-
+	
 </div><!-- end home-->
 
 
@@ -557,7 +559,8 @@
 						    <h3> Courses </h3>
 						    <p>Start typing course names that you would like this discussion to be associated with. Only active courses are listed. </p>
 	
-						    <p> <input type="text" class="input-large discussionCourses" id="discussionCourses" name="discussionCourses" >
+						    <p>
+						    <div id="discInputDiv"> </div>
 						    </p>
 					    	</div>
 						    
@@ -738,6 +741,7 @@
 
 	
 <div class="rounded-corners allPanes" id="newsPane" style="position: absolute; display: block; left: 8px; top: 72px; width: 339px; height: 277.7062937062937px; border: 1px solid rgb(153, 153, 153); background-image: -webkit-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(237, 237, 237) 100%); background-position: initial initial; background-repeat: initial initial; ">
+		
 		<span class="boxHeaders">News Feed</span>
 		<div class="feedDiv"> 	
 			<hr class="soften">
@@ -782,7 +786,7 @@
 	<div class="rounded-corners" id="timePane" style="position: absolute; height: 32px; top: 501px; left: 8px; width: 1110px; background-position: initial initial; background-repeat: initial initial; ">
 	<div id="TimeSliderDiv">	</div>
 	<div id="nowBar" style="position: absolute; height: 4px; top: 16px; width: 2px; background-color: #666; left: 315px; "></div><span id="nowText" style="position: absolute; top: 4px;  left: 306px; margin-top: -5px;">now<span></span></span><span id="beginText" style="position:absolute;left:48px;top:18px;"><b>6/17 12pm</b></span><span id="endText" style="position:absolute;left:545px;top:18px;"><b>6/25 12pm</b></span><span id="sliderText1" style="position: absolute; top: 33px; left: 196px; ">6/19 12pm</span><span id="sliderText2" style="position: absolute; top: 33px; left: 396px; ">6/23 12pm</span><div style="position:absolute;left:8px;top:12px;width:20px;height:20px;padding:0px;border:2px solid #fff;border-radius:20px;moz-border-radius;20px;text-align:center;line-height:20px;font-size:8px"><b>set</b><div></div></div></div>
-	<div id="sizeBut" style="position: absolute; color: rgb(153, 153, 153); font-size: 16px; text-align: center; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; left: 362px; top: 366.7062937062937px; " class="ui-draggable"><div id="dragImage"></div></div>
+	<div id="sizeBut"  class="ui-draggable"><div id="dragImage"></div></div>
 
 
 	<div id="commentWrap">
@@ -802,11 +806,11 @@
 			</div>
 			
 			<div id="middle">
+				<div id="highlightShow"></div>
 				<textarea id="text">Your comment...</textarea>	
 				<div id="bottomlinks">
 					<ul>
 					<li><div id="media"></div>  <a href="#"> Add Media</a></li>
-					<li><div id="link"> </div> <a href="#"> Add Link</a></li>
 					<li><div id="draw"> </div> <a href="#">Add Drawing </a></li>
 					</ul>
 				</div>
@@ -826,7 +830,7 @@
 <script type="text/javascript">
 	
 	var userData=new Object;												// Holds user savable data
-	userData.partitionX=.30;												// Default h partition
+	userData.partitionX=.20;												// Default h partition
 	userData.partitionY=.50;												// Default V partition
 	userData.timeSlider1=.25;												// Time slider 1 value
 	userData.timeSlider2=.75;												// Time slider 2 value
@@ -1020,7 +1024,7 @@
 			$("#nowBar").css("left",p+"px");								// Position
 			$("#nowText").css("left",p-9+"px");								// Position
 			}
-	}		
+	}			
 	
 	PaneControl.prototype.DateTimeString=function(time) 				// CONVERT DATE OBJECT TO SIMPLE STRING
 	{
@@ -1081,9 +1085,10 @@ $(function() {
 					$('.coursePeople').val(' ').focus();
 				}
 			}); 
+				
 
-
-	  		
+								
+					   	  		
 
 
 });

@@ -1,0 +1,70 @@
+<html>
+	<head>
+		<title>Box sample</title>
+		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+		<script type="text/javascript">google.load("jquery", "1");</script>
+		<style>
+
+			
+			/* This parent can be any width and height */
+			#box {
+			    text-align: center;
+			    padding: 0;
+			    width: 300px; 
+				height: 300px; 
+				margin: 30px auto; 
+				border: 2px solid #ccc;
+				overflow: none;
+			}
+			#textareaID {
+				width: 300px;
+				height: 300px;
+			   text-align: center;
+			   vertical-align: middle;
+			   line-height: 14px;
+			   overflow: none;
+			}
+
+			#hiddenDiv {
+				display: none;
+				line-height: 14px;  /* same as textarea */
+				width: 300px;		/* same as textarea */
+			}
+			
+
+
+		</style>
+		
+	</head>
+	<body>
+	
+	<div id="box">
+		<textarea  id="textareaID"> Starter text </textarea> 
+	</div>
+	<div id="hiddenDiv"></div>
+	
+	<script type="text/javascript">
+			
+
+
+			
+			$("#textareaID").live('keyup', function(event) {					// User button and 	
+			
+				var textContent = $('#textareaID').val(); 						// get the value of the textarea
+				$('#hiddenDiv').html(textContent);						// put the value to the div
+				var textHeight = $('#hiddenDiv').height();				// get height of the hidden div
+				var textareaHeight = 300;			// get height of the textarea				
+				var paddingNum = (textareaHeight-textHeight)/2; 		// divide the difference to find the padding. 
+				paddingValue = paddingNum + 'px 0px'; 					// convert padding value to css format
+				$('#textareaID').css('padding', paddingValue );			// change padding of the textarea
+				
+				console.log('textHeight: ' + textHeight);
+				console.log('textareaHeight: ' + textareaHeight);
+				console.log('paddingNum: ' + paddingNum);
+				console.log('paddingValue: ' + paddingValue);
+			
+			
+				});
+	</script>
+	</body>
+</html>
