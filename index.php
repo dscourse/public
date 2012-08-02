@@ -672,8 +672,12 @@
 
 	<div class="span4 offset4" id="notify"></div>
   <div class="span4">
-  	
+  	<h3>Course information:</h3>
   	<div id="iCoursePicture"></div>
+  	<div> 
+			<p id="iCourseDescription"></p>  	
+		</div>
+		
   	<div id="iCourseInfo"> <table class="table">
 		
         <tbody>
@@ -702,26 +706,39 @@
       </table>
    </div>
   </div>
-  <div class="span8 ">
-		<div> 
-			<h3>About this course:</h3>
-			<p id="iCourseDescription"></p>  	
-		</div>
+  <div class="span4 ">
+		
 		<div id="courseDiscussions"> 
-			<h3>Discussions in this course:</h3>
+			<h3>Course Discussions</h3>
 			
 					<table class="table table-striped table-bordered">
 						<thead>
 							<tr>
-								<th width="60%">Discussion Question </th>
+								<th width="80%">Discussion Question </th>
 					            <th width="20%"># of Responses</th>
-								<th width="20%">Last contribution</th>
 							</tr>
 						</thead>
 				        <tbody id="courseDiscussionsBody">
 
 				        </tbody>
 				     </table> 	
+		</div>
+
+</div>
+
+  <div class="span4 ">
+		
+		<div id="courseDocuments"> 
+			<h3>Course Documents</h3>
+			
+			<p> 
+				<ul id="documentsList">
+					<li>
+						
+					</li>
+				</ul>
+			</p>
+					
 		</div>
 
 </div>
@@ -736,6 +753,7 @@
 
 	
 <div id="discussionWrap" class="page">
+
 
 
 
@@ -757,7 +775,19 @@
 	
 
 	<div class="rounded-corners" id="discPane" style="position: absolute; top: 72px; left: 374px; width: 744px; height: 403px; border: 1px solid rgb(153, 153, 153); background-image: -webkit-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(237, 237, 237) 100%); background-position: initial initial; background-repeat: initial initial; ">
-		<span class="boxHeaders">Discussion<small><span id="dTitleView" ></span> <div class="sayBut2" postID="0">say</div> <input id="dIDhidden" type="hidden" name="discID" value="">
+		<span class="boxHeaders">Discussion<small>
+		<span id="dTitleView" ></span>
+		<div class="sayBut2" postID="0">say</div> 
+		<div class="btn-group" id="viewIcons"> 
+		  <button class="btn disabled">View: </button>
+		  <button class="btn active"><i class="icon-th-list"></i> Threaded</button>
+		  <button class="btn"><i class="icon-th-large"></i> Panel</button>
+		</div>
+
+		
+		
+		
+		<input id="dIDhidden" type="hidden" name="discID" value="">
 </small></span> <p><div id="dPromptView" ></div></p>
 			
 	<div id="discFeedDiv"></div><div style="position:absolute;left:6px;top:6px;width:20px;height:20px;padding:0px;border:2px solid #1e5799;border-radius:20px;moz-border-radius;20px;color:#1e5799;text-align:center;line-height:20px;font-size:8px"><b>see</b><div></div></div>
@@ -784,6 +814,8 @@
 	</div><div style="position:absolute;left:6px;top:6px;width:20px;height:20px;padding:0px;border:2px solid #1e5799;border-radius:20px;moz-border-radius;20px;color:#1e5799;text-align:center;line-height:20px;font-size:8px"><b>see</b><div></div></div></div>
 
 	<div class="rounded-corners" id="timePane" style="position: absolute; height: 32px; top: 501px; left: 8px; width: 1110px; background-position: initial initial; background-repeat: initial initial; ">
+	
+	
 	<div id="TimeSliderDiv">	</div>
 	<div id="nowBar" style="position: absolute; height: 4px; top: 16px; width: 2px; background-color: #666; left: 315px; "></div><span id="nowText" style="position: absolute; top: 4px;  left: 306px; margin-top: -5px;">now<span></span></span><span id="beginText" style="position:absolute;left:48px;top:18px;"><b>6/17 12pm</b></span><span id="endText" style="position:absolute;left:545px;top:18px;"><b>6/25 12pm</b></span><span id="sliderText1" style="position: absolute; top: 33px; left: 196px; ">6/19 12pm</span><span id="sliderText2" style="position: absolute; top: 33px; left: 396px; ">6/23 12pm</span><div style="position:absolute;left:8px;top:12px;width:20px;height:20px;padding:0px;border:2px solid #fff;border-radius:20px;moz-border-radius;20px;text-align:center;line-height:20px;font-size:8px"><b>set</b><div></div></div></div>
 	<div id="sizeBut"  class="ui-draggable"><div id="dragImage"></div></div>
@@ -806,6 +838,7 @@
 			</div>
 			
 			<div id="middle">
+				<input id="locationIDhidden" type="hidden" name="locationIDhidden" value="">
 				<div id="highlightShow"></div>
 				<textarea id="text">Your comment...</textarea>	
 				<div id="bottomlinks">

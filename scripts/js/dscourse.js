@@ -37,9 +37,11 @@ function Dscourse ()
 	
 	// Posts
 	this.post = { };
-	this.currentSelected = ''; 
-
-
+	
+	this.currentSelected = '';  	// Needed for selection
+	this.currentStart = '';
+	this.currentEnd = ''; 
+	
 	// Fix for multiple image uploads 
 	this.imgUpload = '';
 	
@@ -140,7 +142,7 @@ function Dscourse ()
 		$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
 	
 	
-			$("#commentWrap").draggable();									// Makes the comment posting tool draggable. Needs Jquery ui. 
+			$("#commentWrap").draggable({cancel : "div#highlightShow"});									// Makes the comment posting tool draggable. Needs Jquery ui. 
 			
 			//fixing the buttons for roles so we don't need bootstrap files. 
 			$('#roleButtons .btn').live('click', function () {
@@ -163,15 +165,34 @@ function Dscourse ()
 			  {
 			    return "This will take you away from Dscourse.";
 			    }
-		
-		$('.postMessageView').live('mouseup', function () {
+		$('#highlightShow').live('mouseup', function () {
+			
+			var spannedText = $(this).find('span').text(); 					//remove highlight from text
+			$(this).find('span').replaceWith(spannedText); 								
+			
 			top.currentSelected = top.GetSelectedText(); 
+			var element = document.getElementById("highlightShow");  
+			top.currentStart = top.GetSelectedLocation(element).start; 
+			top.currentEnd	= top.GetSelectedLocation(element).end;
+			console.log('start: ' + top.currentStart + ' - End : ' + top.currentEnd); 
+			$('#locationIDhidden').val(top.currentStart + ',' + top.currentEnd);	// Add location value to form value; 
+
+			
 			console.log('mouse up text is: ' + top.currentSelected);
+			var replaceText = $('#highlightShow').html(); 
+			var newSelected = '<span class="highlight">' + top.currentSelected + '</span>'; 
+			var n = replaceText.replace(top.currentSelected, newSelected); 
+			$('#highlightShow').html(n);									// add highlight to text. 
 		});
 
 		$('#discussionDivs').tooltip({ selector: "a" });  
 
+		$('.threadText').live('click', function () {
+				var postClickId = $(this).attr('level'); 
+				dscourse.HighlightRelevant(postClickId);
 
+			});
+		
 	
 	});
 
@@ -419,23 +440,20 @@ function Dscourse ()
 	});
 	
 	$('.sayBut2').live('click', function (e) {
-		var highlight = top.currentSelected;
+		var postQuote = $(this).parent().children('.postMessageView').html();
 		var xLoc = e.pageX-800; 
 		var yLoc = e.pageY-80; 
-		console.log('x is : ' + xLoc + ' y is: ' + yLoc);
 		$('#commentWrap').css({'top' : yLoc, 'left' : xLoc});
 		$('.threadText').removeClass('highlight');		
 		var postID = $(this).attr("postID");
 		console.log('Post id i got is:'  + postID);
-		console.log('highlight is: ' + highlight);
-		if(highlight !== ''){
-			$('#highlightShow').html('Your selection:  <span id="selectedText" class="highlight"><i>" ' +  highlight + ' "</i></span>');
+		if(postQuote !== ''){
+			$('#highlightShow').html(postQuote);
 			}
 		$('#postIDhidden').val(postID);			
 		$('#overlay').show();
 		$('#commentWrap').fadeIn('fast');
 		$(this).parent().addClass('highlight');
-		top.currentSelected = ''; 
 		$('#text').val('Your comment...');
 
 	});
@@ -1103,11 +1121,11 @@ Dscourse.prototype.saveCourses=function()									// Sends the new data into the
 		{ 
 			
 			if (m.dID == n[k]) {
+			var totalPosts = main.TotalPostNumber(m.dID); 
 			$('#courseDiscussionsBody').append(
 			    	  		  "<tr>"
-			    	  		+ "<td> " + m.dTitle			+ "</td>" 
-				            + "<td>  45 </td>" 
-				            + "<td> <em>'It seems slightly better done than the...' by Mable Kinzie </td>" 
+			    	  		+ "<td> <a class='discussionLink' discID='" + m.dID + "'> " + m.dTitle			+ " </a></td>" 
+				            + "<td>  "  + totalPosts + "  </td>" 
 				            + "</tr>" 
 			    	  	);
 			 }
@@ -1117,7 +1135,33 @@ Dscourse.prototype.saveCourses=function()									// Sends the new data into the
 	
  }
 
-
+ Dscourse.prototype.TotalPostNumber=function(discussionID)	 			  // Get total post numbers
+ {
+	var main = this;
+	
+	var i, o, j, k, p;
+	var c = 0;
+	for(i = 0; i < main.data.allDiscussions.length; i++){					// Loop through courses
+		o = main.data.allDiscussions[i];
+		if(o.dID == discussionID){											// We found our course
+				 var discPosts = o.dPosts.split(",");
+ 
+				 for(k = 0; k < discPosts.length; k++){							// Take one post at a time
+						 p = discPosts[k];
+						 for (j = 0; j < main.data.allPosts.length; j++){			// Go through all the posts
+							 d = main.data.allPosts[j];		
+								 
+							 if(d.postID == p){										// Find the post we want to get the details of 
+										c++;
+								 }	 
+						 }
+					 }
+		}
+	} 
+	
+	return c;
+		
+}
 
 Dscourse.prototype.addDiscussion=function()	 			  // Add discussion
  {
@@ -1342,13 +1386,17 @@ Dscourse.prototype.AddPost=function(){
 		} 
 		console.log('Post id : ' + postType);
 	
+		// locationIDhidden -- postSelection 
+		var postSelection = $('#locationIDhidden').val();
+	
 	// Create post object and append it to allPosts
 	
 			post = {
 				'postFromId': postFromId,
 				'postAuthorId': postAuthorId,
 				'postMessage': postMessage,
-				'postType': postType
+				'postType': postType,
+				'postSelection': postSelection
 			};
 		
 		
@@ -1421,14 +1469,8 @@ Dscourse.prototype.AddPost=function(){
  {
 	 var main = this;
 	 
-	 console.log('Posts : ' + posts); 
-
 	 var discPosts = posts.split(",");
-	 
-	 console.log('Array: ' + discPosts); 
-	 
-	 console.log(main.data.allPosts); 
-	 
+	 	 	 
 	 var i, j, p, d, typeText, authorID, message;
 	 for(i = 0; i < discPosts.length; i++){							// Take one post at a time
 		 p = discPosts[i];
@@ -1441,23 +1483,23 @@ Dscourse.prototype.AddPost=function(){
 				 switch(d.postType)									// Get what kind of post this is 
 					{
 					case 'agree':
-					  typeText = ' agreed';
+					  typeText = ' agreed: ';
 					  break;
 					case 'disagree':
-					  typeText = ' disagreed';
+					  typeText = ' disagreed: ';
 					  break;
 					case 'clarify':
-					  typeText = ' asked to clarify';
+					  typeText = ' asked to clarify: ';
 					  break;
 					case 'offTopic':
-					  typeText = ' marked as off topic';
+					  typeText = ' marked as off topic: ';
 					  break;		  
 					default:
-					  typeText = ' commented';
+					  typeText = ' commented: ';
 					}
 				 
 				 if(d.postMessage != ' '){									// Proper presentation of the message URL
-					message = ' "' + d.postMessage + '".'; 
+					message = d.postMessage ; 
 					message = main.showURL(message);
 				 } else {
 					 message = '';
@@ -1481,6 +1523,11 @@ Dscourse.prototype.AddPost=function(){
 	 }
 }
 
+Dscourse.prototype.SubPanel=function(postId){					// Show the subpanels of the clicked post.  
+	
+		 var main = this;
+		 
+}
 
 Dscourse.prototype.ResponseCounters=function(postId){
 	
@@ -1534,10 +1581,56 @@ Dscourse.prototype.ResponseCounters=function(postId){
 		  var text =   commentText + agreeText + disagreeText + clarifyText + offTopicText ; 
 		 
 		 return text; 
-		 
-
 
 }
+
+Dscourse.prototype.HighlightRelevant=function(postID)					// Highlights the relevant sections of host post when hovered over 
+{
+	 var main = this;
+	 
+	 // get selection of this post ID 
+	 var i, o, thisSelection, j, m, highlight, newHighlight, n, selector; 
+	 for(i = 0; i < main.data.allPosts.length; i++){
+		 o = main.data.allPosts[i];
+		 
+		 if(o.postID == postID){
+			 if(o.postSelection !== ""){ 								// If there is selection do highlighting
+				 thisSelection = o.postSelection.split(",");
+				 var num1 = parseInt(thisSelection[0]);
+				 var num2 = parseInt(thisSelection[1]);
+				 console.log(num1 + ' ' + num2);
+				 // find the selection in reference post 
+				 for(j = 0; j < main.data.allPosts.length; j++){
+				 	m = main.data.allPosts[j];
+				 	
+				 	if(m.postID == o.postFromId){
+					 	highlight = m.postMessage.substr(num1,num2); 
+					 	newHighlight = '<span class="highlight">' + highlight + '</span>';
+					 	n = m.postMessage.replace(highlight, newHighlight);
+					 	selector = 'div[level="'+ o.postFromId +'"]'; 
+					 	$(selector).children('.postMessageView').html(n);
+
+				 	}
+				 }
+				 
+			 } else {
+				 													// If there is no selection remove highlighting
+				 														
+			 }
+			 
+		 }
+		 
+	 }
+	 
+
+	 // get postFromID
+	 
+	 // Find the selection in the postfromID text
+	 // Replace the selection with <span class="highlight"> text </span>
+	 
+	 
+}
+
 
 /***********************************************************************************************/ 
 /*                					HELPER FUNCTIONS 									   */
@@ -1575,21 +1668,49 @@ Dscourse.prototype.getName=function(id)
 }
 
 
-Dscourse.prototype.GetSelectedText=function()
+Dscourse.prototype.GetSelectedText=function()					// Select text
 {
 	 var main = this;
 
-  	 var text = '';
-
+  	 var text; 
+	 
 	 if (window.getSelection) {
 	        text = window.getSelection().toString();
 	    } else if (document.selection && document.selection.type != "Control") {
 	        text = document.selection.createRange().text;
 	    }
-	  
+  
+	    console.log('spittin out: ' + text);
 	    return text; 
 }
 
+Dscourse.prototype.GetSelectedLocation=function(element)					// Data about begin and end of selection
+{
+	 var main = this;
+
+    var start = 0, end = 0;
+    var sel, range, priorRange;
+    if (typeof window.getSelection != "undefined") {
+        range = window.getSelection().getRangeAt(0);
+        priorRange = range.cloneRange();
+        priorRange.selectNodeContents(element);
+        priorRange.setEnd(range.startContainer, range.startOffset);
+        start = priorRange.toString().length;
+        end = start + range.toString().length;
+    } else if (typeof document.selection != "undefined" &&
+            (sel = document.selection).type != "Control") {
+        range = sel.createRange();
+        priorRange = document.body.createTextRange();
+        priorRange.moveToElementText(element);
+        priorRange.setEndPoint("EndToStart", range);
+        start = priorRange.text.length;
+        end = start + range.text.length;
+    }
+    return {
+        start: start,
+        end: end
+    };
+}
 
 
 
