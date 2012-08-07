@@ -142,7 +142,7 @@ function Dscourse ()
 		$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
 	
 	
-			$("#commentWrap").draggable({cancel : "div#highlightShow"});									// Makes the comment posting tool draggable. Needs Jquery ui. 
+			$("#commentWrap").draggable({cancel : "div#commentArea"});									// Makes the comment posting tool draggable. Needs Jquery ui. 
 			
 			//fixing the buttons for roles so we don't need bootstrap files. 
 			$('#roleButtons .btn').live('click', function () {
@@ -185,13 +185,21 @@ function Dscourse ()
 			$('#highlightShow').html(n);									// add highlight to text. 
 		});
 
-		$('#discussionDivs').tooltip({ selector: "a" });  
+		$('#discussionDivs').tooltip({ selector: "span" });  
 
 		$('.threadText').live('click', function () {
 				var postClickId = $(this).attr('level'); 
 				dscourse.HighlightRelevant(postClickId);
 
 			});
+		
+		$('.dCollapse > h4').live('click', function () {
+			$(this).parent().find('.content').fadeToggle();
+		});
+
+		
+		
+		
 		
 	
 	});
@@ -441,9 +449,9 @@ function Dscourse ()
 	
 	$('.sayBut2').live('click', function (e) {
 		var postQuote = $(this).parent().children('.postMessageView').html();
-		var xLoc = e.pageX-800; 
-		var yLoc = e.pageY-80; 
-		$('#commentWrap').css({'top' : yLoc, 'left' : xLoc});
+		var xLoc = 30; //e.pageX; 
+		var yLoc = e.pageY-75; 
+		$('#commentWrap').css({'top' : yLoc, 'left' : '50%'});
 		$('.threadText').removeClass('highlight');		
 		var postID = $(this).attr("postID");
 		console.log('Post id i got is:'  + postID);
@@ -510,6 +518,23 @@ function Dscourse ()
 						  });
 			
 			});
+			
+		$('#showtimeline').live('click', function () {
+				$('#timeline').slideToggle();
+				
+				if($(this).hasClass('active') == true) {
+						$(this).removeClass('active');
+						$(this).html('<i class="icon-time"></i> Show Timeline ');
+					} else {
+						$(this).addClass('active');	
+						$(this).html('<i class="icon-time"></i> Hide Timeline ');
+
+					}
+				
+
+			});
+		
+
 
 } /* end function Dscourse
 
@@ -1471,7 +1496,7 @@ Dscourse.prototype.AddPost=function(){
 	 
 	 var discPosts = posts.split(",");
 	 	 	 
-	 var i, j, p, d, typeText, authorID, message;
+	 var i, j, p, d, typeText, authorID, message, authorThumb;
 	 for(i = 0; i < discPosts.length; i++){							// Take one post at a time
 		 p = discPosts[i];
 		 for (j = 0; j < main.data.allPosts.length; j++){			// Go through all the posts
@@ -1479,7 +1504,10 @@ Dscourse.prototype.AddPost=function(){
 			 	 
 			 if(d.postID == p){										// Find the post we want to get the details of 
 			 														// Prepare the data for display
-				 authorID = main.getName(d.postAuthorId); 			// Get Authors name			
+				 authorID = main.getName(d.postAuthorId, 'first'); 			// Get Authors name			
+				 authorIDfull = main.getName(d.postAuthorId); 
+				 authorThumb = main.getAuthorThumb(d.postAuthorId);			// get thumbnail html
+				 authorThumb += '  ' + authorIDfull; 
 				 switch(d.postType)									// Get what kind of post this is 
 					{
 					case 'agree':
@@ -1507,11 +1535,16 @@ Dscourse.prototype.AddPost=function(){
 				 
 				 console.log('author id: ' + authorID + ' - typetext: ' + typeText + ' - message: ' + message);	// Check to see if all is well
 				 
+				 var topLevelMessage = ' ';								// Assign a class for top level messages for better organization.
+				 if (d.postFromId == '0'){
+					 topLevelMessage = 'topLevelMessage'; 
+				 }
+				 
 				 var selector = 'div[level="'+ d.postFromId +'"]';
 				 var responses = main.ResponseCounters(d.postID);	
 				 $(selector).append(						// Add post data to the view
-				 	  '<div class="threadText" level="'+ d.postID + '" postTypeID="'+ d.postType+ '">' 
-				 	+  '<span class="postAuthorView"> ' + authorID + '</span>'
+				 	  '<div class="threadText ' + topLevelMessage +'" level="'+ d.postID + '" postTypeID="'+ d.postType+ '">' 
+				 	+  '<span class="postAuthorView" rel="tooltip"  title="' + authorThumb + '"> ' + authorID + '</span>'
 				 	+  '<span class="postTypeView"> ' + typeText + '</span>'
 				 	+  '<span class="postMessageView"> ' + message  + '</span>'
 				 	+ ' <div class="sayBut2" postID="'+ d.postID + '">say</div> '
@@ -1522,6 +1555,7 @@ Dscourse.prototype.AddPost=function(){
 		 }
 	 }
 }
+
 
 Dscourse.prototype.SubPanel=function(postId){					// Show the subpanels of the clicked post.  
 	
@@ -1544,39 +1578,72 @@ Dscourse.prototype.ResponseCounters=function(postId){
 		  for(i = 0; i < main.data.allPosts.length; i++){
 		  		o = main.data.allPosts[i];
 		  		if(o.postFromId == postId){
+		  		
 			  		var postAuthor = main.getName(o.postAuthorId);
 			  		
 			  		switch(o.postType)									// Get what kind of post this is 
 					{
-					case 'agree':  
-					  agreePeople += postAuthor + ', '; 
+					case 'agree': 						
+						var d1 = agreePeople.indexOf(postAuthor); 		// Do not add if author already exists
+						if(d1 == -1){
+							if(agreePeople.length > 0){
+								agreePeople += '<br />';  
+							}						 
+						  agreePeople += postAuthor ; 
+						  }
 					  agree++;
 					  break;
 					case 'disagree':
-					  disagreePeople += postAuthor + ', '; 
-					  disagree++;
+						var d2 = disagreePeople.indexOf(postAuthor); 		// Do not add if author already exists
+						if(d2 == -1){
+							if(disagreePeople.length > 0){
+								disagreePeople += '<br />';  
+							}						
+						  disagreePeople += postAuthor; 
+						  }					  
+						disagree++;
 					  break;
 					case 'clarify':
-					  clarifyPeople += postAuthor + ', '; 
+						var d3 = clarifyPeople.indexOf(postAuthor); 		// Do not add if author already exists
+						if(d3 == -1){
+							if(clarifyPeople.length > 0){
+								clarifyPeople += '<br />';  
+							}						
+						  clarifyPeople += postAuthor ; 
+						  }
 					  clarify++;					  
 					  break;
 					case 'offTopic':
-					  offTopicPeople += postAuthor + ', '; 
+						var d4 = offTopicPeople.indexOf(postAuthor); 		// Do not add if author already exists
+						if(d4 == -1){
+							if(offTopicPeople.length > 0){
+								offTopicPeople += '<br />';  
+							}
+						
+						  offTopicPeople += postAuthor; 
+						  }
 					  offTopic++;
 					  break;		  
 					default:
-					  commentPeople += postAuthor + ', '; 
+
+						var d5 = commentPeople.indexOf(postAuthor); 		// Do not add if author already exists
+						if(d5 == -1){
+							if(commentPeople.length > 0){
+								commentPeople += '<br />';  
+							}
+					  		commentPeople += postAuthor; 
+					  	}
 					  comment++;
 					}
 			  		
 		  		}
 		  }	
 		  var commentText = ' ', agreeText = ' ', disagreeText = ' ', clarifyText = ' ', offTopicText = ' '; 
-		  if(comment 	> 0){commentText 	= '<a href="#" rel="tooltip" class="postTypeWrap" typeID="comment" title="Commented: ' + commentPeople +'" > ' + comment 	+ '  <i class="icon-comment "></i> </a>  ';} 
-		  if(agree 	 	> 0){agreeText 		= '<a href="#" rel="tooltip" class="postTypeWrap" typeID="agree" title="agreed: ' + agreePeople + '"> ' + agree 	+ '  <i class="icon-thumbs-up"></i> </a> '	 ;}
-		  if(disagree	> 0){disagreeText 	= '<a href="#" rel="tooltip" class="postTypeWrap" typeID="disagree" title="disagreed: ' + disagreePeople + '"> ' + disagree 	+ '  <i class="icon-thumbs-down"></i> </a> ';}
-		  if(clarify 	> 0){clarifyText 	= '<a href="#" rel="tooltip" class="postTypeWrap" typeID="clarify" title="asked to clarify: ' + clarifyPeople + '"> ' + clarify 	+ '  <i class="icon-question-sign"></i> </a> ' ;}
-		  if(offTopic 	> 0){offTopicText 	= '<a href="#" rel="tooltip" class="postTypeWrap" typeID="offTopic" title="marked off topic: ' + offTopicPeople + '"> ' + offTopic 	+ '  <i class="icon-share-alt"></i> </a>  ' ;}
+		  if(comment 	> 0){commentText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="comment" title="Comments from: <br /> ' + commentPeople +'" > ' + comment 	+ '  <i class="icon-comment "></i> </span>  ';} 
+		  if(agree 	 	> 0){agreeText 		= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="agree" title="People who agreed: <br /> ' + agreePeople + '"> ' + agree 	+ '  <i class="icon-thumbs-up"></i> </span> '	 ;}
+		  if(disagree	> 0){disagreeText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="disagree" title="People who disagreed:<br /> ' + disagreePeople + '"> ' + disagree 	+ '  <i class="icon-thumbs-down"></i> </span> ';}
+		  if(clarify 	> 0){clarifyText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="clarify" title="People that asked to clarify:<br /> ' + clarifyPeople + '"> ' + clarify 	+ '  <i class="icon-question-sign"></i> </span> ' ;}
+		  if(offTopic 	> 0){offTopicText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="offTopic" title="People that marked off topic: <br />' + offTopicPeople + '"> ' + offTopic 	+ '  <i class="icon-share-alt"></i> </span>  ' ;}
 
 		  var text =   commentText + agreeText + disagreeText + clarifyText + offTopicText ; 
 		 
@@ -1656,15 +1723,48 @@ Dscourse.prototype.HighlightRelevant=function(postID)					// Highlights the rele
  }
 
 
-Dscourse.prototype.getName=function(id)
+Dscourse.prototype.getName=function(id, type)
 {
 	var main = this;
+	
+	if(type == 'first') {
 
-	for(var n = 0; n < main.data.allUsers.length; n++){
-		var userIDName = main.data.allUsers[n].UserID;
-		if (userIDName == id)
-			return main.data.allUsers[n].firstName + " " + main.data.allUsers[n].lastName;
-	}	
+		for(var n = 0; n < main.data.allUsers.length; n++){
+			var userIDName = main.data.allUsers[n].UserID;
+			if (userIDName == id)
+				return main.data.allUsers[n].firstName;
+		}	
+		
+	} else if(type == 'last') {
+		
+		for(var n = 0; n < main.data.allUsers.length; n++){
+			var userIDName = main.data.allUsers[n].UserID;
+			if (userIDName == id)
+				return main.data.allUsers[n].lastName;
+		}	
+		
+	} else {
+	
+		for(var n = 0; n < main.data.allUsers.length; n++){
+			var userIDName = main.data.allUsers[n].UserID;
+			if (userIDName == id)
+				return main.data.allUsers[n].firstName + " " + main.data.allUsers[n].lastName;
+		}	
+	}
+}
+
+
+Dscourse.prototype.getAuthorThumb=function(id)
+{
+	var main = this;
+	
+		
+		for(var n = 0; n < main.data.allUsers.length; n++){
+			var userIDName = main.data.allUsers[n].UserID;
+			if (userIDName == id)
+				return '<img class=userThumbS src=' + main.data.allUsers[n].userPictureURL + ' />' ;
+		}	
+	
 }
 
 

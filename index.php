@@ -752,74 +752,89 @@
 
 
 	
-<div id="discussionWrap" class="page">
-
-
-
+<div id="discussionWrap" class="container wrap page">
 
 	
-<div class="rounded-corners allPanes" id="newsPane" style="position: absolute; display: block; left: 8px; top: 72px; width: 339px; height: 277.7062937062937px; border: 1px solid rgb(153, 153, 153); background-image: -webkit-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(237, 237, 237) 100%); background-position: initial initial; background-repeat: initial initial; ">
-		
-		<span class="boxHeaders">News Feed</span>
-		<div class="feedDiv"> 	
-			<hr class="soften">
-			<p>
-				</p><ul class="unstyled discussionFeed">
-				<li> Mable Kinzie commented on <a href="#">"Stakeholder perspective of James Monroe" </a>  <em class="timeLog">3 hours ago.</em> </li>
-				<li> Bill Ferster added a new link to discussion on <a href="#">Benefits of free software </a>  <em class="timeLog">18 hours ago.</em></li>
-				<li> Glen Bull annotated your comment at <a href="#">"Where is 3D printing going?"</a> <em class="timeLog">2 days ago.</em></li>
-				</ul>
-			<p></p>
-		<p class="pull-right"><a href="#"><em>See more </em></a></p>
-	</div><div style="position:absolute;left:6px;top:6px;width:20px;height:20px;padding:0px;border:2px solid #1e5799;border-radius:20px;moz-border-radius;20px;color:#1e5799;text-align:center;line-height:20px;font-size:8px"><b>see</b><div></div></div></div>
+	  	<div class="page-header">
+		    <h1>
+		    	<span class="boxHeaders">
+						
+							<span id="dTitleView" ></span>
+							<div class="sayBut2" postID="0">say</div> 
+							<input id="dIDhidden" type="hidden" name="discID" value="">
+							<div class="pull-right"><button id="showtimeline" class="btn"> <i class="icon-time"></i> Show Timeline </button>
+</div>
+					</span> 
+		    </h1>
+	    </div>
+	  
+	<div class="row">
 	
+		<div class="span4">
 
-	<div class="rounded-corners" id="discPane" style="position: absolute; top: 72px; left: 374px; width: 744px; height: 403px; border: 1px solid rgb(153, 153, 153); background-image: -webkit-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(237, 237, 237) 100%); background-position: initial initial; background-repeat: initial initial; ">
-		<span class="boxHeaders">Discussion<small>
-		<span id="dTitleView" ></span>
-		<div class="sayBut2" postID="0">say</div> 
-		<div class="btn-group" id="viewIcons"> 
-		  <button class="btn disabled">View: </button>
-		  <button class="btn active"><i class="icon-th-list"></i> Threaded</button>
-		  <button class="btn"><i class="icon-th-large"></i> Panel</button>
-		</div>
+			<div id="dInfo"> <!-- Only required for left/right tabs -->
 
-		
-		
-		
-		<input id="dIDhidden" type="hidden" name="discID" value="">
-</small></span> <p><div id="dPromptView" ></div></p>
+					<div class="dCollapse">
+					    <h4><i class="icon-info-sign"></i> Discussion information</h4>
+					      <div class="content">
+					      	<div id="dPromptView" ></div>
+					      	<div id="dCourse"><b>Course:</b>  </div>
+					      	<div id="dCourse"><b>Dates: </b>  </div>
+					      </div>
+					</div>  
+					
+					
+					<div class="dCollapse">
+					    <h4><i class="icon-list"></i> Recent Activity</h4>			    
+					      <div class="content">
+							<ul class=" discussionFeed" >
+							<li> Mable Kinzie commented on <a href="#">"Stakeholder perspective of James Monroe" </a>  <em class="timeLog">3 hours ago.</em> </li>
+							<li> Bill Ferster added a new link to discussion on <a href="#">Benefits of free software </a>  <em class="timeLog">18 hours ago.</em></li>
+							<li> Gell Bull annotated your comment at <a href="#">"Where is 3D printing going?"</a> <em class="timeLog">2 days ago.</em></li>
+							</ul>
+						</div>
+					</div>  						
+						
+					<div class="dCollapse">					  
+					    <h4><i class="icon-check"></i> To-Do</h4>
+					      <div class="content">
+						      <ul class=" todoFeed" >
+							<li> Provide initial response to document <a href="#">"Case overview" </a> by <em>August, 25.</em> </li>
+							<li> <a href="#">Initiate </a> a class discussion with relevant topic. </li>
+							<li> Bill Ferster asks you to clarify your comment starting with <em><a href="#">"That sounds wrong, ...."</a> </em></li>
+							</ul>
+					      </div>
+					</div>  
+			    
+			</div>
 			
-	<div id="discFeedDiv"></div><div style="position:absolute;left:6px;top:6px;width:20px;height:20px;padding:0px;border:2px solid #1e5799;border-radius:20px;moz-border-radius;20px;color:#1e5799;text-align:center;line-height:20px;font-size:8px"><b>see</b><div></div></div>
-	<div id="discussionDivs"> 
-		<div class="levelWrapper" level="0">
-
+			
+			
+ 
 		</div>
+	
+		<div class="span8">
+				
+					<div id="timeline">
+						<p>
+							<label for="amount">Limit the posts to specific time periods:</label>
+							<input type="text" id="amount" style="border:0; color:#f6931f; font-weight:bold;" />
+						</p>
+						
+						<div id="slider-range"></div>
+					</div>
+					
+						
+					<div id="discussionDivs"> 
+						<div class="levelWrapper" level="0"></div>
+					</div>
+				
+				</div>
+		</div>
+		
 	</div>
 	
-	</div>
-
-	<div class="rounded-corners" id="todoPane" style="position: absolute; display: block; width: 340px; top: 375.7062937062937px; left: 8px; height: 99.2937062937063px; border: 1px solid rgb(153, 153, 153); background-image: -webkit-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(237, 237, 237) 100%); background-position: initial initial; background-repeat: initial initial; ">
-			<span class="boxHeaders">To-Dos</span>
-			
-			<hr class="soften">
-			<div class="feedDiv"><p>
-				</p><ul class="unstyled todoFeed">
-				<li> Provide initial response to document <a href="#">"Case overview" </a> by <em>August, 25.</em> </li>
-				<li> <a href="#">Initiate </a> a class discussion with relevant topic. </li>
-				<li> Bill Ferster asks you to clarify your comment starting with <em><a href="#">"That sounds wrong, ...."</a> </em></li>
-				</ul>
-			<p></p>
-		<p class="pull-right"><a href="#"><em>See more </em></a></p>
-	</div><div style="position:absolute;left:6px;top:6px;width:20px;height:20px;padding:0px;border:2px solid #1e5799;border-radius:20px;moz-border-radius;20px;color:#1e5799;text-align:center;line-height:20px;font-size:8px"><b>see</b><div></div></div></div>
-
-	<div class="rounded-corners" id="timePane" style="position: absolute; height: 32px; top: 501px; left: 8px; width: 1110px; background-position: initial initial; background-repeat: initial initial; ">
-	
-	
-	<div id="TimeSliderDiv">	</div>
-	<div id="nowBar" style="position: absolute; height: 4px; top: 16px; width: 2px; background-color: #666; left: 315px; "></div><span id="nowText" style="position: absolute; top: 4px;  left: 306px; margin-top: -5px;">now<span></span></span><span id="beginText" style="position:absolute;left:48px;top:18px;"><b>6/17 12pm</b></span><span id="endText" style="position:absolute;left:545px;top:18px;"><b>6/25 12pm</b></span><span id="sliderText1" style="position: absolute; top: 33px; left: 196px; ">6/19 12pm</span><span id="sliderText2" style="position: absolute; top: 33px; left: 396px; ">6/23 12pm</span><div style="position:absolute;left:8px;top:12px;width:20px;height:20px;padding:0px;border:2px solid #fff;border-radius:20px;moz-border-radius;20px;text-align:center;line-height:20px;font-size:8px"><b>set</b><div></div></div></div>
-	<div id="sizeBut"  class="ui-draggable"><div id="dragImage"></div></div>
-
+				<hr class="soften" />
 
 	<div id="commentWrap">
 			<input id="postIDhidden" type="hidden" name="postIDhidden" value="">
@@ -839,16 +854,15 @@
 			
 			<div id="middle">
 				<input id="locationIDhidden" type="hidden" name="locationIDhidden" value="">
-				<div id="highlightShow"></div>
-				<textarea id="text">Your comment...</textarea>	
-				<div id="bottomlinks">
-					<ul>
-					<li><div id="media"></div>  <a href="#"> Add Media</a></li>
-					<li><div id="draw"> </div> <a href="#">Add Drawing </a></li>
-					</ul>
+				<div id="commentArea"> 
+					<div id="highlightShow"></div>
+					<textarea id="text">Your comment...</textarea>	
 				</div>
 			</div>
-			<div id="bottom">	
+			<div id="bottom">
+				<div id="bottomlinks">
+					<div id="media"></div>  <a href="#"> Add Media</a></li>
+				</div>	
 				<div id="buttons">
 					<input type="button" id="postCancel" class="buttons btn btn-info" value="Cancel">
 					<input id="addPost" type="button" class="buttons btn btn-primary" value="Add to dscourse">
@@ -861,238 +875,22 @@
 </div><!-- End individual discussion page --> 
 
 <script type="text/javascript">
-	
-	var userData=new Object;												// Holds user savable data
-	userData.partitionX=.20;												// Default h partition
-	userData.partitionY=.50;												// Default V partition
-	userData.timeSlider1=.25;												// Time slider 1 value
-	userData.timeSlider2=.75;												// Time slider 2 value
-	var panelControl=null;													// Holds
-	
+/************* TIMELINE ***********************/ 
 
-	
-	
-	$(document).ready(function() {											// When doc loaded
-		panelController=new PaneControl(56,userData);						// Init PaneControl							
-		});		
-		
-	function PaneControl(top, userData)									// CONSTRUCTOR
-	{		
-		this.gutter=8;														// Gutter between panes
-		top+=this.gutter;													// Shift top for gutter
-		this.top=top;														// Set top
-		var _this=this;														// Set this
-		
-		$("#sizeBut").draggable({ drag: function(event, ui) {				// Drag
-				var bot=$("#discPane").outerHeight();						// Get bot
-				var x=ui.position.left+3;									// X pos
-				x=x*100/_this.wid;											// 0-100%
-				var y=ui.position.top-top;									// Y pos
-				y=y*100/(bot-top+(_this.top+_this.gutter));					// 0-100%
-				_this.PositionFrames(x/100,y/100);							// Redraw			
-				},  
-			stop: function(event, ui) {										// Stop	
-				_this.PositionFrames(userData.partitionX,userData.partitionY);	// Redraw			
-				_this.Draw();												// Draw panes
-		 		}
-		 	});			
-		$("#sizeBut").css({ width:'12px',height:'12px'});					// Set size
-		$("#sizeBut").css({"border-radius":"6px","moz-border-radius":"6px"});// Set corners to make circle
-		this.Draw();														// Draw panes
-		this.PositionFrames(userData.partitionX,userData.partitionY);		// Set initial pane positioning
-		}
-	
-	PaneControl.prototype.PositionFrames=function(cx, cy)				// POSITION THE PANES
-	{
-		var g=this.gutter;													// Current gutter
-		this.wid=$(document).outerWidth();									// Browser with
-		$("#newsPane").show();												// Make sure news feed is visible
-		$("#todoPane").show();												// Make sure todo is visible
-		$("#discPane").show();												// Make sure discussion is visible
-		if (cy <= 0)														// Past top
-			$("#newsPane").hide();											// Hide news feed
-		if (cy >= 1)														// Past bottom
-			$("#todoPane").hide();											// Hide todo 
-		if (cx <= 0) {														// Past left
-			$("#newsPane").hide();											// Hide news feed
-			$("#todoPane").hide();											// Hide todo 
+	$(function() {
+		$( "#slider-range" ).slider({
+			range: true,
+			min: 0,
+			max: 500,
+			values: [ 73, 300 ],
+			slide: function( event, ui ) {
+				$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
 			}
-		if (cx >= 1)														// Past bottom
-			$("#discPane").hide();											// Hide discussion 
-			
-		cy=Math.min(Math.max(cy,0),1);										// Cap cy 0-1
-		cx=Math.min(Math.max(cx,0),1);										// Cap cx 0-1
-		this.SetUserData("partitionX",cx);	this.SetUserData("partitionY",cy);	// Save partition info
-		var timeHgt=$("#timePane").outerHeight();							// Height of time pane
-		var frameHgt=$(document).outerHeight()-g;							// Browser height
-		var discHgt=Math.floor(frameHgt-this.top-timeHgt);					// Disussion area height
-		var x=cx*this.wid;													// Center x point in pixels
-		var y=this.top+(cy*discHgt);										// Center y point in pixels
-		
-		$("#sizeBut").css("left",x-4+"px");									// Set left
-		$("#sizeBut").css("top",Math.min(Math.max(y-1,this.top+g-12),discHgt+this.top-g-3)+"px"); // Set top
-		
-		$("#newsPane").css("left",g+"px");									// Set NEWS left
-		$("#newsPane").css("top",this.top+g+"px");							// Set top
-		$("#newsPane").outerWidth(x-g-1);									// Set width
-		$("#newsPane").outerHeight(y-this.top-(g*2));						// Set height
+		});
+		$( "#amount" ).val( $( "#slider-range" ).slider( "values", 0 ) +
+			$( "#slider-range" ).slider( "values", 1 ) );
+	});
 
-		$("#todopane").css("left",g+"px");									// Set TO DO left
-		$("#todoPane").outerWidth(x-g);										// Set width
-		$("#todoPane").css("top",y+"px");									// Set top
-		$("#todoPane").outerHeight(discHgt-y+(this.top-0)-g); 				// Set height
-		if (cy <= 0) {														// Past top
-			$("#todoPane").css("top",y+g+"px");								// Set top
-			$("#todoPane").outerHeight(discHgt-y+(this.top-0)-(g*2)); 		// Set height
-			}
-
-		$("#discPane").css("top",this.top+g+"px");							// Set DISC top
-		$("#discPane").css("left",x+g+"px");								// Set left
-		$("#discPane").outerWidth(this.wid-x-(g*2));						// Set width
-		$("#discPane").outerHeight(discHgt-(g*2));							// Set height
-			
-		$("#timePane").css("top",(discHgt+this.top)+"px");					// Set TIME top
-		$("#timePane").css("left",g+"px");									// Set left
-		$("#timePane").outerWidth(this.wid-(g*2));							// Set width
-	}
-	
-	
-	PaneControl.prototype.Draw=function()								// DRAW ELEMENTS
-	{
-		this.DrawNews();													// Draw news feed pane
-		this.DrawDisc();													// Draw discussion pane
-		this.DrawToDo();													// Draw todo pane
-		this.DrawTime();													// Draw time pane
-	}		
-	
-	PaneControl.prototype.DrawNews=function()							// DRAW NEWS FEED PANE
-	{
-		var dd="#newsFeedDiv";												// Name of div
-		if (!$(dd).length) {												// If div doesn't exist
-			$("#newsPane").append("<div id='"+dd.substr(1)+"'/>");			// Add to pane
-			$("#newsPane").append(this.DrawSeeDot("see",20,6,6,"#1e5799"));	// Draw ses logo
-			}
-		$("#newsPane").css({border:"solid 1px #ccc",background:"#f9f9f9"});		
-		}		
-
-	PaneControl.prototype.DrawToDo=function()							// DRAW TO TO PANE
-	{
-		var dd="#todoFeedDiv";												// Name of div
-		if (!$(dd).length) {												// If div doesn't exist
-			$("#todoPane").append("<div id='"+dd.substr(1)+"'/>");			// Add to pane
-			$("#todoPane").append(this.DrawSeeDot("see",20,6,6,"#1e5799"));	// Draw ses logo
-			}
-		$("#todoPane").css({border:"solid 1px #ccc",background:"#f9f9f9"});		
-	}		
-
-	PaneControl.prototype.DrawDisc=function()							// DRAW DISC PANE
-	{
-		var dd="#discFeedDiv";												// Name of div
-		if (!$(dd).length) {												// If div doesn't exist
-			$("#discPane").append("<div id='"+dd.substr(1)+"'/>");			// Add to pane
-			$("#discPane").append(this.DrawSeeDot("see",20,6,6,"#1e5799"));	// Draw see logo
-			}
-		$("#discPane").css({border:"solid 1px #ccc",background:"#ededed"});		
-		if ($.browser.mozilla)	
-			$("#discPane").css("background","-moz-linear-gradient(top,#ffffff,#ededed)");
-		else 
-			$("#discPane").css("background","-webkit-linear-gradient(top, #ffffff 0%, #ededed 100%)")
-	}		
-	
-	PaneControl.prototype.DrawTime=function()							// DRAW TIME PANE
-	{
-		var i,p,x,str;
-		var now=new Date().getTime();										// Get today
-		var startTime=new Date(now-4*24*60*60*1000);
-		var endTime=new Date(now+4*24*60*60*1000);
-		var _this=this;														// Set this
-				
-
-		var dd="#TimeSliderDiv";											// Name of slider
-		if (!$(dd).length) {												// If slider doesn't exist
-			$("#timePane").append("<div id='"+dd.substr(1)+"'/>");			// Add to pane
-			$("#timePane").append("<div id='nowBar'       style='position:absolute;height:4px;top:16px;width:2px;background-color:#999'/>");
-			$("#timePane").append("<span id='nowText'     style='position:absolute;top:4px; margin-top: -5px;'>now<span>");
-			$("#timePane").append("<span id='beginText'   style='position:absolute;left:48px;top:18px;'><span>");
-			$("#timePane").append("<span id='endText'     style='position:absolute;left:525px;top:18px;'><span>");
-			$("#timePane").append("<span id='sliderText1' style='position:absolute;top:33px;'><span>");
-			$("#timePane").append("<span id='sliderText2' style='position:absolute;top:33px;'><span>");
-			$("#timePane").append(this.DrawSeeDot("set",20,8,12,"#fff"));	// Draw set logo
-				}
-		$(dd).css({ position:"absolute",width:"400px",left:"115px",top:"20px" });
-		$("#beginText").html("<b>"+this.DateTimeString(startTime)+"</b>");	// Course start
-		$("#endText").html("<b>"+this.DateTimeString(endTime)+"</b>");		// Course end
-		var options=new Object();											// Holds slider options
-		
-		options.slide=function(event, ui) {									// Slider move handler
-			var which="#sliderText1";										// Assume 1st
-			var val=ui.values[0];											// Get 1st slider value
-			if (ui.value != val) {											// If second slider
-				which="#sliderText2";										// Set name
-				val=ui.values[1];											// Use 2nd val
-				}
-			var p=new Date(startTime-0+((endTime-startTime)*(val/1000)));	// Calc new date
-			var str=_this.DateTimeString(p);								// Make into string
-			var x=str.length*4;												// Offset amount
-			$(which).html(str);												// Set value
-			$(which).css("left",event.clientX-x+"px");						// Position
-			_this.SetUserData("timeSlider1",ui.values[0]/1000);				// Save slider 1
-			_this.SetUserData("timeSlider2",ui.values[1]/1000);				// Save slider 2
-			};
-		options.max=1000;													// 0-1000
-		options.range=true;													// Range mode
-		options.values=[userData.timeSlider1*1000,userData.timeSlider2*1000];	// Set times
-		$(dd).slider(options);												// Draw slider
-		
-		for (i=0;i<2;++i) {													// For each slider
-			p=new Date(startTime-0+((endTime-startTime)*(options.values[i]/1000)));	// Calc new date
-			str=this.DateTimeString(p);										// Make into string
-			x=str.length*4;													// Offset amount
-			p=(400*options.values[i]/1000)+96;								// Position
-			$("#sliderText"+(i+1)).html(str);								// Set value
-			$("#sliderText"+(i+1)).css("left",p+"px");						// Position
-			}
-		if ((now > startTime) && (now < endTime)) {							// In range
-			p=((now-startTime)/(endTime-startTime)*400)+115-0;				// Calc now pos
-			$("#nowBar").css("left",p+"px");								// Position
-			$("#nowText").css("left",p-9+"px");								// Position
-			}
-	}			
-	
-	PaneControl.prototype.DateTimeString=function(time) 				// CONVERT DATE OBJECT TO SIMPLE STRING
-	{
-		var str=(time.getMonth()+1)+"/"+time.getDate()+" ";					// Month/day
-		if (time.getHours() > 12)	str+=time.getHours()-12;				// Before noon
-		else		 				str+=time.getHours();					// After noon
-		if (time.getHours() > 11)	str+="pm";								// PM
-		else 						str+="am";								// AM
-		return str;															// Return "MO/DY HRap"
-	}
-
-	PaneControl.prototype.DrawSeeDot=function(text, size, x, y, col)	// DRAW CIRCLE DOT LOGO
-	{
-		var str="<div style='position:absolute;left:"+x+"px;top:"+y+"px;width:"+size+"px;height:"+size+"px;padding:0px;"
-		str+="border:2px solid "+col+";border-radius:"+size+"px;moz-border-radius;"+size+"px;color:"+col;
-		str+=" !important;text-align:center;line-height:"+size+"px;font-size:"+size/2.5+"px;'>";
-		str+="<b>"+text+"</b><div>";
-		return str;
-	}
-
-	PaneControl.prototype.SetUserData=function(key, value)				// SAVE USER DATA
-	{
-		userData[key]=value;
-	}
-
-
-
-
-function trace(str) { console.log(str) };
-	
-	
-</script>
-
-
-<script type="text/javascript">
 /************* TYPEAHEAD ***********************/ 
 
 $(function() {
