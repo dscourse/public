@@ -187,11 +187,17 @@ function Dscourse ()
 
 		$('#discussionDivs').tooltip({ selector: "span" });  
 
-		$('.threadText').live('click', function () {
-				var postClickId = $(this).attr('level'); 
+		$('.threadText').live('click', function (event) {
+				//	event.preventDefault();
+				event.stopPropagation();
+				$('.threadText').removeClass('highlight');
+				$('.threadText').find('span').removeClass('highlight');
+				var postClickId = $(this).closest('div').attr('level'); 
 				dscourse.HighlightRelevant(postClickId);
-
+				$(this).addClass('highlight');
 			});
+		
+
 		
 		$('.dCollapse > h4').live('click', function () {
 			$(this).parent().find('.content').fadeToggle();
@@ -426,20 +432,39 @@ function Dscourse ()
 
 
 	$('#addPost').live('click', function() {
-		$('.threadText').removeClass('highlight');	
 		var checkDefault = $('#text').val();				// Check to see if the user is adding default comment text. 
-		if(checkDefault == 'Why do you agree?' || checkDefault == 'Why do you disagree?' || checkDefault == 'What is unclear?' || checkDefault == 'Why is it off topic?' || checkDefault == 'Your comment...'){
-			$('#text').val(' '); 
+		var buttonType = $('#postTypeID > .active').attr('id');
+		console.log('buttontype: ' + buttonType);
+		console.log('default text: ' + checkDefault);
+		// If comment button has class active
+		if(buttonType == 'comment'){
+			if(checkDefault == 'Your comment...' || checkDefault == ''){
+					$('#text').addClass('textErrorStyle');	
+					$('#textError').show();
+			} else {
+				postOK();
+			}
+		} else {
+			postOK();
 		}
 		
-		top.AddPost();										// Function to add post 
-		var discussionID = $('#dIDhidden').val();
-		$('#commentWrap').fadeOut('fast');
-		$('#overlay').hide();
-		top.ClearPostForm();
-		$('.threadText').removeClass('yellow');
-
+		
+		// if checks out then do it. 
+		function postOK() {
+			$('.threadText').removeClass('highlight');	
+			if(checkDefault == 'Why do you agree?' || checkDefault == 'Why do you disagree?' || checkDefault == 'What is unclear?' || checkDefault == 'Why is it off topic?' ){
+				$('#text').val(' '); 
+			}
+			
+			top.AddPost();										// Function to add post 
+			var discussionID = $('#dIDhidden').val();
+			$('#commentWrap').fadeOut('fast');
+			$('#overlay').hide();
+			top.ClearPostForm();
+			$('.threadText').removeClass('yellow');
+		}
 	});
+	
 	$('#text').live('click', function () {
 		var value = $('#text').val(); 
 		if (value == 'Why do you agree?' || value == 'Why do you disagree?' || value == 'What is unclear?' || value == 'Why is it off topic?' || value == 'Your comment...'){
@@ -448,6 +473,7 @@ function Dscourse ()
 	});
 	
 	$('.sayBut2').live('click', function (e) {
+		$('#highlightDirection').hide();
 		var postQuote = $(this).parent().children('.postMessageView').html();
 		var xLoc = 30; //e.pageX; 
 		var yLoc = e.pageY-75; 
@@ -456,6 +482,7 @@ function Dscourse ()
 		var postID = $(this).attr("postID");
 		console.log('Post id i got is:'  + postID);
 		if(postQuote !== ''){
+			$('#highlightDirection').show();
 			$('#highlightShow').html(postQuote);
 			}
 		$('#postIDhidden').val(postID);			
@@ -471,6 +498,7 @@ function Dscourse ()
 		$('#commentWrap').fadeOut('fast');
 		$('#overlay').hide();
 		top.ClearPostForm();
+		
 	});
 
 	$('#overlay').live('click', function () {
@@ -484,40 +512,53 @@ function Dscourse ()
 		$('.postTypeOptions').removeClass('active');
 		$(this).addClass('active');
 		var thisID = $(this).attr('id');
-		switch(thisID)									// Get what kind of post this is 
-					{
-					case 'agree':
-					  $('#text').val('Why do you agree?');
-					  break;
-					case 'disagree':
-					  $('#text').val('Why do you disagree?');
-					  break;
-					case 'clarify':
-					  $('#text').val('What is unclear?');
-					  break;
-					case 'offTopic':
-					  $('#text').val('Why is it off topic?');
-					  break;		  
-					default:
-					  $('#text').val('Your comment...');
-					}
-
+		var txt = $('#text').val(); 
+		if(txt == 'Why do you agree?' || txt == 'Why do you agree?' || txt == 'Why do you disagree?' || txt == 'What is unclear?' || txt == 'Your comment...' ){
+				switch(thisID)									// Get what kind of post this is 
+							{
+							case 'agree':
+							  $('#text').val('Why do you agree?');
+							  break;
+							case 'disagree':
+							  $('#text').val('Why do you disagree?');
+							  break;
+							case 'clarify':
+							  $('#text').val('What is unclear?');
+							  break;
+							case 'offTopic':
+							  $('#text').val('Why is it off topic?');
+							  break;		  
+							default:
+							  $('#text').val('Your comment...');
+							}
+			}
 	});
 	
 		$('.postTypeWrap').live('click', function () {
 				var currentType = $(this).attr('typeID'); 
-				var thisLink = $(this).children('i'); 
+				var thisLink = $(this).children('.typicn'); 
 				currentType = '.threadText[postTypeID="' + currentType + '"]';
 				var parentDiv = $(this).parent('div');
 				$(parentDiv).children(currentType).fadeToggle('fast', function() {
-						if(thisLink.hasClass('icon-white') == true){
-							   thisLink.removeClass('icon-white');
-						   } else {
-							    thisLink.addClass('icon-white');
-						   }
+
 						  });
+				if(thisLink.hasClass('grey-icons') == true){
+					  console.log('has grey icons.'); 
+					   thisLink.removeClass('grey-icons');
+				   } else {
+					  console.log('Does not have grey icons.'); 
+					    thisLink.addClass('grey-icons');
+				   }
 			
 			});
+		
+			$('.postTypeWrap').live('mousedown', function () {				// This is just for style to make it look like a button. 
+						$(this).addClass('buttonEffect');
+						});
+			$('.postTypeWrap').live('mouseup', function () {				 
+						$(this).removeClass('buttonEffect');
+						});
+
 			
 		$('#showtimeline').live('click', function () {
 				$('#timeline').slideToggle();
@@ -1639,11 +1680,11 @@ Dscourse.prototype.ResponseCounters=function(postId){
 		  		}
 		  }	
 		  var commentText = ' ', agreeText = ' ', disagreeText = ' ', clarifyText = ' ', offTopicText = ' '; 
-		  if(comment 	> 0){commentText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="comment" title="Comments from: <br /> ' + commentPeople +'" > ' + comment 	+ '  <i class="icon-comment "></i> </span>  ';} 
-		  if(agree 	 	> 0){agreeText 		= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="agree" title="People who agreed: <br /> ' + agreePeople + '"> ' + agree 	+ '  <i class="icon-thumbs-up"></i> </span> '	 ;}
-		  if(disagree	> 0){disagreeText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="disagree" title="People who disagreed:<br /> ' + disagreePeople + '"> ' + disagree 	+ '  <i class="icon-thumbs-down"></i> </span> ';}
-		  if(clarify 	> 0){clarifyText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="clarify" title="People that asked to clarify:<br /> ' + clarifyPeople + '"> ' + clarify 	+ '  <i class="icon-question-sign"></i> </span> ' ;}
-		  if(offTopic 	> 0){offTopicText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="offTopic" title="People that marked off topic: <br />' + offTopicPeople + '"> ' + offTopic 	+ '  <i class="icon-share-alt"></i> </span>  ' ;}
+		  if(comment 	> 0){commentText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="comment" title="<b>Comments from: </b><br /> ' + commentPeople +'" > ' + comment 	+ '  <span class="typicn message "> </span></span>  ';} 
+		  if(agree 	 	> 0){agreeText 		= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="agree" title="<b>People who agreed: </b><br /> ' + agreePeople + '"> ' + agree 	+ '  <span class="typicn thumbsUp "> </span> </span> '	 ;}
+		  if(disagree	> 0){disagreeText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="disagree" title="<b>People who disagreed:</b><br /> ' + disagreePeople + '"> ' + disagree 	+ '  <span class="typicn thumbsDown "> </span></span> ';}
+		  if(clarify 	> 0){clarifyText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="clarify" title="<b>People that asked to clarify:</b><br /> ' + clarifyPeople + '"> ' + clarify 	+ '  <span class="typicn unknown "> </span></span> ' ;}
+		  if(offTopic 	> 0){offTopicText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="offTopic" title="<b>People that marked off topic: </b><br />' + offTopicPeople + '"> ' + offTopic 	+ '  <span class="typicn directions "> </span> </span>  ' ;}
 
 		  var text =   commentText + agreeText + disagreeText + clarifyText + offTopicText ; 
 		 
@@ -1665,13 +1706,14 @@ Dscourse.prototype.HighlightRelevant=function(postID)					// Highlights the rele
 				 thisSelection = o.postSelection.split(",");
 				 var num1 = parseInt(thisSelection[0]);
 				 var num2 = parseInt(thisSelection[1]);
+				 // var num3 = num2-num1;   // delete if substring() works. 
 				 console.log(num1 + ' ' + num2);
 				 // find the selection in reference post 
 				 for(j = 0; j < main.data.allPosts.length; j++){
 				 	m = main.data.allPosts[j];
 				 	
 				 	if(m.postID == o.postFromId){
-					 	highlight = m.postMessage.substr(num1,num2); 
+					 	highlight = m.postMessage.substring(num1,num2); 
 					 	newHighlight = '<span class="highlight">' + highlight + '</span>';
 					 	n = m.postMessage.replace(highlight, newHighlight);
 					 	selector = 'div[level="'+ o.postFromId +'"]'; 
@@ -1869,6 +1911,8 @@ Dscourse.prototype.saved=function(message)
 		$('#postTypeID > button').removeClass('active');
 		$('#postTypeID > #comment').addClass('active');
 		$('#highlightShow').html(' ');
+		$('#text').removeClass('textErrorStyle');	
+		$('#textError').hide();
  }
  	
 // Function to get the links embedded in comments appear as links.

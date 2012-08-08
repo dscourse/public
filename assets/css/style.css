@@ -292,6 +292,10 @@ border-left: 3px solid #ccc !important;
 	margin-bottom: 20px;
 }
 
+.dCollapse ul {
+	list-style: none; 
+}
+
 /* Home Page */
 
 .todoFeed li, .discussionFeed li {
@@ -390,7 +394,7 @@ border-left: 3px solid #ccc !important;
 			width: 100%;
 		}
 
-.postAuthorView {color: #a5bec5}
+.postAuthorView {color: #687e83}
 .postTypeView   {color: #b9b9b9; font-style: italic}
 .postMessageView{}
 
@@ -399,7 +403,13 @@ border-left: 3px solid #ccc !important;
 	margin-left: 5px;
 	padding: 3px 6px;
 	border-radius: 10px;
-	font-size: 12px;
+	font-size: 12px;	
+}
+
+.buttonEffect{
+	-moz-box-shadow: inset 0 0 10px #666;
+-webkit-box-shadow: inset 0 0 10px #666;
+box-shadow: inset 0px 1px 2px #666;
 }
 
 .postTypeWrap:hover {
@@ -415,13 +425,33 @@ border-left: 3px solid #ccc !important;
 }
 
 #highlightShow {
-	background: transparent; 
-	border: none;
+	background: white;
+	border: 1px solid #CCC;
 	resize: none;
-	width: 100%;
+	width: 500px;
 	-webkit-box-shadow: none;
-	-moz-box-shadow:none;
+	-moz-box-shadow: none;
 	box-shadow: none;
+	margin-bottom: 10px;
+	padding: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+#highlightDirection {
+	display: none;
+	font-style: italic;
+}
+
+.textErrorStyle{
+	border: 2px solid #faa;
+}
+
+#textError {
+	display: none;
+	color: red;
+	font-style: italic;
 }
 
 #postTabs ul li {
@@ -515,6 +545,9 @@ border-left: 3px solid #ccc !important;
 			.highlight {
 				background-color: rgba(255,255,176,0.65);
 			}
+			span .highlight {
+				padding: 4px 0;
+			}
 
 
 
@@ -552,3 +585,138 @@ border-left: 3px solid #ccc !important;
 .qq-upload-failed-text {display:none;}
 .qq-upload-fail .qq-upload-failed-text {display:inline;}
 
+
+/* 
+
+	TYPICONS: http://typicons.com/
+
+*/
+
+@font-face {
+	font-family: 'Typicons';
+	src: url('../fonts/typicons-regular-webfont.eot');
+	src: url('../fonts/typicons-regular-webfont.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/typicons-regular-webfont.woff') format('woff'),
+		url('../fonts/typicons-regular-webfont.ttf') format('truetype'),
+		url('../fonts/typicons-regular-webfont.svg#TypiconsRegular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.typicn {
+	font-family: "Typicons", sans-serif;
+	/* Reduce blur on icons in chrome, opera, safari and ios. */
+	/* This is hacky & bad. Maybe possible for firefox, not sure yet. */
+	-webkit-font-smoothing: antialiased;	-o-transform: scale(1); 
+	vertical-align: middle;
+}
+
+.location:before {content: "A";}
+.phone:before {content: "B";}
+.home:before {content: "C";}
+.camera:before {content: "D";}
+.left:before {content: "E";}
+.right:before {content: "F";}
+.up:before {content: "G";}
+.down:before {content: "H";}
+.refresh:before {content: "I";}
+.sync:before {content: "J";}
+.loop:before {content: "K";}
+.repeat:before {content: "L";}
+.shuffle:before {content: "M";}
+.rss:before {content: "N";}
+.cog:before {content: "O";}
+.spanner:before {content: "P";}
+.barChart:before {content: "Q";}
+.pieChart:before {content: "R";}
+.lineChart:before {content: "S";}
+.views:before {content: "T";}
+.zoomIn:before {content: "V";}
+.zoomOut:before {content: "U";}
+.export:before {content: "W";}
+.user:before {content: "X";}
+.group:before {content: "Y";}
+.microphone:before {content: "Z";}
+.globe:before {content: "a";}
+.thumbsUp:before {content: "b";}
+.thumbsDown:before {content: "c";}
+.tag:before {content: "d";}
+.tab:before {content: "e";}
+.warning:before {content: "f";}
+.tick:before {content: "g";}
+.beta:before {content: "h";}
+.unlock:before {content: "i";}
+.lock:before {content: "j";}
+.eject:before {content: "k";}
+.move:before {content: "l";}
+.expand:before {content: "m";}
+.cancel:before {content: "n";}
+.power:before {content: "o";}
+.compass:before {content: "p";}
+.radar:before {content: "q";}
+.directions:before {content: "r";}
+.pin:before {content: "s";}
+.mute:before {content: "t";}
+.volume:before {content: "u";}
+.world:before {content: "v";}
+.write:before {content: "w";}
+.minus:before {content: "x";}
+.equals:before {content: "y";}
+.feed:before {content: "z";}
+.batteryNone:before {content: "0";}
+.batteryLow:before {content: "1";}
+.batteryMid:before {content: "2";}
+.batteryHigh:before {content: "3";}
+.batteryPower:before {content: "4";}
+.plus:before {content: "5";}
+.times:before {content: "6";}
+.next:before {content: "7";}
+.previous:before {content: "8";}
+.edit:before {content: "9";}
+.cut:before {content: "'";}
+.anchor:before {content: "(";}
+.bookmark:before {content: ")";}
+.music:before {content: "*";}
+.puzzle:before {content: "+";}
+.archive:before {content: ",";}
+.mobile:before {content: "-";}
+.contrast:before {content: ".";}
+.brightness:before {content: "/";}
+.flag:before {content: "{";}
+.info:before {content: "|";}
+.unknown:before {content: "}";}
+.chat:before {content: "~";}
+.mail:before {content: "[";}
+.message:before {content: "\005C";}
+.delete:before {content: "]";}
+.backspace:before {content: "^";}
+.infinity:before {content: "_";}
+.key:before {content: "$";}
+.time:before {content: "%";}
+.grid:before {content: "\0022";}
+.list:before {content: "\0023";}
+.heart:before {content: ";";}
+.star:before {content: "=";}
+.back:before {content: "?";}
+.forward:before {content: "@";}
+
+.thumbsUp 	{color: #74b474; font-size: 16px;}
+.thumbsDown {color: #b98383; font-size: 16px;}
+.message 	{color: #7d7dbc; font-size: 16px;}
+.unknown 	{color: #a76ba7; font-size: 16px;}
+.directions {color: #c39949; font-size: 16px;}
+
+.greyIcons {
+}
+
+.dCollapse .typicn {
+	margin: 0 0 0 5px;
+	font-size: 18px;
+	font-weight: normal;
+}
+
+.grey-icons {
+	color: #ddd !important;
+}
+
+/* END OF TYPICONS */

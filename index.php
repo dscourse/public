@@ -24,6 +24,7 @@
 	<link href="assets/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="assets/css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css" />	
+	<link href="assets/css/typicons.css" media="screen" rel="stylesheet" type="text/css" />	
 
 	<script type="text/javascript" src="scripts/js/validation.js"></script>
 	<script type="text/javascript" src="scripts/js/users.js"></script>
@@ -80,7 +81,7 @@
 <!-- Begin home.php-->
 <div id="homePage" class="container wrap page">
 	<div class="page-header">
-	  <h1>Dashboard<small> What's new and trending </small></h1> 
+	  <h1> Dashboard<small> What's new and trending </small></h1> 
 	</div>			
 	<div class="row">
 		<div class="span4">
@@ -775,7 +776,7 @@
 			<div id="dInfo"> <!-- Only required for left/right tabs -->
 
 					<div class="dCollapse">
-					    <h4><i class="icon-info-sign"></i> Discussion information</h4>
+					    <h4><span class="typicn info"> </span> Discussion information</h4>
 					      <div class="content">
 					      	<div id="dPromptView" ></div>
 					      	<div id="dCourse"><b>Course:</b>  </div>
@@ -785,7 +786,7 @@
 					
 					
 					<div class="dCollapse">
-					    <h4><i class="icon-list"></i> Recent Activity</h4>			    
+					    <h4><span class="typicn feed"> </span> Recent Activity</h4>			    
 					      <div class="content">
 							<ul class=" discussionFeed" >
 							<li> Mable Kinzie commented on <a href="#">"Stakeholder perspective of James Monroe" </a>  <em class="timeLog">3 hours ago.</em> </li>
@@ -796,7 +797,7 @@
 					</div>  						
 						
 					<div class="dCollapse">					  
-					    <h4><i class="icon-check"></i> To-Do</h4>
+					    <h4><span class="typicn tick"> </span> To-Do</h4>
 					      <div class="content">
 						      <ul class=" todoFeed" >
 							<li> Provide initial response to document <a href="#">"Case overview" </a> by <em>August, 25.</em> </li>
@@ -855,7 +856,9 @@
 			<div id="middle">
 				<input id="locationIDhidden" type="hidden" name="locationIDhidden" value="">
 				<div id="commentArea"> 
+					<div id="highlightDirection">Select a specific segment of the text to reference it in your post. </div>
 					<div id="highlightShow"></div>
+					<div id="textError">If you are commenting you need to enter a comment.</div>
 					<textarea id="text">Your comment...</textarea>	
 				</div>
 			</div>
