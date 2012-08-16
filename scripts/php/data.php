@@ -100,7 +100,7 @@ function GetPosts()
 {
 
 
- 		$postData = mysql_query("SELECT * FROM `posts` ");  	// Get everything 
+ 		$postData = mysql_query("SELECT * FROM `posts` ORDER BY postTime ASC");  	// Get everything 
 	
 		while($r = mysql_fetch_assoc($postData)) 
 		{					

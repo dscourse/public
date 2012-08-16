@@ -42,6 +42,12 @@ function Dscourse ()
 	this.currentStart = '';
 	this.currentEnd = ''; 
 	
+	this.uParticipant = new Array; 	// Unique list of participants. 
+	
+	// timeline
+	this.timelineMin = 0;
+	this.timelineMax = 0;
+	
 	// Fix for multiple image uploads 
 	this.imgUpload = '';
 	
@@ -127,6 +133,7 @@ function Dscourse ()
 		function showHome(){
 			$('.page').hide();			
 			$('#homePage').show();
+			  $('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
 		}
 	
 	
@@ -142,7 +149,7 @@ function Dscourse ()
 		$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
 	
 	
-			$("#commentWrap").draggable({cancel : "div#commentArea"});									// Makes the comment posting tool draggable. Needs Jquery ui. 
+			//$("#commentWrap").draggable({cancel : "div#commentArea"});									// Makes the comment posting tool draggable. Needs Jquery ui. 
 			
 			//fixing the buttons for roles so we don't need bootstrap files. 
 			$('#roleButtons .btn').live('click', function () {
@@ -186,6 +193,7 @@ function Dscourse ()
 		});
 
 		$('#discussionDivs').tooltip({ selector: "span" });  
+		$('#participants').tooltip({ selector: "li" });  
 
 		$('.threadText').live('click', function (event) {
 				//	event.preventDefault();
@@ -474,16 +482,19 @@ function Dscourse ()
 	
 	$('.sayBut2').live('click', function (e) {
 		$('#highlightDirection').hide();
+		$('#highlightShow').hide();
 		var postQuote = $(this).parent().children('.postMessageView').html();
+		postQuote = $.trim(postQuote);
+		console.log('postquote: ' + postQuote);
 		var xLoc = 30; //e.pageX; 
 		var yLoc = e.pageY-75; 
 		$('#commentWrap').css({'top' : yLoc, 'left' : '50%'});
 		$('.threadText').removeClass('highlight');		
 		var postID = $(this).attr("postID");
 		console.log('Post id i got is:'  + postID);
-		if(postQuote !== ''){
+		if(postQuote != ''){
 			$('#highlightDirection').show();
-			$('#highlightShow').html(postQuote);
+			$('#highlightShow').show().html(postQuote);
 			}
 		$('#postIDhidden').val(postID);			
 		$('#overlay').show();
@@ -565,17 +576,79 @@ function Dscourse ()
 				
 				if($(this).hasClass('active') == true) {
 						$(this).removeClass('active');
-						$(this).html('<i class="icon-time"></i> Show Timeline ');
+						$(this).html('<span class="typicn time "></span>  Show Timeline ');
 					} else {
 						$(this).addClass('active');	
-						$(this).html('<i class="icon-time"></i> Hide Timeline ');
-
+						$(this).html('<span class="typicn time "></span>  Hide Timeline ');
 					}
-				
-
 			});
 		
+		$('#showParticipants').live('click', function () {
+				$('#participants').slideToggle();
+				
+				if($(this).hasClass('active') == true) {
+						$(this).removeClass('active');
+						$(this).html('<span class="typicn group "></span>  Show Participants ');
+					} else {
+						$(this).addClass('active');	
+						$(this).html('<span class="typicn group "></span>  Hide Participants ');
+					}
+			});
+		
+		$('#media').live('click', function () {
+				$('#mediaBox').slideToggle();			
+			});
+			
+		$('.hmButtons').live('click', function () {						// Heatmap buttons and functions
+				var hmType = $(this).attr('heatmap'); 
+				if($(this).hasClass('active')){
+					$(this).removeClass('active');
+					top.Heatmap(hmType, 'remove');
+				} else {
+					$(this).addClass('active');
+					top.Heatmap(hmType, 'add');
+				}
+			});
 
+		$('.zButtons').live('click', function () {						// Zoom buttons and functions
+				var zoomType = $(this).attr('zoom'); 
+				console.log(zoomType);
+
+				if(zoomType == 'in'){
+						$('.levelWrapper').css( 'zoom', '+=0.2' );
+					} else if(zoomType == 'out') {
+						$('.levelWrapper').css( 'zoom', '-=0.2' );
+					} else if(zoomType == 'reset'){
+						$('.levelWrapper').css( 'zoom', '1.0' );
+
+					}
+			});
+
+		$('.uList').live('click', function () {						// User heatmap buttons and functions
+				var uListID = $(this).attr('authorId'); 
+				if($(this).hasClass('active')){
+					$(this).removeClass('active');
+					top.UserHeatmap(uListID, 'remove');
+				} else {
+					$(this).addClass('active');
+					top.UserHeatmap(uListID, 'add');
+				}
+			});
+
+		$('.drawTypes').live('click', function () {						// User heatmap buttons and functions
+				$('.drawTypes').removeClass('active');
+				var drawType = $(this).attr('id'); 
+				Draw(drawType);
+				$(this).addClass('active');
+			});
+			
+		$('#Edit').live('click', function () {						// User heatmap buttons and functions
+				shivaLib.Annotate();
+				var offset = $('#mediaWrap').offset();
+				var leftP = offset.left + 'px'; 
+				var topP = offset.top + 'px'; 
+				$('#shivaDrawDiv').css({'top' : topP, 'left' : leftP});
+			});
 
 } /* end function Dscourse
 
@@ -634,7 +707,7 @@ Dscourse.prototype.ListUsers=function()
 		o =  main.data.allUsers[i] ;  			
 			$('#userData').append(
 			    	  		  "<tr>"
-			    	  		+ "<td> <img class='userThumbS' src='" + o.userPictureURL +"' /><a class='showProfile' userid='" + o.UserID + "'>" + o.firstName + "</a></td>" 
+			    	  		+ "<td> <img class='userThumbSmall' src='" + o.userPictureURL +"' /><a class='showProfile' userid='" + o.UserID + "'>" + o.firstName + "</a></td>" 
 				            + "<td> " + o.lastName	+ "</td>" 
 				            + "<td> " + o.username		+ "</td>" 
 				            + "<td> " + o.sysRole	+ "</td>" 
@@ -1414,11 +1487,73 @@ Dscourse.prototype.saveDiscussions=function()	 	// Save Discussion
 	 			main.CurrentDiscussion = o.dID;	
 	 			console.log("Curent Discussion ID: " + main.CurrentDiscussion);
 	 			main.ListDiscussionPosts(o.dPosts);
+	 			main.DrawTimeline(o.dPosts);
 	 		}
 	 	
 	 	}	 
 }
 
+Dscourse.prototype.DrawTimeline=function(posts)	 			  // Draw the timeline. 
+ {
+	    var main = this;
+
+	    	// Create the Slider
+		    $( "#slider-range" ).slider({					// Create the slider
+				range: "min",
+				step: 21600000,
+				value: main.timelineMax,
+				min: main.timelineMin,
+				max: main.timelineMax,
+				slide: function( event, ui ) {
+					var date = main.FormattedDate(ui.value);
+					$( "#amount" ).val(date);
+					$('.threadText').each(function(index) {
+						var threadID = $(this).attr('time'); 
+						if(threadID > ui.value){
+							$(this).hide();
+						} else {
+							$(this).show();
+						}
+					});
+				}
+			});
+			
+					
+					
+			// Show the value
+			var initialDate = main.FormattedDate(main.timelineMax);
+			$( "#amount" ).val(initialDate);	
+			
+			// Draw the dots. 
+			
+				 var discPosts = posts.split(",");
+				 	 	 
+				 var i, j, p, d;
+				 for(i = 0; i < discPosts.length; i++){							// Take one post at a time
+					 p = discPosts[i];
+					 for (j = 0; j < main.data.allPosts.length; j++){			// Go through all the posts
+						 d = main.data.allPosts[j];		
+						 	 
+						 if(d.postID == p){										// Find the post we want to get the details of 
+			
+							 	 //add dot on the timeline for this post
+							 	  var n = d.postTime; 
+							 	  var time = Date.parse(n);
+				
+								var timeRange = main.timelineMax-main.timelineMin;
+								var dotDistance = ((time-main.timelineMin)*100)/timeRange;
+								var singleDotDiv = '<div class="singleDot" style="left: ' + dotDistance + '%; "></div>'; 
+								$('#dots').append(singleDotDiv); 
+
+			
+			
+						}
+					  }
+				  }
+
+}	
+
+		
 
 /***********************************************************************************************/ 
 /*                					     POST FUNCTIONS 									   */
@@ -1535,19 +1670,47 @@ Dscourse.prototype.AddPost=function(){
  {
 	 var main = this;
 	 
+	 // Clear all dots
+	 $('.singleDot').remove();
+	 main.timelineMin = 0; main.timelineMax = 0; 
+	 $('#recentContent').html(' ');
+	 $('#participantList').html(' ' );
+	 
 	 var discPosts = posts.split(",");
 	 	 	 
-	 var i, j, p, d, typeText, authorID, message, authorThumb;
+	 var i, j, p, d, q, typeText, authorID, message, authorThumb;
 	 for(i = 0; i < discPosts.length; i++){							// Take one post at a time
 		 p = discPosts[i];
 		 for (j = 0; j < main.data.allPosts.length; j++){			// Go through all the posts
 			 d = main.data.allPosts[j];		
 			 	 
 			 if(d.postID == p){										// Find the post we want to get the details of 
-			 														// Prepare the data for display
+
+				 
+				 /********** TIMELINE ***********/ 
+				 var n = d.postTime; 
+				 var time = Date.parse(n);
+				 console.log('Time: ' + time);
+				 
+				 if(main.timelineMin == 0){							// Check and set minimum value for time
+					 main.timelineMin = time;
+				 } else if (time < main.timelineMin){
+					 main.timelineMin = time;
+					 }
+				 
+				 if(main.timelineMax == 0){							// Check and set maximum value for time
+					 main.timelineMax = time;
+				 } else if (time > main.timelineMax){
+					 main.timelineMax = time; 
+					 }
+					 
+				 // END TIMELINE
+				 
+				/********** DISCUSSION SECTION ***********/
+																	// Prepare the data for display
 				 authorID = main.getName(d.postAuthorId, 'first'); 			// Get Authors name			
 				 authorIDfull = main.getName(d.postAuthorId); 
-				 authorThumb = main.getAuthorThumb(d.postAuthorId);			// get thumbnail html
+				 authorThumb = main.getAuthorThumb(d.postAuthorId, 'small');			// get thumbnail html
 				 authorThumb += '  ' + authorIDfull; 
 				 switch(d.postType)									// Get what kind of post this is 
 					{
@@ -1584,7 +1747,7 @@ Dscourse.prototype.AddPost=function(){
 				 var selector = 'div[level="'+ d.postFromId +'"]';
 				 var responses = main.ResponseCounters(d.postID);	
 				 $(selector).append(						// Add post data to the view
-				 	  '<div class="threadText ' + topLevelMessage +'" level="'+ d.postID + '" postTypeID="'+ d.postType+ '">' 
+				 	  '<div class="threadText ' + topLevelMessage +'" level="'+ d.postID + '" postTypeID="'+ d.postType+ '" postAuthorId="' + d.postAuthorId + '" time="' + time + ' ">' 
 				 	+  '<span class="postAuthorView" rel="tooltip"  title="' + authorThumb + '"> ' + authorID + '</span>'
 				 	+  '<span class="postTypeView"> ' + typeText + '</span>'
 				 	+  '<span class="postMessageView"> ' + message  + '</span>'
@@ -1592,15 +1755,46 @@ Dscourse.prototype.AddPost=function(){
 				 	+ responses 
 				 	+ ' </div>'
 				 );
+				 
+				 
+				 /********** RECENT ACTIVITY SECTION ***********/
+				 var range = discPosts.length-9; 			// How many of the most recent we show + 1
+				 var prettyTime = main.PrettyDate(d.postTime);
+				 var shortMessage = main.truncateText(message, 100);
+				 if(i > range) {					 // person + type + truncated comment + date
+					 var activityContent = '<li>' + main.getAuthorThumb(d.postAuthorId, 'tiny') + ' ' + authorID + ' ' + typeText + ' <b>' + shortMessage + '</b> ' + '<em class="timeLog">' + prettyTime + '<em></li> ';
+					 $('#recentContent').prepend(activityContent);   
+				 }
+				 
+				 /********** UNIQUE PARTICIPANTS SECTION ***********/
+				 var arrayState = jQuery.inArray(d.postAuthorId, main.uParticipant); 	// Chech if author is in array
+				 if(arrayState == -1) {								// if the post author is not already in the array
+					 main.uParticipant.push(d.postAuthorId);		// add id to the array
+				 }
+				 
+				 	
+				 
 			 }	 
 		 }
 	 }
+	 
+	 main.timelineValue = main.timelineMax;						// Set the timeline value to the max. 
+	 main.UniqueParticipants();
 }
 
 
-Dscourse.prototype.SubPanel=function(postId){					// Show the subpanels of the clicked post.  
+Dscourse.prototype.UniqueParticipants=function(){					// Populate unique participants.  
 	
 		 var main = this;
+		 var i, o, name, thumb, output; 
+		 for(i = 0; i < main.uParticipant.length; i++){
+			 o = main.uParticipant[i]; 
+			 name = main.getName(o); 
+			 thumb = main.getAuthorThumb(o, 'small'); 
+			 output = '<li class="uList" rel="tooltip" title="' + name + '" authorID="' + o +  '">' + thumb + ' </li>'; 
+			 $('#participantList').append(output); 
+		 }
+		 
 		 
 }
 
@@ -1740,7 +1934,53 @@ Dscourse.prototype.HighlightRelevant=function(postID)					// Highlights the rele
 	 
 }
 
+Dscourse.prototype.Heatmap=function(type, action)					// Highlights the relevant sections of host post when hovered over 
+{
+	 var main = this;
 
+	 var selector = '.threadText[posttypeid="' + type + '"]'; 
+	 var typeColor;
+	
+		if(action == 'add'){ 
+	 				switch(type)									// Get what kind of post this is 
+							{
+							case 'agree':
+							  typeColor = '#efffef';
+							  break;
+							case 'disagree':
+							  typeColor = '#ffebeb';
+							  break;
+							case 'clarify':
+							  typeColor = '#ffd6ff';
+							  break;
+							case 'offTopic':
+							  typeColor = '#fff4e1';
+							  break;		  
+							default:
+							  typeColor = '#e9e9ff';
+							}
+				$(selector).css('background-color', typeColor);
+			 } else if (action == 'remove'){
+				 		$(selector).css('background-color', '#fff');
+
+			 }	
+	 
+ }
+ 
+ Dscourse.prototype.UserHeatmap=function(id, action)					// Highlights the relevant sections of host post when hovered over 
+{
+	 var main = this;
+	 $('.threadText').css('background-color', '#fff'); 				// Reset background highlights 
+	 
+	 var selector = '.threadText[postAuthorId="' + id + '"]'; 
+	 
+	 if(action == 'add'){ 	
+				$(selector).css('background-color', '#defcff');
+			 } else if (action == 'remove'){
+				 $(selector).css('background-color', '#fff');
+
+			 }	
+}
 /***********************************************************************************************/ 
 /*                					HELPER FUNCTIONS 									   */
 /***********************************************************************************************/
@@ -1796,15 +2036,21 @@ Dscourse.prototype.getName=function(id, type)
 }
 
 
-Dscourse.prototype.getAuthorThumb=function(id)
+Dscourse.prototype.getAuthorThumb=function(id, size)
 {
-	var main = this;
+	 var main = this;
+
 	
-		
 		for(var n = 0; n < main.data.allUsers.length; n++){
 			var userIDName = main.data.allUsers[n].UserID;
 			if (userIDName == id)
-				return '<img class=userThumbS src=' + main.data.allUsers[n].userPictureURL + ' />' ;
+			
+				if(size == 'small'){
+					return '<img class=userThumbSmall src=' + main.data.allUsers[n].userPictureURL + ' />' ;
+				} else if (size == 'tiny'){
+					return '<img class=userThumbTiny src=' + main.data.allUsers[n].userPictureURL + ' />' ;
+					
+				}
 		}	
 	
 }
@@ -1940,25 +2186,54 @@ Dscourse.prototype.getUrlVars=function() 		// Gets parameters from url. Usage : 
     return vars;
 }
 
-Dscourse.prototype.truncateText=function(text)
+Dscourse.prototype.truncateText=function(text, length)
 {
-	var length = 120;
+	
 	var myString = text;
 	var myTruncatedString = myString.substring(0,length) + '... ';
 	return myTruncatedString;
 	
 }
 
+Dscourse.prototype.FormattedDate=function(date)
+{
+	var d, m, curr_hour, dateString; 
+	d = new Date(date);				// Write out the date in readable form.
+	m = d.toDateString();
+    curr_hour = d.getHours(); 
+    dateString = m + '  ' + curr_hour + ':00';
+	
+	return dateString;				 
 
+				    
+}
 
+// SOMETHINGS BORROWED
 
-
-
-
-
-
-
-
+/*
+ * JavaScript Pretty Date
+ * Copyright (c) 2011 John Resig (ejohn.org)
+ * Licensed under the MIT and GPL licenses.
+ */
+Dscourse.prototype.PrettyDate=function(time)
+{
+	var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," ")),
+		diff = (((new Date()).getTime() - date.getTime()) / 1000),
+		day_diff = Math.floor(diff / 86400);
+			
+	if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )
+		return;
+			
+	return day_diff == 0 && (
+			diff < 60 && "just now" ||
+			diff < 120 && "1 minute ago" ||
+			diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
+			diff < 7200 && "1 hour ago" ||
+			diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
+		day_diff == 1 && "Yesterday" ||
+		day_diff < 7 && day_diff + " days ago" ||
+		day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
+}
 
 
 

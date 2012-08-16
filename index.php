@@ -20,11 +20,14 @@
 	<script type="text/javascript" src="assets/js/bootstrap-tooltip.js"></script>
 	<script type="text/javascript" src="assets/js/bootstrap-typeahead.js"></script>
 	<script type="text/javascript" src="assets/js/jquery-ui-1.8.21.custom.min.js"></script>
-		
+	<script type="text/javascript" src="http://www.viseyes.org/shiva/SHIVA_Show.js"></script>
+	<script type="text/javascript" src="http://www.viseyes.org/shiva/SHIVA_Event.js"></script>
+
 	<link href="assets/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="assets/css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css" />
-	<link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css" />	
-	<link href="assets/css/typicons.css" media="screen" rel="stylesheet" type="text/css" />	
+	<link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="assets/css/jquery-ui-1.8.16.custom.css" media="screen" rel="stylesheet" type="text/css" />	
+		
 
 	<script type="text/javascript" src="scripts/js/validation.js"></script>
 	<script type="text/javascript" src="scripts/js/users.js"></script>
@@ -35,7 +38,8 @@
 <script type="text/javascript">
 	
 	var dscourse = new Dscourse();				// Fasten seat belts, dscourse is starting...
-
+	
+	var shiva = new SHIVA_Show('mediaWrap'); 
 	
 </script> 
 
@@ -763,13 +767,15 @@
 							<span id="dTitleView" ></span>
 							<div class="sayBut2" postID="0">say</div> 
 							<input id="dIDhidden" type="hidden" name="discID" value="">
-							<div class="pull-right"><button id="showtimeline" class="btn"> <i class="icon-time"></i> Show Timeline </button>
-</div>
+
 					</span> 
 		    </h1>
 	    </div>
-	  
+	
+ 
+	
 	<div class="row">
+	
 	
 		<div class="span4">
 
@@ -788,10 +794,8 @@
 					<div class="dCollapse">
 					    <h4><span class="typicn feed"> </span> Recent Activity</h4>			    
 					      <div class="content">
-							<ul class=" discussionFeed" >
-							<li> Mable Kinzie commented on <a href="#">"Stakeholder perspective of James Monroe" </a>  <em class="timeLog">3 hours ago.</em> </li>
-							<li> Bill Ferster added a new link to discussion on <a href="#">Benefits of free software </a>  <em class="timeLog">18 hours ago.</em></li>
-							<li> Gell Bull annotated your comment at <a href="#">"Where is 3D printing going?"</a> <em class="timeLog">2 days ago.</em></li>
+							<ul class=" discussionFeed" id="recentContent">
+						
 							</ul>
 						</div>
 					</div>  						
@@ -800,10 +804,8 @@
 					    <h4><span class="typicn tick"> </span> To-Do</h4>
 					      <div class="content">
 						      <ul class=" todoFeed" >
-							<li> Provide initial response to document <a href="#">"Case overview" </a> by <em>August, 25.</em> </li>
-							<li> <a href="#">Initiate </a> a class discussion with relevant topic. </li>
-							<li> Bill Ferster asks you to clarify your comment starting with <em><a href="#">"That sounds wrong, ...."</a> </em></li>
-							</ul>
+							
+						      </ul>
 					      </div>
 					</div>  
 			    
@@ -815,14 +817,44 @@
 		</div>
 	
 		<div class="span8">
-				
-					<div id="timeline">
-						<p>
-							<label for="amount">Limit the posts to specific time periods:</label>
-							<input type="text" id="amount" style="border:0; color:#f6931f; font-weight:bold;" />
-						</p>
+			<div id="controls" class="well">
+			<div class="btn-group" id="heatmapButtons">
+					  <button class="hmButtons btn btn-small disabled">  Heatmap </button>
+					  <button class="hmButtons btn btn-small" heatmap="comment"> <span class="typicn message "> </span> </button>
+					  <button class="hmButtons btn btn-small" heatmap="agree"> <span class="typicn thumbsUp "></span> </button>
+					  <button class="hmButtons btn btn-small" heatmap="disagree"> <span class="typicn thumbsDown "></span></button>
+					  <button class="hmButtons btn btn-small" heatmap="clarify"> <span class="typicn unknown "></span></button>
+					  <button class="hmButtons btn btn-small" heatmap="offTopic"> <span class="typicn directions "></span></button>
+					</div>
+				<div class="btn-group" id="zoomButtons">
+					  <button class="zButtons btn btn-small disabled"> </span> <div id="zoomText">Zoom</div> </button>
+					  <button class="zButtons btn btn-small" zoom="in"> <span class="typicn zoomIn "> </span> </button>
+					  <button class="zButtons btn btn-small" zoom="out"> <span class="typicn zoomOut "></span> </button>
+					  <button class="zButtons btn btn-small" zoom="reset"> <span class="typicn expand "></span> </button>
+
+					</div>
 						
-						<div id="slider-range"></div>
+				<button id="showtimeline" class="btn btn-small"> <span class="typicn time "></span>  Show Timeline </button>	
+				<button id="showParticipants" class="btn btn-small"> <span class="typicn group "></span>  Show Participants </button>	
+			
+			
+
+			
+			</div> 
+					<div id="timeline" class="well">
+						<p>
+								<input type="text" id="amount"  />
+						</p>					
+						<div id="slider-range"><div id="dots"></div></div>
+						
+					</div>
+
+					<div id="participants" class="well">
+
+						<ul id="participantList">
+						
+						</ul>
+						
 					</div>
 					
 						
@@ -844,11 +876,11 @@
 			<div id="quick">
 
 				<div class="btn-group" id="postTypeID">
-				  <button class="btn postTypeOptions active" id="comment" > <i class="icon-comment"></i> Comment</button>
-				  <button class="btn postTypeOptions" id="agree" > <i class="icon-thumbs-up"></i> Agree</button>
-				  <button class="btn postTypeOptions" id="disagree" > <i class="icon-thumbs-down"></i> Disagree</button>
-				  <button class="btn postTypeOptions" id="clarify" > <i class="icon-question-sign"></i> Ask to Clarify</button>
-				  <button class="btn postTypeOptions" id="offTopic" > <i class="icon-share-alt"></i> Mark Off Topic</button>
+				  <button class="btn postTypeOptions active" id="comment" > <span class="typicn message "> </span> Comment</button>
+				  <button class="btn postTypeOptions" id="agree" > <span class="typicn thumbsUp "></span> Agree</button>
+				  <button class="btn postTypeOptions" id="disagree" > <span class="typicn thumbsDown "></span> Disagree</button>
+				  <button class="btn postTypeOptions" id="clarify" > <span class="typicn unknown "></span> Ask to Clarify</button>
+				  <button class="btn postTypeOptions" id="offTopic" > <span class="typicn directions "></span> Mark Off Topic</button>
 				</div>
 					</div>
 			</div>
@@ -864,35 +896,105 @@
 			</div>
 			<div id="bottom">
 				<div id="bottomlinks">
-					<div id="media"></div>  <a href="#"> Add Media</a></li>
+					<span id="media" class="">  <span class="typicn tab "></span>  Add Media</span>
 				</div>	
 				<div id="buttons">
 					<input type="button" id="postCancel" class="buttons btn btn-info" value="Cancel">
 					<input id="addPost" type="button" class="buttons btn btn-primary" value="Add to dscourse">
 				</div>
 			</div>
+			<div id="mediaBox">
+				<div id="mediaTools">
+					<div id="toolList" >
+						<div class="btn-group" id="drawGroup">
+							<button class="btn btn-small drawTypes active" id="Web page"><i class="icon-globe"></i> Web Page</button>
+							<button class="btn btn-small drawTypes" id="Document"><i class="icon-file"></i> Document</button>
+							<button class="btn btn-small drawTypes" id="Video"><i class="icon-film"></i> Video</button>
+							<button class="btn btn-small drawTypes" id="Drawing"><i class="icon-edit"></i> Drawing</button>
+							<button class="btn btn-small drawTypes" id="Map"><i class="icon-map-marker"></i> Map</button>
+						</div>
+						<button class="btn btn-small btn-info" id="Edit"><i class="icon-pencil icon-white"></i> Annotate</button>
+
+					</div>
+				</div>
+				<div id="mediaWrap"></div>
+
+			</div>
+			
 			
 	</div> <!-- close commentWrap --> 
 
 
 </div><!-- End individual discussion page --> 
 
-<script type="text/javascript">
-/************* TIMELINE ***********************/ 
-
-	$(function() {
-		$( "#slider-range" ).slider({
-			range: true,
-			min: 0,
-			max: 500,
-			values: [ 73, 300 ],
-			slide: function( event, ui ) {
-				$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-			}
+<script>
+// Shiva media drawing tools. 
+	var shivaLib=null;
+	
+	$(document).ready(function() {
+   		shivaLib=new SHIVA_Show("mediaWrap");
+		Draw("Web page");
 		});
-		$( "#amount" ).val( $( "#slider-range" ).slider( "values", 0 ) +
-			$( "#slider-range" ).slider( "values", 1 ) );
-	});
+
+function Draw(val)
+{
+	var options=new Object();
+	$("#mediaWrap").empty();
+	$("#mediaWrap").width(505);
+	$("#mediaWrap").height(400);
+	$("#mediaWrap").css("background-color","transparent");
+	switch(val) {
+		case "Web page":
+   			options={ "shivaGroup":"Webpage","url":"http://www.viseyes.org" };
+    		break;
+		case "Document":
+   			options={ "shivaGroup":"Webpage","url":"http://www.viseyes.org/VisualEyesProjectGuide.pdf" };
+    		break;
+		case "Drawing":
+   			options={ "shivaGroup":"Webpage","url":"" };
+   			break;
+ 		case "Video":
+			 options={
+				"dataSourceUrl": "zDZFcDGpL4U",
+				"start": "0:0",
+				"end": "",
+				"autoplay": "false",
+				"volume": "50",
+				"height": "310",
+				"width": "505",
+				"duration": "?",
+				"ud": "false",
+				"shivaMod": "Tue, 31 Jul 2012",
+				"shivaGroup": "Video"
+				};
+    		break;
+ 		case "Map":
+			 options={
+				"mapcenter": "38.03,-78.48,11",
+				"draggable": "false",
+				"height": "400",
+				"width": "505",
+				"mapTypeId": "Roadmap",
+				"scrollwheel": "true",
+				"overviewMapControl": "false",
+				"panControl": "false",
+				"streetViewControl": "false",
+				"mapTypeControl": "true",
+				"zoomControl": "true",
+				"controlbox": "false",
+				"ud": "false",
+				"shivaMod": "Tue, 31 Jul 2012",
+				"shivaGroup": "Map"
+				};
+			break;
+   			} 
+  	shivaLib.Draw(options);
+}
+
+	
+</script>
+
+<script type="text/javascript">
 
 /************* TYPEAHEAD ***********************/ 
 
