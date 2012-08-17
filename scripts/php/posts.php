@@ -19,8 +19,9 @@
 			$postMessage	= 	$post['postMessage'];
 			$postType		= 	$post['postType'];
 			$postSelection	= 	$post['postSelection'];			
+			$postMedia		= 	$post['postMedia'];
 												
-			$addPostQuery = mysql_query("INSERT INTO posts (postFromId, postAuthorId, postMessage, postType, postSelection) VALUES('".$postFromId."', '".$postAuthorId."', '".$postMessage."','".$postType."','".$postSelection."')"); 
+			$addPostQuery = mysql_query("INSERT INTO posts (postFromId, postAuthorId, postMessage, postType, postSelection, postMedia) VALUES('".$postFromId."', '".$postAuthorId."', '".$postMessage."','".$postType."','".$postSelection."','".$postMedia."')"); 
 			
 			$postID = mysql_insert_id();
 			

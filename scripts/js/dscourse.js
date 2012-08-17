@@ -468,6 +468,8 @@ function Dscourse ()
 			var discussionID = $('#dIDhidden').val();
 			$('#commentWrap').fadeOut('fast');
 			$('#overlay').hide();
+			$('#shivaDrawDiv').hide();						
+			$('#shivaDrawPaletteDiv').hide();				
 			top.ClearPostForm();
 			$('.threadText').removeClass('yellow');
 		}
@@ -508,6 +510,8 @@ function Dscourse ()
 		$('.threadText').removeClass('highlight');		
 		$('#commentWrap').fadeOut('fast');
 		$('#overlay').hide();
+		$('#shivaDrawDiv').hide();						
+		$('#shivaDrawPaletteDiv').hide();		
 		top.ClearPostForm();
 		
 	});
@@ -516,6 +520,8 @@ function Dscourse ()
 		$('.threadText').removeClass('highlight');		
 		$('#commentWrap').fadeOut('fast');
 		$('#overlay').hide();
+		$('#shivaDrawDiv').hide();						
+		$('#shivaDrawPaletteDiv').hide();				
 		top.ClearPostForm();
 	});
 
@@ -1590,6 +1596,9 @@ Dscourse.prototype.AddPost=function(){
 		// locationIDhidden -- postSelection 
 		var postSelection = $('#locationIDhidden').val();
 	
+	// Get drawing value
+		var postMedia = shivaLib.dr.SaveDrawData(true); 
+	
 	// Create post object and append it to allPosts
 	
 			post = {
@@ -1597,7 +1606,8 @@ Dscourse.prototype.AddPost=function(){
 				'postAuthorId': postAuthorId,
 				'postMessage': postMessage,
 				'postType': postType,
-				'postSelection': postSelection
+				'postSelection': postSelection,
+				'postMedia' : postMedia
 			};
 		
 		

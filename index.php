@@ -26,7 +26,6 @@
 	<link href="assets/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="assets/css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css" />
-	<link href="assets/css/jquery-ui-1.8.16.custom.css" media="screen" rel="stylesheet" type="text/css" />	
 		
 
 	<script type="text/javascript" src="scripts/js/validation.js"></script>
@@ -906,6 +905,7 @@
 			<div id="mediaBox">
 				<div id="mediaTools">
 					<div id="toolList" >
+
 						<div class="btn-group" id="drawGroup">
 							<button class="btn btn-small drawTypes active" id="Web page"><i class="icon-globe"></i> Web Page</button>
 							<button class="btn btn-small drawTypes" id="Document"><i class="icon-file"></i> Document</button>
@@ -913,9 +913,10 @@
 							<button class="btn btn-small drawTypes" id="Drawing"><i class="icon-edit"></i> Drawing</button>
 							<button class="btn btn-small drawTypes" id="Map"><i class="icon-map-marker"></i> Map</button>
 						</div>
-						<button class="btn btn-small btn-info" id="Edit"><i class="icon-pencil icon-white"></i> Annotate</button>
 
 					</div>
+																<button class="btn btn-small btn-info" id="Edit"><i class="icon-pencil icon-white"></i> Annotate</button>
+
 				</div>
 				<div id="mediaWrap"></div>
 
