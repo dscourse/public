@@ -20,8 +20,9 @@
 			$postType		= 	$post['postType'];
 			$postSelection	= 	$post['postSelection'];			
 			$postMedia		= 	$post['postMedia'];
+			$postMediaType  = 	$post['postMediaType'];
 												
-			$addPostQuery = mysql_query("INSERT INTO posts (postFromId, postAuthorId, postMessage, postType, postSelection, postMedia) VALUES('".$postFromId."', '".$postAuthorId."', '".$postMessage."','".$postType."','".$postSelection."','".$postMedia."')"); 
+			$addPostQuery = mysql_query("INSERT INTO posts (postFromId, postAuthorId, postMessage, postType, postSelection, postMedia, postMediaType) VALUES('".$postFromId."', '".$postAuthorId."', '".$postMessage."','".$postType."','".$postSelection."','".$postMedia."','".$postMediaType."')"); 
 			
 			$postID = mysql_insert_id();
 			

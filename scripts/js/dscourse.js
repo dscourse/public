@@ -38,9 +38,14 @@ function Dscourse ()
 	// Posts
 	this.post = { };
 	
-	this.currentSelected = '';  	// Needed for selection
+	this.currentSelected = '';  		// Needed for selection
 	this.currentStart = '';
 	this.currentEnd = ''; 
+	
+	this.currentDrawing = ''; 			// The drawing data that will be saved to the database. 
+	this.currentDrawData = ''; 			// this is used for displaying drawings; 
+	this.currentMediaType = ''; 		// What kind of media should be displayed. 
+	this.postMediaType = 'Web'; 	// Used while saving the media type data. 
 	
 	this.uParticipant = new Array; 	// Unique list of participants. 
 	
@@ -120,10 +125,12 @@ function Dscourse ()
 		});
 	
 		$('.discussionLink').live('click', function () {						// Discussion link
+			
 			var discID = $(this).attr('discID');
 			dscourse.SingleDiscussion(discID);
 			$('.page').hide();
 			$('#footerFixed').hide();
+			$('.sayBut2').hide();
 			$('#discussionWrap').show();
 			$('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
 
@@ -194,6 +201,7 @@ function Dscourse ()
 
 		$('#discussionDivs').tooltip({ selector: "span" });  
 		$('#participants').tooltip({ selector: "li" });  
+		$('#shivaDrawPaletteDiv').tooltip({ selector: "button" });  
 
 		$('.threadText').live('click', function (event) {
 				//	event.preventDefault();
@@ -204,9 +212,23 @@ function Dscourse ()
 				dscourse.HighlightRelevant(postClickId);
 				$(this).addClass('highlight');
 			});
-		
 
-		
+		$('.postAuthorView').live('mouseover', function (event) {
+				event.stopImmediatePropagation();
+
+				// Hide everything else
+				$('.postTypeWrap').fadeOut('fast');
+				$('.sayBut2').fadeOut('fast');
+				$('.mediaMsg').fadeOut('fast');				
+				
+				// Show this group only. 
+
+				$(this).parent().children('.postTypeWrap').fadeIn('fast');
+				$(this).parent().children('.sayBut2').fadeIn('fast');	
+				$(this).parent().children('.mediaMsg').fadeIn('fast');				
+							
+			});		
+
 		$('.dCollapse > h4').live('click', function () {
 			$(this).parent().find('.content').fadeToggle();
 		});
@@ -466,7 +488,7 @@ function Dscourse ()
 			
 			top.AddPost();										// Function to add post 
 			var discussionID = $('#dIDhidden').val();
-			$('#commentWrap').fadeOut('fast');
+			$('#commentWrap').slideUp();
 			$('#overlay').hide();
 			$('#shivaDrawDiv').hide();						
 			$('#shivaDrawPaletteDiv').hide();				
@@ -488,9 +510,10 @@ function Dscourse ()
 		var postQuote = $(this).parent().children('.postMessageView').html();
 		postQuote = $.trim(postQuote);
 		console.log('postquote: ' + postQuote);
-		var xLoc = 30; //e.pageX; 
-		var yLoc = e.pageY-75; 
-		$('#commentWrap').css({'top' : yLoc, 'left' : '50%'});
+				
+		var xLoc = e.pageX-80; 
+		var yLoc = e.pageY+10; 
+		$('#commentWrap').css({'top' : yLoc, 'left' : xLoc});
 		$('.threadText').removeClass('highlight');		
 		var postID = $(this).attr("postID");
 		console.log('Post id i got is:'  + postID);
@@ -503,12 +526,13 @@ function Dscourse ()
 		$('#commentWrap').fadeIn('fast');
 		$(this).parent().addClass('highlight');
 		$('#text').val('Your comment...');
+		
 
 	});
 	
 	$('#postCancel').live('click', function () {
 		$('.threadText').removeClass('highlight');		
-		$('#commentWrap').fadeOut('fast');
+		$('#commentWrap').fadeOut();
 		$('#overlay').hide();
 		$('#shivaDrawDiv').hide();						
 		$('#shivaDrawPaletteDiv').hide();		
@@ -516,6 +540,7 @@ function Dscourse ()
 		
 	});
 
+ 
 	$('#overlay').live('click', function () {
 		$('.threadText').removeClass('highlight');		
 		$('#commentWrap').fadeOut('fast');
@@ -594,16 +619,23 @@ function Dscourse ()
 				
 				if($(this).hasClass('active') == true) {
 						$(this).removeClass('active');
-						$(this).html('<span class="typicn group "></span>  Show Participants ');
+						$(this).html('<span class="typicn views "></span>  Show Heatmap ');
 					} else {
 						$(this).addClass('active');	
-						$(this).html('<span class="typicn group "></span>  Hide Participants ');
+						$(this).html('<span class="typicn views "></span>  Hide Heatmap ');
 					}
 			});
 		
 		$('#media').live('click', function () {
-				$('#mediaBox').slideToggle();			
+				$('#mediaBox').show();				
 			});
+
+		$('#closeMedia').live('click', function () {
+				$('#mediaBox').hide();
+			});
+		$('#closeMediaDisplay').live('click', function () {
+				$('#mediaDisplay').hide();
+			});			
 			
 		$('.hmButtons').live('click', function () {						// Heatmap buttons and functions
 				var hmType = $(this).attr('heatmap'); 
@@ -621,11 +653,11 @@ function Dscourse ()
 				console.log(zoomType);
 
 				if(zoomType == 'in'){
-						$('.levelWrapper').css( 'zoom', '+=0.2' );
+						$('.levelWrapper').css( {'zoom' : '+=0.2', 'line-height' : '+=3'});
 					} else if(zoomType == 'out') {
-						$('.levelWrapper').css( 'zoom', '-=0.2' );
+						$('.levelWrapper').css( {'zoom' : '-=0.2', 'line-height' : '-=3'} );
 					} else if(zoomType == 'reset'){
-						$('.levelWrapper').css( 'zoom', '1.0' );
+						$('.levelWrapper').css( {'zoom' : '1.0', 'line-height' : '23px'} );
 
 					}
 			});
@@ -642,19 +674,102 @@ function Dscourse ()
 			});
 
 		$('.drawTypes').live('click', function () {						// User heatmap buttons and functions
+				top.postMediaType = 'Web'; 
+				
 				$('.drawTypes').removeClass('active');
 				var drawType = $(this).attr('id'); 
-				Draw(drawType);
+				// Draw(drawType); Old way of drawing
+				
+				// New iframe way 
+				 switch(drawType)									// Get what kind of iframe this is
+					{
+					case 'Video':
+					 	type = 'video';
+					  break;
+					case 'Drawing':
+						type = 'draw';
+					  break;		  
+					case 'Map':
+						type = 'map'; 
+					  break;	
+					default:
+						type = 'webpage'; 
+					}
+				
+				var html = 	'<iframe id="node" src="http://www.viseyes.org/shiva/'+ type + '.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>'; 
+				$('#mediaWrap').html(html); 
+				
+				top.postMediaType = drawType; 
+				console.log('the draw type i got is: ' + top.postMediaType);
+				
 				$(this).addClass('active');
 			});
+
+		$('#continuePost').live('click', function () {						// When user clicks to save draw data into post. 
+				top.currentDrawing = ''; 
+				ShivaMessage('node','GetJSON'); 
+				$('#mediaBox').hide();
+			}); 
+
+		$('#drawCancel').live('click', function () {						// When user clicks to save draw data into post. 
+				top.currentDrawing = ''; 
+				$('#mediaBox').hide();
+			}); 			
 			
-		$('#Edit').live('click', function () {						// User heatmap buttons and functions
-				shivaLib.Annotate();
-				var offset = $('#mediaWrap').offset();
-				var leftP = offset.left + 'px'; 
-				var topP = offset.top + 'px'; 
-				$('#shivaDrawDiv').css({'top' : topP, 'left' : leftP});
-			});
+		$('.mediaMsg').live('click', function () {
+				event.stopImmediatePropagation();
+
+				var postId = $(this).parent('.threadText').attr('level'); 
+				
+				 top.currentDrawData = ''; 
+				 top.currentMediaType = 'Web';
+				 var i, o; 
+				 for(i = 0; i < top.data.allPosts.length; i++){
+					 o = top.data.allPosts[i];
+					 
+					 if(o.postID == postId){
+					 	top.currentDrawData = o.postMedia; 
+					 	top.currentMediaType = o.postMediaType; 
+					 	
+							var typeId = top.currentMediaType; 
+							var type; 
+								 switch(typeId)									// Get what kind of iframe this is
+									{
+									case 'Video':
+									 	type = 'video';
+									  break;
+									case 'Drawing':
+										type = 'draw';
+									  break;		  
+									case 'Map':
+										type = 'map'; 
+									  break;	
+									default:
+										type = 'webpage'; 
+									}
+								
+								var html = 	'<iframe id="display" src="http://www.viseyes.org/shiva/'+ type + '.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>'; 
+								
+								//$('#mediaDisplayWrap').html(html); 
+								 
+								var iFrameName = type+'Frame';  
+								var cmd ="PutJSON="+top.currentDrawData;
+								document.getElementById(iFrameName).contentWindow.postMessage(cmd,"*");			
+								$('#mediaDisplay').show();
+								$('#webpageFrame').hide();
+								$('#videoFrame').hide();
+								$('#drawFrame').hide();
+								$('#mapFrame').hide();
+								
+								
+								$('#' + iFrameName).show();
+			 	
+					 }
+				 }
+				
+				
+								
+			}); 		
 
 } /* end function Dscourse
 
@@ -1597,8 +1712,9 @@ Dscourse.prototype.AddPost=function(){
 		var postSelection = $('#locationIDhidden').val();
 	
 	// Get drawing value
-		var postMedia = shivaLib.dr.SaveDrawData(true); 
-	
+		var postMedia; 
+		postMedia  = main.currentDrawing; 
+			
 	// Create post object and append it to allPosts
 	
 			post = {
@@ -1607,7 +1723,8 @@ Dscourse.prototype.AddPost=function(){
 				'postMessage': postMessage,
 				'postType': postType,
 				'postSelection': postSelection,
-				'postMedia' : postMedia
+				'postMedia' : postMedia, 
+				'postMediaType' :  main.postMediaType
 			};
 		
 		
@@ -1725,21 +1842,22 @@ Dscourse.prototype.AddPost=function(){
 				 switch(d.postType)									// Get what kind of post this is 
 					{
 					case 'agree':
-					  typeText = ' agreed: ';
+					  typeText = ' <span class="typicn thumbsUp "></span>';
 					  break;
 					case 'disagree':
-					  typeText = ' disagreed: ';
+					  typeText = ' <span class="typicn thumbsDown "></span>';
 					  break;
 					case 'clarify':
-					  typeText = ' asked to clarify: ';
+					  typeText = ' <span class="typicn unknown "></span>';
 					  break;
 					case 'offTopic':
-					  typeText = ' marked as off topic: ';
+					  typeText = ' <span class="typicn forward "></span>';
 					  break;		  
 					default:
-					  typeText = ' commented: ';
+					  typeText = ' <span class="typicn message "></span>';
 					}
-				 
+
+
 				 if(d.postMessage != ' '){									// Proper presentation of the message URL
 					message = d.postMessage ; 
 					message = main.showURL(message);
@@ -1754,15 +1872,24 @@ Dscourse.prototype.AddPost=function(){
 					 topLevelMessage = 'topLevelMessage'; 
 				 }
 				 
+				 
+				 // Check if this post has media assigned. 
+				 var media = ''; 
+				 if(d.postMedia.length > 1){
+				 	media = '<span href="#" rel="tooltip" title="This post has media attachment. Click to view." class="mediaMsg">  <span class="typicn tab "></span> </span> ';
+				 }
+				 
 				 var selector = 'div[level="'+ d.postFromId +'"]';
 				 var responses = main.ResponseCounters(d.postID);	
 				 $(selector).append(						// Add post data to the view
 				 	  '<div class="threadText ' + topLevelMessage +'" level="'+ d.postID + '" postTypeID="'+ d.postType+ '" postAuthorId="' + d.postAuthorId + '" time="' + time + ' ">' 
-				 	+  '<span class="postAuthorView" rel="tooltip"  title="' + authorThumb + '"> ' + authorID + '</span>'
 				 	+  '<span class="postTypeView"> ' + typeText + '</span>'
-				 	+  '<span class="postMessageView"> ' + message  + '</span>'
+				 	+  '<span class="postMessageView"> ' + message  + '</span><br />'
+				 	+  '<span class="postAuthorView" rel="tooltip"  title="' + authorThumb + '"> ' + authorID + '</span>'
+				 	
 				 	+ ' <div class="sayBut2" postID="'+ d.postID + '">say</div> '
 				 	+ responses 
+				 	+ media
 				 	+ ' </div>'
 				 );
 				 
@@ -1796,13 +1923,14 @@ Dscourse.prototype.AddPost=function(){
 Dscourse.prototype.UniqueParticipants=function(){					// Populate unique participants.  
 	
 		 var main = this;
+		 $('.uList').remove();
 		 var i, o, name, thumb, output; 
 		 for(i = 0; i < main.uParticipant.length; i++){
 			 o = main.uParticipant[i]; 
 			 name = main.getName(o); 
 			 thumb = main.getAuthorThumb(o, 'small'); 
-			 output = '<li class="uList" rel="tooltip" title="' + name + '" authorID="' + o +  '">' + thumb + ' </li>'; 
-			 $('#participantList').append(output); 
+			 output = '<button class="btn uList" rel="tooltip" title="' + name + '" authorID="' + o +  '">' + thumb + ' </button>'; 
+			 $('#heatmapButtons').append(output); 
 		 }
 		 
 		 
@@ -1884,11 +2012,11 @@ Dscourse.prototype.ResponseCounters=function(postId){
 		  		}
 		  }	
 		  var commentText = ' ', agreeText = ' ', disagreeText = ' ', clarifyText = ' ', offTopicText = ' '; 
-		  if(comment 	> 0){commentText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="comment" title="<b>Comments from: </b><br /> ' + commentPeople +'" > ' + comment 	+ '  <span class="typicn message "> </span></span>  ';} 
-		  if(agree 	 	> 0){agreeText 		= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="agree" title="<b>People who agreed: </b><br /> ' + agreePeople + '"> ' + agree 	+ '  <span class="typicn thumbsUp "> </span> </span> '	 ;}
-		  if(disagree	> 0){disagreeText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="disagree" title="<b>People who disagreed:</b><br /> ' + disagreePeople + '"> ' + disagree 	+ '  <span class="typicn thumbsDown "> </span></span> ';}
-		  if(clarify 	> 0){clarifyText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="clarify" title="<b>People that asked to clarify:</b><br /> ' + clarifyPeople + '"> ' + clarify 	+ '  <span class="typicn unknown "> </span></span> ' ;}
-		  if(offTopic 	> 0){offTopicText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="offTopic" title="<b>People that marked off topic: </b><br />' + offTopicPeople + '"> ' + offTopic 	+ '  <span class="typicn directions "> </span> </span>  ' ;}
+		  if(comment 	> 0){commentText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="comment" title="<b>Comments from: </b><br /> ' + commentPeople +'" > ' + comment 	+ '  <span class="typicn message "></span></span>  ';} 
+		  if(agree 	 	> 0){agreeText 		= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="agree" title="<b>People who agreed: </b><br /> ' + agreePeople + '"> ' + agree 	+ '  <span class="typicn thumbsUp "></span> </span> '	 ;}
+		  if(disagree	> 0){disagreeText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="disagree" title="<b>People who disagreed:</b><br /> ' + disagreePeople + '"> ' + disagree 	+ '  <span class="typicn thumbsDown "></span></span> ';}
+		  if(clarify 	> 0){clarifyText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="clarify" title="<b>People that asked to clarify:</b><br /> ' + clarifyPeople + '"> ' + clarify 	+ '  <span class="typicn unknown "></span></span> ' ;}
+		  if(offTopic 	> 0){offTopicText 	= '<span href="#" rel="tooltip" class="postTypeWrap" typeID="offTopic" title="<b>People that marked off topic: </b><br />' + offTopicPeople + '"> ' + offTopic 	+ '  <span class="typicn forward "></span> </span>  ' ;}
 
 		  var text =   commentText + agreeText + disagreeText + clarifyText + offTopicText ; 
 		 
@@ -1991,6 +2119,10 @@ Dscourse.prototype.Heatmap=function(type, action)					// Highlights the relevant
 
 			 }	
 }
+
+
+
+
 /***********************************************************************************************/ 
 /*                					HELPER FUNCTIONS 									   */
 /***********************************************************************************************/

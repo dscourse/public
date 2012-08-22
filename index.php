@@ -25,8 +25,7 @@
 
 	<link href="assets/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="assets/css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css" />
-	<link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css" />
-		
+	<link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css" />		
 
 	<script type="text/javascript" src="scripts/js/validation.js"></script>
 	<script type="text/javascript" src="scripts/js/users.js"></script>
@@ -817,16 +816,8 @@
 	
 		<div class="span8">
 			<div id="controls" class="well">
-			<div class="btn-group" id="heatmapButtons">
-					  <button class="hmButtons btn btn-small disabled">  Heatmap </button>
-					  <button class="hmButtons btn btn-small" heatmap="comment"> <span class="typicn message "> </span> </button>
-					  <button class="hmButtons btn btn-small" heatmap="agree"> <span class="typicn thumbsUp "></span> </button>
-					  <button class="hmButtons btn btn-small" heatmap="disagree"> <span class="typicn thumbsDown "></span></button>
-					  <button class="hmButtons btn btn-small" heatmap="clarify"> <span class="typicn unknown "></span></button>
-					  <button class="hmButtons btn btn-small" heatmap="offTopic"> <span class="typicn directions "></span></button>
-					</div>
+			
 				<div class="btn-group" id="zoomButtons">
-					  <button class="zButtons btn btn-small disabled"> </span> <div id="zoomText">Zoom</div> </button>
 					  <button class="zButtons btn btn-small" zoom="in"> <span class="typicn zoomIn "> </span> </button>
 					  <button class="zButtons btn btn-small" zoom="out"> <span class="typicn zoomOut "></span> </button>
 					  <button class="zButtons btn btn-small" zoom="reset"> <span class="typicn expand "></span> </button>
@@ -834,7 +825,7 @@
 					</div>
 						
 				<button id="showtimeline" class="btn btn-small"> <span class="typicn time "></span>  Show Timeline </button>	
-				<button id="showParticipants" class="btn btn-small"> <span class="typicn group "></span>  Show Participants </button>	
+				<button id="showParticipants" class="btn btn-small"> <span class="typicn views "></span>  Show Heatmap </button>	
 			
 			
 
@@ -849,6 +840,14 @@
 					</div>
 
 					<div id="participants" class="well">
+						
+					<div class="btn-group" id="heatmapButtons">
+					  <button class="hmButtons btn btn-small" heatmap="comment"> <span class="typicn message "> </span> </button>
+					  <button class="hmButtons btn btn-small" heatmap="agree"> <span class="typicn thumbsUp "></span> </button>
+					  <button class="hmButtons btn btn-small" heatmap="disagree"> <span class="typicn thumbsDown "></span></button>
+					  <button class="hmButtons btn btn-small" heatmap="clarify"> <span class="typicn unknown "></span></button>
+					  <button class="hmButtons btn btn-small" heatmap="offTopic"> <span class="typicn forward "></span></button>
+					</div>
 
 						<ul id="participantList">
 						
@@ -879,8 +878,11 @@
 				  <button class="btn postTypeOptions" id="agree" > <span class="typicn thumbsUp "></span> Agree</button>
 				  <button class="btn postTypeOptions" id="disagree" > <span class="typicn thumbsDown "></span> Disagree</button>
 				  <button class="btn postTypeOptions" id="clarify" > <span class="typicn unknown "></span> Ask to Clarify</button>
-				  <button class="btn postTypeOptions" id="offTopic" > <span class="typicn directions "></span> Mark Off Topic</button>
+				  <button class="btn postTypeOptions" id="offTopic" > <span class="typicn forward "></span> Off Topic</button>
 				</div>
+				
+
+
 					</div>
 			</div>
 			
@@ -892,107 +894,97 @@
 					<div id="textError">If you are commenting you need to enter a comment.</div>
 					<textarea id="text">Your comment...</textarea>	
 				</div>
+			
+			<span id="media">  <span class="typicn tab "></span>  Add Media</span>
+
 			</div>
+			
+			
+						
 			<div id="bottom">
-				<div id="bottomlinks">
-					<span id="media" class="">  <span class="typicn tab "></span>  Add Media</span>
-				</div>	
+
 				<div id="buttons">
 					<input type="button" id="postCancel" class="buttons btn btn-info" value="Cancel">
 					<input id="addPost" type="button" class="buttons btn btn-primary" value="Add to dscourse">
 				</div>
 			</div>
-			<div id="mediaBox">
-				<div id="mediaTools">
-					<div id="toolList" >
 
-						<div class="btn-group" id="drawGroup">
-							<button class="btn btn-small drawTypes active" id="Web page"><i class="icon-globe"></i> Web Page</button>
-							<button class="btn btn-small drawTypes" id="Document"><i class="icon-file"></i> Document</button>
-							<button class="btn btn-small drawTypes" id="Video"><i class="icon-film"></i> Video</button>
-							<button class="btn btn-small drawTypes" id="Drawing"><i class="icon-edit"></i> Drawing</button>
-							<button class="btn btn-small drawTypes" id="Map"><i class="icon-map-marker"></i> Map</button>
-						</div>
-
-					</div>
-																<button class="btn btn-small btn-info" id="Edit"><i class="icon-pencil icon-white"></i> Annotate</button>
-
-				</div>
-				<div id="mediaWrap"></div>
-
-			</div>
-			
-			
+				
 	</div> <!-- close commentWrap --> 
+
+
+	<div id="mediaBox">
+	<a class="close" data-dismiss="alert" href="#" id="closeMedia" >&times;</a>
+		
+		<div id="mediaTools">	
+			<div id="drawGroup" class="btn-group">
+				<button class="btn btn-small drawTypes active" id="Web"><i class="icon-globe"></i> Link</button>
+				<button class="btn btn-small drawTypes" id="Document"><i class="icon-file"></i>  Document</button>
+				<button class="btn btn-small drawTypes" id="Video"><i class="icon-film"></i> Video</button>
+				<button class="btn btn-small drawTypes" id="Drawing"><i class="icon-edit"></i>  Drawing</button>
+				<button class="btn btn-small drawTypes" id="Map"><i class="icon-map-marker"></i>Map</button>
+			</div>
+			<div id="mediaButtons" class="pull-right">	
+				<button id="drawCancel" class="btn btn-info">Cancel</button>
+				<button id="continuePost" class="btn btn-primary" >Continue posting</button>		
+			</div>
+		</div>
+		
+	
+		<div id="mediaWrap">
+			<iframe id="node" src="http://www.viseyes.org/shiva/webpage.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
+
+		</div>	
+
+		
+	</div><!-- close mediabox --> 
+
+
+	<div id="mediaDisplay"> 
+		<a class="close" data-dismiss="alert" href="#" id="closeMediaDisplay" >&times;</a>
+
+		<div id="mediaDisplayWrap">
+					<iframe class="hidden" id="webpageFrame" src="http://www.viseyes.org/shiva/webpage.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
+					<iframe class="hidden" id="videoFrame" src="http://www.viseyes.org/shiva/video.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
+					<iframe class="hidden" id="drawFrame" src="http://www.viseyes.org/shiva/webpage.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
+					<iframe class="hidden" id="mapFrame" src="http://www.viseyes.org/shiva/webpage.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
+
+		</div>	
+	
+	</div><!-- close mediaDisplay --> 
 
 
 </div><!-- End individual discussion page --> 
 
 <script>
-// Shiva media drawing tools. 
-	var shivaLib=null;
-	
+// Latest itiration of the shiva elements through iframe
+var sampleData="{\"chartType\": \"BarChart\",\"areaOpacity\": \".3\",\"backgroundColor\": \"\",\"chartArea\": \"\",\"colors\": \"\",\"fontName\": \"Arial\",\"fontSize\": \"automatic\",\"hAxis\": \"\",\"legend\": \"right\",\"legendTextStyle\": \"\",\"height\": \"400\",\"isStacked\": \"true\",\"lineWidth\": \"2\",\"pointSize\": \"7\",\"series\": \"\",\"title\": \"\",\"titleTextStyle\": \"\",\"tooltipTextStyle\": \"\",	\"vAxis\": \"\",\"width\": \"600\",	\"dataSourceUrl\": \"https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AsMQEd_YoBWldHZNbGU2czNfa004UmpzeC13MkZZb0E&output=html\",\"query\": \"\",\"shivaGroup\": \"Visualization\"}";
+
 	$(document).ready(function() {
-   		shivaLib=new SHIVA_Show("mediaWrap");
-		Draw("Web page");
-		});
-
-function Draw(val)
-{
-	var options=new Object();
-	$("#mediaWrap").empty();
-	$("#mediaWrap").width(505);
-	$("#mediaWrap").height(400);
-	$("#mediaWrap").css("background-color","transparent");
-	switch(val) {
-		case "Web page":
-   			options={ "shivaGroup":"Webpage","url":"http://www.viseyes.org" };
-    		break;
-		case "Document":
-   			options={ "shivaGroup":"Webpage","url":"http://www.viseyes.org/VisualEyesProjectGuide.pdf" };
-    		break;
-		case "Drawing":
-   			options={ "shivaGroup":"Webpage","url":"" };
-   			break;
- 		case "Video":
-			 options={
-				"dataSourceUrl": "zDZFcDGpL4U",
-				"start": "0:0",
-				"end": "",
-				"autoplay": "false",
-				"volume": "50",
-				"height": "310",
-				"width": "505",
-				"duration": "?",
-				"ud": "false",
-				"shivaMod": "Tue, 31 Jul 2012",
-				"shivaGroup": "Video"
-				};
-    		break;
- 		case "Map":
-			 options={
-				"mapcenter": "38.03,-78.48,11",
-				"draggable": "false",
-				"height": "400",
-				"width": "505",
-				"mapTypeId": "Roadmap",
-				"scrollwheel": "true",
-				"overviewMapControl": "false",
-				"panControl": "false",
-				"streetViewControl": "false",
-				"mapTypeControl": "true",
-				"zoomControl": "true",
-				"controlbox": "false",
-				"ud": "false",
-				"shivaMod": "Tue, 31 Jul 2012",
-				"shivaGroup": "Map"
-				};
-			break;
-   			} 
-  	shivaLib.Draw(options);
-}
-
+		if (window.addEventListener) 
+				window.addEventListener("message",shivaMessageHandler,false);
+			else
+				window.attachEvent("message",shivaMessageHandler);
+			});
+		
+	function shivaMessageHandler(e)
+	{
+		var msg="Unrecognized";
+		if (e.data.indexOf("GetJSON=") == 0) 
+			msg=e.data.substr(8);
+		else if (e.data.indexOf("GetType=") == 0) 
+			msg=e.data.substr(8);
+		dscourse.currentDrawing = msg;
+		console.log(dscourse.currentDrawing); 
+	}
 	
+	function ShivaMessage(iFrameName,cmd) 
+	{
+	    if (cmd.indexOf("PutJSON") == 0)
+	     	console.log(dscourse.currentDrawData);
+	    	cmd+="="+dscourse.currentDrawData;
+	    document.getElementById(iFrameName).contentWindow.postMessage(cmd,"*");
+ 	}
 </script>
 
 <script type="text/javascript">

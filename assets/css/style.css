@@ -231,6 +231,13 @@ margin-left: 8px;
 	font-size: 17px;
 }
 
+
+.whiteActive{
+	border-bottom: 1px solid white !important;
+	margin-bottom: -1px !important;	
+}
+
+
 /* GLOBAL LAYOUT */
 
 #logo {
@@ -351,6 +358,7 @@ margin-left: 8px;
 	filter: alpha(opacity=10);
 }
 
+
 .levelWrapper {
 	height: 100%;
 	padding-right: 10px;
@@ -364,7 +372,7 @@ margin-left: 8px;
 
 .topLevelMessage {
 padding: 10px !important;
-border-left: 3px solid #ccc !important;
+border-left: 3px solid #eee !important;
 margin-left: 0 !important;
 }
 
@@ -426,30 +434,11 @@ margin-left: 0 !important;
 
 /*  Discussions Page */
 
-		#dragImage {
-			background:#ccc url(../img/dots.png) no-repeat top left;
-			width: 7px;
-			height: 14px; 
-			margin-left: 3px;
-		}
-		#sizeBut {cursor:move; margin-top:-100px;}
-		.feedDiv {padding: 0 5px; margin-top: -5px;}
-		.allPanes {font-size: 12px;}
-		.threads {padding:10px 25px 0 25px !important;}
-		.thread2{margin-left: 25px;}
-		.thread3{margin-left: 50px;}
-		#timePane {
-				background: -webkit-linear-gradient(top, rgba(126,195,238,0.34) 0%, rgba(126,161,222,0.75) 100%);
-				border: 1px solid #ccc;
-				font-size: 12px;
-		}
-		.sayBut {
-			border-radius: 10px;
-			width: 20px;
-			height: 20px;
-			padding: 0 2px 0 1px; 
-			font-size: 12px;
-		}
+#discussionDivs {
+height: 700px;
+overflow-y: scroll;	
+}
+
 
 		.boxHeaders small {
 			font-weight: normal;
@@ -460,8 +449,9 @@ margin-left: 0 !important;
 		.feedDiv{
 			font-size: 12px;
 		}
-		
+				
 		.sayBut2 {
+		
 			width: 20px;
 			height: 30px;
 			background: url(../img/icons/sayL.png) top;
@@ -469,23 +459,29 @@ margin-left: 0 !important;
 			font-weight: bold;
 			font-size: 12px;
 			margin-left: 10px;
-			//float: right;
 			display: inline;
 			vertical-align: top;
 		}
 		.sayBut2:hover {
 			background: url(../img/icons/sayD.png) center;
 			color: #eee;
+			
 		}
+	
 
 		.boxHeaders .sayBut2 {
 			background: url(../img/icons/sayL2.png) top;
-			padding: 11px 15px;
-			font-size: 14px;
+			padding: 13px 6px 0px 10px;
+			font-size: 16px;
+			display: inline-block !important; 
+			margin-top: -10px;
+			width: 32px;
+			height: 32px;
 		}
 		.boxHeaders .sayBut2:hover {
 			background: url(../img/icons/sayD2.png) center;
 			color: #eee;
+
 		}
 
 
@@ -493,29 +489,67 @@ margin-left: 0 !important;
 		.threadText {
 			background-color: #fff;
 			padding: 5px 0px 5px 10px;
-			margin-top: 13px;
+			margin-top: 3px;
 			width: 96%;
-			border-left: 1px solid #CCC;
+			border-left: 1px solid #eee;
 			margin-left: 10px;
+			line-height: 23px; 
+			font-size: 13px; 
+			
 		}
 		
 		#dTitleView {
 			width:90%;
 		}
 		
+#mediaDisplay {
+		display: none; 
+		position: absolute; 
+		top: 50px;
+		left: 50px; 
+		width: 90%;
+		background: #efefef; 	
+		padding: 20px; 
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;	
+				-webkit-box-shadow: inset 0px 0px 10px 0px #CCC, 0px 0px 19px 0px #999;
+				-moz-box-shadow: inset 0px 0px 10px 0px #CCC, 0px 0px 19px 0px #999;
+				box-shadow: inset 0px 0px 10px 0px #CCC, 0px 0px 19px 0px #999;
+}
 
+#mediaDisplayWrap {
+		padding: 20px;
+		width: 90%;
+}
 
-.postAuthorView {color: #687e83}
-.postTypeView   {color: #b9b9b9; font-style: italic}
-.postMessageView{}
+.postAuthorView {color: #08C; line-height: 23px; margin-left: 27px; }
+.postTypeView   {
+
+}
+.postMessageView{
+	display: inline-block;
+margin: -26px 0 0 27px;
+}
 
 .postTypeWrap {
-	background-color: #EEE;
+	display: none;
+	background-color: #efefef;
 	margin-left: 5px;
-	padding: 3px 6px;
+	padding: 3px 4px 3px 5px;
 	border-radius: 10px;
-	font-size: 12px;	
+	font-size: 11px;	
 }
+
+.mediaMsg {
+	display: none;
+	background-color: #efefef;
+	margin-left: 5px;
+	padding: 3px 4px 3px 5px;
+	border-radius: 10px;
+	font-size: 11px;	
+}
+
 
 .buttonEffect{
 	-moz-box-shadow: inset 0 0 10px #666;
@@ -539,7 +573,7 @@ box-shadow: inset 0px 1px 2px #666;
 	background: white;
 	border: 1px solid #CCC;
 	resize: none;
-	width: 508px;
+	width: 470px;
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
@@ -577,26 +611,20 @@ box-shadow: inset 0px 1px 2px #666;
 /* Caner's version of the Discussion box */
 
 			#commentWrap {
-				position:absolute;
+				position: absolute;
 				display: none;
-				margin: 100px auto;
-				//height: 160px;
-				width: 520px;
-				background-color: #eeeeee;
-				border-style: solid;
-				border-width: 2px;
-				border-color: #eeeeee;
-				-webkit-border-radius: 5px;
-				-moz-border-radius: 5px;
-				border-radius: 5px;
-				-webkit-box-shadow: 0 0 30px 0px #666;
-				-moz-box-shadow: 0 0 30px 0px #666;
-				box-shadow:0 0 30px 0px #666;				
-				padding: 10px;
-				font-family: Helvetica, sans-serif; 
+				width: 490px;
+				background-color: #EEE;
+				-webkit-box-shadow: inset 0px 0px 10px 0px #CCC, 0px 0px 19px 0px #999;
+				-moz-box-shadow: inset 0px 0px 10px 0px #CCC, 0px 0px 19px 0px #999;
+				box-shadow: inset 0px 0px 10px 0px #CCC, 0px 0px 19px 0px #999;
+				font-family: Helvetica, sans-serif;
 				font-size: 12px;
 				z-index: 1099;
 				clear: both;
+				margin: 10px 0px 20px -11px;
+				border-radius: 8px;
+				padding: 12px;
 			}
 			
 			#commentWrap p {
@@ -608,7 +636,7 @@ box-shadow: inset 0px 1px 2px #666;
 				vertical-align: baseline;
 			}
 			#text {
-				width: 508px;
+				width: 470px;
 				height: 60px;
 				border: 1px solid #ccc;
 				padding: 5px;
@@ -623,23 +651,22 @@ box-shadow: inset 0px 1px 2px #666;
 				padding: 0px;
 				margin: 10px auto;
 				margin-top: 0px;
+				height: 30px;
+				clear: both;
 			}
 			
-			#quick li {
-				margin-bottom: 5px;
-				margin-right: 10px;
-				list-style: none;
-				display: inline-block;
+			#quick button {
+
 			}
 			
-			#bottomlinks {
-				float: left;
+			#bottom {
+				clear: both;
+				height: 30px;
 			}
 			
 			#buttons {
-				margin-right: 5px;
-				margin-left: 225px;
 				display: inline;
+				float: right;	
 			}
 			
 			.logos {
@@ -660,19 +687,23 @@ box-shadow: inset 0px 1px 2px #666;
 			#mediaBox {
 				clear:both;
 				display: none;
+				position: absolute;
+				top: 50px;
+				left: 50px;
+				padding: 12px;
+				background: #eee;
 				margin-top: 10px;
+				height: 600px;
+				width: 90%;
+				z-index: 1099;
 			}
 			
 			#mediaWrap {
-				width: 505px;
-				height: 400px;
-				background: white;
+				width: 96%;
+				background: white !important;
 				padding: 5px;
-				margin-top: 10px;
 				border: 1px solid #CCC;
-				border-radius: 5px;
-				-webkit-border-radius: 5px;
-				-moz-border-radius: 5px;
+				margin-top: 35px;
 			}
 			
 			#shivaDrawDiv {
@@ -682,17 +713,57 @@ box-shadow: inset 0px 1px 2px #666;
 			}
 			
 			#mediaTools {
-				padding: 5px;
-				height: 15px; 
+				padding: 5px; 
+			
 			}
 			
-			#toolList {
-			        margin: 0;
-			    }
+			#mediaButtons {
+				margin-right: 22px;
+			}
 			
 			#drawGroup {
 				display: inline;
 			}
+			
+			#drawGroup button {
+				width: 100px;
+				font-size: 11px;
+				padding: 5px;
+				margin: 0px 0px 5px -5px;
+			}
+	
+			
+			#media {
+				float: left;
+				background: white;
+				padding: 8px;
+				border: 1px solid #CCC;
+			}
+			
+			#postTypeID {
+				float: left; 
+			}
+			
+			#source {
+				margin: 5px 20px 0 20px;
+			}
+			
+.hmButtons {
+	height: 34px;
+	width: 39px;
+}			
+
+.uList {
+	padding: 0;
+}
+
+#shivaDrawPaletteDiv input {
+	padding: 0; 
+	//height: 300px;	
+}	
+#shivaDrawPaletteDiv  {
+	font-size: 11px !important;		
+}		
 
 /* SPECIFIC TO file uploader script */
 
@@ -847,7 +918,7 @@ box-shadow: inset 0px 1px 2px #666;
 .thumbsDown {color: #b98383; font-size: 16px;}
 .message 	{color: #7d7dbc; font-size: 16px;}
 .unknown 	{color: #a76ba7; font-size: 16px;}
-.directions {color: #c39949; font-size: 16px;}
+.forward {color: #c39949; font-size: 16px;}
 .tab 		{font-size: 20px;}
 
 .greyIcons {
@@ -855,7 +926,7 @@ box-shadow: inset 0px 1px 2px #666;
 
 .dCollapse .typicn {
 	margin: 0 0 0 5px;
-	font-size: 18px;
+	font-size: 15px;
 	font-weight: normal;
 }
 
