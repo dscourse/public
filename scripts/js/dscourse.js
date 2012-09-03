@@ -2,7 +2,7 @@
  *  All Course related code
  */
 
-function Dscourse () 
+function Dscourse() 
 {
 
 	// Global
@@ -12,6 +12,7 @@ function Dscourse ()
 	this.data.allCourses = new Array();
 	this.data.allDiscussions = new Array();
 	this.data.allPosts = new Array();
+
 
 
 	this.saveStatus = "saved"; 							// Global variable for save status. To be used for when user wants to leave without saving. 
@@ -59,19 +60,25 @@ function Dscourse ()
 	
 	
 	// Get all Data
-
-	this.GetData();
-
+		
+	this.GetData('getAll', 'load');
+	
+	
+	
+	 
+	
 
 	// All view related actions that need to be loaded in the beginning
 	var top = this;
 	
+
+
 	$(document).ready(function() {										// Wait for everything to load. 
 	
-		
+	
 		/************ Navigations  ******************/
-		showHome();
 		
+ 		
 		var linkID;	
 		$('.nav > li > a').live('click', function () {					// Show page contents depending on what link was clicked. 
 			linkID = $(this).attr('id');
@@ -81,25 +88,35 @@ function Dscourse ()
 			{
 			case 'usersNav':
 			  $('#usersPage').show();
+			  $("#addUserForm").fadeOut();
+			  $("#userList").delay(200).fadeIn();
+			  $('#addUserLink').addClass('linkGrey');
+			  $('#userListLink').removeClass('linkGrey');
 			  dscourse.imgUpload = 'user';
 			  break;
 			case 'coursesNav':
 			  $('#coursesPage').show();
 			  dscourse.imgUpload = 'course';
+			  $('#allCoursesView').removeClass('linkGrey');			  
 			  break;
 			case 'discussionsNav':
 			  $('#discussionsPage').show();
+			  $('.headerTabs a').addClass('linkGrey');			  
 			  $('#allDiscussionView').removeClass('linkGrey');
+			  $('#discussionForm').fadeOut();
+			  $('#discussions').delay(300).fadeIn();
 			  break;
 			case 'profileNav':
 			  var userid = $(this).attr('userid');
 			  dscourse.UserProfile(userid);	
+			  dscourse.imgUpload = 'user';
 			  $('#profilePage').show();
 			  break;		  
 			default:
 			  $('#homePage').show();
 			}
 		});
+ 
 			
 		$('#homeNav').live('click', function () {						// Home link
 				showHome();
@@ -109,7 +126,9 @@ function Dscourse ()
 				$('.page').hide();
 				var userid = $(this).attr('userid');
 			  dscourse.UserProfile(userid);
-			  $('#profilePage').show();
+			  $('#userInfoWrap').show(); // hide user info
+			  $('#addUserForm').hide(); // make visible user edit form. 
+			  $('#profilePage').show();		
 			  $('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
 	
 		});    
@@ -130,7 +149,6 @@ function Dscourse ()
 			dscourse.SingleDiscussion(discID);
 			$('.page').hide();
 			$('#footerFixed').hide();
-			$('.sayBut2').hide();
 			$('#discussionWrap').show();
 			$('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
 
@@ -150,6 +168,7 @@ function Dscourse ()
 		$('#addDiscussionView').addClass('linkGrey');
 	
 		$("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
+		$("#discussionOpenDate").datepicker({ dateFormat: "yy-mm-dd" });
 		$("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd" });
 	
 		$("#courseStartDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
@@ -174,11 +193,14 @@ function Dscourse ()
 	
 	// IF the users wants to leave they get a message
 	
-			  window.onbeforeunload = confirmExit;
+			  // window.onbeforeunload = confirmExit;
 			  function confirmExit()
 			  {
+			  	// Have a variable for unsaved changes. 
 			    return "This will take you away from Dscourse.";
 			    }
+			    
+			    
 		$('#highlightShow').live('mouseup', function () {
 			
 			var spannedText = $(this).find('span').text(); 					//remove highlight from text
@@ -208,33 +230,32 @@ function Dscourse ()
 				event.stopPropagation();
 				$('.threadText').removeClass('highlight');
 				$('.threadText').find('span').removeClass('highlight');
-				var postClickId = $(this).closest('div').attr('level'); 
+				var postClickId = $(this).closest('div').attr('level');
+				console.log('Post click ID: ' + postClickId);  
 				dscourse.HighlightRelevant(postClickId);
 				$(this).addClass('highlight');
 			});
 
-		$('.postAuthorView').live('mouseover', function (event) {
-				event.stopImmediatePropagation();
-
-				// Hide everything else
-				$('.postTypeWrap').fadeOut('fast');
-				$('.sayBut2').fadeOut('fast');
-				$('.mediaMsg').fadeOut('fast');				
-				
-				// Show this group only. 
-
-				$(this).parent().children('.postTypeWrap').fadeIn('fast');
-				$(this).parent().children('.sayBut2').fadeIn('fast');	
-				$(this).parent().children('.mediaMsg').fadeIn('fast');				
-							
-			});		
 
 		$('.dCollapse > h4').live('click', function () {
 			$(this).parent().find('.content').fadeToggle();
 		});
 
+		/* 
+		// Not doing this for the moment. 
 		
-		
+		$("#discussionWrap").scroll(function(){
+				var scrollLocation = document.getElementById("discussionWrap").scrollTop; 
+				if(scrollLocation > 125) {
+				 
+					$('#controlsWrap').appendTo($('#discussionWrap')); // remove #controlsWrap and append to discussionWrap
+					$('#controlsWrap').addClass('controlWrapFixed'); // Set controlWrapFixed class to the #controlsWrap
+				} else { 
+					$('#controlsWrap').appendTo($('#discussionTop')); // append controlsWrap to the top of #discussionTop	
+					$('#controlsWrap').removeClass('controlWrapFixed');// Remove class .controlWrapFixed 	
+				}
+			});
+		*/
 		
 		
 	
@@ -247,9 +268,13 @@ function Dscourse ()
 		$('#userListLink').addClass('linkGrey');
 		$(this).removeClass('linkGrey');
 		$("#userList").fadeOut();
-		$("#addUserForm").delay(200).fadeIn();
+		
+		
+		$("#addUserForm").fadeIn();		
 		$('#userButtonDiv').html('<button class="btn btn-primary" id="addUserButton">Add User</button> <button class="btn btn-info" id="cancelUser">Cancel</button>');
 		top.ClearUserForm();	 // Fields are emptied to reuse
+		
+		
 	});
 	
 	$("#userListLink").live('click', function() {
@@ -269,8 +294,8 @@ function Dscourse ()
 	});		
 
 	$('#updateUser').live('click', function() {  				// When edit button is clicked. 	
-		updateUser();											// Edit the course with the specific id.
-		dscourse.GetData();
+		updateUser('all');											// Edit the course with the specific id.
+		top.GetData();
 		$("#addUserForm").fadeOut();
 		$("#userList").delay(200).fadeIn();
 		
@@ -278,7 +303,6 @@ function Dscourse ()
 	});	
 	
 	$('#cancelUser').live('click', function() {  
-		//dscourse.GetData();
 		$("#addUserForm").fadeOut();
 		$("#userList").delay(200).fadeIn();
 		
@@ -320,6 +344,37 @@ function Dscourse ()
 		filterUsers(searchTerm);
 	});
 
+	$('#profilePageEdit').live('click', function() {  				// Functions for user editing profile. 
+		
+		var thisUserID = $(this).attr('profilepageid');   // Get the userid from this button
+		top.ClearUserForm(); 							// clear the user form. 
+		$('#addUserForm').appendTo($('#profilePage'));// Append the user edit div to the user page 
+		$('#userButtonDiv').html('<button class="btn btn-primary" id="updateSingleUser" thisUser="' + thisUserID + ' ">Update User Information</button> <button class="btn btn-info" id="cancelSingleUser">Cancel</button>');
+ // change the submit button to something specific to individual user edit. 
+ 		$('#sysControl').hide();// Hide #sysControl - so user can't change her own system role. 
+ 		$('#userStatusControl').hide();// Hide #userStatusControl - so user can't change his own status. 
+		$('#email').attr('disabled', 'disabled');
+		$('#userInfoWrap').hide(); // hide user info
+		$('#addUserForm').fadeIn(); // make visible user edit form. 
+		editUser(thisUserID);// Apply the information to the empty boxes. 
+
+		// Dont' forget to restore when the user goes to the users page to edit. 
+	});
+	
+	$('#updateSingleUser').live('click', function() {  				// When edit button is clicked. 	
+		updateUser('single');											// Edit the course with the specific id.
+		var thisUserID = $(this).attr('thisUser');
+		$("#addUserForm").hide();
+		$('#userInfoWrap').fadeIn(); 	
+		$('html, body').animate({scrollTop:0});					// The page scrolls to the top to see the notification
+	});	
+	
+	$('#cancelSingleUser').live('click', function() {  
+		$("#addUserForm").hide();
+		$('#userInfoWrap').fadeIn(); 
+		$('html, body').animate({scrollTop:0});		
+	});
+
 
 
 /************ Course Events ******************/
@@ -327,7 +382,7 @@ function Dscourse ()
 
 	$('#allCoursesView').live('click', function() {  				// View all courses 	
 		top.listCourses('all');
-		$('small a').addClass('linkGrey');
+		$('.headerTabs a').addClass('linkGrey');
 		$(this).removeClass('linkGrey');
 		$('#courseForm').fadeOut();
 		$('#courses').delay(300).fadeIn();
@@ -336,7 +391,7 @@ function Dscourse ()
 	
 	$('#activeCoursesView').live('click', function() {  				// View all active courses 	
 		top.listCourses('active');
-		$('small a').addClass('linkGrey');
+		$('.headerTabs a').addClass('linkGrey');
 		$(this).removeClass('linkGrey');
 		$('#courseForm').fadeOut();
 		$('#courses').delay(300).fadeIn();
@@ -345,7 +400,7 @@ function Dscourse ()
 	
 	$('#archivedCoursesView').live('click', function() {  				// View all archived courses 	
 		top.listCourses('archived');
-		$('small a').addClass('linkGrey');
+		$('.headerTabs a').addClass('linkGrey');
 		$(this).removeClass('linkGrey');
 		$('#courseForm').fadeOut();
 		$('#courses').delay(300).fadeIn();
@@ -355,7 +410,7 @@ function Dscourse ()
 	$('#courseFormLink').live('click', function() {  				// View all archived courses 	
 		$('#courseForm').find('input:text, input:password, input:file, select, textarea').val(''); // Fields are emptied to reuse
 		$('#addPeopleBody').html('');
-		$('small a').addClass('linkGrey');
+		$('.headerTabs a').addClass('linkGrey');
 		$(this).removeClass('linkGrey');
 		$('#courses').fadeOut();
 		$('#courseForm').delay(200).fadeIn();
@@ -364,6 +419,13 @@ function Dscourse ()
 	
 	$('#courseFormSubmit').live('click', function() {  				// View all archived courses 	
 		top.addCourse();
+		$('.headerTabs a').addClass('linkGrey');
+		$('#allCoursesView').removeClass('linkGrey');
+		$('#courseForm').hide();
+		$('#courses').show();
+		$('.page').hide();	
+		$('#coursesPage').show();
+		$('html, body').animate({scrollTop:0});		// The page scrolls to the top to see the notification
 		top.ClearCourseForm(); // Fields are emptied to reuse
 	});
 	
@@ -386,7 +448,7 @@ function Dscourse ()
 		top.updateCourse();
 		top.saveCourses();									// Edit the course with the specific id. 	
 		top.listCourses('all');
-		$('small a').addClass('linkGrey');
+		$('.headerTabs a').addClass('linkGrey');
 		$(this).removeClass('linkGrey');
 		$('#courseForm').fadeOut();
 		$('#courses').delay(300).fadeIn();
@@ -420,6 +482,27 @@ function Dscourse ()
 	 					
 		});
 
+	$('#discussionFormUpdate').live('click', function() { 
+	
+			var discValState = ValidateDiscussions();						// Checks validation for discussion
+			var discussionID = $('#discIdHidden').val();
+			
+			if(discValState == 'pass'){	
+				top.updateDiscussion(discussionID);
+				top.ClearDiscussionForm(); // Fields are emptied to reuse
+				} 
+			else if(discValState == 'fail'){	
+				alert('Oops! It looks like you did not enter some information correctly. Check the error messages on the page for details.');
+				}					
+		});
+
+	$('#discussionFormCancel').live('click', function() { 
+		$('.headerTabs a').addClass('linkGrey');
+		$('#allDiscussionView').removeClass('linkGrey');
+		$('#discussionForm').fadeOut();
+		$('#discussions').delay(300).fadeIn();
+		top.ClearDiscussionForm(); // Fields are emptied to reuse
+		});
 
 	$('#discussionQuestion').live('change', function() {  			  	
 			checkDiscussionQuestion();
@@ -430,28 +513,32 @@ function Dscourse ()
 	});
 	
 	$('#allDiscussionView').live('click', function() {  					
-		$('small a').addClass('linkGrey');
+		$('.headerTabs a').addClass('linkGrey');
 		$(this).removeClass('linkGrey');
 		$('#discussionForm').fadeOut();
 		$('#discussions').delay(300).fadeIn();
 		top.ClearDiscussionForm(); // Fields are emptied to reuse
 	});
 	
+	
+	
 	$('#addDiscussionView').live('click', function() {  					
 		top.ClearDiscussionForm();
-		$('small a').addClass('linkGrey');
+		$('.headerTabs a').addClass('linkGrey');
 		$(this).removeClass('linkGrey');
 		$('#discussions').fadeOut();
 		$('#discussionForm').delay(200).fadeIn();
+		$('#discussionButtondiv').html('<button class="btn btn-primary" id="discussionFormSubmit">Submit</button> <button class="btn btn-info" id="discussionFormCancel">Cancel</button>'); 
 	});
 
-		$('.editDiscussion').live('click', function() {  				 	
+	$('.editDiscussion').live('click', function() {  				 	
 		top.ClearDiscussionForm();
 		var dID = $(this).attr('id');
-		$('small a').addClass('linkGrey');
+		$('.headerTabs a').addClass('linkGrey');
 		$('#discussions').fadeOut();
 		$('#discussionForm').delay(200).fadeIn();
 		top.editDiscussion(dID);
+		$('#discussionButtondiv').html('<button class="btn btn-primary" id="discussionFormUpdate">Update Discussion</button> <button class="btn btn-info" id="discussionFormCancel">Cancel</button>'); 
 	});
 	
 	$('.removeCourses').live('click', function() {
@@ -462,10 +549,13 @@ function Dscourse ()
 
 
 	$('#addPost').live('click', function() {
+
+		
 		var checkDefault = $('#text').val();				// Check to see if the user is adding default comment text. 
 		var buttonType = $('#postTypeID > .active').attr('id');
 		console.log('buttontype: ' + buttonType);
 		console.log('default text: ' + checkDefault);
+	
 		// If comment button has class active
 		if(buttonType == 'comment'){
 			if(checkDefault == 'Your comment...' || checkDefault == ''){
@@ -505,28 +595,34 @@ function Dscourse ()
 	});
 	
 	$('.sayBut2').live('click', function (e) {
-		$('#highlightDirection').hide();
-		$('#highlightShow').hide();
-		var postQuote = $(this).parent().children('.postMessageView').html();
-		postQuote = $.trim(postQuote);
-		console.log('postquote: ' + postQuote);
-				
-		var xLoc = e.pageX-80; 
-		var yLoc = e.pageY+10; 
-		$('#commentWrap').css({'top' : yLoc, 'left' : xLoc});
-		$('.threadText').removeClass('highlight');		
-		var postID = $(this).attr("postID");
-		console.log('Post id i got is:'  + postID);
-		if(postQuote != ''){
-			$('#highlightDirection').show();
-			$('#highlightShow').show().html(postQuote);
-			}
-		$('#postIDhidden').val(postID);			
-		$('#overlay').show();
-		$('#commentWrap').fadeIn('fast');
-		$(this).parent().addClass('highlight');
-		$('#text').val('Your comment...');
+		var discID = $('#dIDhidden').val();
+		var dStatus = top.DiscDateStatus(discID);
 		
+		if(dStatus != 'closed'){
+			$('#highlightDirection').hide();
+			$('#highlightShow').hide();
+			var postQuote = $(this).parent().children('.postMessageView').html();
+			postQuote = $.trim(postQuote);
+			console.log('postquote: ' + postQuote);
+					
+			var xLoc = e.pageX-80; 
+			var yLoc = e.pageY+10; 
+			$('#commentWrap').css({'top' : yLoc, 'left' : '30%'});
+			$('.threadText').removeClass('highlight');		
+			var postID = $(this).attr("postID");
+			console.log('Post id i got is:'  + postID);
+			if(postQuote != ''){
+				$('#highlightDirection').show();
+				$('#highlightShow').show().html(postQuote);
+				}
+			$('#postIDhidden').val(postID);			
+			$('#overlay').show();
+			$('#commentWrap').fadeIn('fast');
+			$(this).parent('.threadText').addClass('highlight');
+			$('#text').val('Your comment...');
+		} else {
+			alert('This discussion is closed.');
+		}
 
 	});
 	
@@ -580,15 +676,13 @@ function Dscourse ()
 				var currentType = $(this).attr('typeID'); 
 				var thisLink = $(this).children('.typicn'); 
 				currentType = '.threadText[postTypeID="' + currentType + '"]';
-				var parentDiv = $(this).parent('div');
-				$(parentDiv).children(currentType).fadeToggle('fast', function() {
+				var parentDiv = $(this).parent('div').parent('.threadText');
 
+				$(parentDiv).children(currentType).fadeToggle('fast', function() {
 						  });
 				if(thisLink.hasClass('grey-icons') == true){
-					  console.log('has grey icons.'); 
 					   thisLink.removeClass('grey-icons');
 				   } else {
-					  console.log('Does not have grey icons.'); 
 					    thisLink.addClass('grey-icons');
 				   }
 			
@@ -676,6 +770,8 @@ function Dscourse ()
 		$('.drawTypes').live('click', function () {						// User heatmap buttons and functions
 				top.postMediaType = 'Web'; 
 				
+			$('#mediaWrap').html('<iframe id="node" src="http://www.viseyes.org/shiva/webpage.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>');
+				
 				$('.drawTypes').removeClass('active');
 				var drawType = $(this).attr('id'); 
 				// Draw(drawType); Old way of drawing
@@ -719,7 +815,7 @@ function Dscourse ()
 		$('.mediaMsg').live('click', function () {
 				event.stopImmediatePropagation();
 
-				var postId = $(this).parent('.threadText').attr('level'); 
+				var postId = $(this).closest('.threadText').attr('level'); 
 				
 				 top.currentDrawData = ''; 
 				 top.currentMediaType = 'Web';
@@ -765,11 +861,16 @@ function Dscourse ()
 								$('#' + iFrameName).show();
 			 	
 					 }
-				 }
-				
-				
-								
-			}); 		
+				 }				
+			}); 
+			
+					$('#hideRefreshMsg').live('click', function () {
+						$('#checkNewPosts').hide('');
+					});
+
+			
+									
+					
 
 } /* end function Dscourse
 
@@ -779,7 +880,7 @@ function Dscourse ()
 /*                						DATABASE FUNCTIONS 									   */
 /***********************************************************************************************/ 
 
-Dscourse.prototype.GetData=function(action)
+Dscourse.prototype.GetData=function(action, load)
 {
 	// Get all data and populate in Json -- For courses and discussions, not for users
 
@@ -788,6 +889,10 @@ Dscourse.prototype.GetData=function(action)
 	
 	if(!action) {
 		var action = 'getAll'; 
+	}
+	
+	if(!load) {
+		var load = 'noload'; 
 	}
 	
 	// Ajax call to get data and put all data into json object
@@ -802,6 +907,64 @@ Dscourse.prototype.GetData=function(action)
 			  		main.listCourses('all');
 			  		main.listDiscussions();						// Refresh list to show all discussions.
 			  		main.ListUsers();
+			  		main.TypeAhead();	
+
+			 
+			  			
+			  			if(load == 'load'){
+			  			// Get URL variables if any
+							var page = main.getUrlVars()["page"];
+							console.log('page is: ' + page); 
+							if(typeof page != undefined){
+								$('.page').hide();	
+
+								switch(page)
+								{
+								case 'users':
+								  $('#usersPage').show();
+								  dscourse.imgUpload = 'user';
+								  break;
+								case 'courses':
+								  $('#coursesPage').show();
+								  dscourse.imgUpload = 'course';
+								  $('#allCoursesView').removeClass('linkGrey');								  
+								  break;
+								case 'discussions':
+								  $('#discussionsPage').show();
+								  $('.headerTabs a').addClass('linkGrey');
+								  $('#allDiscussionView').removeClass('linkGrey');
+								  	$('#discussionForm').fadeOut();
+								  	$('#discussions').delay(300).fadeIn();
+								  break;
+							    case 'discussion' : 	  
+								  var dRefresh = main.getUrlVars()["idisc"];
+								      dRefresh = parseFloat(dRefresh);
+								      console.log('drefresh: '+ dRefresh); 
+								      var thetype = typeof dRefresh; 
+								      console.log('the type: ' + thetype);
+								main.SingleDiscussion(dRefresh);
+								$('.page').hide();
+								$('#discussionWrap').show();
+								$('html, body').animate({scrollTop:0});	
+								  break;
+								case 'profile':
+								  var userid = $(this).attr('userid');
+								  dscourse.UserProfile(userid);	
+								  dscourse.imgUpload = 'user';
+								  $('#profilePage').show();
+								  break;		  
+								default:
+								  $('#homePage').show();
+								}
+							
+							} else { 
+								showHome();			
+							}
+							
+						}	
+
+							
+							
 			  	}, 
 			  error: function() {									// If there was an error
 				 		console.log('There was an error talking to data.php');
@@ -821,22 +984,27 @@ Dscourse.prototype.GetData=function(action)
 Dscourse.prototype.ListUsers=function()
 {
 	var main = this;
-
+	console.log('Current user status ' + currentUserStatus); // Check if global variable is read, this is set in index.php
+	
 	$('#userData').html(" ");
 	var i, o; 
 	for(i = 0; i < main.data.allUsers.length; i++ ){	// If view is not specified Construct the table for each element
 		o =  main.data.allUsers[i] ;  			
-			$('#userData').append(
-			    	  		  "<tr>"
+		
+		var appendHTML = 	"<tr>"
 			    	  		+ "<td> <img class='userThumbSmall' src='" + o.userPictureURL +"' /><a class='showProfile' userid='" + o.UserID + "'>" + o.firstName + "</a></td>" 
 				            + "<td> " + o.lastName	+ "</td>" 
 				            + "<td> " + o.username		+ "</td>" 
 				            + "<td> " + o.sysRole	+ "</td>" 
-				            + "<td> " + o.userStatus		+ "</td>"
-				            + "<td> <button id='" + o.UserID		+ "' class='btn btn-info editUser'>Edit</button></td>"
-				            + "</tr>" 
-			    );
-			    	  	nameListName = { ID: o.UserID, Name : o.firstName + " " + o.lastName, Email : o.username}; 
+				            + "<td> " + o.userStatus		+ "</td>" 
+				            + "<td>"; 
+				            if(currentUserStatus == 'Administrator'){
+				            	appendHTML += " <button id='" + o.UserID		+ "' class='btn btn-info editUser'>Edit</button>";
+				            }
+			appendHTML 	 += "</td></tr>" ;
+
+			$('#userData').append(appendHTML);
+			    	  	nameListName = { value: o.UserID, label : o.firstName + " " + o.lastName, email : o.username}; 
 			    	  	main.nameList.push(nameListName);
 			}
 }
@@ -969,17 +1137,19 @@ Dscourse.prototype.listCourses=function(view)
 			    	}
 			    	  			    		
 			    		
-		    			    			
-		    	  	$('#tablebody').append(
-		    	  		  "<tr>"
+		    	var appendHTML =  "<tr>"
 		    	  		+ "<td> <a class='courseLink' courseid='" + o.courseID + "'> " + o.courseName			+ "</a></td>" 
 			            + "<td> " + o.courseDescription	+ "</td>" 
 			            + "<td> " + o.courseStatus		+ "</td>" 
 			            + "<td><strong> " + fullName	+ "</strong><br/>" + TAName +" </td>" 
 			            + "<td> " + stuNum + "</td>"
-				        + "<td> <button id='" + o.courseID		+ "' class='btn btn-info editCourse'>Edit</button></td>"
-			            + "</tr>" 
-		    	  	);
+				        + "<td>"; 
+				        if(currentUserStatus == 'Administrator'){
+				        		appendHTML +=  "<button id='" + o.courseID		+ "' class='btn btn-info editCourse'>Edit</button>"; 
+				        }
+			       appendHTML +=  "</td></tr>"; 
+		    			    			
+		    	  	$('#tablebody').append(appendHTML);
 	    	  
 
 	    		} else if (view == 'all'){			// This is bad code, it repeats the entire top section. Need to find a better way. 
@@ -1013,38 +1183,31 @@ Dscourse.prototype.listCourses=function(view)
 			    	  			    		
 			    		
 		    			    			
-		    	  	$('#tablebody').append(
-		    	  		  "<tr>"
+		    	var appendHTML2 =  "<tr>"
 		    	  		+ "<td> <a class='courseLink' courseid='" + o.courseID + "'> " + o.courseName			+ "</a></td>" 
 			            + "<td> " + o.courseDescription	+ "</td>" 
 			            + "<td> " + o.courseStatus		+ "</td>" 
 			            + "<td><strong> " + fullName	+ "</strong><br/>" + TAName +" </td>" 
 			            + "<td> " + stuNum + "</td>"
-				        + "<td> <button id='" + o.courseID		+ "' class='btn btn-info editCourse'>Edit</button></td>"
-			            + "</tr>" 
-		    	  	);
+				        + "<td>"; 
+				        if(currentUserStatus == 'Administrator'){
+				        		appendHTML2 +=  "<button id='" + o.courseID		+ "' class='btn btn-info editCourse'>Edit</button>"; 
+				        }
+			       appendHTML2 +=  "</td></tr>"; 
+		    			    			
+		    	  	$('#tablebody').append(appendHTML2);
 		    	  		
-		    	  		courseListCourse = { ID: o.courseID, Name : o.courseName}; 
+		    	  		courseListCourse = { value: o.courseID, label : o.courseName}; 
 			    	  	main.courseList.push(courseListCourse);
+			    	  
+
+					
 	    		}
 	     }
 		
 	}
+		 		
 	
-					   $('#discInputDiv').html('<input type="text" class="input-large discussionCourses" id="discussionCourses" name="discussionCourses" >');
-					   console.log(main.courseList);
-					   $('.discussionCourses').typeahead({
-							source: main.courseList,				// The source, 
-							matchProp: 'Name',							// Match to this
-							sortProp: 'Name',							// Sort by 
-							valueProp: 'ID',							// The content of the val variable below comes from this attribute
-							itemSelected: function(item, val, text) {
-								console.log('value is: ' + val + ' and text is: ' + text);
-								$('#addCoursesBody').append('<tr id="' + val + '" class="dCourseList"><td>' + text + ' </td><td><button class="btn removeCourses" >Remove</button>	</td></tr>'); 				// Build the row of courses. 
-								$('.discussionCourses').val(' ').focus();
-							}
-						});
-		
  
 }
 
@@ -1110,10 +1273,6 @@ Dscourse.prototype.addCourse=function()
 			
 			main.data.allCourses.push(course);
 			main.saveCourses();
-			main.saved('Your new course is added.');
-			$('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
-
-
 }
 
 Dscourse.prototype.editCourse=function(id)
@@ -1133,7 +1292,7 @@ Dscourse.prototype.editCourse=function(id)
 					$('#courseDescription').val(o.courseDescription);
 					$('#courseStartDate').val(o.courseStartDate);
 					$('#courseEndDate').val(o.courseEndDate);
-					$('#imgPath').html('<img src="' + o.courseImage + '" alt="course image"/>');
+					$('#cimgPath').html('<img src="' + o.courseImage + '" alt="course image"/>');
 					$('#courseImage').val(o.courseImage);
 					$('#courseURL').val(o.courseURL);	
 					$('#courseIDInput').html("<input type=\"hidden\" name=\"courseID\" id=\"courseID\" value=" + o.courseID + " />");
@@ -1250,6 +1409,7 @@ Dscourse.prototype.updateCourse=function()
 Dscourse.prototype.getCourse=function(cid)									// Gets individual course information
 {    		
 		var main = this;
+		$('#iCoursePicture').html('');
 			
 			var i, j, k; 
 			for (i = 0; i < main.data.allCourses.length; i++ )
@@ -1264,7 +1424,38 @@ Dscourse.prototype.getCourse=function(cid)									// Gets individual course inf
 			  	  	if (o.courseImage){
 			  	  		$('#iCoursePicture').html("<img src=\"" + o.courseImage + "\" width=\"240\">");									
 			  	  		}
+			  	  	main.Trace(o.courseImage);
 			  	  	
+			  	  	
+			  	  	// Populate the notes
+				 	/* 
+				 	$('#courseNoteBody').html(" "); 
+				 	
+				 	var l;
+				 	for (l = 0; l < main.data.allNotes.length; l++)
+				 	{		
+				 		var m = main.data.allNotes[l];
+				 		console.log('Hi');
+				 		if(m.noteType == 'course' && m.noteSource == o.courseID){
+				 			console.log('hi');
+				 			var authorIDfull = main.getName(m.noteAuthor); 
+				 			var authorThumb = main.getAuthorThumb(m.noteAuthor, 'small');			// get thumbnail html
+				 			var prettyTime = main.PrettyDate(m.noteTime);
+
+				 		
+					 		$('#courseNoteBody').append(
+						    	  		  "<tr>"
+						    	  		+ "<td>" + authorThumb + " <a class='showProfile' userid='" + m.noteAuthor + "'>" + authorIDfull + "</a></td>" 
+							            + "<td>  " + m.noteText +" <i> " + prettyTime + "</i></td>" 
+							            + "</tr>" 
+						    	  	);
+				 		}
+				 		
+					}			  	  	
+			  	  	
+			  	  	
+			  	  	$('#noteSource').val(o.courseID);
+			  	  		*/
 			  	  	
 			  	  	var singleTAs = []; 
 			  	  	var TAstring = o.courseTAs;
@@ -1304,27 +1495,54 @@ Dscourse.prototype.saveCourses=function()									// Sends the new data into the
 		
 		$.ajax({											// Ajax talking to the saveCourses.php file												
 			type: "POST",
-			url: "scripts/php/saveCourses.php",
+			url: "scripts/php/data.php",
 			data: {
-				courses: main.data.allCourses							// All course data is sent
-											
+				courses: main.data.allCourses,							// All course data is sent
+				action: 'saveCourses'							
 			},
 			  success: function(data) {						// If connection is successful . 
 			    	  console.log(data);
 			    	  main.GetData();							// Get up to date info from server the course list
 			    	  main.listCourses('all');					// Refresh list to show all courses.
-			    	  
-			    	  main.saved('Everything saved! ') 			// Remove save button and send save success message 
-			    	  $('html, body').animate({scrollTop:0});		// The page scrolls to the top to see the notification
-					$('#courseForm').find('input:text, input:password, input:file, select, textarea').val(''); // Fields are emptied to reuse
-					$('#addPeopleBody').html('');
 			    }, 
 			  error: function() {					// If connection is not successful.  
-					console.log("Dscourse Log: the connection to saveCourses.php failed.");  
+					console.log("Dscourse Log: the connection to data.php failed for Saving courses.");  
 			  }
 		});	
 	
 }
+
+
+Dscourse.prototype.addNote=function()									// Add a note
+{
+		var main = this; 
+		
+		var note = new Object; 
+
+		var noteText	= $('#inputNote').val();
+		var noteAuthor	= $('#noteAuthor').val();
+		var noteType	= $('#noteType').val();
+		var noteSource	= $('#noteSource').val();
+		
+		
+		note = {
+				'noteText': noteText,
+				'noteAuthor': noteAuthor,
+				'noteType': noteType,
+				'noteSource': noteSource
+			};
+		
+
+// Get data from the form --done
+// Validate text field --done
+// add data to an object --done
+//ajax call to the data.php file
+// run function to reload the notes.  
+
+
+}
+
+
 
 /***********************************************************************************************/ 
 /*                					DISCUSSION FUNCTIONS 									   */
@@ -1342,13 +1560,22 @@ Dscourse.prototype.saveCourses=function()									// Sends the new data into the
  	for (i = 0; i < main.data.allDiscussions.length; i++)
  	{		
  		var o = main.data.allDiscussions[i];
+ 		// If current user is instructor or TA
+ 		var userRole = main.UserCourseRole(o.dID, currentUserID); 
+ 		var buttonShow;
+ 		if(userRole == 'instructor' || userRole == 'TA'){
+ 			buttonShow = "<button id='" + o.dID + "' class='btn btn-info editDiscussion'>Edit</button>"
+ 		} else {
+	 		buttonShow = ""; 
+ 		}
+ 		
 		$('#tableBodyDiscussions').append(
 		    	  		  "<tr>"
 		    	  		+ "<td> <a class='discussionLink' discID='" + o.dID + "'> " + o.dTitle			+ " </a></td>" 
 			            + "<td>  " + main.listDiscussionCourses(o.dID) +"</td>" 
 			            + "<td> " + o.dStartDate		+ "</td>" 
 			            + "<td> " + o.dEndDate + "</td>" 
-				        + "<td> <button id='" + o.dID + "' class='btn btn-info editDiscussion'>Edit</button></td>"
+				        + "<td> " + buttonShow + "</td>"
 			            + "</tr>" 
 		    	  	);
 		
@@ -1357,7 +1584,7 @@ Dscourse.prototype.saveCourses=function()									// Sends the new data into the
 	
  }
 
- Dscourse.prototype.listCourseDiscussions=function(cid)	 			  // Listing Discussions of a course with the given cid. 
+ Dscourse.prototype.listCourseDiscussions=function(cid, action)	 			  // Listing Discussions of a course with the given cid. 
  {
 	 var main = this;
 	 
@@ -1382,12 +1609,15 @@ Dscourse.prototype.saveCourses=function()									// Sends the new data into the
 			
 			if (m.dID == n[k]) {
 			var totalPosts = main.TotalPostNumber(m.dID); 
-			$('#courseDiscussionsBody').append(
+			
+					$('#courseDiscussionsBody').append(
 			    	  		  "<tr>"
 			    	  		+ "<td> <a class='discussionLink' discID='" + m.dID + "'> " + m.dTitle			+ " </a></td>" 
+				            + "<td>Ongoing</td>" 					// Needs to chech if discussin is open to individual, closed, open to all etc. Gets this info from the dates.  
 				            + "<td>  "  + totalPosts + "  </td>" 
 				            + "</tr>" 
 			    	  	);
+			 
 			 }
 		}	
 		
@@ -1444,6 +1674,7 @@ Dscourse.prototype.addDiscussion=function()	 			  // Add discussion
 			var dTitle 		= $('#discussionQuestion').val();				// Populates the fields needed for the database. 
 			var dPrompt		= $('#discussionPrompt').val();
 			var dStartDate  = $('#discussionStartDate').val();
+			var dOpenDate  	= $('#discussionOpenDate').val();
 			var dEndDate  	= $('#discussionEndDate').val();
 			
 		
@@ -1452,13 +1683,13 @@ Dscourse.prototype.addDiscussion=function()	 			  // Add discussion
 				'dTitle': dTitle,
 				'dPrompt': dPrompt,
 				'dStartDate': dStartDate,
+				'dOpenDate': dOpenDate,				
 				'dEndDate': dEndDate,
 				'dCourses': dCoursesString
 			};
 			
 			main.data.allDiscussions.push(discussion);
 			main.saveDiscussions();
-			main.saved('Your discussion is created.');
 			$('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
 
 }
@@ -1498,8 +1729,9 @@ Dscourse.prototype.listDiscussionCourses=function(dID)	 			  // List the courses
 				$('#discussionQuestion').val(o.dTitle);				// Populates the fields needed for the database. 
 				$('#discussionPrompt').val(o.dPrompt);
 				$('#discussionStartDate').val(o.dStartDate);
+				$('#discussionOpenDate').val(o.dOpenDate);
 				$('#discussionEndDate').val(o.dEndDate);
-			 	
+			 	$('#discIdHidden').val(o.dID); 
 			 	
 			for (j = 0; j < main.data.allCourses.length; j++){
 						var courseNames = new Array;
@@ -1539,8 +1771,10 @@ Dscourse.prototype.listDiscussionCourses=function(dID)	 			  // List the courses
 				o.dTitle 		= $('#discussionQuestion').val();				// Populates the fields needed for the database. 
 				o.dPrompt		= $('#discussionPrompt').val();
 				o.dStartDate  = $('#discussionStartDate').val();
+				o.dOpenDate  	= $('#discussionOpenDate').val();
 				o.dEndDate  	= $('#discussionEndDate').val();
 				
+				console.log('The id is: ' + o.dID);
 				var dCourses = [];
 							
 				$('.dCourseList').each(function(index) {
@@ -1555,7 +1789,6 @@ Dscourse.prototype.listDiscussionCourses=function(dID)	 			  // List the courses
 				dCourses.length = 0;
 			
 				main.saveDiscussions();
-				main.saved('Your discussion was saved.');
 				$('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
 
 			}	
@@ -1571,10 +1804,10 @@ Dscourse.prototype.saveDiscussions=function()	 	// Save Discussion
 
 	$.ajax({												// Ajax talking to the saveDiscussions.php file												
 			type: "POST",
-			url: "scripts/php/saveDiscussions.php",
+			url: "scripts/php/data.php",
 			data: {
-				discussions: main.data.allDiscussions							// All discussion data is sent
-											
+				discussions: main.data.allDiscussions,							// All discussion data is sent
+				action: 'saveDiscussions'							
 			},
 			  success: function(data) {							// If connection is successful . 
 			    	  console.log(data);
@@ -1583,7 +1816,7 @@ Dscourse.prototype.saveDiscussions=function()	 	// Save Discussion
 			    	  
 			    	  main.saved('Everything saved! ') 				// Remove save button and send save success message 
 			    	  $('html, body').animate({scrollTop:0});		// The page scrolls to the top to see the notification
-			    	  top.ClearDiscussionForm();
+			    	  main.ClearDiscussionForm();
 			    }, 
 			  error: function() {					// If connection is not successful.  
 					console.log("dscourse Log: the connection to saveCourses.php failed.");  
@@ -1603,15 +1836,53 @@ Dscourse.prototype.saveDiscussions=function()	 	// Save Discussion
 	 		o = main.data.allDiscussions[i];
 	 		if(o.dID == discID){
 	 			$('#dTitleView').html(o.dTitle);
+	 			console.log('D Title :' + o.dTitle);
 	 			$('#dPromptView').html('<b> Prompt: </b>' + o.dPrompt);
 	 			$('#dIDhidden').val(o.dID);
+	 			var dCourse = main.listDiscussionCourses(discID); 
+	 			$('#dCourse').html('<b> Course: </b>' + dCourse);
+	 			$('#dSDateView').html('<b> Start Date: </b>' + o.dStartDate);
+	 			$('#dODateView').html('<b> Open to Class: </b>' + o.dOpenDate);
+	 			$('#dCDateView').html('<b> End Date: </b>' + o.dEndDate);
+	 			$('#refreshDiv').html('<a href="index.php?page=discussion&idisc=' + o.dID+ '" id="refreshLink" class="btn btn-small btn-success"> <span class="typicn refresh "></span>  Refresh </a>')
 	 			main.CurrentDiscussion = o.dID;	
 	 			console.log("Curent Discussion ID: " + main.CurrentDiscussion);
-	 			main.ListDiscussionPosts(o.dPosts);
-	 			main.DrawTimeline(o.dPosts);
+	 			
+	 			// Get Discussion Status, can be one of three: all, student, closed.
+	 			var dStatus = main.DiscDateStatus(o.dID);				 
+	 			console.log('Discussion status is: ' + dStatus);
+	 			
+	 			// Note for the page
+	 			$('#discStatus').removeClass('alert-error alert-warning alert-success').html(''); 
+	 			switch(dStatus)									
+					{
+					case 'all':
+						$('#discStatus').addClass('alert-success').html('This discussion is open to group participation');
+						break;
+					case 'student':
+					  $('#discStatus').addClass('alert-warning').html('This discussion is in individual participation mode.');
+					  break;
+					case 'closed':
+					  $('#discStatus').addClass('alert-error').html('This discussion is not open to participation at this time.');
+					  break;
+		  
+					}
+	 			
+	 			// What is the role of the current user for this discussion?
+	 			var userRole = main.UserCourseRole(o.dID, currentUserID);
+	 			console.log('User role is: ' + userRole); 
+	 			
+	 			// Draw up posts and timeline
+	 			main.ListDiscussionPosts(o.dPosts, dStatus, userRole, o.dID);
+	 			
+	 			if(dStatus == 'all' || dStatus == 'closed') {
+	 				main.DrawTimeline(o.dPosts);
+	 			}
 	 		}
 	 	
-	 	}	 
+	 	}	
+	 	setInterval(function(){main.CheckNewPosts(discID)},5000);
+ 
 }
 
 Dscourse.prototype.DrawTimeline=function(posts)	 			  // Draw the timeline. 
@@ -1621,7 +1892,7 @@ Dscourse.prototype.DrawTimeline=function(posts)	 			  // Draw the timeline.
 	    	// Create the Slider
 		    $( "#slider-range" ).slider({					// Create the slider
 				range: "min",
-				step: 21600000,
+				step: 360000,
 				value: main.timelineMax,
 				min: main.timelineMin,
 				max: main.timelineMax,
@@ -1674,7 +1945,96 @@ Dscourse.prototype.DrawTimeline=function(posts)	 			  // Draw the timeline.
 
 }	
 
-		
+
+Dscourse.prototype.DiscDateStatus=function(dID)	 			  // Draw the timeline. 
+ {
+	    var main = this;
+	    var dStatus;
+	    console.log('Status dID is: ' + dID);
+	    	    
+	    // Get course dates: 
+	    var i, o;
+	 	for (i = 0; i < main.data.allDiscussions.length; i++)
+	 	{		
+	 		o = main.data.allDiscussions[i];
+	 		if(o.dID === dID ){
+
+	 			// Compare dates of the discussion to todays date.  
+			    var beginDate = new Date(o.dStartDate);	    
+			    var openDate = new Date(o.dOpenDate);	    
+			    var endDate = new Date(o.dEndDate);	    
+			    
+			    var currentDate = new Date(); 
+			    
+			    if(currentDate >= beginDate && currentDate <= endDate) {			// IF today's date bigger than start date and smaller than end date? 
+			    	if(currentDate <= openDate) {    // If today's date smaller than Open Date
+			    		dStatus = 'student'; // The status is open to individual contribution
+			    	} else { 
+			    		dStatus = 'all'; // The status is open to everyone
+			    	}
+			    } else {   		
+			     		dStatus = 'closed'; // The status is closed.
+			     }
+			     
+			     console.log(
+			     	" - Begin Date: " + beginDate + 
+			     	" - Open Date: " + openDate + 
+			     	" - End Date: " + endDate + 
+			     	" - Current Date: " + currentDate  
+			     )
+			     return dStatus; 
+	     
+	 		}
+	 	}
+   
+ }
+
+Dscourse.prototype.UserCourseRole=function(dID, userID)	 			  // Draw the timeline. 
+ {
+	    var main = this;
+	    var userRole = 'unrelated'; 
+
+		var j, k,l, listInst, listTAs, listStudents, discussions;
+			for(j = 0; j < main.data.allCourses.length; j++){		// Loop through courses
+				k = main.data.allCourses[j];
+				
+				discussions = k.courseDiscussions.split(",");		// For each course take the discussions it has
+				
+				for(l = 0; l < discussions.length; l++){			// Loop through course discussions
+				
+					if(discussions[l] == dID){						// Check if this discussion is part of that course 
+				
+						listInst = k.courseInstructors.split(",");	// Check if the user is among the instructors
+						var m;
+						for (m = 0; m < listInst.length; m++){
+							if(listInst[m] == userID){
+								userRole = 'instructor'; 
+							}
+						}
+						
+						listTAs = k.courseTAs.split(",");			// Check if the user is among the TAs
+						var n;
+						for (n = 0; n < listTAs.length; n++){
+							if(listTAs[n] == userID){
+								userRole = 'TA'; 
+							}
+						}
+				
+				
+						listStudents = k.courseStudents.split(",");	// Check if the user is among the Students
+						var p;
+						for (p = 0; p < listStudents.length; p++){
+							if(listStudents[p] == userID){
+								userRole = 'student'; 
+							}
+						}
+					}			
+				}
+				
+			}
+	   return userRole; 		// This is what we need from this function.  
+	    
+ }		
 
 /***********************************************************************************************/ 
 /*                					     POST FUNCTIONS 									   */
@@ -1683,8 +2043,8 @@ Dscourse.prototype.DrawTimeline=function(posts)	 			  // Draw the timeline.
 Dscourse.prototype.AddPost=function(){
 	
 		 var main = this;
-		 var currentDisc; 
-
+		 var currentDisc = $('#dIDhidden').val();
+		 
 	// Get post values from the form.
 		// postID -- postFromId
 		var postFromId = $('#postIDhidden').val();	
@@ -1732,70 +2092,50 @@ Dscourse.prototype.AddPost=function(){
 	
 	$.ajax({																						
 			type: "POST",
-			url: "scripts/php/posts.php",
+			url: "scripts/php/data.php",
 			data: {
 				post: post,							
-				action: 'addPost'							
+				action: 'addPost',
+				currentDiscussion: currentDisc							
 			},
 			  success: function(data) {						// If connection is successful . 
-			    	  console.log(data);
-			    	  addPostDisc(data);
-	
+			    	  //console.log('Returned from addpost() : ' + data);
+			    	  post.postID = data; 
+			    	  main.data.allPosts.push(post); 
+			    	  var i;
+					 	for (i = 0; i < main.data.allDiscussions.length; i++)
+					 	{		
+					 		var o = main.data.allDiscussions[i];
+					 		if(o.dID === currentDisc ){
+					
+							 	if(o.dPosts){
+								 	o.dPosts += ",";
+							 	}
+							 	o.dPosts += data;
+							 }
+						}
+			 	
+			 	
+			 	
+			    	  $('.levelWrapper[level="0"]').html('');
+			    	  main.SingleDiscussion(currentDisc);
 
 			    }, 
 			  error: function() {					// If connection is not successful.  
-					console.log("Dscourse Log: the connection to posts.php failed.");  
+					console.log("Dscourse Log: the connection to data.php failed.");  
 			  }
 		});	
 	
-	function addPostDisc(pID){
-		// add post id to the relevant discussion section
-		currentDisc = $('#dIDhidden').val();
-		
-		post.postID = pID; 
-		
-		var i;
-	 	for (i = 0; i < main.data.allDiscussions.length; i++)
-	 	{		
-	 		var o = main.data.allDiscussions[i];
-	 		if(o.dID === currentDisc ){
-	
-			 	if(o.dPosts){
-				 	o.dPosts += ",";
-			 	}
-			 	o.dPosts += pID;
-
-		 		
-		 		$.ajax({												// Ajax talking to the saveDiscussions.php file												
-					type: "POST",
-					url: "scripts/php/saveDiscussions.php",
-					data: {
-						discussions: main.data.allDiscussions							// All discussion data is sent
-													
-					},
-					  success: function(data) {							// If connection is successful . 
-					    	console.log(data);
-					    	main.data.allPosts.push(post); 
-					    	$('.levelWrapper[level="0"]').html('');
-					    	main.SingleDiscussion(currentDisc);
-						    }, 
-					  error: function() {					// If connection is not successful.  
-							console.log("dscourse Log: the connection to saveDiscussions.php failed.");  
-					  }
-				});	
-	
-
-	 		}
-	 	}
- 	}
 	
 	
 }
 
 
- Dscourse.prototype.ListDiscussionPosts=function(posts)	 			  // View for the Individual discussions. 
+ Dscourse.prototype.ListDiscussionPosts=function(posts, dStatus, userRole, discID)	 			  // View for the Individual discussions. 
  {
 	 var main = this;
+	 
+	 main.uParticipant = [];
 	 
 	 // Clear all dots
 	 $('.singleDot').remove();
@@ -1813,103 +2153,127 @@ Dscourse.prototype.AddPost=function(){
 			 	 
 			 if(d.postID == p){										// Find the post we want to get the details of 
 
+							 
 				 
-				 /********** TIMELINE ***********/ 
-				 var n = d.postTime; 
-				 var time = Date.parse(n);
-				 console.log('Time: ' + time);
-				 
-				 if(main.timelineMin == 0){							// Check and set minimum value for time
-					 main.timelineMin = time;
-				 } else if (time < main.timelineMin){
-					 main.timelineMin = time;
-					 }
-				 
-				 if(main.timelineMax == 0){							// Check and set maximum value for time
-					 main.timelineMax = time;
-				 } else if (time > main.timelineMax){
-					 main.timelineMax = time; 
-					 }
-					 
-				 // END TIMELINE
-				 
-				/********** DISCUSSION SECTION ***********/
-																	// Prepare the data for display
-				 authorID = main.getName(d.postAuthorId, 'first'); 			// Get Authors name			
-				 authorIDfull = main.getName(d.postAuthorId); 
-				 authorThumb = main.getAuthorThumb(d.postAuthorId, 'small');			// get thumbnail html
-				 authorThumb += '  ' + authorIDfull; 
-				 switch(d.postType)									// Get what kind of post this is 
-					{
-					case 'agree':
-					  typeText = ' <span class="typicn thumbsUp "></span>';
-					  break;
-					case 'disagree':
-					  typeText = ' <span class="typicn thumbsDown "></span>';
-					  break;
-					case 'clarify':
-					  typeText = ' <span class="typicn unknown "></span>';
-					  break;
-					case 'offTopic':
-					  typeText = ' <span class="typicn forward "></span>';
-					  break;		  
-					default:
-					  typeText = ' <span class="typicn message "></span>';
-					}
+							 
+							 /********** TIMELINE ***********/ 
+							 var n = d.postTime; 
+							 console.log('Post time is: ' + n); 
+							 var time = Date.parse(n);				// Parsing not working for firefox. 
+							 //var time = new Date(n); 
+							 console.log('Time: ' + time);
+							 
+							 if(main.timelineMin == 0){							// Check and set minimum value for time
+								 main.timelineMin = time;
+							 } else if (time < main.timelineMin){
+								 main.timelineMin = time;
+								 }
+							 
+							 if(main.timelineMax == 0){							// Check and set maximum value for time
+								 main.timelineMax = time;
+							 } else if (time > main.timelineMax){
+								 main.timelineMax = time; 
+								 }
+								 
+							 // END TIMELINE
+							 
+							/********** DISCUSSION SECTION ***********/
+																				// Prepare the data for display
+							 authorID = main.getName(d.postAuthorId, 'first'); 			// Get Authors name			
+							 authorIDfull = main.getName(d.postAuthorId); 
+							 authorThumb = main.getAuthorThumb(d.postAuthorId, 'small');			// get thumbnail html
+							 authorThumb += '  ' + authorIDfull; 
+							 switch(d.postType)									// Get what kind of post this is 
+								{
+								case 'agree':
+								  typeText = ' <span class="typicn thumbsUp "></span>';
+								  break;
+								case 'disagree':
+								  typeText = ' <span class="typicn thumbsDown "></span>';
+								  break;
+								case 'clarify':
+								  typeText = ' <span class="typicn unknown "></span>';
+								  break;
+								case 'offTopic':
+								  typeText = ' <span class="typicn forward "></span>';
+								  break;		  
+								default:
+								  typeText = ' <span class="typicn message "></span>';
+								}
+			
+			
+							 if(d.postMessage != ' '){									// Proper presentation of the message URL
+								message = d.postMessage ; 
+								//message = main.showURL(message);
+								message =message.replace("\n","<br /><br />");
+							 } else {
+								 message = '';
+								 
+							 }
+							 
+							 console.log('author id: ' + authorID + ' - typetext: ' + typeText + ' - message: ' + message);	// Check to see if all is well
+							 
+							 var topLevelMessage = ' ';								// Assign a class for top level messages for better organization.
+							 if (d.postFromId == '0'){
+								 topLevelMessage = 'topLevelMessage'; 
+							 }
+							 
+							 
+							 // Check if this post has media assigned. 
+							 var media = ''; 
+							 if(d.postMedia.length > 1){
+							 	media = '<span href="#" rel="tooltip" title="This post has media attachment. Click to view." class="mediaMsg"> ' + d.postMediaType + '  <span class="typicn tab "></span> </span> ';
+							 }
+							 
+							 
+							 var showPost = 'yes';
+							 var userRoleAuthor = main.UserCourseRole(discID, d.postAuthorId);  
+							 console.log('User role of the author of this post: ' + userRoleAuthor); 
+							 if(dStatus == 'student' && currentUserID != d.postAuthorId && userRoleAuthor == 'student'){
+							 	 	if(userRole == 'student' || userRole == 'unrelated'){
+							 	 		showPost = 'no'; 
+							 	 		}
+							 }
+							 
 
+							 
+							 if(showPost == 'yes') {
 
-				 if(d.postMessage != ' '){									// Proper presentation of the message URL
-					message = d.postMessage ; 
-					message = main.showURL(message);
-				 } else {
-					 message = '';
-				 }
-				 
-				 console.log('author id: ' + authorID + ' - typetext: ' + typeText + ' - message: ' + message);	// Check to see if all is well
-				 
-				 var topLevelMessage = ' ';								// Assign a class for top level messages for better organization.
-				 if (d.postFromId == '0'){
-					 topLevelMessage = 'topLevelMessage'; 
-				 }
-				 
-				 
-				 // Check if this post has media assigned. 
-				 var media = ''; 
-				 if(d.postMedia.length > 1){
-				 	media = '<span href="#" rel="tooltip" title="This post has media attachment. Click to view." class="mediaMsg">  <span class="typicn tab "></span> </span> ';
-				 }
-				 
-				 var selector = 'div[level="'+ d.postFromId +'"]';
-				 var responses = main.ResponseCounters(d.postID);	
-				 $(selector).append(						// Add post data to the view
-				 	  '<div class="threadText ' + topLevelMessage +'" level="'+ d.postID + '" postTypeID="'+ d.postType+ '" postAuthorId="' + d.postAuthorId + '" time="' + time + ' ">' 
-				 	+  '<span class="postTypeView"> ' + typeText + '</span>'
-				 	+  '<span class="postMessageView"> ' + message  + '</span><br />'
-				 	+  '<span class="postAuthorView" rel="tooltip"  title="' + authorThumb + '"> ' + authorID + '</span>'
-				 	
-				 	+ ' <div class="sayBut2" postID="'+ d.postID + '">say</div> '
-				 	+ responses 
-				 	+ media
-				 	+ ' </div>'
-				 );
-				 
-				 
-				 /********** RECENT ACTIVITY SECTION ***********/
-				 var range = discPosts.length-9; 			// How many of the most recent we show + 1
-				 var prettyTime = main.PrettyDate(d.postTime);
-				 var shortMessage = main.truncateText(message, 100);
-				 if(i > range) {					 // person + type + truncated comment + date
-					 var activityContent = '<li>' + main.getAuthorThumb(d.postAuthorId, 'tiny') + ' ' + authorID + ' ' + typeText + ' <b>' + shortMessage + '</b> ' + '<em class="timeLog">' + prettyTime + '<em></li> ';
-					 $('#recentContent').prepend(activityContent);   
-				 }
-				 
-				 /********** UNIQUE PARTICIPANTS SECTION ***********/
-				 var arrayState = jQuery.inArray(d.postAuthorId, main.uParticipant); 	// Chech if author is in array
-				 if(arrayState == -1) {								// if the post author is not already in the array
-					 main.uParticipant.push(d.postAuthorId);		// add id to the array
-				 }
-				 
-				 	
+							 	var selector = 'div[level="'+ d.postFromId +'"]';
+							 	var responses = main.ResponseCounters(d.postID);	
+							 
+								 $(selector).append(						// Add post data to the view
+								 	  '<div class="threadText ' + topLevelMessage +'" level="'+ d.postID + '" postTypeID="'+ d.postType+ '" postAuthorId="' + d.postAuthorId + '" time="' + time + ' ">' 
+								 	+  '<span class="postTypeView"> ' + typeText + '</span>'
+								 	+  '<span class="postTextWrap">' 
+								 	+  '<span class="postAuthorView" rel="tooltip"  title="' + authorThumb + '"> ' + authorID + '</span>'
+								 	+  '<span class="postMessageView"> ' + message  + '</span>'
+								 	+ media
+								 	+ ' <div class="sayBut2" postID="'+ d.postID + '">say</div> '
+								 	+  '</span>'	
+								 	
+								 	+ '<div id="responseWrap" >' + responses + '</div>' 
+								 	
+								 	+ ' </div><div style="clear: both;"></div>'
+								 );
+							 
+							 
+								 /********** RECENT ACTIVITY SECTION ***********/
+								 var range = discPosts.length-6; 			// How many of the most recent we show + 1
+								 var prettyTime = main.PrettyDate(d.postTime);
+								 var shortMessage = main.truncateText(message, 100);
+								 if(i > range) {					 // person + type + truncated comment + date
+									 var activityContent = '<li>' + main.getAuthorThumb(d.postAuthorId, 'tiny') + ' ' + authorID + ' ' + typeText + ' <b>' + shortMessage + '</b> ' + '<em class="timeLog">' + prettyTime + '<em></li> ';
+									 $('#recentContent').prepend(activityContent);   
+								 }
+								 
+								 /********** UNIQUE PARTICIPANTS SECTION ***********/
+								 var arrayState = jQuery.inArray(d.postAuthorId, main.uParticipant); 	// Chech if author is in array
+								 if(arrayState == -1) {								// if the post author is not already in the array
+									 main.uParticipant.push(d.postAuthorId);		// add id to the array
+								 }
+							 
+						} // end if showpost. 
 				 
 			 }	 
 		 }
@@ -2049,7 +2413,7 @@ Dscourse.prototype.HighlightRelevant=function(postID)					// Highlights the rele
 					 	newHighlight = '<span class="highlight">' + highlight + '</span>';
 					 	n = m.postMessage.replace(highlight, newHighlight);
 					 	selector = 'div[level="'+ o.postFromId +'"]'; 
-					 	$(selector).children('.postMessageView').html(n);
+					 	$(selector).children('.postTextWrap').children('.postMessageView').html(n);
 
 				 	}
 				 }
@@ -2120,6 +2484,47 @@ Dscourse.prototype.Heatmap=function(type, action)					// Highlights the relevant
 			 }	
 }
 
+
+ Dscourse.prototype.CheckNewPosts=function(currentDisc)					// Highlights the relevant sections of host post when hovered over 
+{
+	 var main = this;
+
+		var i, posts;
+	 	for (i = 0; i < main.data.allDiscussions.length; i++)
+	 	{		
+	 		var o = main.data.allDiscussions[i];
+	 		if(o.dID == currentDisc ){
+			 	posts = o.dPosts;
+			 	
+			 		
+					$.ajax({																							
+						type: "POST",
+						url: "scripts/php/data.php",
+						data: {
+							currentDiscussion: currentDisc,
+							currentPosts: 	posts,						
+							action: 'checkNewPosts'							
+						},
+						  success: function(data) {						// If connection is successful . 
+								if(data > 0){
+									$('#checkNewPosts').addClass('animated flash');
+									$('#checkNewPosts').html('<div class="alert alert-success">    <button id="hideRefreshMsg"type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><span class="typicn refresh " style="font-size: 15px; font-weight: bold;"></span> There are <b>' + data + '</b> new posts. Please refresh the page. </span>'); 
+									console.log('Refresh message, total new posts is: ' + data);
+								} else {
+									console.log('Nothing new under the sun...');
+								}
+						    }, 
+						  error: function() {					// If connection is not successful.  
+								console.log("Dscourse Log: the connection to data.php failed for Checking new posts.");  
+						  }
+					});	
+			 }
+		}
+
+		
+		
+		 
+}
 
 
 
@@ -2278,7 +2683,7 @@ Dscourse.prototype.saved=function(message)
  {
 	 var main = this;
 		$('#courseForm').find('input:text, input:password, input:file, select, textarea').val('');
-		$('#imgPath').html('');
+		$('#cimgPath').html('');
 		$('#addPeopleBody').html('');	 
  }
  	
@@ -2350,6 +2755,49 @@ Dscourse.prototype.FormattedDate=function(date)
 				    
 }
 
+Dscourse.prototype.TypeAhead=function()
+{
+
+ 	var main = this; 
+ 	
+ 			
+			$( "#coursePeople" ).autocomplete({
+						minLength: 0,
+						source: dscourse.nameList,
+						focus: function( event, ui ) {
+							$( "#coursePeople" ).val( ui.item.label );
+							return false;
+						},
+						select: function( event, ui ) {
+							$('#addPeopleBody').append('<tr><td>' + ui.item.label + ' </td><td>' + ui.item.email  + ' </td><td><div class="btn-group" data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" userid="'+ ui.item.value + '">Instructor</button><button class="btn roleB" userid="'+ ui.item.value + '">TA</button><button class="btn active roleB" userid="'+ ui.item.value + '">Student</button></div></td><td><button class="btn removePeople">Remove</button>	</td></tr>'); // Build the row of users. 
+							
+							
+							return false;
+						}
+					})
+			
+
+			$( "#discussionCourses" ).autocomplete({
+						minLength: 0,
+						source: dscourse.courseList,
+						focus: function( event, ui ) {
+							$( "#discussionCourses" ).val( ui.item.label );
+							return false;
+						},
+						select: function( event, ui ) {
+							console.log('value is: ' + ui.item.value + ' and text is: ' + ui.item.label);
+							$('#addCoursesBody').append('<tr id="' + ui.item.value + '" class="dCourseList"><td>' + ui.item.label + ' </td><td><button class="btn removeCourses" >Remove</button>	</td></tr>'); 				// Build the row of courses. 
+							$('.discussionCourses').val(' ').focus();
+							return false;
+						}
+					})
+
+
+
+
+ 	
+ }
+
 // SOMETHINGS BORROWED
 
 /*
@@ -2379,7 +2827,13 @@ Dscourse.prototype.PrettyDate=function(time)
 
 
 
+Dscourse.prototype.Trace=function(variable)
+{
+	
+	console.log('Dscourse log:: ' + variable + ' = ["variable"]');
+	
 
+}
 
 
 

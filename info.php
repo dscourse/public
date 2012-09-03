@@ -110,11 +110,11 @@
 	
 </head>
 <body class="index-page"  >
-<div class="container" id="home">
-<div id="logo"><img src="assets/img/dscourse_logo3.png"></div> 
-<header class="jumbotron masthead">
+
+<header class=" masthead">
   <div class="inner">
-  	
+ <div id="logo"><img src="assets/img/dscourse_logo3.png"></div> 
+ 	
     <h1>dscourse</h1>
     <p>A revolutionary new discussion tool for online learning</p>
     <p id="indexSubtext">dscourse is a project that aims to provide the next generation platform-agnostic discussion tool for online learning. The framework of the tool has been developed at the Curry School of Education and it's currently under development with pilot testing planned for Fall 2012. </p>    
@@ -152,7 +152,7 @@
   </header>
 
 
-	
+<div class="container" id="home">	
 	<div class="row index-text"  >
 
 

@@ -110,16 +110,19 @@ function filterUsers(searchTerm)
 										
 					if ( a != -1 || b != -1 || c != -1)
 						{
-						$('#userData').append(
-				    	  		  "<tr>"
-				    	  		+ "<td> <a href='profile.php?id=" + o.UserID + "'>" + o.firstName			+ "</a></td>" 
-					            + "<td> " + o.lastName	+ "</td>" 
-					            + "<td> " + o.username		+ "</td>" 
-					            + "<td> " + o.sysRole	+ "</td>" 
-					            + "<td> " + o.userStatus		+ "</td>"
-					            + "<td> <button id='" + o.UserID		+ "' class='btn btn-info editUser'>Edit</button></td>"
-					            + "</tr>" 
-				    	  	);
+						var appendHTML = 	"<tr>"
+							    	  		+ "<td> <img class='userThumbSmall' src='" + o.userPictureURL +"' /><a class='showProfile' userid='" + o.UserID + "'>" + o.firstName + "</a></td>" 
+								            + "<td> " + o.lastName	+ "</td>" 
+								            + "<td> " + o.username		+ "</td>" 
+								            + "<td> " + o.sysRole	+ "</td>" 
+								            + "<td> " + o.userStatus		+ "</td>" 
+								            + "<td>"; 
+								            if(currentUserStatus == 'Administrator'){
+								            	appendHTML += " <button id='" + o.UserID		+ "' class='btn btn-info editUser'>Edit</button>";
+								            }
+							appendHTML 	 += "</td></tr>" ;
+				
+							$('#userData').append(appendHTML);
 				    	  userDataState = 'set';
 				    	 }
 
@@ -161,7 +164,7 @@ function editUser(id)											// shows user details in the form
 		});	
 }
 
-function updateUser() 
+function updateUser(type) 
 {
 			var userID = $('#userID').val();
 
@@ -172,7 +175,7 @@ function updateUser()
 			var sysRole   = $('#sysRole option:selected').val();
 			var password  = $('#password').val();
 			var facebook  = $('#facebook').val();
-			var userPicture  = $("input[name='userPicture']").val();
+			var userPicture  = $("#userPicture").val();
 			var userAbout  = $('#userAbout').val();
 			var twitter   = $('#twitter').val();
 			var phone 	  = $('#phone').val();
@@ -197,6 +200,10 @@ function updateUser()
 				'userStatus' : status
 			};
 			
+							    				    			// change update information on the json
+
+
+			
 			$.ajax({													// Add user to the database with php.
 				type: "POST",
 				url: "scripts/php/userAdmin.php",
@@ -207,11 +214,42 @@ function updateUser()
 				},
 				  success: function(data) {								 
 				    $('#notify').fadeIn().html(data).delay(5000).fadeOut(400);							// The notify div is filled with the notification		
+				    
+				    			var i, o; 
+						for(i = 0; i < dscourse.data.allUsers.length; i++ ){	// If view is not specified Construct the table for each element
+							o =  dscourse.data.allUsers[i] ;  
+						
+							if(o.UserID == userID) {
+										o.firstName		= firstName  	;
+										o.lastName		= lastName	  	;
+										o.username		= username	  	;
+										o.password		= password	  	;
+										o.sysRole		= sysRole	  	;
+										o.userFacebook	= facebook	  	;
+										o.userPicture	= userPicture	;
+										o.userAbout		= userAbout  	;
+										o.userTwitter	= twitter	  	;
+										o.userPhone		= phone	  	;
+										o.userWebsite	= website 	  	;
+										o.userStatus	= status	  	;
+							}
+						
+						}
+			
+				    if(type == 'single'){					
+					    		dscourse.UserProfile(userID);
+				    }
+
+								
+								
+								
 				  }, 
 				  error: function() {									// If there was an error
 					  $('#notify').fadeIn().html("<div class=\"alert alert-error \"><strong> Error! </strong>We couldn't complete your request, please try again later.</div>").delay(5000).fadeOut(400);					
 				  }
 			});
+			
+
 
 
 }

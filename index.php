@@ -20,12 +20,12 @@
 	<script type="text/javascript" src="assets/js/bootstrap-tooltip.js"></script>
 	<script type="text/javascript" src="assets/js/bootstrap-typeahead.js"></script>
 	<script type="text/javascript" src="assets/js/jquery-ui-1.8.21.custom.min.js"></script>
-	<script type="text/javascript" src="http://www.viseyes.org/shiva/SHIVA_Show.js"></script>
-	<script type="text/javascript" src="http://www.viseyes.org/shiva/SHIVA_Event.js"></script>
+	<?php /* <script type="text/javascript" src="http://www.viseyes.org/shiva/SHIVA_Show.js"></script>
+	<script type="text/javascript" src="http://www.viseyes.org/shiva/SHIVA_Event.js"></script> */ ?>
 
 	<link href="assets/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
-	<link href="assets/css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css" />		
+	<link href="assets/css/animate.css" media="screen" rel="stylesheet" type="text/css" />		
 
 	<script type="text/javascript" src="scripts/js/validation.js"></script>
 	<script type="text/javascript" src="scripts/js/users.js"></script>
@@ -37,13 +37,16 @@
 	
 	var dscourse = new Dscourse();				// Fasten seat belts, dscourse is starting...
 	
-	var shiva = new SHIVA_Show('mediaWrap'); 
+	//var shiva = new SHIVA_Show('mediaWrap'); 
+	
+	<?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
+	<?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
 	
 </script> 
 
 </head>
 <body>
-<div class="navbar navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
       <a class="brand" id="homeNav">
@@ -52,11 +55,9 @@
 	
 		<ul class="nav">
 
-		  <?php if ($_SESSION['status'] == "Administrator"){	?>											
 			<li>
 			<a id="usersNav">Users</a>  
 		  </li>
-		  <?php 	} ?>
 
 		  <li>	
 			<a id="coursesNav">Courses</a>  
@@ -81,10 +82,15 @@
 
 
 <!-- Begin home.php-->
-<div id="homePage" class="container wrap page">
-	<div class="page-header">
-	  <h1> Dashboard<small> What's new and trending </small></h1> 
-	</div>			
+<div id="homePage" class=" wrap page" style="display: none;">
+	  	<header class="jumbotron subhead">
+		    <div class="container">
+		    	  <h1> Dashboard<small> What's new and trending </small></h1> 
+		    </div>			
+	  	</header>
+		    
+	 <div class="container">
+
 	<div class="row">
 		<div class="span4">
 			<div class="well">
@@ -125,6 +131,9 @@
 		</div>
 				
 	</div>
+
+</div> <!-- close container --> 
+
 	
 </div><!-- end home-->
 
@@ -132,11 +141,26 @@
 
 <!-- Begin users.php-->
 
-<div id="usersPage" class="container wrap page">
+<div id="usersPage" class=" wrap page" style="display: none;">
 
-	<div class="page-header">
-	  <h1>Users <small> <a id="userListLink" class="headerLinks">User List</a> <a id="addUserLink" class="linkGrey headerLinks">Add User</a> </small></h1> 
-	</div>	
+	  	<header class="jumbotron subhead">
+		    <div class="container">
+		    	  <h1>Users </h1> 
+		    	  <div class="headerTabs"> 
+		    	  	<a id="userListLink" class="headerLinks">User List</a> 
+		    	  	<?php 
+		    	  	 if($_SESSION['status'] == 'Administrator') {
+			    	  	echo '<a id="addUserLink" class="linkGrey headerLinks">Add User</a>';
+		    	  	 } ?> 
+		    	  	
+		    	  	
+		    	  	 
+		    	  </div>
+		    </div>	
+	  	</header>
+	
+	 <div class="container">
+
 			
 	<div class="row">	
 		
@@ -298,7 +322,7 @@
 					    <tr>
 						    <th scope="col" id="first" width="20%">First Name</th>
 						    <th scope="col" id="last" width="20%">Last Name</th>
-						    <th scope="col" id="email" width="30%">Email Address </th>
+						    <th scope="col" id="userEmail" width="30%">Email Address </th>
 						    <th scope="col" id="sysrole" width="10%">System Role</th>
 						    <th scope="col" id="status" width="10%">Status</th>
 						    <th scope="col" id="actions" width="10%">Edit</th>
@@ -315,31 +339,35 @@
 
 	</div>
 
+</div> <!-- close container --> 
+
+
 </div><!-- End users -->
 
 
 <!-- Begin courses.php-->
 
 
-<div id="coursesPage" class="container wrap page">
-	<div class="page-header">
-	  <h1>Courses
-		  <small> 
-		  <a id="allCoursesView" class="headerLinks">All Courses</a> 
-		  <a id="activeCoursesView" class="headerLinks linkGrey">Active </a> 
-		  <a id="archivedCoursesView" class="headerLinks linkGrey">Archived </a>
-		  <a id="courseFormLink" class="headerLinks linkGrey">Add Course </a>
-		  <div class="pull-right animated flash"> <span class="headerText" id="saveMessage"> </span>
-			  <button id="saveCourses" class="btn btn-small btn-warning"> Save now </button>
-		  </div>
-		  
-
-		  </small>
-	  </h1> 
-	</div>	
+<div id="coursesPage" class=" wrap page" style="display: none;">
 	
-
+	  	<header class="jumbotron subhead">
+		    <div class="container">
+		    <h1>Courses  </h1> 
+				  <div class="headerTabs">
+					  <a id="allCoursesView" class="headerLinks">All Courses</a> 
+					  <a id="activeCoursesView" class="headerLinks linkGrey">Active </a> 
+					  <a id="archivedCoursesView" class="headerLinks linkGrey">Archived </a>
+					  <?php 
+		    	  	 if($_SESSION['status'] == 'Administrator') { ?> 
+					  <a id="courseFormLink" class="headerLinks linkGrey">Add Course </a>
+					<?php } ?>  
+				  </div>
 			
+			</div>	
+	  	</header>
+
+	 <div class="container">
+		
 	<div class="row">
 
 		<div class="span12">
@@ -406,7 +434,7 @@
 					<div class="control-group">
 				      <label class="control-label" for="courseImage">Course Image</label>    
 				      <div class="controls">
-				      	<div id="imgPath"></div>
+				      	<div id="cimgPath"></div>
 				      	<input type="hidden" name="courseImage" id="courseImage" value="/assets/img/dscourse_logo4.png">				
 					 <div id="file-uploader-course">
 								<noscript>
@@ -459,7 +487,7 @@
 					    </div>
 					    <hr class="soften" />
 
-					    <div id="courseButtonDiv"> <button class="btn btn-primary" id="courseFormSubmit">Submit</button></div>
+					    <div id="courseButtonDiv"> </div>
 					
 					
 					</div>
@@ -474,26 +502,29 @@
 				
 	</div> 
 
+</div> <!-- close container --> 
+
+
 </div><!-- end courses -->
 
 
 <!-- Begin Discussions.php -->
 
-<div id="discussionsPage" class="container wrap page">
-	<div class="page-header">
-	  <h1>Discussions
-	  	<small> 
-	  		<a id="allDiscussionView" class="headerLinks">All Discussions</a> 
-	  		<a id="addDiscussionView" class="headerLinks">Start New Discussion</a> 
-	  		<div class="pull-right animated flash"> <span class="headerText" id="saveMessage"> </span>
-	  		</div>
-   
-	  	</small>
-	  </h1> 
-	</div>	
+<div id="discussionsPage" class=" wrap page" style="display: none;">
 	
+		  	<header class="jumbotron subhead">
+		    <div class="container">
+			<h1>Discussions</h1> 
+			<div class="headerTabs"> 
+			  		<a id="allDiscussionView" class="headerLinks">All Discussions</a> 
+			  		<a id="addDiscussionView" class="headerLinks">Start New Discussion</a> 
+		   
+			  	</div>
+			 </div>	
+		  	</header>
 
-			
+	 <div class="container">
+		
 	<div class="row">
 		<div class="span12 ">
 
@@ -535,21 +566,32 @@
 		              
 				        <p class="help-inline">If you like you can provide prompts to get into details or explain directions for the discussion. Please limit your text to 1000 characters.</p>
 				      </div>
-				    </div>	
+				    </div>
+				    
+				    <input id="discIdHidden" type="hidden" name="discIdHidden" value="">	
 		
 
 					    <div class="control-group" id="discussionStartControl">
 					      <label class="control-label" for="discussionStartDate">Discussion Start Date</label>
 					      <div class="controls">
-					        <input type="text" class="input-large" id="discussionStartDate" name="discussionStartDate">
+					        <input type="text" class="input-small" id="discussionStartDate" name="discussionStartDate">
 					        <p class="help-inline">Format: YYYY-MM-DD </p>
 					      </div>
 					    </div>						
-						
+
+					    <div class="control-group" id="discussionOpenControl">
+					      <label class="control-label" for="discussionOpenDate">Discussion Open Date</label>
+					      <div class="controls">
+					        <input type="text" class="input-small" id="discussionOpenDate" name="discussionOpenDate">
+					        <p class="help-inline">The date discussion opens to entire class. Format: YYYY-MM-DD </p>
+					      </div>
+					    </div>			
+		
+								
 					    <div class="control-group" id="discussionEndControl">
 					      <label class="control-label" for="discussionEndDate">Discussion End Date</label>
 					      <div class="controls">
-					        <input type="text" class="input-large" id="discussionEndDate" name="discussionEndDate">
+					        <input type="text" class="input-small" id="discussionEndDate" name="discussionEndDate">
 					        <p class="help-inline">Format: YYYY-MM-DD </p>
 					      </div>
 					    </div>			
@@ -563,7 +605,10 @@
 						    <p>Start typing course names that you would like this discussion to be associated with. Only active courses are listed. </p>
 	
 						    <p>
-						    <div id="discInputDiv"> </div>
+						    <div id="discInputDiv">
+						    	<input type="text" class="input-large discussionCourses" id="discussionCourses" name="discussionCourses" >
+
+						     </div>
 						    </p>
 					    	</div>
 						    
@@ -584,7 +629,7 @@
 					    </div>
 					    <hr class="soften" />
 
-					    <div id="discussionButtondiv"> <button class="btn btn-primary" id="discussionFormSubmit">Submit</button></div>		
+					    <div id="discussionButtondiv"> <button class="btn btn-primary" id="discussionFormSubmit">Submit</button> <button class="btn btn-info" id="discussionFormCanel">Cancel</button></div>		
 		
 		
 				</div>
@@ -595,68 +640,82 @@
 				
 	</div>
 
+</div> <!-- close container --> 
+
+
 </div><!-- end discussions -->
 
 
 
 <!-- Begin profile.php-->
 
-<div id="profilePage" class="container wrap page">
+<div id="profilePage" class=" wrap page" style="display: none;">
 
-  	<div class="page-header">
-	    <h1>
-	    	<span id="profileName"></span>
-	    	<small><span id="profileEmail"> </span></small>
-	    	<button id="profilePageEdit" class="btn btn-info pull-right" profilePageID=""> Edit Profile </button>
-	    </h1>
-    </div>
+	  	<header class="jumbotron subhead">
+		    <div class="container">
+			    <h1>
+			    	<span id="profileName"></span>
+			    	<small><span id="profileEmail"> </span></small>
+			    	<button id="profilePageEdit" class="btn btn-info pull-right" profilePageID=""> Edit Profile </button>
+			    </h1>
+	    </div>
+	  	</header>
+	    
+     <div class="container">
+
+
     <div class="row" id="profileDetails">
-		<div class="span4 offset4" id="notify"></div>
-		<div class="span4">
-  			<div id="profilePicture"></div>
-	  		<div id="profileInfo"> 
-	  			<table class="table">	
-			        <tbody>
-			          <tr>
-			            <td class="profileHead" >About Me:</td>
-			            <td id="profileAbout1"></td>
-			          </tr>
-			          <tr>
-			          	<td class="profileHead" >Facebook Account</td>
-			            <td id="profileFacebook"></td>
-			          </tr>
-			          <tr>
-			          	<td class="profileHead" >Twitter Account</td>
-			            <td id="profileTwitter"></td>
-			          </tr>
-			          <tr>
-			          	<td class="profileHead" >Phone Number</td>
-			            <td id="profilePhone"></td>
-			          </tr>
-			          <tr>
-			          	<td class="profileHead" >Website</td>
-			            <td id="profileWebsite"></td>
-			          </tr>
-			        </tbody>
-			     </table>
-		    </div> 
-		</div><!-- end span4 -->  
-		<div class="span8 ">
-				<h2>My Courses:</h2>
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th>Course Title</th>
-							<th>Role </th>
-						</tr>
-					</thead>
-			        <tbody id="profileCourses">
-			         
-			        </tbody>
-			      </table>
-		 </div>
-    </div><!-- end profileDetails-->
+		<div id="userInfoWrap">
+				<div class="span4 offset4" id="notify"></div>
+				<div class="span4">
+		  			<div id="profilePicture"></div>
+			  		<div id="profileInfo"> 
+			  			<table class="table">	
+					        <tbody>
+					          <tr>
+					            <td class="profileHead" >About Me:</td>
+					            <td id="profileAbout1"></td>
+					          </tr>
+					          <tr>
+					          	<td class="profileHead" >Facebook Account</td>
+					            <td id="profileFacebook"></td>
+					          </tr>
+					          <tr>
+					          	<td class="profileHead" >Twitter Account</td>
+					            <td id="profileTwitter"></td>
+					          </tr>
+					          <tr>
+					          	<td class="profileHead" >Phone Number</td>
+					            <td id="profilePhone"></td>
+					          </tr>
+					          <tr>
+					          	<td class="profileHead" >Website</td>
+					            <td id="profileWebsite"></td>
+					          </tr>
+					        </tbody>
+					     </table>
+				    </div> 
+				</div><!-- end span4 -->  
+				<div class="span8 ">
+						<h2>My Courses:</h2>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Course Title</th>
+									<th>Role </th>
+								</tr>
+							</thead>
+					        <tbody id="profileCourses">
+					         
+					        </tbody>
+					      </table>
+				 </div>
+		 </div>   
+		    
+		    
+		 </div><!-- end profileDetails-->
 
+</div> <!-- close container --> 
    		      
 
 </div><!-- end profile -->
@@ -664,60 +723,75 @@
 
 <!-- Begin course.php -->
 
-<div id="coursePage" class="container wrap page">
-	
-	  	<div class="page-header">
-		    <h1><span id="iCourseName">Course Name </span><small></small>
-		    </h1>
-	    </div>
+<div id="coursePage" class=" wrap page" style="display: none;">
+		  	<header class="jumbotron subhead">
+		    <div class="container">
+		    	    <h1><span id="iCourseName">Course Name </span><small></small>
+		    	    </h1>
+		    	 </div>
+		  	</header>
+
+ <div class="container">
+
 	  
 <div class="row">
 
 	<div class="span4 offset4" id="notify"></div>
-  <div class="span4">
-  	<h3>Course information:</h3>
-  	<div id="iCoursePicture"></div>
-  	<div> 
-			<p id="iCourseDescription"></p>  	
-		</div>
+	
+	<div class="span4">
+  
+  		<h3>Course information:</h3>
+  	
+  		<div id="iCoursePicture"></div>
+  		
+  		<div> <p id="iCourseDescription"></p> </div>
 		
-  	<div id="iCourseInfo"> <table class="table">
+		<div id="iCourseInfo"> 
 		
-        <tbody>
-          <tr>
-          	<td class="profileHead" >Instructors:</td>
-            <td id="iCourseInstructors"></td>
-          </tr>
-          <tr>
-          	<td class="profileHead" >Teaching Assistants:</td>
-            <td id="iCourseTAs"></td>
-          </tr>
-    
-          <tr>
-            <td class="profileHead" >Start Date:</td>
-            <td id="iCourseStartDate"></td>
-          </tr>
-          <tr>
-          	<td class="profileHead" >End Date</td>
-            <td id="iCourseEndDate"></td>
-          </tr>
-        <tr>
-          	<td class="profileHead" >Course Website</td>
-            <td id="iCourseURL"></td>
-          </tr>
-        </tbody>
-      </table>
-   </div>
-  </div>
-  <div class="span4 ">
+			<table class="table">
+			
+			        <tbody>
+			          <tr>
+			          	<td class="profileHead" >Instructors:</td>
+			            <td id="iCourseInstructors"></td>
+			          </tr>
+			          <tr>
+			          	<td class="profileHead" >Teaching Assistants:</td>
+			            <td id="iCourseTAs"></td>
+			          </tr>
+			    
+			          <tr>
+			            <td class="profileHead" >Start Date:</td>
+			            <td id="iCourseStartDate"></td>
+			          </tr>
+			          <tr>
+			          	<td class="profileHead" >End Date</td>
+			            <td id="iCourseEndDate"></td>
+			          </tr>
+			        <tr>
+			          	<td class="profileHead" >Course Website</td>
+			            <td id="iCourseURL"></td>
+			          </tr>
+			        </tbody>
+			    </table>
+		</div> <!-- close iCourseInfo-->
 		
-		<div id="courseDiscussions"> 
+				
+
+	</div><!-- close span4 -->
+
+	<div class="span8">
+		
+			
+	
+	<div id="courseDiscussions"> 
 			<h3>Course Discussions</h3>
 			
 					<table class="table table-striped table-bordered">
 						<thead>
 							<tr>
-								<th width="80%">Discussion Question </th>
+								<th width="60%">Discussion Question </th>
+					            <th width="20%">Status</th>
 					            <th width="20%"># of Responses</th>
 							</tr>
 						</thead>
@@ -725,40 +799,56 @@
 
 				        </tbody>
 				     </table> 	
-		</div>
-
-</div>
-
-  <div class="span4 ">
+		</div>	 <!-- close courseDiscussions-->
 		
-		<div id="courseDocuments"> 
-			<h3>Course Documents</h3>
+		<h3> Class Notes </h3>
+		<div id="classNotes">
+		
 			
-			<p> 
-				<ul id="documentsList">
-					<li>
-						
-					</li>
-				</ul>
-			</p>
+					<table class="table table-striped table-bordered">
+
+				        <tbody id="courseNoteBody">
+
+				        </tbody>
+				     </table> 	
+				
+				
+				<div id="classNoteForm" class="form-horizontal">
+					<input id="noteAuthor" type="hidden" name="noteAuthor" value="<?php echo $_SESSION['UserID'];?>">
+					<input id="noteType" type="hidden" name="noteType" value="course">
+					<input id="noteSource" type="hidden" name="noteSource" value="">
+					<textarea  id="inputNote" placeholder="..."></textarea>
+					<button id="addNewNote" type="post" class="btn btn-info">Add New Note</button>
+
+				</div>
+			
+			
+			<!-- Invisible Author info, get from session php --> 
 					
-		</div>
+			</div>
 
-</div>
+		
+		</div><!-- close classNotes -->
+		
+		
+	</div> <!-- close span8 -->
+
+</div> <!-- close row -->
+
+</div> <!-- close container --> 
 
 
-</div>
-</div>
-    
+ </div> <!-- close coursePage -->   
     
 <!-- Begin individual discussion page -->
 
 
 	
-<div id="discussionWrap" class="container wrap page">
+<div id="discussionWrap" class=" wrap page" style="display: none;">
 
 	
-	  	<div class="page-header">
+	  	<header class="jumbotron subhead">
+		    <div class="container">
 		    <h1>
 		    	<span class="boxHeaders">
 						
@@ -768,9 +858,10 @@
 
 					</span> 
 		    </h1>
-	    </div>
+		    </div>
+	    </header>
 	
- 
+ <div class="container">
 	
 	<div class="row">
 	
@@ -780,11 +871,14 @@
 			<div id="dInfo"> <!-- Only required for left/right tabs -->
 
 					<div class="dCollapse">
-					    <h4><span class="typicn info"> </span> Discussion information</h4>
+						<div id="discStatus" class="alert"></div>
 					      <div class="content">
 					      	<div id="dPromptView" ></div>
 					      	<div id="dCourse"><b>Course:</b>  </div>
-					      	<div id="dCourse"><b>Dates: </b>  </div>
+					      	<div id="dSDateView"><b>Start Date: </b>  </div>
+					      	<div id="dODateView"><b>Open To Class: </b>  </div>
+					      	<div id="dCDateView"><b>End Date: </b>  </div>
+					      	
 					      </div>
 					</div>  
 					
@@ -814,23 +908,21 @@
  
 		</div>
 	
-		<div class="span8">
-			<div id="controls" class="well">
-			
-				<div class="btn-group" id="zoomButtons">
-					  <button class="zButtons btn btn-small" zoom="in"> <span class="typicn zoomIn "> </span> </button>
-					  <button class="zButtons btn btn-small" zoom="out"> <span class="typicn zoomOut "></span> </button>
-					  <button class="zButtons btn btn-small" zoom="reset"> <span class="typicn expand "></span> </button>
-
-					</div>
-						
-				<button id="showtimeline" class="btn btn-small"> <span class="typicn time "></span>  Show Timeline </button>	
-				<button id="showParticipants" class="btn btn-small"> <span class="typicn views "></span>  Show Heatmap </button>	
-			
-			
-
-			
-			</div> 
+		<div class="span8" >
+			<div id="discussionTop">
+				<div id="controlsWrap" >
+					<div id="controls" class="well">
+					
+						<div class="btn-group" id="zoomButtons">
+							  <button class="zButtons btn btn-small" zoom="in"> <span class="typicn zoomIn "> </span> </button>
+							  <button class="zButtons btn btn-small" zoom="out"> <span class="typicn zoomOut "></span> </button>
+							  <button class="zButtons btn btn-small" zoom="reset"> <span class="typicn expand "></span> </button>
+						</div>
+								
+						<button id="showtimeline" class="btn btn-small"> <span class="typicn time "></span>  Show Timeline </button>	
+						<button id="showParticipants" class="btn btn-small"> <span class="typicn views "></span>  Show Heatmap </button>
+						<span id="refreshDiv"> </span>							
+					</div> 
 					<div id="timeline" class="well">
 						<p>
 								<input type="text" id="amount"  />
@@ -838,27 +930,31 @@
 						<div id="slider-range"><div id="dots"></div></div>
 						
 					</div>
-
+		
 					<div id="participants" class="well">
 						
-					<div class="btn-group" id="heatmapButtons">
-					  <button class="hmButtons btn btn-small" heatmap="comment"> <span class="typicn message "> </span> </button>
-					  <button class="hmButtons btn btn-small" heatmap="agree"> <span class="typicn thumbsUp "></span> </button>
-					  <button class="hmButtons btn btn-small" heatmap="disagree"> <span class="typicn thumbsDown "></span></button>
-					  <button class="hmButtons btn btn-small" heatmap="clarify"> <span class="typicn unknown "></span></button>
-					  <button class="hmButtons btn btn-small" heatmap="offTopic"> <span class="typicn forward "></span></button>
-					</div>
-
+						<div class="btn-group" id="heatmapButtons">
+						  <button class="hmButtons btn btn-small" heatmap="comment"> <span class="typicn message "> </span> </button>
+						  <button class="hmButtons btn btn-small" heatmap="agree"> <span class="typicn thumbsUp "></span> </button>
+						  <button class="hmButtons btn btn-small" heatmap="disagree"> <span class="typicn thumbsDown "></span></button>
+						  <button class="hmButtons btn btn-small" heatmap="clarify"> <span class="typicn unknown "></span></button>
+						  <button class="hmButtons btn btn-small" heatmap="offTopic"> <span class="typicn forward "></span></button>
+						</div>
 						<ul id="participantList">
 						
 						</ul>
 						
 					</div>
-					
+				</div>			
+			
+			<div id="checkNewPosts">  </div>
+			
+			</div>
+			
 						
-					<div id="discussionDivs"> 
-						<div class="levelWrapper" level="0"></div>
-					</div>
+			<div id="discussionDivs" > 
+				<div class="levelWrapper" level="0"></div>
+			</div>
 				
 				</div>
 		</div>
@@ -932,7 +1028,6 @@
 		
 	
 		<div id="mediaWrap">
-			<iframe id="node" src="http://www.viseyes.org/shiva/webpage.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
 
 		</div>	
 
@@ -953,8 +1048,10 @@
 	
 	</div><!-- close mediaDisplay --> 
 
+</div> <!-- close container --> 
 
 </div><!-- End individual discussion page --> 
+
 
 <script>
 // Latest itiration of the shiva elements through iframe
@@ -991,36 +1088,16 @@ var sampleData="{\"chartType\": \"BarChart\",\"areaOpacity\": \".3\",\"backgroun
 
 /************* TYPEAHEAD ***********************/ 
 
-$(function() {
+$(document).ready(function() {
+			
 
-	  		$('.coursePeople').typeahead({
-				source: dscourse.nameList,							// The source, it's defined in users.js
-				matchProp: 'Name',							// Match to this
-				sortProp: 'Name',							// Sort by 
-				valueProp: 'ID',							// The content of the val variable below comes from this attribute
-				itemSelected: function(item, val, text) {
-					var i; 
-					for(i = 0; i < dscourse.data.allUsers.length; i++ ){
-						o = dscourse.data.allUsers[i];
-						if (o.UserID == val) {
-							var currentEmail = o.username;	// We get the username info, we can get any other information as well here
-						
-							$('#addPeopleBody').append('<tr><td>' + text + ' </td><td>' + currentEmail  + ' </td><td><div class="btn-group" data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" userid="'+ val + '">Instructor</button><button class="btn roleB" userid="'+ val + '">TA</button><button class="btn active roleB" userid="'+ val + '">Student</button></div></td><td><button class="btn removePeople">Remove</button>	</td></tr>'); // Build the row of users. 
-						
-						
-						}
-					}
-					
-					$('.coursePeople').val(' ').focus();
-				}
-			}); 
-				
 
-								
-					   	  		
-
+	
 
 });
+
+			
+			
 
 /************* IMAGE UPLOADER ***********************/ 
 

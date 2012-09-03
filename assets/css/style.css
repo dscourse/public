@@ -10,7 +10,7 @@
 /* GLOBAL */
 
 body {
-	padding-top: 90px;
+	padding-top: 40px;
 }
 
 a {
@@ -26,17 +26,14 @@ a:hover {
 .headerLinks {
 	text-decoration: none;
 	cursor: pointer;
-	border: 1px solid #CCC;
-	padding: 7px 15px;
+	padding: 11px 15px;
 	margin-left: 10px;
 	-webkit-border-radius: 8px 8px 0px 0px;
 	-moz-border-radius: 8px 8px 0px 0px;
 	border-radius: 8px 8px 0px 0px;
 	background: white; 
-	border-bottom: 1px solid white;
-	-webkit-box-shadow: 0px -2px 5px 0px #CCC;
-	-moz-box-shadow: 0px -2px 5px 0px #CCC;
-	box-shadow: 0px -2px 5px 0px #CCC;
+	font-size: 18px;
+	text-shadow: none;
 }
 
 .headerLinks:hover {
@@ -52,10 +49,10 @@ a:hover {
 
 .linkGrey {
 	color: grey;
-	border-bottom: 1px solid #ccc;
-	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	box-shadow: none;	
+	-webkit-box-shadow: inset 0px -3px 5px 0px #999;
+	-moz-box-shadow: inset 0px -3px 5px 0px #999;
+	box-shadow: inset 0px -3px 5px 0px #999;
+	background: #eee;
 }
 
 .page-header {
@@ -67,6 +64,15 @@ padding-bottom: 7px;
 	
 }
 
+.jumbotron h1 {
+	margin-bottom: 4px !important;
+}
+
+.headerTabs {
+float: right;
+margin-bottom: -21px;
+margin-right: 40px;	
+}
 
 #addUserForm, #courseForm, #saveCourses {  /* Bootstrap has hide class - check that */
 	display: none;
@@ -141,7 +147,7 @@ padding-top: 10px;
 }
 
 #showtimeline {
-	width: 110px;
+
 }
 
 #showParticipants {
@@ -213,9 +219,9 @@ margin-left: 8px;
 }
 
 .singleDot {
-	width: 8px;
+	width: 11px;
 	height: 8px;
-	background: rgba(255,0,0,0.20);
+	background: rgba(255,0,0,0.15);
 	border-radius: 4px;	
 	position: absolute;
 }
@@ -287,6 +293,19 @@ margin-left: 8px;
 	
 }
 
+.jumbotron {
+	position: relative;
+padding: 30px 0;
+color: white;
+text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);
+background: #020031;
+background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#020031), color-stop(100%,#6D3353));
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#020031', endColorstr='#6d3353',GradientType=1 );
+-webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, .2), inset 0 -3px 7px rgba(0, 0, 0, .2);
+-moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+box-shadow: inset 0 3px 7px rgba(0, 0, 0, .2), inset 0 -3px 7px rgba(0, 0, 0, .2);
+margin-bottom: 20px;
+}
 
 
 
@@ -299,6 +318,12 @@ margin-left: 8px;
 .index-page h2 {
 	padding-top: 40px;
 	margin-bottom: 20px;
+}
+
+.index-page .masthead h1 {
+margin-bottom: 64px;
+font-size: 101px;
+margin-top: 65px;
 }
 
 .index-text, .index-text p {
@@ -401,6 +426,10 @@ margin-left: 0 !important;
 
 /* Home Page */
 
+.page {
+	display: none;
+}
+
 .todoFeed li, .discussionFeed li {
 	border-bottom: 1px solid #e8e8e8;
 	padding: 3px;
@@ -434,10 +463,26 @@ margin-left: 0 !important;
 
 /*  Discussions Page */
 
-#discussionDivs {
-height: 700px;
-overflow-y: scroll;	
+#discussionWrap {
+	overflow: scroll;
+	height: 1000px; 
 }
+
+#discussionDivs {
+//height: 600px;
+//overflow-y: scroll;	
+}
+
+.controlWrapFixed {
+	position: fixed;
+	top: 40px;
+	left: 0;
+	width: 100%;
+	box-shadow: 0 0 10px 0px #222;
+	background: #EEE;
+	padding: 10px 0 0 0;	
+}
+
 
 
 		.boxHeaders small {
@@ -451,7 +496,6 @@ overflow-y: scroll;
 		}
 				
 		.sayBut2 {
-		
 			width: 20px;
 			height: 30px;
 			background: url(../img/icons/sayL.png) top;
@@ -471,12 +515,13 @@ overflow-y: scroll;
 
 		.boxHeaders .sayBut2 {
 			background: url(../img/icons/sayL2.png) top;
-			padding: 13px 6px 0px 10px;
+			padding: 2px 6px 0px 10px;
 			font-size: 16px;
-			display: inline-block !important; 
-			margin-top: -10px;
+			display: inline-block !important;
 			width: 32px;
-			height: 32px;
+			height: 42px;
+			color: #222;
+			text-shadow: none;
 		}
 		.boxHeaders .sayBut2:hover {
 			background: url(../img/icons/sayD2.png) center;
@@ -490,12 +535,12 @@ overflow-y: scroll;
 			background-color: #fff;
 			padding: 5px 0px 5px 10px;
 			margin-top: 3px;
-			width: 96%;
-			border-left: 1px solid #eee;
-			margin-left: 10px;
-			line-height: 23px; 
+			border-left: 2px solid #eee;
+			line-height: 16px; 
 			font-size: 13px; 
-			
+			text-align: justify;
+			float: left;;
+			width: 98%;
 		}
 		
 		#dTitleView {
@@ -523,26 +568,47 @@ overflow-y: scroll;
 		width: 90%;
 }
 
-.postAuthorView {color: #08C; line-height: 23px; margin-left: 27px; }
+.postAuthorView {color: #08C;  margin-right: 6px; }
 .postTypeView   {
-
+float: left;
+width: 3%;
+padding: 5px 0 5px 0;
+margin-top: -4px;
 }
 .postMessageView{
-	display: inline-block;
-margin: -26px 0 0 27px;
+	white-space: pre-wrap;
+
 }
 
 .postTypeWrap {
-	display: none;
-	background-color: #efefef;
-	margin-left: 5px;
-	padding: 3px 4px 3px 5px;
-	border-radius: 10px;
-	font-size: 11px;	
+background-color: whiteSmoke;
+margin-left: 5px;
+padding: 0px 3px 0px 4px;
+border-radius: 6px;
+font-size: 10px;
+display: block;
+margin-top: 2px;
+float: right;
+width: 25px;
+}
+
+#responseWrap {
+display:block; 
+width:40px; 
+float:right;
+border-left: 1px solid #EEE;
+}
+
+
+.postTextWrap {
+float: left;
+width: 85%;
+margin-bottom: 10px;
+padding-right: 10px;
+margin-right: 5px;	
 }
 
 .mediaMsg {
-	display: none;
 	background-color: #efefef;
 	margin-left: 5px;
 	padding: 3px 4px 3px 5px;
@@ -656,7 +722,7 @@ box-shadow: inset 0px 1px 2px #666;
 			}
 			
 			#quick button {
-
+				font-size: 12px; 
 			}
 			
 			#bottom {
@@ -678,7 +744,7 @@ box-shadow: inset 0px 1px 2px #666;
 			}
 			
 			.highlight {
-				background-color: rgba(255,255,176,0.65);
+				background-color: rgba(255,255,176,1);
 			}
 			span .highlight {
 				padding: 4px 0;
@@ -765,6 +831,17 @@ box-shadow: inset 0px 1px 2px #666;
 	font-size: 11px !important;		
 }		
 
+
+
+#inputNote {
+	width: 500px;
+	resize: none;
+	height: 100px;	
+}
+
+
+
+
 /* SPECIFIC TO file uploader script */
 
 .qq-uploader { position:relative; width: 100%;}
@@ -798,6 +875,37 @@ box-shadow: inset 0px 1px 2px #666;
 
 .qq-upload-failed-text {display:none;}
 .qq-upload-fail .qq-upload-failed-text {display:inline;}
+
+
+
+/* 
+
+	Jquery autocomplete
+
+*/
+
+.ui-autocomplete-input {
+}
+
+	.ui-autocomplete {
+		background: white;
+	width: 218px;
+	border: 1px solid #CCC;
+	margin-top: 10px;
+	}		
+	
+	.ui-menu-item 	{
+		padding: 5px; 
+		list-style: none;
+		border-bottom: 1px solid #ccc;
+	}
+	.ui-corner-all	{
+		
+	}
+	.ui-menu-item:hover {
+		background: #effdff;
+	}
+
 
 
 /* 
@@ -919,7 +1027,7 @@ box-shadow: inset 0px 1px 2px #666;
 .message 	{color: #7d7dbc; font-size: 16px;}
 .unknown 	{color: #a76ba7; font-size: 16px;}
 .forward {color: #c39949; font-size: 16px;}
-.tab 		{font-size: 20px;}
+.tab 		{font-size: 16px;}
 
 .greyIcons {
 }
