@@ -66,7 +66,7 @@
 			}		 									
 		});	
 
-
+ 
 		$('#loginSubmit').live('click', function() {  					// Execute login function when clicked
 			
 			var username = $('#username').val();						// Gets username and password 
@@ -119,7 +119,7 @@
     <p>A revolutionary new discussion tool for online learning</p>
     <p id="indexSubtext">dscourse is a project that aims to provide the next generation platform-agnostic discussion tool for online learning. The framework of the tool has been developed at the Curry School of Education and it's currently under development with pilot testing planned for Fall 2012. </p>    
     <p class="download-info"> 
-    	<a class="btn btn-primary btn-large" href='login.php'>Test the Demo</a>
+    	<a class="btn btn-primary btn-large" href='login.php'>Sign in</a>
     	 
         <a href="#intro" class="btn btn-info btn-large">Learn More </a>
     </p>

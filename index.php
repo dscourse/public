@@ -9,19 +9,15 @@
 	}  else {												// User is logged in, show page. 
 
 	?>
-	
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>dscourse</title>
-
-	
-	<script type="text/javascript" src="assets/js/jquery-1.7.1.min.js"></script>
-	<script type="text/javascript" src="assets/js/bootstrap-tooltip.js"></script>
-	<script type="text/javascript" src="assets/js/bootstrap-typeahead.js"></script>
+	<title>dscourse </title>
+	<script type="text/javascript" src="assets/js/jquery-1.7.1.min.js"></script>  
+	<script type="text/javascript" src="assets/js/bootstrap.js"></script>
 	<script type="text/javascript" src="assets/js/jquery-ui-1.8.21.custom.min.js"></script>
-	<?php /* <script type="text/javascript" src="http://www.viseyes.org/shiva/SHIVA_Show.js"></script>
-	<script type="text/javascript" src="http://www.viseyes.org/shiva/SHIVA_Event.js"></script> */ ?>
+	<script type="text/javascript" src="assets/js/jquery.scrollTo-min.js"></script>
+	
 
 	<link href="assets/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css" />		
@@ -35,12 +31,12 @@
 
 <script type="text/javascript">
 	
-	var dscourse = new Dscourse();				// Fasten seat belts, dscourse is starting...
-	
-	//var shiva = new SHIVA_Show('mediaWrap'); 
-	
-	<?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
+<?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
 	<?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
+	<?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
+	
+	
+	var dscourse = new Dscourse();				// Fasten seat belts, dscourse is starting...
 	
 </script> 
 
@@ -48,7 +44,7 @@
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
-    <div class="container">
+        <div class="container-fluid">
       <a class="brand" id="homeNav">
 		  dscourse
 		</a>
@@ -56,7 +52,7 @@
 		<ul class="nav">
 
 			<li>
-			<a id="usersNav">Users</a>  
+			<a id="usersNav"></span>  Users</a>  
 		  </li>
 
 		  <li>	
@@ -69,8 +65,10 @@
 		</ul>
 		
 		<ul class="nav pull-right">
+		 
 		 <li><a id="profileNav" userid="<?php echo $_SESSION['UserID']; ?>"><?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?>  </a></li>
-		  <li><a href="scripts/php/logout.php">Logout</a></li>
+		 <li><a id="helpNav">Help</a></li>
+		 <li><a href="scripts/php/logout.php">Logout</a></li>
 		</ul>
 				
     </div>
@@ -84,49 +82,91 @@
 <!-- Begin home.php-->
 <div id="homePage" class=" wrap page" style="display: none;">
 	  	<header class="jumbotron subhead">
-		    <div class="container">
-		    	  <h1> Dashboard<small> What's new and trending </small></h1> 
-		    </div>			
+		        <div class="container-fluid">
+				<div id="homeWrapper">		    	  
+			    	  <h1> dscourse<br />
+			    	  <p class="lead">A revolutionary new discussion tool for online learning</p>
+			    	  </h1> 
+			    	  <p id="homeP">Dscourse is a new online discussion tool designed to bring back the affordances of real classroom discussions online by providing users multiple ways to contribute, view and work with posts. </p>
+				</div>
+		    	  	<div id="homeimg">
+			    	  	<div id="myCarousel" class="carousel slide">
+						  <!-- Carousel items -->
+						  
+						  <div class="carousel-inner">
+						  
+						    <div class="item active">
+						    	<img src="assets/img/ds1.png" alt="dscourse1" class="img-polaroid" /> 
+						    	<div class="carousel-caption">
+			                      <h4>Posting with dscourse</h4>
+			                      <p>Inside a discussion you can choose the types of responses you make, which is used to provide diverse methods of interaction. </p>
+			                    </div>
+						    </div>
+						    
+						    <div class="item">
+						    	<img src="assets/img/ds2.png" alt="dscourse2" class="img-polaroid" />
+						    	<div class="carousel-caption">
+			                      <h4>Drawing and adding media</h4>
+			                      <p>With dscourse your discussion contribution does not have to be in text. You can add drawings, annotated websites, documents, videos and even maps. </p>
+			                    </div>
+						    </div>
+						    
+						    <div class="item">
+						    	<img src="assets/img/ds3.png" alt="dscourse3" class="img-polaroid" />
+						    	<div class="carousel-caption">
+			                      <h4>Course view</h4>
+			                      <p>Discussions are listed within your course. They may be open to individual participation, or to the entire group.</p>
+			                    </div>
+						    </div>
+						    
+						  </div>
+						  <!-- Carousel nav -->
+						  <a class="left carousel-control" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+						  <a class="right carousel-control" href="#myCarousel" data-slide="next">&rsaquo;</a>
+					   </div>
+		    	  
+		    	  	</div>	
+		    	  	
+
+			    	  
+		    	  </div>
+		    	  		
 	  	</header>
 		    
-	 <div class="container">
+	 <div class="container-fluid">
 
-	<div class="row">
+	<div class="row-fluid">
 		<div class="span4">
 			<div class="well">
-				<h2>Dscourse</h2>
-				<hr class="soften" />
-				<p>Welcome to Dscourse development area.  You are now in the admin view similar to a dashboard. After logging in users will be able to see an overview of their courses and discussions. This page provides a stream for discussion activities and to-do's, which users will be able to customize to their needs.</p>
-			</div>		
+				<h3>Welcome to dscourse</h3>
+					<hr class="soften" />
+				<p>  You are now using the <b>development version 1.0</b> as alpha users. You can create discussions within a course and contribute in diverse ways.  </p><p>Please check our brief screencast to get started on how to interact with the website. We also have help documentation. Check out information page for development plans and a roadmap of upcoming features. </p><p>If you have any questions or concerns feel free to contact us at: <a href="#">bferster - at - virginia.edu</a>    </p>
+				<p> Details of the design can be found <a href=""> here</a>. </p>
+			</div>	
+				
 		</div>
 
-		<div class="span4">
-			<div class="well">
-				<h2>Discussions</h2>
-				<hr class="soften" />
-				<p>
-					<ul class="unstyled discussionFeed" >
-					<li> Mable Kinzie commented on <a href="#">"Stakeholder perspective of James Monroe" </a>  <em class="timeLog">3 hours ago.</em> </li>
-					<li> Bill Ferster added a new link to discussion on <a href="#">Benefits of free software </a>  <em class="timeLog">18 hours ago.</em></li>
-					<li> Gell Bull annotated your comment at <a href="#">"Where is 3D printing going?"</a> <em class="timeLog">2 days ago.</em></li>
-					</ul>
-				</p>
-				<p class="pull-right"><a href="#"><em>See more </em></a></p>
-			</div>		
-		</div>
+	<div class="span4">
+				<div class="well">
+					<h3>My Courses</h3>
+					<hr class="soften" />
+					<p>
+						<ul class="unstyled" id="myCoursesHome" >
+						</ul>
+					</p>
+					<p class="pull-right"><a href="index.php?page=courses"><em>See all </em></a></p>
+				</div>		
+			</div>
 		
 		<div class="span4">
 			<div class="well">
-				<h2>To-Dos</h2>
+				<h3>My Discussions</h3>
 				<hr class="soften" />
 				<p>
-					<ul class="unstyled todoFeed" >
-					<li> Provide initial response to document <a href="#">"Case overview" </a> by <em>August, 25.</em> </li>
-					<li> <a href="#">Initiate </a> a class discussion with relevant topic. </li>
-					<li> Bill Ferster asks you to clarify your comment starting with <em><a href="#">"That sounds wrong, ...."</a> </em></li>
+					<ul class="unstyled discussionFeed" >
 					</ul>
 				</p>
-				<p class="pull-right"><a href="#"><em>See more </em></a></p>
+				<p class="pull-right"><a href="index.php?page=discussions"><em>See all </em></a></p>
 			</div>		
 		</div>
 				
@@ -138,14 +178,60 @@
 </div><!-- end home-->
 
 
+<!-- Begin help Page-->
+<div id="helpPage" class="wrap page" style="display: none;">
+	  	<header class="jumbotron subhead">
+		        <div class="container-fluid">
+					  <h1> Help
+					  <p class="lead">Tips and How-To's for using dscourse</p>
+					  </h1> 
+		    	  </div>
+	  	</header>
+		    
+	 <div class="container-fluid">
+
+	<div class="row-fluid">
+		<div class="span8">
+
+			<div class="">
+				<h3>Navigation</h3>
+				<p> Dscourse is a <b>one-page web application</b>. Clicking the back button on your browser will take you to the previous website but not to the previous page. Please use the links on the page to navigate around the website. You can see all your courses and discussions with the links at the top. </p>
+				<hr class="soften" />
+				<p><ul><li><b>Users</b> page provides a list of all users currently in the dscourse system. You can click on the user names to go to their profile pages.</li><br /><li><b>Courses</b> link will show the courses you are involved with whether as Instructor, TA or Student. These roles are assigned by the person creating the course.</li><br /> <li><b>Discussions</b> provides a list of all your discussions in all courses. Discussion are also accessible through the individual course pages.  </li></ul></p>
+				<hr class="soften" />
+				
+			</div>	
+				
+		</div>
+
+		<div class="span4">
+			<div class="well">
+				<h3>Roadmap for v2</h3>
+				<p><em class="timeLog">Here's brief list of planned feature additions for release in version 2</em><p>
+				<p>
+					<ul class="unstyled" >
+						<li> Breadcrumbs for navigation will enable going back and forth in the application without using browser buttons </li>
+					</ul>
+				</p>
+			</div>	
+				
+		</div>
+				
+	</div>
+
+</div> <!-- close container --> 
+
+	
+</div><!-- end help-->
+
 
 <!-- Begin users.php-->
 
 <div id="usersPage" class=" wrap page" style="display: none;">
 
 	  	<header class="jumbotron subhead">
-		    <div class="container">
-		    	  <h1>Users </h1> 
+		        <div class="container-fluid">
+		    	  <h1> Users </h1> 
 		    	  <div class="headerTabs"> 
 		    	  	<a id="userListLink" class="headerLinks">User List</a> 
 		    	  	<?php 
@@ -159,10 +245,10 @@
 		    </div>	
 	  	</header>
 	
-	 <div class="container">
+	 <div class="container-fluid">
 
 			
-	<div class="row">	
+	<div class="row-fluid">	
 		
 		<div class="span12">
 
@@ -263,7 +349,7 @@
 				      <label class="control-label" for="facebook">Facebook</label>
 				      <div class="controls">
 				       <div class="input-prepend">
-		                <span class="add-on">f</span><input class="span2" id="facebook" name="facebook" size="16" type="text">
+		                <span class="add-on">f</span><input class="span2" id="facebook" name="facebook" size="200" type="text">
 		              </div>
 				        <p class="help-inline"> Facebook username</p>
 				      </div>
@@ -274,7 +360,7 @@
 				      <label class="control-label" for="twitter">Twitter</label>
 				      <div class="controls">
 				       <div class="input-prepend">
-		                <span class="add-on">t</span><input class="span2" id="twitter" name="twitter" size="16" type="text">
+		                <span class="add-on">t</span><input class="span2" id="twitter" name="twitter" size="200" type="text">
 		              </div>
 				        <p class="help-inline">Your Twitter username</p>
 				      </div>
@@ -284,7 +370,7 @@
 				      <label class="control-label" for="phone">Phone</label>
 				      <div class="controls">
 				       <div class="input-prepend">
-		                <span class="add-on">#</span><input class="span2" id="phone" name="phone" size="16" type="text">
+		                <span class="add-on">#</span><input class="span2" id="phone" name="phone" size="200" type="text">
 		              </div>
   			          <p class="help-inline">Mobile phone number </p>
 				      </div>
@@ -294,7 +380,7 @@
 				      <label class="control-label" for="website">Website</label>
 				      <div class="controls">
 					    <div class="input-prepend">
-		                <span class="add-on">url</span><input class="span2" id="website" name="website" size="16" type="text">
+		                <span class="add-on">url</span><input class="span2" id="website" name="website" size="200" type="text">
 		              </div>				        
 		              <p class="help-inline">Website </p>
 				      </div>
@@ -312,26 +398,29 @@
 		<div class="span12">
 			<div id="userList">
 			
-						<div class="span4 offset4" id="filterUser">				        
-							<input type="text" class="span4" id="filterUserText" name="filterUserText" placeholder="Filter by name or email ...">
+			<div class="span4 offset4" id="filterUser">				        
+							<input type="text" class="input-xlarge" id="filterUserText" name="filterUserText" placeholder="Filter by first or last name or email ...">
 									<hr class="soften" />
-						</div>
+			</div>
 		
-			    <table id="userTable" class="table table-striped table-bordered">
-				    <thead>
-					    <tr>
-						    <th scope="col" id="first" width="20%">First Name</th>
-						    <th scope="col" id="last" width="20%">Last Name</th>
-						    <th scope="col" id="userEmail" width="30%">Email Address </th>
-						    <th scope="col" id="sysrole" width="10%">System Role</th>
-						    <th scope="col" id="status" width="10%">Status</th>
-						    <th scope="col" id="actions" width="10%">Edit</th>
-					    </tr>
-				    </thead>
-				    <tbody id="userData">
-
-					</tbody>
-				</table>
+			
+				    <table id="userTable" class="table table-striped table-bordered">
+					    <thead>
+						    <tr>
+							    <th scope="col" id="first" width="20%">First Name</th>
+							    <th scope="col" id="last" width="20%">Last Name</th>
+							    <th scope="col" id="userEmail" width="30%">Email Address </th>
+							    <th scope="col" id="sysrole" width="10%">System Role</th>
+							    <th scope="col" id="status" width="10%">Status</th>
+							    <th scope="col" id="actions" width="10%">Edit</th>
+						    </tr>
+					    </thead>
+					    <tbody id="userData">
+	
+						</tbody>
+					</table>
+					
+				
 			</div>
 			
 		
@@ -351,26 +440,26 @@
 <div id="coursesPage" class=" wrap page" style="display: none;">
 	
 	  	<header class="jumbotron subhead">
-		    <div class="container">
+		        <div class="container-fluid">
 		    <h1>Courses  </h1> 
 				  <div class="headerTabs">
 					  <a id="allCoursesView" class="headerLinks">All Courses</a> 
 					  <a id="activeCoursesView" class="headerLinks linkGrey">Active </a> 
 					  <a id="archivedCoursesView" class="headerLinks linkGrey">Archived </a>
-					  <?php 
-		    	  	 if($_SESSION['status'] == 'Administrator') { ?> 
 					  <a id="courseFormLink" class="headerLinks linkGrey">Add Course </a>
-					<?php } ?>  
 				  </div>
 			
 			</div>	
 	  	</header>
 
-	 <div class="container">
+	 <div class="container-fluid">
 		
-	<div class="row">
+	<div class="row-fluid">
 
 		<div class="span12">
+
+		<div id="notifyCourse">  </div> <!-- Notifications for erros etc.  --> 
+		
 			<div>
 				
 				<!-- Course list layer -->
@@ -451,14 +540,14 @@
 					      <label class="control-label" for="courseURL">Course Website</label>
 					      <div class="controls">
 						    <div class="input-prepend">
-			                <span class="add-on">url</span><input class="span2" id="courseURL" name="courseURL" size="16" type="text">
+			                <span class="add-on">url</span><input class="span2" id="courseURL" name="courseURL" size="500" type="text">
 			              </div>				        
 			              <p class="help-inline">If you have an external website for this course please enter it here. </p>
 					      </div>
 					    </div>
 					    
 					    <hr class="soften" />
-					    <div class="row">
+					    <div class="row-fluid">
 					    	
 					    	<div class="span3">
 						    <h3> Add People </h3>
@@ -513,7 +602,7 @@
 <div id="discussionsPage" class=" wrap page" style="display: none;">
 	
 		  	<header class="jumbotron subhead">
-		    <div class="container">
+		        <div class="container-fluid">
 			<h1>Discussions</h1> 
 			<div class="headerTabs"> 
 			  		<a id="allDiscussionView" class="headerLinks">All Discussions</a> 
@@ -523,9 +612,9 @@
 			 </div>	
 		  	</header>
 
-	 <div class="container">
+	 <div class="container-fluid">
 		
-	<div class="row">
+	<div class="row-fluid">
 		<div class="span12 ">
 
 			<!-- Discussion list layer -->
@@ -598,7 +687,7 @@
 		
 
 <hr class="soften" />
-					    <div class="row">
+					    <div class="row-fluid">
 					    	
 					    	<div class="span3">
 						    <h3> Courses </h3>
@@ -652,7 +741,7 @@
 <div id="profilePage" class=" wrap page" style="display: none;">
 
 	  	<header class="jumbotron subhead">
-		    <div class="container">
+		        <div class="container-fluid">
 			    <h1>
 			    	<span id="profileName"></span>
 			    	<small><span id="profileEmail"> </span></small>
@@ -661,12 +750,11 @@
 	    </div>
 	  	</header>
 	    
-     <div class="container">
+	 <div class="container-fluid">
 
 
-    <div class="row" id="profileDetails">
+    <div class="row-fluid" id="profileDetails">
 		<div id="userInfoWrap">
-				<div class="span4 offset4" id="notify"></div>
 				<div class="span4">
 		  			<div id="profilePicture"></div>
 			  		<div id="profileInfo"> 
@@ -725,18 +813,17 @@
 
 <div id="coursePage" class=" wrap page" style="display: none;">
 		  	<header class="jumbotron subhead">
-		    <div class="container">
+		        <div class="container-fluid">
 		    	    <h1><span id="iCourseName">Course Name </span><small></small>
 		    	    </h1>
 		    	 </div>
 		  	</header>
 
- <div class="container">
+	 <div class="container-fluid">
 
 	  
-<div class="row">
+<div class="row-fluid">
 
-	<div class="span4 offset4" id="notify"></div>
 	
 	<div class="span4">
   
@@ -744,7 +831,7 @@
   	
   		<div id="iCoursePicture"></div>
   		
-  		<div> <p id="iCourseDescription"></p> </div>
+  		<div class="well"> <p id="iCourseDescription"></p> </div>
 		
 		<div id="iCourseInfo"> 
 		
@@ -801,6 +888,26 @@
 				     </table> 	
 		</div>	 <!-- close courseDiscussions-->
 		
+
+	<div id="courseStudents"> 
+			<h3>Students in this Course</h3>
+			
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th width="60%">Name </th>
+					            <th width="40%">Email Address</th>
+							</tr>
+						</thead>
+				        <tbody id="courseStudentsBody">
+
+				        </tbody>
+				     </table> 	
+		</div>	 <!-- close courseDiscussions-->
+				
+		
+		
+		<!-- Hiding the notes for version 1 
 		<h3> Class Notes </h3>
 		<div id="classNotes">
 		
@@ -823,12 +930,11 @@
 				</div>
 			
 			
-			<!-- Invisible Author info, get from session php --> 
 					
 			</div>
 
 		
-		</div><!-- close classNotes -->
+		</div> close classNotes --> 
 		
 		
 	</div> <!-- close span8 -->
@@ -844,33 +950,72 @@
 
 
 	
-<div id="discussionWrap" class=" wrap page" style="display: none;">
+<div id="discussionWrap" class=" page" style="display: none;">
 
+		  	<header class="jumbotron subhead">
+		        <div class="container-fluid">
+			    <h1>
+			    	<span class="boxHeaders">
+							
+								<span id="dTitleView" ></span>
+								<div class="sayBut2" postID="0">say</div> 
+								<input id="dIDhidden" type="hidden" name="discID" value="">
 	
-	  	<header class="jumbotron subhead">
-		    <div class="container">
-		    <h1>
-		    	<span class="boxHeaders">
+						</span> 
+			    </h1>
+			    	
+			    	
+			    	<div id="controls" class="">
+						<div class="btn-group" id="zoomButtons">
+							  <button class="zButtons btn btn-small" zoom="in"> <span class="typicn zoomIn "> </span> </button>
+							  <button class="zButtons btn btn-small" zoom="out"> <span class="typicn zoomOut "></span> </button>
+							  <button class="zButtons btn btn-small" zoom="reset"> <span class="typicn expand "></span> </button>
+						</div>
 						
-							<span id="dTitleView" ></span>
-							<div class="sayBut2" postID="0">say</div> 
-							<input id="dIDhidden" type="hidden" name="discID" value="">
-
-					</span> 
-		    </h1>
-		    </div>
+						<button id="showTimeline" class="btn btn-small btn-info"> <span class="typicn time "></span> Timeline </button>
+						
+						<button id="showParticipants" class="btn btn-small btn-warning"> <span class="typicn views "></span> Heatmap </button>
+					</div> 
+					
+					
+			     </div>
 	    </header>
-	
- <div class="container">
-	
-	<div class="row">
-	
-	
-		<div class="span4">
 
-			<div id="dInfo"> <!-- Only required for left/right tabs -->
+	
+<div class="container-fluid">
+	
 
-					<div class="dCollapse">
+	<div class="row-fluid" id="controlsRow">
+		<div class="span12"  id="dFooter">
+				
+				<div id="controlsWrap" >
+
+					<div id="timeline" class="">
+						<div id="slider-range"><div id="dots"></div></div>
+								<input type="text" id="amount"  />					
+					</div>
+					
+
+					<div id="participants" class="">
+						<span><small>Highlight posts by participant:</small></span>						
+						<ul id="participantList">
+						
+						</ul>
+					</div>
+					
+				</div>	
+				
+		</div>
+
+	</div>	
+
+
+		
+	<div class="row-fluid" id="dRowMiddle">
+	
+	
+		<div class="span4 well" id="dSidebar">
+			  <div class="tab-pane active dCollapse" id="dInfoTab">
 						<div id="discStatus" class="alert"></div>
 					      <div class="content">
 					      	<div id="dPromptView" ></div>
@@ -880,89 +1025,35 @@
 					      	<div id="dCDateView"><b>End Date: </b>  </div>
 					      	
 					      </div>
-					</div>  
-					
-					
-					<div class="dCollapse">
+			  </div>
+			  
+			  
+			  <div class="tab-pane dCollapse" id="dNewTab">
 					    <h4><span class="typicn feed"> </span> Recent Activity</h4>			    
+					      <div class="alert alert-info smallAlert"><span class="typicn info iconBall"></span>Click on the item below to go to post.</div>
 					      <div class="content">
 							<ul class=" discussionFeed" id="recentContent">
 						
 							</ul>
-						</div>
-					</div>  						
-						
-					<div class="dCollapse">					  
-					    <h4><span class="typicn tick"> </span> To-Do</h4>
-					      <div class="content">
-						      <ul class=" todoFeed" >
-							
-						      </ul>
-					      </div>
-					</div>  
-			    
-			</div>
-			
-			
-			
+						</div>			  
+			  
+			  </div>
+
  
-		</div>
+		</div> <!-- close span4 -->
 	
-		<div class="span8" >
-			<div id="discussionTop">
-				<div id="controlsWrap" >
-					<div id="controls" class="well">
-					
-						<div class="btn-group" id="zoomButtons">
-							  <button class="zButtons btn btn-small" zoom="in"> <span class="typicn zoomIn "> </span> </button>
-							  <button class="zButtons btn btn-small" zoom="out"> <span class="typicn zoomOut "></span> </button>
-							  <button class="zButtons btn btn-small" zoom="reset"> <span class="typicn expand "></span> </button>
-						</div>
-								
-						<button id="showtimeline" class="btn btn-small"> <span class="typicn time "></span>  Show Timeline </button>	
-						<button id="showParticipants" class="btn btn-small"> <span class="typicn views "></span>  Show Heatmap </button>
-						<span id="refreshDiv"> </span>							
-					</div> 
-					<div id="timeline" class="well">
-						<p>
-								<input type="text" id="amount"  />
-						</p>					
-						<div id="slider-range"><div id="dots"></div></div>
-						
-					</div>
+		<div class="span8 "  id="dMain">
 		
-					<div id="participants" class="well">
-						
-						<div class="btn-group" id="heatmapButtons">
-						  <button class="hmButtons btn btn-small" heatmap="comment"> <span class="typicn message "> </span> </button>
-						  <button class="hmButtons btn btn-small" heatmap="agree"> <span class="typicn thumbsUp "></span> </button>
-						  <button class="hmButtons btn btn-small" heatmap="disagree"> <span class="typicn thumbsDown "></span></button>
-						  <button class="hmButtons btn btn-small" heatmap="clarify"> <span class="typicn unknown "></span></button>
-						  <button class="hmButtons btn btn-small" heatmap="offTopic"> <span class="typicn forward "></span></button>
-						</div>
-						<ul id="participantList">
-						
-						</ul>
-						
-					</div>
-				</div>			
-			
-			<div id="checkNewPosts">  </div>
-			
-			</div>
-			
-						
 			<div id="discussionDivs" > 
 				<div class="levelWrapper" level="0"></div>
 			</div>
-				
-				</div>
-		</div>
+			
+		</div><!-- close span8 -->
 		
-	</div>
-	
-				<hr class="soften" />
+	</div> <!-- close row -->
+					<div id="backTop"><span class="typicn up"> </span> top</div>
 
+	
 	<div id="commentWrap">
 			<input id="postIDhidden" type="hidden" name="postIDhidden" value="">
 			<input id="userIDhidden" type="hidden" name="userIDhidden" value="<?php echo $_SESSION['UserID'];?>">
@@ -1014,10 +1105,10 @@
 		
 		<div id="mediaTools">	
 			<div id="drawGroup" class="btn-group">
-				<button class="btn btn-small drawTypes active" id="Web"><i class="icon-globe"></i> Link</button>
+				<button class="btn btn-small drawTypes" id="Web"><i class="icon-globe"></i> Link</button>
 				<button class="btn btn-small drawTypes" id="Document"><i class="icon-file"></i>  Document</button>
 				<button class="btn btn-small drawTypes" id="Video"><i class="icon-film"></i> Video</button>
-				<button class="btn btn-small drawTypes" id="Drawing"><i class="icon-edit"></i>  Drawing</button>
+				<button class="btn btn-small drawTypes active" id="Drawing"><i class="icon-edit"></i>  Drawing</button>
 				<button class="btn btn-small drawTypes" id="Map"><i class="icon-map-marker"></i>Map</button>
 			</div>
 			<div id="mediaButtons" class="pull-right">	
@@ -1035,20 +1126,15 @@
 	</div><!-- close mediabox --> 
 
 
-	<div id="mediaDisplay"> 
-		<a class="close" data-dismiss="alert" href="#" id="closeMediaDisplay" >&times;</a>
+	 
 
-		<div id="mediaDisplayWrap">
-					<iframe class="hidden" id="webpageFrame" src="http://www.viseyes.org/shiva/webpage.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
-					<iframe class="hidden" id="videoFrame" src="http://www.viseyes.org/shiva/video.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
-					<iframe class="hidden" id="drawFrame" src="http://www.viseyes.org/shiva/webpage.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
-					<iframe class="hidden" id="mapFrame" src="http://www.viseyes.org/shiva/webpage.htm" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
+	<div id="displayFrame">
+		<a class="close" href="#" id="closeMediaDisplay" >&times;</a> 
+		<iframe id="display" src="http://www.viseyes.org/shiva/go.htm" width="100%" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
 
-		</div>	
-	
-	</div><!-- close mediaDisplay --> 
-
+	</div>
 </div> <!-- close container --> 
+
 
 </div><!-- End individual discussion page --> 
 
@@ -1086,19 +1172,6 @@ var sampleData="{\"chartType\": \"BarChart\",\"areaOpacity\": \".3\",\"backgroun
 
 <script type="text/javascript">
 
-/************* TYPEAHEAD ***********************/ 
-
-$(document).ready(function() {
-			
-
-
-	
-
-});
-
-			
-			
-
 /************* IMAGE UPLOADER ***********************/ 
 
 			var userUploader = new qq.FileUploader ({
@@ -1111,7 +1184,7 @@ $(document).ready(function() {
 			});
 			var courseUploader = new qq.FileUploader ({
 			    element: document.getElementById('file-uploader-course'),
-			    action: 'scripts/php/cimgUpload.php',
+			    action: 'scripts/php/cImgUpload.php',
 			    // additional data to send, name-value pairs
 			    allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'], 
 			    sizeLimit: 100000, // max size 
@@ -1121,6 +1194,8 @@ $(document).ready(function() {
 			window.onload = courseUploader;
 
 </script>
+<script type="text/javascript" src="http://www.viseyes.org/shiva/SHIVA_Show.js"></script>
+<script type="text/javascript" src="http://www.viseyes.org/shiva/SHIVA_Event.js"></script> 
 
 </body>
 </html>
