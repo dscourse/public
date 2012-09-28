@@ -32,7 +32,7 @@ function Dscourse()
 	this.currentDrawing = ''; 			// The drawing data that will be saved to the database. 
 	this.currentDrawData = ''; 			// this is used for displaying drawings; 
 	this.currentMediaType = ''; 		// What kind of media should be displayed. 
-	this.postMediaType = 'Web'; 	// Used while saving the media type data. 
+	this.postMediaType = 'draw'; 	// Used while saving the media type data. 
 	
 	this.uParticipant = new Array; 	// Unique list of participants. 
 	
@@ -130,7 +130,7 @@ function Dscourse()
 		});
 	
 		$('.discussionLink').live('click', function () {						// Discussion link
-			
+			$('#recentContent').html('<li></li>');
 			var discID = $(this).attr('discID');
 			dscourse.SingleDiscussion(discID);
 			$('.page').hide();
@@ -214,17 +214,19 @@ function Dscourse()
 			
 		$('.threadText').live('mouseover', function (event) {
 			event.stopImmediatePropagation();
-			$(this).children('.postTextWrap').children('.sayBut2').show();
+			$(this).children('.sayBut2').show();
 			$('.threadText').find('span').removeClass('highlight');
 			var postClickId = $(this).closest('div').attr('level');
 			dscourse.HighlightRelevant(postClickId);
 			$(this).children('.postTextWrap').children('.selectionMsg').show();
+			if(!$(this).hasClass('highlight')){	$(this).addClass('lightHighlight'); }
 		});
 
 		$('.threadText').live('mouseout', function (event) {
 			event.stopImmediatePropagation();
-			$(this).children('.postTextWrap').children('.sayBut2').hide();
+			$(this).children('.sayBut2').hide();
 			$(this).children('.postTextWrap').children('.selectionMsg').hide();
+			$(this).removeClass('lightHighlight'); 
 		});
 		
 		$('.refreshBox').live('click', function () {
@@ -389,6 +391,7 @@ function Dscourse()
 	});
 	
 	$('#courseFormSubmit').live('click', function() {  				// View all archived courses 	
+		// We need to validate course creation.
 		top.addCourse();
 		$('.headerTabs a').addClass('linkGrey');
 		$('#allCoursesView').removeClass('linkGrey');
@@ -731,7 +734,7 @@ function Dscourse()
 	});
 
 	$('.drawTypes').live('click', function () {						// User heatmap buttons and functions
-		top.postMediaType = 'Draw'; 
+		top.postMediaType = 'draw'; 
 		var mHeight = $(window).height()-200 + 'px';		
 		$('.drawTypes').removeClass('active');
 		var drawType = $(this).attr('id'); 
@@ -747,8 +750,8 @@ function Dscourse()
 			case 'Map':
 				type = 'map'; 
 			  break;
-			case 'webpage':  	
-				type = 'map'; 
+			case 'Web':  	
+				type = 'webpage'; 
 			  break;
 			default:
 				type = 'draw'; 
@@ -778,25 +781,33 @@ function Dscourse()
 		var postId = $(this).closest('.threadText').attr('level'); 
 		top.currentDrawData = ''; 
 		top.currentMediaType = 'Draw';
-		var i, o; 
+		
+		var cmd;
+		
+		$('#displayDraw').html('').append('<iframe id="displayIframe" src="http://www.viseyes.org/shiva/go.htm" width="100%" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>');
+		var i, o;
 		for(i = 0; i < top.data.allPosts.length; i++){
 			 o = top.data.allPosts[i];
 			 if(o.postID == postId){
-			 	top.currentDrawData = o.postMedia; 
-			 	top.currentMediaType = o.postMediaType; 
-				var cmd ="PutJSON="+top.currentDrawData;
-				document.getElementById('display').contentWindow.postMessage(cmd,"*");			
-					$('#displayFrame').show();
-					$('html, body').animate({scrollTop:0});	
+			 	//top.currentDrawData = o.postMedia; 
+			 	//top.currentMediaType = o.postMediaType; 
+			 	console.log(o.postMedia); 
+				cmd ="PutJSON="+o.postMedia;
+//				document.getElementById('display').contentWindow.postMessage(cmd,"*");	
+				$('#displayFrame').show();
+				$('html, body').animate({scrollTop:0});	
 			 }
-		 }				
+			 $('#displayIframe').load(function () { document.getElementById('displayIframe').contentWindow.postMessage(cmd,"*");	}).queue(function () {top.DiscResize(); $('#containerDiv').css('width', '100% !important'); $(this).dequeue();});
+		
+		 }
+	  				
 	}); 
 			
 	 $('#recentContent li').live('click', function () {
  		var postID = $(this).attr('postid'); 
  		var postRef = 'div[level="'+ postID +'"]';
  		$('#dMain').scrollTo( $(postRef), 400 , {offset:-100});
-    	$(postRef).removeClass('agree disagree comment offTopic clarify').addClass('highlight animated flash').delay(5000).queue(function () {$(this).removeClass('highlight animated flash');$(this).dequeue();})
+    	$(postRef).removeClass('agree disagree comment offTopic clarify').addClass('animated flash').css('background-color', 'rgba(255,255,176,1)').delay(5000).queue(function () {$(this).removeClass('highlight animated flash').css('background-color', '#fff');$(this).dequeue();});
 	 });
 
 	$('#hideRefreshMsg').live('click', function () {
@@ -812,17 +823,17 @@ Dscourse.prototype.showHome=function() {
 		var main = this;
 		main.DiscResize();
 		$('.page').hide();	
-		$('.discussionFeed').html(' ');
+		$('#discussionFeedHome').html(' ');
 		// Show the last three discussions for the user
 		var i, o;
 		if(main.data.allDiscussions) {
 			for (i = 0; i < 5; i++){
 	 			o = main.data.allDiscussions[i];
 	 			// append to the set
-				$('.discussionFeed').append('<li><a class="discussionLink" discID="' + o.dID + '"> ' + o.dTitle + '  </a> under the course <b>' + main.listDiscussionCourses(o.dID) + '</b><br /> <em class="timeLog">Last edited: ' + main.PrettyDate(o.dChangeDate) + '</em> </li>');
+				$('#discussionFeedHome').append('<li><a class="discussionLink" discID="' + o.dID + '"> ' + o.dTitle + '  </a> under the course <b>' + main.listDiscussionCourses(o.dID) + '</b><br /> <em class="timeLog">Last edited: ' + main.PrettyDate(o.dChangeDate) + '</em> </li>');
 	 		 }
 	 	} else {
-				$('.discussionFeed').prepend('<li>You aren\'t part of any discussions yet. <a class="label label-info" id="createDhome">Create a Discussion </a></li>');
+				$('#discussionFeedHome').prepend('<li>You aren\'t part of any discussions yet. <a class="label label-info" id="createDhome">Create a Discussion </a></li>');
 	 	}
 	 	main.UserProfile(currentUserID);
 		$('#homePage').show();
@@ -961,6 +972,7 @@ Dscourse.prototype.ListUsers=function()
 {
 	var main = this;
 	
+	main.nameList.length = 0; 
 	$('#userData').html(" ");
 	var i, o; 
 	for(i = 0; i < main.data.allUsers.length; i++ ){	// If view is not specified Construct the table for each element
@@ -1286,7 +1298,9 @@ Dscourse.prototype.addCourse=function()
 			  error: function() {					// If connection is not successful.  
 					console.log("Dscourse Log: the connection to data.php failed for adding course.");  
 			  }
-		});				
+		});		
+		
+	main.AddLog('course','','addCourse','','User created a course');				
 			
 }
 
@@ -1341,10 +1355,13 @@ Dscourse.prototype.editCourse=function(id)
 							$('#addPeopleBody').append('<tr><td>' + userNameValue + ' </td><td>' + userEmailValue  + ' </td><td><div class="btn-group" data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" userid="'+ cs[o] + '">Instructor</button><button class="btn roleB" userid="'+ cs[o] + '">TA</button><button class="btn roleB active" userid="'+ cs[o] + '">Student</button></div></td><td><button class="btn removePeople">Remove</button>	</td></tr>'); // Build the row of users. 					
 							}
 					}
-										
+					
+						main.AddLog('course','','editCourse',o.courseID,'User created a course');	
+					break;
 				}				
 			}	
 			}	
+
 }
 
 
@@ -1974,6 +1991,7 @@ Dscourse.prototype.DrawTimeline=function(posts)	 			  // Draw the timeline.
 			
 			// Draw the dots. 
 			 var discPosts = posts.split(",");
+			 console.log('timelineMin: ' + main.timelineMin + 'timelineMax : '+ main.timelineMax);
 			 	 	 
 			 var i, j, p, d;
 			 for(i = 0; i < discPosts.length; i++){							// Take one post at a time
@@ -1985,8 +2003,8 @@ Dscourse.prototype.DrawTimeline=function(posts)	 			  // Draw the timeline.
 		
 						 	 //add dot on the timeline for this post
 						 	  var n = d.postTime; 
-						 	  //n = n.replace(/-/g, "/");
-						 	  n = main.ParseDate(n, 'yyyy/mm/dd');
+						 	  n = n.replace(/-/g, "/");
+						 	  //n = main.ParseDate(n, 'yyyy/mm/dd');
 
 						 	  var time = Date.parse(n);
 						 	 
@@ -2185,10 +2203,10 @@ Dscourse.prototype.AddPost=function(){
 	 
 	 main.uParticipant = [];
 	 
+	 
 	 // Clear all dots
 	 $('.singleDot').remove();
 	 main.timelineMin = 0; main.timelineMax = 0; 
-	 $('#recentContent').html(' ');
 	 $('#participantList').html(' ' );
 	 
 	 var discPosts = posts.split(",");
@@ -2258,6 +2276,7 @@ Dscourse.prototype.AddPost=function(){
 								//message = main.showURL(message);
 								message =message.replace("\n","<br /><br />");
 							 } else {
+								continue;  // Hide the post if there is no text in the message 
 								switch(d.postType)									// Get what kind of post this is 
 									{
 									case 'agree':
@@ -2285,9 +2304,9 @@ Dscourse.prototype.AddPost=function(){
 							 
 							 // Check if this post has selection
 							 var selection = ''; 
-							 if(d.postSelection.length > 1){
+							 /* if(d.postSelection.length > 1){
 							 	selection = ' <span href="#" rel="tooltip" title="This post has highlighted a segment in the parent post. Click to view." class="selectionMsg" style="display:none;">a</span> ';
-							 }
+							 } */
 							 
 							 // Check if this post has media assigned. 
 							 var media = ''; 
@@ -2313,23 +2332,21 @@ Dscourse.prototype.AddPost=function(){
 							 
 								 $(selector).append(						// Add post data to the view
 								 	  '<div class="threadText ' + topLevelMessage +'" level="'+ d.postID + '" postTypeID="'+ d.postType+ '" postAuthorId="' + d.postAuthorId + '" time="' + time + ' ">' 
-								 	+  '<span class="postTypeView"> ' + typeText + '</span>'
-								 	+  '<span class="postTextWrap">' 
+								 	+  '<div class="postTypeView"> ' + typeText + '</div>'
+								 	+  '<div class="postTextWrap">' 
 								 	+  '<span class="postAuthorView" rel="tooltip"  title="' + authorThumb + '"> ' + authorID + '</span>'
 								 	+  '<span class="postMessageView"> ' + message  + '</span>'
 								 	+ media + selection
-								 	+ ' <div class="sayBut2" style="display:none" postID="'+ d.postID + '">say</div> '
-								 	+  '</span>'	
+								 	+  '</div>'	
+								 	+ ' <div class="sayBut2" style="display:none" postID="'+ d.postID + '">say</div> '								 	
+								 	+ '<div class="responseWrap" >' + responses + '</div>' 
 								 	
-								 	+ '<div id="responseWrap" >' + responses + '</div>' 
-								 	
-								 	+ ' </div></div>'
+								 	+ '</div>'
 								 );
 							 
 							 
 								 /********** RECENT ACTIVITY SECTION ***********/
-								 // Check if the source element exists, (this is for hiding instructor posts in recent discussions)
-								 if ($(selector).length > 0){
+								 if ($(selector).length > 0){  								 // Check if the source element exists, (this is for hiding instructor posts in recent discussions)								
 									  var range = discPosts.length-8; 			// How many of the most recent we show + 1
 									 var prettyTime = main.PrettyDate(d.postTime);
 									 var shortMessage = main.truncateText(message, 60);
@@ -2339,7 +2356,7 @@ Dscourse.prototype.AddPost=function(){
 
 									 }
 									  
-								}
+								} 
 								 
 								 
 								 
@@ -2886,7 +2903,21 @@ Dscourse.prototype.DiscResize=function()
 
 
 		  $('#displayFrame').css({'height': wHeight-100 + 'px'});
-		  $('#display').css({'height': wHeight-150 + 'px'});
+		  $('#displayIframe').css({'height': wHeight-150 + 'px'});
+		  
+		  //Fixing the width of the threadtext
+		  $('.threadText').each(function() { 
+			  var parentwidth = $(this).parent().width();
+			  
+			  var thiswidth = parentwidth-12; 
+			  $(this).css('width',thiswidth+'px'); 
+			  $(this).children('.postTypeView').css('width','20px');
+			  $(this).children('.sayBut2').css('width','20px');
+			  $(this).children('.responseWrap').css('width','40px');
+			  $(this).children('.postTextWrap').css('width',thiswidth-110+'px');
+			  console.log('parentwidth: ' + parentwidth + 'thiswidth: '+thiswidth+'');
+
+		  });
 
 }
 
@@ -2906,8 +2937,6 @@ Dscourse.prototype.TypeAhead=function()
 						},
 						select: function( event, ui ) {
 							$('#addPeopleBody').append('<tr><td>' + ui.item.label + ' </td><td>' + ui.item.email  + ' </td><td><div class="btn-group" data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" userid="'+ ui.item.value + '">Instructor</button><button class="btn roleB" userid="'+ ui.item.value + '">TA</button><button class="btn active roleB" userid="'+ ui.item.value + '">Student</button></div></td><td><button class="btn removePeople">Remove</button>	</td></tr>'); // Build the row of users. 
-							
-							
 							return false;
 						}
 					})

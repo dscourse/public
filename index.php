@@ -163,7 +163,7 @@
 				<h3>My Discussions</h3>
 				<hr class="soften" />
 				<p>
-					<ul class="unstyled discussionFeed" >
+					<ul class="unstyled discussionFeed" id="discussionFeedHome" >
 					</ul>
 				</p>
 				<p class="pull-right"><a href="index.php?page=discussions"><em>See all </em></a></p>
@@ -1130,8 +1130,8 @@
 
 	<div id="displayFrame">
 		<a class="close" href="#" id="closeMediaDisplay" >&times;</a> 
-		<iframe id="display" src="http://www.viseyes.org/shiva/go.htm" width="100%" frameborder="0" marginwidth="0" marginheight="0">Your browser does not support iframes. </iframe>
-
+		<div id="displayDraw">
+		</div>
 	</div>
 </div> <!-- close container --> 
 
