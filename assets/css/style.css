@@ -71,6 +71,14 @@ a:hover {
 	background:#eee;
 }
 
+.navLevel {
+	border-left: 1px solid #333;
+	background: url(../img/smallArrow.png) no-repeat left;
+}
+
+#navLevel2, #navLevel3 {
+	display: none;
+}
 /* 
  *  General Form Elements
 */
@@ -157,6 +165,29 @@ a:hover {
 	-moz-box-shadow:inset 0 3px 7px rgba(0,0,0,.2),inset 0 -3px 7px rgba(0,0,0,.2);
 	box-shadow:inset 0 3px 7px rgba(0,0,0,.2),inset 0 -3px 7px rgba(0,0,0,.2);
 	margin-bottom:20px;
+}
+
+#helpMessageIcon {
+	margin-top: 12px;
+}
+
+#helpMessageIcon a {
+font-size: 25px;
+margin-top: 0px;
+background: #222;
+padding: 16px 10px 4px 10px;
+color: white; 
+}
+
+#helpMessageIcon a:hover {
+background: #999;
+
+}
+
+#feedbackBody {
+	resize: none;
+width: 500px;
+height: 180px;
 }
 
 /***********************************************************************************************/
@@ -509,6 +540,8 @@ a:hover {
 }
 
 .dCollapse {
+padding-top: 10px; 
+
 }
 
 .dCollapse ul {
@@ -540,6 +573,89 @@ a:hover {
 }
 
 #dSidebar {
+padding: 10px;
+}
+
+#sidebarTabs {
+
+}
+
+#sidebarTabs ul {
+margin: 0px;
+border-bottom: 1px solid #ccc;	
+padding:0 0 0 10px;
+}
+
+#sidebarTabs ul li {
+	display: inline-block; 
+	padding: 8px;
+	list-style: none;
+-webkit-border-top-left-radius: 8px;
+-webkit-border-top-right-radius: 8px;
+-moz-border-radius-topleft: 8px;
+-moz-border-radius-topright: 8px;
+border-top-left-radius: 8px;
+border-top-right-radius: 8px;
+}
+
+#sidebarTabs ul li:hover {
+background: whiteSmoke;
+}
+
+#sidebarTabs ul .active {
+font-weight: bold;
+background: #ccc;
+border: 1px solid #CCC;
+border-bottom: none;
+}
+
+.sidebarTabLink {
+	
+}
+
+#synthesisList {
+	margin: 0;
+}
+
+.synthesisPost {
+	border-bottom: 1px dashed #CCC;
+margin-bottom: 20px;
+padding: 5px;
+width: 95%;
+}
+
+.synthesisPosts {
+}
+
+#synthesisText {
+	margin: 0px 0px 9px;
+	height: 120px;
+	width: 94%;
+	font-size: 13px;
+	resize: none;
+}
+
+.sDropHover {
+	background-color: #F5F8A8;	
+}
+
+.SynthesisComponent {
+background-color: #C2C2EE;
+border-radius: 5px;
+color: #FF3C3C;	
+}
+
+#vHeatmap {
+	background: #C2DCF0;
+	border-radius: 5px;
+}
+
+.vHeatmapPoint {
+	background-color: yellow;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	height: 3px;
+	width: 100%;
 }
 
 #dMain {
@@ -712,7 +828,7 @@ a:hover {
 }
 
 .postMessageView {
-	white-space:pre-wrap;
+	white-space:pre-line;
 }
 
 .postTypeWrap {
@@ -987,9 +1103,7 @@ span .highlight {
 
 #media {
 	float:left;
-	background:#fff;
-	padding:8px;
-	border:1px solid #CCC;
+margin-right: 10px;
 }
 
 #postTypeID {

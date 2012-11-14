@@ -4,7 +4,30 @@
 
 	if(empty($_SESSION['Username']))  						// Checks to see if user is logged in, if not sends the user to login.php
 	{  
-	    header('Location: info.php');
+	    // is cookie set? 
+		if (isset($_COOKIE["userCookieDscourse"])){
+			 
+			 $getUserInfo = mysql_query("SELECT * FROM users WHERE UserID = '".$_COOKIE["userCookieDscourse"]."' ");  
+  
+		    if(mysql_num_rows($getUserInfo) == 1)  
+		    {  
+		        $row = mysql_fetch_array($checklogin);   
+		  
+		        $_SESSION['Username'] = $username; 
+		        $_SESSION['firstName'] = $row[3]; 
+		        $_SESSION['lastName'] = $row[4];   
+		        $_SESSION['LoggedIn'] = 1;  
+				$_SESSION['status'] = $row[5];
+				$_SESSION['UserID'] = $row[0];  
+			} else {
+				echo "Error: Could not load user info from cookie.";
+			}
+			
+		} else {
+		
+	    	header('Location: info.php');					// Not logged and and does not have cookie
+	    
+	    }
 	    
 	}  else {												// User is logged in, show page. 
 
@@ -51,24 +74,47 @@
 	
 		<ul class="nav">
 
-			<li>
-			<a id="usersNav"></span>  Users</a>  
-		  </li>
+		  <li>	
+			<a id="coursesNav">All Courses</a>  
+		  </li> 
 
 		  <li>	
-			<a id="coursesNav">Courses</a>  
-		  </li> 
-		  <li>	
-			<a id="discussionsNav">Discussions</a>  
+			<a id="navLevel2" class="navLevel"> Level Two</a>  
 		  </li> 
 		  
+		  <li>	
+			<a id="navLevel3" class="navLevel"> Level Three</a>  
+		  </li> 
+
 		</ul>
 		
+		
+
+		
+		
 		<ul class="nav pull-right">
+		
+		<li class="dropdown">
+					  <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" >
+					    <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?>  
+					    <b class="caret"></b>
+					  </a>
+					  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+					    <li><a id="profileNav" userid="<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
+					     <li><a id="usersNav">Users</a> </li> 
+						 <li><a id="helpNav">Help</a></li>
+						 <li><a href="scripts/php/logout.php">Logout</a></li> 
+					  </ul>
+			
+		</li>
+		<li>
+					<div id="helpMessageIcon"><a hre="#" data-toggle="modal" data-target="#feedbackForm"> <span class="typicn warning "></span></a></div>
+
+		</li>
+		
+		
 		 
-		 <li><a id="profileNav" userid="<?php echo $_SESSION['UserID']; ?>"><?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?>  </a></li>
-		 <li><a id="helpNav">Help</a></li>
-		 <li><a href="scripts/php/logout.php">Logout</a></li>
+		
 		</ul>
 				
     </div>
@@ -78,6 +124,20 @@
 <!-- End of header content-->
 <div id="overlay"></div>
 
+
+<div id="feedbackForm" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Error reporting</h3>
+  </div>
+  <div class="modal-body">
+    <p>Please use this form to send any error messages you encounter. Your username, browser type and the current page will be included in this message. Use the box below to describe what you were doing at the time. </p>
+    <textarea id="feedbackBody"></textarea>
+  </div>
+  <div class="modal-footer">
+    <a href="#" id="feedbackButton" class="btn btn-primary">Send Feedback</a>
+  </div>
+</div>
 
 <!-- Begin home.php-->
 <div id="homePage" class=" wrap page" style="display: none;">
@@ -603,12 +663,9 @@
 	
 		  	<header class="jumbotron subhead">
 		        <div class="container-fluid">
-			<h1>Discussions</h1> 
-			<div class="headerTabs"> 
-			  		<a id="allDiscussionView" class="headerLinks">All Discussions</a> 
-			  		<a id="addDiscussionView" class="headerLinks">Start New Discussion</a> 
-		   
-			  	</div>
+			<h1>Discussions
+				<button type="button" id="addDiscussionView"  data-toggle="modal" data-target="#discussionFormModal" class="btn btn-success"><span class="typicn plus "></span> Add Discussion</button>
+			</h1> 
 			 </div>	
 		  	</header>
 
@@ -637,7 +694,7 @@
 		
 		
 			<!-- Discussion Form layer // Both ADD and EDIT use the same form  -->				
-			<div id="discussionForm">
+			<div id="discussionForm" > 
 				<div class="form-horizontal well">
 				    <div class="control-group" id="discussionQuestionControl">
 				      <label class="control-label" for="discussionQuestion">Discussion Question</label>
@@ -664,6 +721,32 @@
 					      <label class="control-label" for="discussionStartDate">Discussion Start Date</label>
 					      <div class="controls">
 					        <input type="text" class="input-small" id="discussionStartDate" name="discussionStartDate">
+					          <select id="sDateTime" name="sDateTime" class=" select input-small">
+			                	<option value="01" selected="selected">1 am</option> 
+			                	<option value="02">2 am</option> 
+			                	<option value="03">3 am</option> 
+			                	<option value="04">4 am</option> 
+			                	<option value="05">5 am</option> 
+			                	<option value="06">6 am</option> 
+			                	<option value="07">7 am</option> 
+			                	<option value="08">8 am</option> 
+			                	<option value="09">9 am</option> 
+			                	<option value="10">10 am</option> 
+			                	<option value="11">11 am</option> 
+			                	<option value="12">12 pm</option> 
+			                	<option value="13">1 pm</option> 
+			                	<option value="14">2 pm</option> 
+			                	<option value="15">3 pm</option> 
+			                	<option value="16">4 pm</option> 
+			                	<option value="17">5 pm</option> 
+			                	<option value="18">6 pm</option> 
+			                	<option value="19">7 pm</option> 
+			                	<option value="20">8 pm</option> 
+			                	<option value="21">09 pm</option> 
+			                	<option value="22">10 pm</option> 
+			                	<option value="23">11 pm</option> 
+			                	<option value="24">12 am</option> 
+			              </select>	
 					        <p class="help-inline">Format: YYYY-MM-DD </p>
 					      </div>
 					    </div>						
@@ -672,6 +755,33 @@
 					      <label class="control-label" for="discussionOpenDate">Discussion Open Date</label>
 					      <div class="controls">
 					        <input type="text" class="input-small" id="discussionOpenDate" name="discussionOpenDate">
+					          <select id="oDateTime" name="oDateTime" class=" select input-small">
+			                	<option value="01" selected="selected">1 am</option> 
+			                	<option value="02">2 am</option> 
+			                	<option value="03">3 am</option> 
+			                	<option value="04">4 am</option> 
+			                	<option value="05">5 am</option> 
+			                	<option value="06">6 am</option> 
+			                	<option value="07">7 am</option> 
+			                	<option value="08">8 am</option> 
+			                	<option value="09">9 am</option> 
+			                	<option value="10">10 am</option> 
+			                	<option value="11">11 am</option> 
+			                	<option value="12">12 pm</option> 
+			                	<option value="13">1 pm</option> 
+			                	<option value="14">2 pm</option> 
+			                	<option value="15">3 pm</option> 
+			                	<option value="16">4 pm</option> 
+			                	<option value="17">5 pm</option> 
+			                	<option value="18">6 pm</option> 
+			                	<option value="19">7 pm</option> 
+			                	<option value="20">8 pm</option> 
+			                	<option value="21">09 pm</option> 
+			                	<option value="22">10 pm</option> 
+			                	<option value="23">11 pm</option> 
+			                	<option value="24">12 am</option> 
+			              </select>	
+
 					        <p class="help-inline">The date discussion opens to entire class. Format: YYYY-MM-DD </p>
 					      </div>
 					    </div>			
@@ -681,6 +791,33 @@
 					      <label class="control-label" for="discussionEndDate">Discussion End Date</label>
 					      <div class="controls">
 					        <input type="text" class="input-small" id="discussionEndDate" name="discussionEndDate">
+					          <select id="eDateTime" name="eDateTime" class=" select input-small">
+			                	<option value="01" selected="selected">1 am</option> 
+			                	<option value="02">2 am</option> 
+			                	<option value="03">3 am</option> 
+			                	<option value="04">4 am</option> 
+			                	<option value="05">5 am</option> 
+			                	<option value="06">6 am</option> 
+			                	<option value="07">7 am</option> 
+			                	<option value="08">8 am</option> 
+			                	<option value="09">9 am</option> 
+			                	<option value="10">10 am</option> 
+			                	<option value="11">11 am</option> 
+			                	<option value="12">12 pm</option> 
+			                	<option value="13">1 pm</option> 
+			                	<option value="14">2 pm</option> 
+			                	<option value="15">3 pm</option> 
+			                	<option value="16">4 pm</option> 
+			                	<option value="17">5 pm</option> 
+			                	<option value="18">6 pm</option> 
+			                	<option value="19">7 pm</option> 
+			                	<option value="20">8 pm</option> 
+			                	<option value="21">09 pm</option> 
+			                	<option value="22">10 pm</option> 
+			                	<option value="23">11 pm</option> 
+			                	<option value="24">12 am</option> 
+			              </select>	
+
 					        <p class="help-inline">Format: YYYY-MM-DD </p>
 					      </div>
 					    </div>			
@@ -734,6 +871,180 @@
 
 </div><!-- end discussions -->
 
+
+
+<!-- Discussion Form layer // MODAL version -->				
+		<div id="discussionFormModal" class="modal hide"> 
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+		    <h3 id="myModalLabel">Add New Discussion</h3>
+		  </div>
+				<div class="form-horizontal modal-body">
+				    <div class="control-group" id="discussionQuestionControl">
+				      <label class="control-label" for="discussionQuestion">Discussion Question</label>
+				      <div class="controls">
+				        <input type="text" class="span4" id="discussionQuestion" name="discussionQuestion">
+				        <p class="help-inline">Please provide a discussion question.</p>
+				      </div>
+				    </div>	
+		
+					<div class="control-group" id="discussionPromptControl">
+				      <label class="control-label" for="discussionPrompt">Discussion Prompt</label>
+				      <div class="controls">
+				       
+		                <textarea class="span4 textareaFixed" id="discussionPrompt" name="discussionPrompt" ></textarea>
+		              
+				        <p class="help-inline">If you like you can provide prompts to get into details or explain directions for the discussion. Please limit your text to 1000 characters.</p>
+				      </div>
+				    </div>
+				    
+				    <input id="discIdHidden" type="hidden" name="discIdHidden" value="">	
+		
+
+					    <div class="control-group" id="discussionStartControl">
+					      <label class="control-label" for="discussionStartDate">Discussion Start Date</label>
+					      <div class="controls">
+					        <input type="text" class="input-small" id="discussionStartDate" name="discussionStartDate">
+					          <select id="sDateTime" name="sDateTime" class=" select input-small">
+			                	<option value="01" selected="selected">1 am</option> 
+			                	<option value="02">2 am</option> 
+			                	<option value="03">3 am</option> 
+			                	<option value="04">4 am</option> 
+			                	<option value="05">5 am</option> 
+			                	<option value="06">6 am</option> 
+			                	<option value="07">7 am</option> 
+			                	<option value="08">8 am</option> 
+			                	<option value="09">9 am</option> 
+			                	<option value="10">10 am</option> 
+			                	<option value="11">11 am</option> 
+			                	<option value="12">12 pm</option> 
+			                	<option value="13">1 pm</option> 
+			                	<option value="14">2 pm</option> 
+			                	<option value="15">3 pm</option> 
+			                	<option value="16">4 pm</option> 
+			                	<option value="17">5 pm</option> 
+			                	<option value="18">6 pm</option> 
+			                	<option value="19">7 pm</option> 
+			                	<option value="20">8 pm</option> 
+			                	<option value="21">09 pm</option> 
+			                	<option value="22">10 pm</option> 
+			                	<option value="23">11 pm</option> 
+			                	<option value="24">12 am</option> 
+			              </select>	
+					        <p class="help-inline">Format: YYYY-MM-DD </p>
+					      </div>
+					    </div>						
+
+					    <div class="control-group" id="discussionOpenControl">
+					      <label class="control-label" for="discussionOpenDate">Discussion Open Date</label>
+					      <div class="controls">
+					        <input type="text" class="input-small" id="discussionOpenDate" name="discussionOpenDate">
+					          <select id="oDateTime" name="oDateTime" class=" select input-small">
+			                	<option value="01" selected="selected">1 am</option> 
+			                	<option value="02">2 am</option> 
+			                	<option value="03">3 am</option> 
+			                	<option value="04">4 am</option> 
+			                	<option value="05">5 am</option> 
+			                	<option value="06">6 am</option> 
+			                	<option value="07">7 am</option> 
+			                	<option value="08">8 am</option> 
+			                	<option value="09">9 am</option> 
+			                	<option value="10">10 am</option> 
+			                	<option value="11">11 am</option> 
+			                	<option value="12">12 pm</option> 
+			                	<option value="13">1 pm</option> 
+			                	<option value="14">2 pm</option> 
+			                	<option value="15">3 pm</option> 
+			                	<option value="16">4 pm</option> 
+			                	<option value="17">5 pm</option> 
+			                	<option value="18">6 pm</option> 
+			                	<option value="19">7 pm</option> 
+			                	<option value="20">8 pm</option> 
+			                	<option value="21">09 pm</option> 
+			                	<option value="22">10 pm</option> 
+			                	<option value="23">11 pm</option> 
+			                	<option value="24">12 am</option> 
+			              </select>	
+
+					        <p class="help-inline">The date discussion opens to entire class. Format: YYYY-MM-DD </p>
+					      </div>
+					    </div>			
+		
+								
+					    <div class="control-group" id="discussionEndControl">
+					      <label class="control-label" for="discussionEndDate">Discussion End Date</label>
+					      <div class="controls">
+					        <input type="text" class="input-small" id="discussionEndDate" name="discussionEndDate">
+					          <select id="eDateTime" name="eDateTime" class=" select input-small">
+			                	<option value="01" selected="selected">1 am</option> 
+			                	<option value="02">2 am</option> 
+			                	<option value="03">3 am</option> 
+			                	<option value="04">4 am</option> 
+			                	<option value="05">5 am</option> 
+			                	<option value="06">6 am</option> 
+			                	<option value="07">7 am</option> 
+			                	<option value="08">8 am</option> 
+			                	<option value="09">9 am</option> 
+			                	<option value="10">10 am</option> 
+			                	<option value="11">11 am</option> 
+			                	<option value="12">12 pm</option> 
+			                	<option value="13">1 pm</option> 
+			                	<option value="14">2 pm</option> 
+			                	<option value="15">3 pm</option> 
+			                	<option value="16">4 pm</option> 
+			                	<option value="17">5 pm</option> 
+			                	<option value="18">6 pm</option> 
+			                	<option value="19">7 pm</option> 
+			                	<option value="20">8 pm</option> 
+			                	<option value="21">09 pm</option> 
+			                	<option value="22">10 pm</option> 
+			                	<option value="23">11 pm</option> 
+			                	<option value="24">12 am</option> 
+			              </select>	
+
+					        <p class="help-inline">Format: YYYY-MM-DD </p>
+					      </div>
+					    </div>			
+		
+					    <hr class="soften" />
+<hr class="soften" />
+					    <div class="row-fluid">
+					    	
+					    	<div >
+						    <h3> Courses </h3>
+						    <p>Start typing course names that you would like this discussion to be associated with. Only active courses are listed. </p>
+	
+						    <p>
+						    <div id="discInputDiv">
+						    	<input type="text" class="input-large discussionCourses" id="discussionCourses" name="discussionCourses" >
+
+						     </div>
+						    </p>
+					    	</div>
+						    
+						    <div >
+							    <table class="table">
+								    <thead>
+								    	<tr>
+								    		<th width="80%">Course Title</th>
+								    		<th width="20%">Remove</th>
+								    	</tr>
+								    </thead>
+								    <tbody id="addCoursesBody">
+								    	<!-- More rows will be added here -->
+								    	
+								    </tbody>
+							    </table>
+						    </div>   
+					    </div>
+					    
+					    
+				</div>
+				<div id="discussionButtondiv" class="modal-footer"> <button class="btn btn-primary" id="discussionFormSubmit">Submit</button> <button class="btn btn-info" id="discussionFormCanel">Cancel</button></div>		
+
+			</div>
+
+<!-- End of Add Discussion Modal -->
 
 
 <!-- Begin profile.php-->
@@ -872,8 +1183,9 @@
 			
 	
 	<div id="courseDiscussions"> 
-			<h3>Course Discussions</h3>
-			
+			<h3>Course Discussions  <button type="button" id="addDiscussionView"  data-toggle="modal" data-target="#discussionFormModal" class="btn btn-success"><span class="typicn plus "></span> Add Discussion</button></h3>
+
+
 					<table class="table table-striped table-bordered">
 						<thead>
 							<tr>
@@ -1014,8 +1326,21 @@
 	<div class="row-fluid" id="dRowMiddle">
 	
 	
-		<div class="span4 well" id="dSidebar">
-			  <div class="tab-pane active dCollapse" id="dInfoTab">
+		<div class="span4 " >
+			<div id="row-fluid"> 
+
+				
+				<div class="span12 well" id="dSidebar">		
+				<div id="sidebarTabs">
+				<ul>
+					<li class="sidebarTabLink active" id="dInfo">Information</li>
+					<li class="sidebarTabLink" id="dRecent">Recent</li>
+					<li class="sidebarTabLink" id="dSynthesis">Synthesis</li>
+					
+				</ul>
+				</div>
+		
+			  <div class="dCollapse" id="dInfo">
 						<div id="discStatus" class="alert"></div>
 					      <div class="content">
 					      	<div id="dPromptView" ></div>
@@ -1023,13 +1348,14 @@
 					      	<div id="dSDateView"><b>Start Date: </b>  </div>
 					      	<div id="dODateView"><b>Open To Class: </b>  </div>
 					      	<div id="dCDateView"><b>End Date: </b>  </div>
-					      	
+					      	<div id="dInstView"><b> Instructor: </b><br /> </div>
+					      	<div id="dTAView"><b> Teaching Assistant: </b><br /> </div>
+					      	<div id="dStudentView"><b> Students: </b><br /> </div>
 					      </div>
 			  </div>
 			  
 			  
-			  <div class="tab-pane dCollapse" id="dNewTab">
-					    <h4><span class="typicn feed"> </span> Recent Activity</h4>			    
+			  <div class="dCollapse hide" id="dRecent">
 					      <div class="alert alert-info smallAlert"><span class="typicn info iconBall"></span>Click on the item below to go to post.</div>
 					      <div class="content">
 							<ul class=" discussionFeed" id="recentContent">
@@ -1039,14 +1365,66 @@
 			  
 			  </div>
 
- 
+			  <div class="dCollapse hide" id="dSynthesis">
+					      <div class="content">
+							
+							<div class="hide" id="addSynthesis"> 
+										<input id="sPostIDhidden" type="hidden" name="sPostIDhidden" value="">
+										<input id="userIDhidden" type="hidden" name="userIDhidden" value="<?php echo $_SESSION['UserID'];?>">
+			
+										<textarea id="synthesisText">Your synthesis comment...</textarea>	
+										<div id="synthesisDrop" class="alert alert-info">
+											Drag and drop posts here to add to synthesis.
+										</div>
+										<div id="synthesisPostWrapper" >
+
+
+											
+										</div>
+										<input id="addSynthesisButton" type="button" class="buttons btn btn-primary" value="Add Post">
+										<input id="cancelSynthesisButton" type="button" class="buttons btn btn-info" value="Cancel">
+										<hr class="soften">
+									</div> 
+									
+							
+							<ul class="synthesisFeed" id="synthesisList">
+									
+									
+									
+									
+									
+									
+							</ul>
+						</div>			  
+			  
+			  </div>
+			  
+			  </div><!-- close span12 -->
+			  	
+<?php 
+/*
+ * HEATMAP, coming soon. 
+ *
+ *
+			  	<div class="span1" id="vHeatmap"> 
+			  		<div class="vHeatmapPoint" style="margin-top:50px" ></div>
+			  		<div class="vHeatmapPoint" style="margin-top:70px" ></div>
+			  		<div class="vHeatmapPoint" style="margin-top:20px" ></div>
+			  		
+				</div>
+*/
+?>
+				
+			 </div> <!-- close row-fluid -->
 		</div> <!-- close span4 -->
 	
-		<div class="span8 "  id="dMain">
 		
-			<div id="discussionDivs" > 
-				<div class="levelWrapper" level="0"></div>
-			</div>
+		<div class="span8 "  id="dMain">
+				
+				<div id="discussionDivs" > 
+					<div class="levelWrapper" level="0"></div>
+				</div>
+		
 			
 		</div><!-- close span8 -->
 		
@@ -1082,8 +1460,8 @@
 					<textarea id="text">Your comment...</textarea>	
 				</div>
 			
-			<span id="media">  <span class="typicn tab "></span>  Add Media</span>
-
+			<button id="media" class="btn btn-info">  <span class="typicn tab "></span>  Add Media</button>
+			<button id="synthesize" class="btn btn-info">  <span class="typicn directions "></span>  Connect </button>
 			</div>
 			
 			

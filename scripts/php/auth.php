@@ -12,6 +12,7 @@
 	
   	$username = mysql_real_escape_string($_POST['username']);  
     $password = md5(mysql_real_escape_string($_POST['password']));  
+    $autologin = $_POST['autologin']; 
   	
     $checklogin = mysql_query("SELECT * FROM users WHERE Username = '".$username."' AND Password = '".$password."'");  
   
@@ -25,6 +26,11 @@
         $_SESSION['LoggedIn'] = 1;  
 		$_SESSION['status'] = $row[5];
 		$_SESSION['UserID'] = $row[0];  
+
+		if($autologin == 1){
+			$expire=time()+60*60*24*10;
+			setcookie("userCookieDscourse", $_SESSION['UserID'] , $expire);
+		}
 
         echo "redirect"; 										// Sends back a redirect message which the ajax will use to redirect to home.php
           

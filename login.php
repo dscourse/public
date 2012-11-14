@@ -87,6 +87,7 @@
 							<div id="loginform">  
 							<div id="username_div"> <label for="username">Email: </label><input type="text" name="username" id="username" /></div>
 							<div id="password_div"><label for="username">Password: </label><input type="password" name="password" id="password" /></div>
+							<p><label>&nbsp;</label><input type="checkbox" name="autologin" value="1"> Remember Me on this computer</p>
 							<p><button type="submit" id="loginSubmit" class="btn btn-primary"/>Login</button>      <a href="recover.php" id="recoverLink">  Forgot Password?</a> </p>
 							</div>
 		  </div>
