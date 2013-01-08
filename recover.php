@@ -1,6 +1,6 @@
 <?php 
 	define('MyConst', TRUE);	// Avoids direct access to config.php
-	include "scripts/php/config.php"; 	
+	include "../config/config.php"; 	
 
 	if(!empty($_SESSION['LoggedIn']) && !empty($_SESSION['Username']))  
 	{  
