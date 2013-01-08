@@ -21,7 +21,6 @@ function Dscourse()
 	this.nameList = new Array ();
 	this.nameListName = new Object;	
 	
-	
 	// Courses 
 	this.course = { }; 
 
@@ -64,11 +63,10 @@ function Dscourse()
 	var top = this;
 	
 	$(document).ready(function() {										// Wait for everything to load. 
-	
-	
+
 		/************ Navigations  ******************/
-		
  		
+
 		var linkID;	
 		$('.nav > li > a').live('click', function () {					// Show page contents depending on what link was clicked. 
 			linkID = $(this).attr('id');
@@ -113,18 +111,17 @@ function Dscourse()
 			  top.showHome();
 			}
 		});
- 
 			
 		$('#homeNav').live('click', function () {						// Home link
 				top.showHome();
 		});
 
-		$('#helpNav').live('click', function () {						// Home link
-			  			$('.page').hide();
+		$('#helpNav').live('click', function () {						// Help link
+			  $('.page').hide();
 			  $('#helpPage').show();
 		});
 
-		$('#profileNav').live('click', function () {						// Home link
+		$('#profileNav').live('click', function () {					// Home link
 			  $('.page').hide();
 			  var userid = $(this).attr('userid');
 			  dscourse.UserProfile(userid);	
@@ -181,7 +178,8 @@ function Dscourse()
 			$('.page').hide();
 			$('#footerFixed').hide();
 			$('#discussionWrap').show();
-			top.DiscResize();
+			top.DiscResize(); 
+			top.VerticalHeatmap();
 			$('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
 		});
 
@@ -193,31 +191,10 @@ function Dscourse()
 			$('#footerFixed').hide();
 			$('#discussionWrap').show();
 			top.DiscResize();
+			top.VerticalHeatmap();
 			$('html, body').animate({scrollTop:0});			// The page scrolls to the top to see the notification
 		});
 
-		// Send feedback and error reporting
-		
-		$('#feedbackButton').live('click', function () {						// Home link
-			// Collect all data
-				// username
-				// browser and OS
-				// current location ID (same as for logs) 
-				// message in the text. 
-				
-			
-			// Put data in an object
-			
-			//Use ajax to send the object
-			
-			
-			// tell user it's sent and remove the error reporting modal. 
-
-
-
-		});		
-
-		
 		// Scrolling to top on any page
 		$('#backTop').live('click', function () {
 				$('html, body').animate({scrollTop:0});		// The page scrolls to the top to see the notification
@@ -235,11 +212,14 @@ function Dscourse()
 		// Window resize changes discussion elements. 
 		$(window).resize(function() {				// if so, look for window resize event
 			  top.DiscResize();
+			  top.VerticalHeatmap();
 			});
 
 
 		/************ Discussions  ******************/
 	
+		$('#commentWrap').draggable();
+		
 		$('#discussionForm').hide();
 	
 		$("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
@@ -275,7 +255,7 @@ function Dscourse()
 			$('#highlightShow').html(n);									// add highlight to text. 
 		});
 
-		$('#discussionDivs').tooltip({ selector: "span", placement: 'left' });  
+		$('#discussionDivs').tooltip({ selector: "span", placement: 'bottom' });  
 		$('#participants').tooltip({ selector: "li" });  
 		$('#shivaDrawPaletteDiv').tooltip({ selector: "button" });  
 
@@ -288,22 +268,28 @@ function Dscourse()
 			$(this).removeClass('agree disagree comment offTopic clarify').addClass('highlight');
 			});
 			
+
 		$('.threadText').live('mouseover', function (event) {
 			event.stopImmediatePropagation();
 			$(this).children('.sayBut2').show();
-			$('.threadText').find('span').removeClass('highlight');
+			/*
+$('.threadText').find('span').removeClass('highlight');
 			var postClickId = $(this).closest('div').attr('level');
 			dscourse.HighlightRelevant(postClickId);
 			$(this).children('.postTextWrap').children('.selectionMsg').show();
 			if(!$(this).hasClass('highlight')){	$(this).addClass('lightHighlight'); }
+*/
 		});
 
 		$('.threadText').live('mouseout', function (event) {
 			event.stopImmediatePropagation();
 			$(this).children('.sayBut2').hide();
-			$(this).children('.postTextWrap').children('.selectionMsg').hide();
+			/*
+$(this).children('.postTextWrap').children('.selectionMsg').hide();
 			$(this).removeClass('lightHighlight'); 
+*/
 		});
+
 		
 		$('.refreshBox').live('click', function () {
 			$(this).hide();
@@ -314,6 +300,24 @@ function Dscourse()
 		});
 
 	    $('.carousel').carousel('cycle');	// Image carousel at the home page. 
+
+	    // When the main window scrolls heatmap needs to redraw
+	    $('#dMain').scroll(function() {
+				  top.VerticalHeatmap();
+				  top.DrawShape(); 	
+		});
+
+			$('#keywordSearchText').live('keyup', function () {
+			var searchText = $('#keywordSearchText').val();  // get contents of the box
+			if(searchText.length > 0 && searchText != ' '){
+				top.ClearVerticalHeatmap();
+				console.log('Search text: ' + searchText); // Works
+				top.VerticalHeatmap('keyword', searchText);// Send text to the vertical heatmap app
+			} else {
+				top.ClearKeywordSearch('#dMain'); 
+
+			}
+		});
 
 
 
@@ -619,6 +623,7 @@ function Dscourse()
 			top.ClearPostForm();
 			$('.threadText').removeClass('yellow');
 			top.DiscResize();
+			top.VerticalHeatmap();
 		}
 		
 	});
@@ -699,22 +704,26 @@ function Dscourse()
 		var synthesisFromID = $('#postIDhidden').val();		// Get post from ID to the global variable
 		var synthesisComment = $('#text').val();	// Get comment content to the global variable
 		var postQuote = $('div[level="'+ synthesisFromID +'"]').children('.postTextWrap').children('.postMessageView').html(); // Get the post content
-		    postQuote = top.truncateText(postQuote, 30);	// Shorten the comment to one line. 
-		
-		console.log(postQuote); 
+		    if(postQuote){
+		    	postQuote = top.truncateText(postQuote, 30);	// Shorten the comment to one line. 
+		    }
 		
 		$('#addSynthesis').show(); 
 		$('.dCollapse').hide(); 					// hide every dCollapse
 		var selector = '.dCollapse[id="dSynthesis"]'; 
 		$(selector).slideDown(); 				// show the item with dTab id
 		
-		// Populate the fields for the synthesis
-		$('#synthesisText').val(synthesisComment);
-		$('#sPostIDhidden').val(synthesisFromID); 
-		$('#synthesisPostWrapper').prepend('<div sPostID="'+ synthesisFromID +'" class=" synthesisPosts alert alert-success">' + postQuote + ' <div>');  // Append original post
-		$('.sidebarTabLink').removeClass('active'); 	// remove active from sidebarTabLink class objects
+		// Populate the fields for the synthesis if the source is not top level
+		if(synthesisFromID != 0){
+			$('#synthesisText').val(synthesisComment);
+			$('#spostIDhidden').val(synthesisFromID); 
+			$('#synthesisPostWrapper').prepend('<div sPostID="'+ synthesisFromID +'" class="synthesisPosts">' + postQuote + ' <div>');  // Append original post
+		}
+		/*
+$('.sidebarTabLink').removeClass('active'); 	// remove active from sidebarTabLink class objects
 		$('.sidebarTabLink[id="dSynthesis"]').addClass('active');		
 
+*/
 		top.ClearPostForm();
 
 	});
@@ -727,6 +736,8 @@ function Dscourse()
  		$('#dMain').scrollTo( $(postRef), 400 , {offset:-100});	
     	$(postRef).addClass('animated flash').css('background-color', 'rgba(255,255,176,1)').delay(5000).queue(function () {$(this).removeClass('highlight animated flash').css('background-color', '#fff');$(this).dequeue();});
     	
+    	$('.synthesisPosts').css('background-color', '#FAFDF0') // Original background color 
+    	$(this).addClass('animated flash').css('background-color', 'rgba(255,255,176,1)');  // Change the background color of the clicked div as well. 
 	});
 
 	$('.synthesisPost').live('click', function () {  // Single synthesis wrapper
@@ -739,7 +750,11 @@ function Dscourse()
 	 	var thisPost = $(this).attr('synthesisSource'); 
  		var postRef = '.synthesisPost[sPostID="'+ thisPost +'"]';
  		console.log(postRef); 
- 		$('#dSidebar').scrollTo( $(postRef), 400 , {offset:-100});	
+ 		$('#dSidebar').scrollTo( $(postRef), 400 , {offset:-100});
+    	$(postRef).addClass('animated flash').css('background-color', 'rgba(255,255,176,1)').delay(5000).queue(function () {$(this).removeClass('highlight animated flash').css('background-color', 'whitesmoke');$(this).dequeue();}); 			
+    	$('#dInfo').fadeOut(); // hide #dInfo
+    	$('#dSynthesis').fadeIn(); // show #synthesis
+	
 	});
 	
 	
@@ -762,7 +777,7 @@ function Dscourse()
 		$(this).addClass('active');
 		var thisID = $(this).attr('id');
 		var txt = $('#text').val(); 
-		if(txt == 'Why do you agree?' || txt == 'Why do you agree?' || txt == 'Why do you disagree?' || txt == 'What is unclear?' || txt == 'Your comment...' ){
+		if(txt == 'Why do you agree?' || txt == 'Why do you agree?' || txt == 'Why do you disagree?' || txt == 'What is unclear?' || txt == 'Why is it off topic?' || txt == 'Your comment...' ){   // Check is the text is still the default text; we don't want to override what they wrote. 
 			switch(thisID)									// Get what kind of post this is 
 				{
 				case 'agree':
@@ -807,7 +822,7 @@ function Dscourse()
 	});
 
 	$('#showTimeline').live('click', function () {
-		$('#timeline').slideToggle().queue(function () {top.DiscResize();$(this).dequeue();});	
+		$('#timeline').slideToggle().queue(function () {top.DiscResize();top.VerticalHeatmap();$(this).dequeue();});	
 		if($(this).hasClass('active') == true) {
 				$(this).removeClass('active');
 			} else {
@@ -815,13 +830,14 @@ function Dscourse()
 			}
 	});
 		
-	$('#showParticipants').live('click', function () {
-		$('#participants').slideToggle().queue(function () {top.DiscResize();$(this).dequeue();});
+	$('#showSynthesis').live('click', function () {
+		$('#dInfo').fadeToggle(); // toggle hide sidebar content
+		$('#dSynthesis').fadeToggle();
 		if($(this).hasClass('active') == true) {
 				$(this).removeClass('active');
 			} else {
 				$(this).addClass('active');	
-			}
+			}				
 	});
 	
 	$('#media').live('click', function () {
@@ -858,13 +874,8 @@ function Dscourse()
 
 	$('.uList').live('click', function () {						// User heatmap buttons and functions
 		var uListID = $(this).attr('authorId'); 
-		if($(this).hasClass('active')){
-			$(this).removeClass('active');
-			top.UserHeatmap(uListID, 'remove');
-		} else {
-			$(this).addClass('active');
-			top.UserHeatmap(uListID, 'add');
-		}
+			top.ClearVerticalHeatmap();
+			top.VerticalHeatmap('user', uListID); 
 	});
 
 	$('.drawTypes').live('click', function () {						// User heatmap buttons and functions
@@ -931,7 +942,7 @@ function Dscourse()
 				$('#displayFrame').show();
 				$('html, body').animate({scrollTop:0});	
 			 }
-			 $('#displayIframe').load(function () { document.getElementById('displayIframe').contentWindow.postMessage(cmd,"*");	}).queue(function () {top.DiscResize(); $('#containerDiv').css('width', '100% !important'); $(this).dequeue();});
+			 $('#displayIframe').load(function () { document.getElementById('displayIframe').contentWindow.postMessage(cmd,"*");	}).queue(function () {top.DiscResize(); top.VerticalHeatmap();$('#containerDiv').css('width', '100% !important'); $(this).dequeue();});
 		
 		 }
 	  				
@@ -949,6 +960,7 @@ function Dscourse()
 	});
 
 
+/*
 	$('.sidebarTabLink').live('click', function () {	// when sidebarTabLink is clicked
 
 		$('.dCollapse').hide(); 					// hide every dCollapse
@@ -958,9 +970,26 @@ function Dscourse()
 		$(selector).show(); 				// show the item with dTab id
 		$('.sidebarTabLink').removeClass('active'); 	// remove active from sidebarTabLink class objects
 		$(this).addClass('active'); 				// Add active to this clicked object
-
-
 	});
+*/
+	
+	// Vertical Heatmap scrolling
+	$('.vHeatmapPoint').live('click', function () {
+ 		var postID = $(this).attr('divpostid'); 
+ 		var postRef = 'div[level="'+ postID +'"]';
+ 		$('#dMain').scrollTo( $(postRef), 400 , {offset:-100});
+    	$(postRef).removeClass('agree disagree comment offTopic clarify').addClass('animated flash').css('background-color', 'rgba(255,255,176,1)').delay(5000).queue(function () {$(this).removeClass('highlight animated flash').css('background-color', '#fff');$(this).dequeue();});
+    	$('.vHeatmapPoint').removeClass('highlight');
+    	$(this).addClass('highlight');
+	 });
+	 
+	 $('.synthesisWrap').live('mouseover', function (event) {
+	 	$(this).children('span').fadeIn('slow'); 
+	 }); 
+
+	 $('.synthesisWrap').live('mouseout', function (event) {
+	 	$(this).children('span').fadeOut('slow'); 
+	 }); 
 
 } /* end function Dscourse  */
 
@@ -969,6 +998,7 @@ Dscourse.prototype.showHome=function() {
 
 		var main = this;
 		main.DiscResize();
+		main.VerticalHeatmap();
 		$('.page').hide();	
 		$('#discussionFeedHome').html(' ');
 		// Show the last three discussions for the user
@@ -1612,7 +1642,8 @@ Dscourse.prototype.getCourse=function(cid)									// Gets individual course inf
 			  	  		}
 			  	  	var shortName = main.truncateText(o.courseName, 30);	
 			  	  	$('#navLevel2').text(shortName).attr('cLinkID', cid).css('display', 'block'); 
-			  	  	
+			  	  	$('#navLevel3').hide(); 
+			  	  				  	  	
 			  	  	// Populate the notes
 				 	/* 
 				 	$('#courseNoteBody').html(" "); 
@@ -2072,25 +2103,25 @@ Dscourse.prototype.saveDiscussions=function()	 	// Save Discussion
 	 			$('#dCDateView').html('<b> End Date: </b>' + o.dEndDate);
 	 			main.CurrentDiscussion = o.dID;	
 	 			
-	 			var shortName = main.truncateText(o.dTitle, 30);	
-			  	$('#navLevel3').text(shortName).attr('dLinkID', o.dID).css('display', 'block'); 
+	 			var shortName = main.truncateText(o.dTitle, 50);	
+			  	$('#navLevel3').text(shortName).attr('dLinkID', o.dID).css({ 'display' : 'block'}); 
 			  	  	
 	 			
 	 			// Get Discussion Status, can be one of three: all, student, closed.
 	 			dStatus = main.DiscDateStatus(o.dID);				 
 	 			
 	 			// Note for the page
-	 			$('#discStatus').removeClass('alert-error alert-warning alert-success').html(''); 
+	 			$('#discStatus').removeClass('label label-error label-warning label-success').html(''); 
 	 			switch(dStatus)									
 					{
 					case 'all':
-						$('#discStatus').addClass('alert-success').html('This discussion is open to group participation');
+						$('#discStatus').addClass('label label-success').html('Open to group participation');
 						break;
 					case 'student':
-					  $('#discStatus').addClass('alert-warning').html('This discussion is in individual participation mode.');
+					  $('#discStatus').addClass('label label-warning').html('Open to individual participation');
 					  break;
 					case 'closed':
-					  $('#discStatus').addClass('alert-error').html('This discussion is not open to participation at this time.');
+					  $('#discStatus').addClass('label label-important').html('This discussion is closed.');
 					  break;
 		  
 					}
@@ -2352,6 +2383,7 @@ Dscourse.prototype.AddPost=function(){
 			    	  $('.levelWrapper[level="0"]').html('');
 			    	  main.SingleDiscussion(currentDisc);
 			    	  main.DiscResize();
+			    	  main.VerticalHeatmap();
 			    	  var divHighlight = 'div[level="'+ data +'"]';
 			    	  $(divHighlight).removeClass('agree disagree comment offTopic clarify').addClass('highlight animated flash'); 
 			    	  $.scrollTo( $(divHighlight), 400 , {offset:-100});
@@ -2436,17 +2468,17 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 			    	  	 	$('.levelWrapper[level="0"]').html(''); // redraw the discussion page at synthesis
 			    	  	 	main.SingleDiscussion(currentDisc);
 			    	  	 	main.DiscResize();
-			   
+			    	  	 	main.VerticalHeatmap();
 			   
 			    /********** APPEND NEW SYNTHESIS POSTS ***********/
-			    					 authorID = main.getName(postAuthorId, 'first');
-									 $('#synthesisList').prepend(
-									  '<div class="synthesisPost " sPostID="' + data + '">' 
-									+  '<span class="postAuthorView" rel="tooltip" > ' + authorID + '</span>'
-									+ '		<p>' + postMessage + '</p>' 
-									+ '	</div>' 
-									); 
-									main.ListSynthesisPosts(postContext, data); 
+    					 authorID = main.getName(postAuthorId, 'first');
+						 $('#synthesisList').prepend(
+						  '<div class="synthesisPost well" sPostID="' + data + '">' 
+						+  '<span class="postAuthorView" rel="tooltip" > ' + authorID + '</span>'
+						+ '		<p>' + postMessage + '</p>' 
+						+ '	</div>' 
+						); 
+						main.ListSynthesisPosts(postContext, data); 
 
 			   
 			    	  
@@ -2473,7 +2505,7 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 	 // Clear all dots
 	 $('.singleDot').remove();
 	 main.timelineMin = 0; main.timelineMax = 0; 
-	 $('#participantList').html(' ' );
+	 $('#participantList').html('    <button class="btn disabled">Participants: </button>' );
 	 
 	 var discPosts = posts.split(",");
 	 	 	 
@@ -2533,7 +2565,7 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 								  typeText = ' <span class="typicn forward "></span>';
 								  break;		  
 								case 'synthesis':
-								  typeText = ' <span class="typicn directions "></span>';
+								  typeText = ' <span class="typicn feed "></span>';
 								  break;	
 								default:
 								  typeText = ' <span class="typicn message "></span>';
@@ -2611,7 +2643,7 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 								 	+  '<span class="postMessageView"> ' + message  + '</span>'
 								 	+ media + selection + synthesis
 								 	+  '</div>'	
-								 	+ ' <div class="sayBut2" style="display:none" postID="'+ d.postID + '">say</div> '								 	
+								 	+ ' <button class="btn btn-small btn-success sayBut2" style="display:none" postID="'+ d.postID + '"><i class="icon-comment icon-white"></i> say</button> '								 	
 								 	+ '<div class="responseWrap" >' + responses + '</div>' 
 								 	
 								 	+ '</div>'
@@ -2620,7 +2652,7 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 								 /********** SYNTHESIS POSTS ***********/
 								if(d.postType == 'synthesis'){ 
 									 $('#synthesisList').prepend(
-									  '<div class="synthesisPost " sPostID="' + d.postID + '">' 
+									  '<div class="synthesisPost well" sPostID="' + d.postID + '">' 
 									+  '<span class="postAuthorView" rel="tooltip" > ' + authorID + '</span>'
 									+ '		<p>' + message + '</p>' 
 									+ '	</div>' 
@@ -2676,7 +2708,12 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
             stop: function() {
                 console.log('Drag stopped!');
             }, 
-            helper : 'clone'
+
+			helper: function( event ) {
+				var contents = $(this).html(); 
+				return $( '<div style="font-size:50px; position: absolute; z-index: 1100">' + contents + ' </div>' );
+			}
+ 
         });
 
  $( "#synthesisDrop" ).droppable({
@@ -2684,7 +2721,7 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
             drop: function( event, ui ) {
                 $( this )
                         .html( "Added!" );
-               $('#synthesisPostWrapper').prepend('<div sPostID="'+ main.sPostID +'" class=" synthesisPosts alert alert-success">' + main.sPostContent + ' <div>');  // Append original post
+               $('#synthesisPostWrapper').prepend('<div sPostID="'+ main.sPostID +'" class=" synthesisPosts">' + main.sPostContent + ' <div>');  // Append original post
         
             }
         });
@@ -2695,6 +2732,7 @@ Dscourse.prototype.PostInSynthesis=function(postID){					// Populate unique part
 	
 		 var main = this;
 		 var output = ''; 
+		 var count = 0; 
 
 		 var j, k, i, o; 
 		 for(j = 0; j < main.data.allPosts.length; j++){
@@ -2707,13 +2745,17 @@ Dscourse.prototype.PostInSynthesis=function(postID){					// Populate unique part
 				for(i = 0 ; i < posts.length; i++){		 	
 				 	o = posts[i]; 
 				 	if(o == postID){
-					 	output  += '<span href="#" rel="tooltip" title="This is part of a synthesis. Click to view." class="SynthesisComponent" synthesisSource="'+ k.postID +'"> <span class="typicn directions "></span> </span> ';
+					 	output  += '<span rel="tooltip" title="'+ main.getName(k.postAuthorId, 'first') + '  made a connection to this post. Click to view." class="SynthesisComponent hide" synthesisSource="'+ k.postID +'"><span class="typicn feed "></span></span>';
+					 	count++ 
 				 	}
 				} 	
 			 
 		   } 
 		 }
-
+		 
+		 if (count > 0){
+		 	output = '<span class="synthesisWrap"> <b>' + count +'</b> Connections ' + output + '</span>'; 
+		 }
 		 return output; 
 
 }
@@ -2748,7 +2790,7 @@ Dscourse.prototype.ListSynthesisPosts=function(postList, sPostID){					// Popula
 			 for(j = 0; j < main.data.allPosts.length; j++){
 			 	k = main.data.allPosts[j];
 			 	if(k.postID == o){
-				 	$('.synthesisPost[sPostID="'+  sPostID + '"]').append('<div sPostID="'+ k.postID +'" class=" synthesisPosts alert alert-success hide">' + k.postMessage + ' <div>');  
+				 	$('.synthesisPost[sPostID="'+  sPostID + '"]').append('<div sPostID="'+ k.postID +'" class=" synthesisPosts hide"> ' + main.getAuthorThumb(k.postAuthorId, 'tiny') + ' ' + main.getName(k.postAuthorId) + ': <br />'  + k.postMessage + ' <div>');  
 				 	
 			 	}
 			 }
@@ -2965,6 +3007,61 @@ Dscourse.prototype.Heatmap=function(type, action)					// Highlights the relevant
 /***********************************************************************************************/ 
 /*                					HELPER FUNCTIONS 									   */
 /***********************************************************************************************/
+ 
+ Dscourse.prototype.DrawShape=function()	 			   
+ {
+	 var main = this;
+
+
+
+
+
+  // get the canvas element using the DOM
+  var canvas = document.getElementById('cLines');
+ 
+  var scrollBoxTop = $('#scrollBox').css('margin-top'); 
+      scrollBoxTop = scrollBoxTop.replace('px','');
+      scrollBoxTop = Math.floor(scrollBoxTop);
+  
+  var scrollBoxHeight = $('#scrollBox').css('height');  // find the height of scrollbox
+      scrollBoxHeight = scrollBoxHeight.replace('px','');
+      scrollBoxHeight = Math.floor(scrollBoxHeight);
+  		
+  var linesHeight = $('#lines').height(); 
+  
+  		canvas.height = linesHeight;
+  
+  var scrollBoxBottom = scrollBoxHeight + scrollBoxTop; // add the height to the top position to find the bottom. 
+  
+ 
+    // use getContext to use the canvas for rawing
+    var ctx = canvas.getContext('2d');
+ 
+    	// Clear the drawing
+	    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	    // Options
+	    ctx.lineCap = 'round';
+	    ctx.lineWidth=3;
+	    ctx.strokeStyle = '#ccc';
+	    
+	    // Top line
+	    ctx.beginPath();
+	    ctx.moveTo(25,scrollBoxTop+3);
+	    ctx.lineTo(48,1);
+	    ctx.stroke();
+	    ctx.closePath();
+
+	    // Bottom line
+	    ctx.beginPath();
+	    ctx.moveTo(25,scrollBoxBottom+2);
+	    ctx.lineTo(48,linesHeight-3);
+	    ctx.stroke();
+	    ctx.closePath();
+  
+ 
+}
+ 
  
  Dscourse.prototype.ClearUserForm=function()	 			   
  {
@@ -3212,9 +3309,15 @@ Dscourse.prototype.getUrlVars=function() 		// Gets parameters from url. Usage : 
 Dscourse.prototype.truncateText=function(text, length)
 {
 	
-	var myString = text;
-	var myTruncatedString = myString.substring(0,length) + '... ';
-	return myTruncatedString;
+	if(text.length < length ){
+		return text; 
+	} else {
+	
+		var myString = text;
+		var myTruncatedString = myString.substring(0,length) + '... ';
+		return myTruncatedString;
+		
+	}
 	
 }
 
@@ -3233,6 +3336,10 @@ Dscourse.prototype.FormattedDate=function(date)
 
 Dscourse.prototype.DiscResize=function()
 {
+
+	var main = this;
+
+
   var h, wHeight, nbHeight, jHeight, cHeight, height; 
 		  
 		  // Get total height of the window with the helper function
@@ -3249,18 +3356,51 @@ Dscourse.prototype.DiscResize=function()
 		  cHeight = $('#controlsRow').height(); 
 		  
 		  // resize #dRowMiddle accordingly. 
-		  height = wHeight - (nbHeight + jHeight + cHeight + 50); 
+		  height = wHeight - (nbHeight + jHeight + cHeight + 30); 
 
 		  height = height + 'px';
+		  mHeight = wHeight - (nbHeight + jHeight + cHeight + 30);
+		  mHeight = -mHeight; 
+		   
 		  $('#dSidebar').css({'height' : height, 'overflow-y' : 'scroll', 'overflow-x' : 'hidden'});
 		  $('#vHeatmap').css({'height' : height, 'overflow-y' : 'scroll', 'overflow-x' : 'hidden'});
 		  $('#dMain').css({'height' : height, 'overflow-y' : 'scroll', 'overflow-x' : 'hidden'});
 		  $('#dRowMiddle').css({'margin-top' : 10}); //jHeight+30});
+		  $('#lines').css({'height' : height, 'margin-top' : mHeight + 'px'});
 
 		  $('#mediaBox').css({'height': wHeight-100 + 'px'});
 		  $('#node').css({'height': wHeight-200 + 'px'});
 
 		  $('#homeWrapper').css({'width': wWidth-600 + 'px'});
+
+
+		  //=== CORRECT Vertical Heatmap bars on resize  ===  
+		  // Each existing heatmap point needs to be readjusted in terms of height. 
+		  	// View box calculations
+			var boxHeight = $('#vHeatmap').height(); // Get height of the heatmap object
+			var totalHeight = $('#dMain')[0].scrollHeight; // Get height for the entire main section
+
+		  $('.vHeatmapPoint').each(function() {
+		  		var postValue = $(this).attr('divPostID'); // get the divpostid value of this div
+		  		
+		  		var thisOne = $(this); 
+		  		// redraw the entire thing. 
+		  				$('.threadText').each(function(){  // Go through each post to see if postAuthorId in Divs is equal to the mapInfo
+							var postAuthor = $(this).attr('postAuthorId'); 
+							var postID = $(this).attr('level'); 
+							if(postID == postValue){
+								var divPosition = $(this).position();  // get the location of this div from the top
+								console.log(divPosition);
+								var ribbonMargin = (divPosition.top) * boxHeight / totalHeight; // calculate a yellow ribbon top for the vertical heatmap
+									ribbonMargin = ribbonMargin; // this correction is for better alignment of the lines with the scroll box. 
+									
+									// There is an error when the #dMain layer is scrolled the position value is relative so we have minus figures.
+				
+								$(thisOne).css('margin-top', ribbonMargin); 
+										}
+						}); 
+		  });
+		  // ==  end correct vertical heatmap
 
 
 		  $('#displayFrame').css({'height': wHeight-100 + 'px'});
@@ -3273,14 +3413,126 @@ Dscourse.prototype.DiscResize=function()
 			  var thiswidth = parentwidth-12; 
 			  $(this).css('width',thiswidth+'px'); 
 			  $(this).children('.postTypeView').css('width','20px');
-			  $(this).children('.sayBut2').css('width','20px');
+			  $(this).children('.sayBut2').css('width','50px');
 			  $(this).children('.responseWrap').css('width','40px');
 			  $(this).children('.postTextWrap').css('width',thiswidth-110+'px');
 
 		  });
+		  
 
 }
 
+Dscourse.prototype.ClearVerticalHeatmap=function()
+{
+	// Check to see how clearing will function, this is probably the place for it. 
+	$('#vHeatmap').html('');
+	$('#vHeatmap').append('<div id="scrollBox"> </div>'); // Add scrolling tool
+
+}	
+
+Dscourse.prototype.VerticalHeatmap=function(mapType, mapInfo)
+{
+
+	 var main = this;
+
+		
+	// View box calculations
+	var boxHeight = $('#vHeatmap').height(); // Get height of the heatmap object
+	var visibleHeight = $('#dMain').height();  // Get height of visible part of the main section
+	var totalHeight = $('#dMain')[0].scrollHeight; // Get height for the entire main section
+	
+	// Size the box
+	var scrollBoxHeight = visibleHeight * boxHeight / totalHeight; 
+	$('#scrollBox').css('height',scrollBoxHeight-7); // That gives the right relative size to the box
+
+	// Scroll box to visible area
+	var mainScrollPosition = $('#dMain').scrollTop(); 
+	var boxScrollPosition = mainScrollPosition * boxHeight / totalHeight; 
+	$('#scrollBox').css('margin-top',boxScrollPosition); // Gives the correct scrolling location to the box
+	
+
+	if(mapType == 'user'){  	// if mapType is -user- mapInfo is the user ID
+		$('.threadText').each(function(){  // Go through each post to see if postAuthorId in Divs is equal to the mapInfo
+			var postAuthor = $(this).attr('postAuthorId'); 
+			var postID = $(this).attr('level'); 
+			if(postAuthor == mapInfo){
+				var divPosition = $(this).position();	  // get the location of this div from the top
+				
+				// dynamically find. 
+				var mainDivTop = $('#dMain').scrollTop();  
+				console.log('main div scroll: ' + mainDivTop); 
+				console.log(divPosition);
+				var ribbonMargin = (divPosition.top+mainDivTop) * boxHeight / totalHeight; // calculate a yellow ribbon top for the vertical heatmap
+					ribbonMargin = ribbonMargin; // this correction is for better alignment of the lines with the scroll box. 
+					
+					// There is an error when the #dMain layer is scrolled the position value is relative so we have minus figures.
+
+				$('#vHeatmap').append('<div class="vHeatmapPoint" style="margin-top:'+ ribbonMargin + 'px" divPostID="'+ postID +'" ></div>'); // append the vertical heatmap with post id and author id information (don't forgetto create an onclick for this later on)
+						}
+		}); 
+	
+		
+	}
+			
+	
+	if(mapType == 'keyword'){ // if mapType is -keyword- mapInfo is the text searched
+
+		main.ClearKeywordSearch('#dMain'); 
+
+		console.log(mapInfo); // Works
+		$('.threadText').each(function(){  // go through each post to see if the text contains the mapInfo text
+			var postID = $(this).attr('level');
+			var postContent =  $(this).children('.postTextWrap').children('.postMessageView').text();  // get post text
+			postContent = postContent.toLowerCase(); // turn search items into lowercase
+			console.log('Post Content: ' + postContent);
+			
+			var a=postContent.indexOf(mapInfo);
+			
+			// search for post text with the keyword text
+			// if there is a match get location information
+			if(a != -1){
+				var divPosition = $(this).position();  // get the location of this div from the top
+				console.log(divPosition);
+				var ribbonMargin = (divPosition.top) * boxHeight / totalHeight; // calculate a yellow ribbon top for the vertical heatmap
+				$('#vHeatmap').append('<div class="vHeatmapPoint" style="margin-top:'+ ribbonMargin + 'px" divPostID="'+ postID +'" ></div>'); // append the vertical heatmap with post id and author id information (don't forgetto create an onclick for this later on)
+				
+				var replaceText = $(this).children('.postTextWrap').children('.postMessageView').html(); 
+				// Find out if there is alreadt a span for highlighting here
+				
+				var newSelected = '<search class="highlightblue">' + mapInfo + '</search>'; 
+				var n = replaceText.replace(mapInfo, newSelected); 
+				$(this).children('.postTextWrap').children('.postMessageView').html(n); 
+
+			}
+		}); 
+		
+	}	
+			
+
+
+	// if mapType is -postType- mapInfo is the text of the type of post i.e. comment
+		// go through each post to see if the post type is the mapInfo type
+			// get the location of this div from the top
+			// calculate a yellow ribbon top for the vertical heatmap
+			// append the vertical heatmap with post id and author id information (don't forgetto create an onclick for this later on)
+			// css the margin-top for the yellow ribbon
+			// repeat for all posts.	
+
+			  main.DrawShape();
+
+
+}
+
+Dscourse.prototype.ClearKeywordSearch=function(selector)
+{
+ 	var main = this; 
+
+	// remove search highlights		
+	$(selector).find("search").each(function(index) {    // find search tag elements. For each
+	    var text = $(this).html();				// get the inner html
+	    $(this).replaceWith(text);			// replace it with the inner content. 
+	});
+}
 
 Dscourse.prototype.TypeAhead=function()
 {
@@ -3373,4 +3625,6 @@ Dscourse.prototype.ParseDate=function(input, format)
 
   return new Date(parts[fmt['yyyy']], parts[fmt['mm']]-1, parts[fmt['dd']]);
 }
+
+
 
