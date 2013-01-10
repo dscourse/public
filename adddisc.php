@@ -139,11 +139,9 @@ $(function(){
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a>
 
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                            <li><a id="profileNav" userid="<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
+                            <li><a id="profileNav" href="profile.php?u=<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
 
-                            <li><a id="usersNav">Users</a></li>
-
-                            <li><a id="helpNav">Help</a></li>
+                            <li><a id="helpNav" href="help.php">Help</a></li>
 
                             <li><a href="php/logout.php">Logout</a></li>
                         </ul>

@@ -130,6 +130,33 @@ class Dscourse {
 		return $results; 
 	}
 
+	public function DiscussionStatus($discID){
+		/*  
+		 *  Checks to see the status of the discussion. 
+		 */
+		$query = mysql_query("SELECT * FROM discussions WHERE dID = '".$discID."'");
+		$results = mysql_fetch_array($query); 
+
+		$startDate = strtotime($results['dStartDate']); 
+		$openDate  = strtotime($results['dOpenDate']) ; 
+		$endDate   = strtotime($results['dEndDate'])  ; 
+		$now	   = strtotime(date("Y-m-d H:i:s"));
+
+		$dStatus = 'closed'; 
+		if($now <= $endDate && $now >= $startDate ){
+			if($now <= $openDate){
+				$dStatus = 'student'; 
+			} else {
+				$dStatus = 'all'; 
+			}
+		} else {
+			$dStatus = 'closed'; 
+		}		
+
+		return $dStatus; 
+	}
+
+
 	public function CourseRoles($cID){
 		/*  
 		 *  Gets users in the network with their user information
@@ -257,18 +284,17 @@ class Dscourse {
 		return $load;  	
 	}	
 	
-	public function DiscussionStatus($discID){
-		/*  
-		 *  Checks if the discussion status is Active, Open or Closed by comparing times.  
-		 */			
-		
-	} 
 
 	public function CountPosts($discID){
 		/*  
 		 *  Counts total number of posts in discussion  
 		 */
-		 			
+
+		$query = mysql_query("SELECT discussionPostID FROM discussionPosts WHERE discussionID = '".$discID."'");
+		$num_rows = mysql_num_rows($query);
+
+		return $num_rows;
+				 			
 	}
 
 	public function Messages($m){

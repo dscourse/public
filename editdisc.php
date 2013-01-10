@@ -69,7 +69,7 @@ ini_set('display_errors',1);
  	     $setCoursePrint = ''; 
 	     for($j = 0; $j < $totalCourses; $j++) 
 	     {
-	        $setCoursePrint .= '<tr id="' .$discussionCourses[$j]['courseID'].'" class="dCourseList"><input class="deleteToggle" courseID="'.$discussionCourses[$j]['courseID'].'" type="hidden" name="course[]" value="keep"><input type="hidden" name="course[]" value="' .$discussionCourses[$j]['courseID'].'"><td>' .$discussionCourses[$j]['courseName'].' </td><td><button class="btn removeCourses" courseID="'.$discussionCourses[$j]['courseID'].'">Remove</button> </td></tr>';               		     
+	        $setCoursePrint .= '<tr id="' .$discussionCourses[$j]['courseID'].'" class="dCourseList"><td>' .$discussionCourses[$j]['courseName'].' </td><td><button class="btn removeCourses" courseID="'.$discussionCourses[$j]['courseID'].'">Remove</button> <input type="hidden" name="course[]" value="' .$discussionCourses[$j]['courseID'].'"><input class="deleteToggle" courseID="'.$discussionCourses[$j]['courseID'].'" type="hidden" name="course[]" value="no"></td></tr>';               		     
 	     }
 
         
@@ -97,11 +97,11 @@ $(function(){
                 // Get people in this network 
         $userNetworks = $dscourse->GetUserNetworks($userID);
         $totalNetworks = count($userNetworks); 
+            $courseCount = 0; 
         for($i = 0; $i < $totalNetworks; $i++) 
         {
             $networkCourses = $dscourse->NetworkCourses($userNetworks[$i]['networkID']);
             $courseTotal = count($networkCourses);
-            $courseCount = 0; 
             for($j = 0; $j < $courseTotal; $j++) 
                 {   
                     $roleCheck = $dscourse->UserCourseRole($networkCourses[$j]['courseID'], $userID);
@@ -126,6 +126,8 @@ $(function(){
                } else if(currentVal == 'yes'){ // if yes 
                		$(this).siblings('.deleteToggle').val('yes'); // toggle value to no
                		$(this).removeClass('btn-warning');// remove class btn warning
+               } else if(currentVal == 'add'){
+	               	$(this).closest('tr').remove(); // remove this row 
                }
             });
 
@@ -142,7 +144,7 @@ $(function(){
                             return false;
                         },
                         select: function( event, ui ) {
-                            $('#addCoursesBody').append('<tr id="' + ui.item.value + '" class="dCourseList"><input type="hidden" name="course[]" value="' + ui.item.value + '"><td>' + ui.item.label + ' <\/td><td><button class="btn removeCourses" >Remove<\/button>   <\/td><\/tr>');               // Build the row of courses. 
+                            $('#addCoursesBody').append('<tr id="' + ui.item.value +'" class="dCourseList"><td>'+ ui.item.label + ' </td><td><button class="btn removeCourses" courseID="' + ui.item.value + '">Remove</button> <input type="hidden" name="course[]" value="' + ui.item.value + '"> <input class="deleteToggle" courseID="' + ui.item.value + '" type="hidden" name="course[]" value="add"></td></tr>');               		     
                             $('.discussionCourses').val(' ').focus();
                             return false;
                         }
@@ -150,7 +152,7 @@ $(function(){
             $('#sDateTime > option[value="<?php echo $dStartHour[0]; ?>"]').attr('selected', 'selected');     
             $('#oDateTime > option[value="<?php echo $dOpenHour[0]; ?>"]').attr('selected', 'selected');     
             $('#eDateTime > option[value="<?php echo $dEndHour[0]; ?>"]').attr('selected', 'selected');     
-    });                        
+});                        
     </script>
 </head>
 
@@ -170,11 +172,9 @@ $(function(){
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a>
 
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                            <li><a id="profileNav" userid="<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
+                            <li><a id="profileNav" href="profile.php?u=<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
 
-                            <li><a id="usersNav">Users</a></li>
-
-                            <li><a id="helpNav">Help</a></li>
+                            <li><a id="helpNav" href="help.php">Help</a></li>
 
                             <li><a href="php/logout.php">Logout</a></li>
                         </ul>

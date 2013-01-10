@@ -38,42 +38,40 @@ ini_set('display_errors',1);
 
         include_once('php/dscourse.class.php');
         
+	    	      
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
+        
 
-	    $nID = $_GET["n"]; 						// The network ID from link
+		
 
-	    $networkInfo = $dscourse->NetWorkInfo($nID);
-                
 ?>
 <!DOCTYPE html>
 
 <html lang="en">
 <head>
-    <title>dscourse | Edit Network </title>
+    <title>dscourse | Documentation </title>
     
     <?php include('php/header_includes.php');  ?>
+    
     <script type="text/javascript">
-$(function(){
+    $(function(){
             // Add some global variables about current user if we need them:
             <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
-
-            var dscourse = new Dscourse();              // Fasten seat belts, dscourse is starting...
-            
-
-});                        
+        
+        }); 
     </script>
 </head>
 
 <body>
-	    <div class="navbar navbar-fixed-top">
+    <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container-fluid">
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
+                    <li class="navLevel"><a href="help.php" id="helpNav">Documentation</a></li>
                 </ul>
 
                 <ul class="nav pull-right">
@@ -92,57 +90,78 @@ $(function(){
             </div>
         </div>
     </div><!-- End of header content-->
- 
+
+
+    <div id="overlay"></div>
     
-    <!-- Begin addcourse.php-->
+     <div id="helpPage" class=" wrap page" >
+        <header class="jumbotron subhead">
+            <div class="container-fluid">
+	            <div class="row-fluid">
+	                <div class="span12">
+							<h1>Documentation</h1>
+							<p>Learn more about how to use dscourse</p>
+              
+	                </div>
+	            </div>             
+            </div>
+        </header>
 
-    <header class="jumbotron subhead">
-        <div class="container-fluid">
-            <h1>Edit Network</h1>
-                 <div id="addCourseCancel" class="pull-right">
-                    <a href="network.php?n=<?php echo $nID; ?>" class="btn">Cancel</a>
-                </div>
-        </div>
-    </header>
-
-    <div id="addcoursePage" class=" wrap page">
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span10 offset1">
-                    <div id="courseForm">
-                        <form class="form-horizontal well" name="addCourseForm" action="php/data.php" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="action" value="updateNetwork">
-                        <input type="hidden" name="networkID" value="<?php  echo $nID; ?>" >
-                        
-                        <div class="form-horizontal">
-						  <div class="control-group">
-						    <label class="control-label" for="networkName">Name of Network</label>
-						    <div class="controls">
-						      <input type="text" id="networkName" name="networkName" value="<?php  echo $networkInfo['networkName']; ?>">
-						    </div>
-						  </div>
-						  <div class="control-group">
-						    <label class="control-label" for="networkDesc">Network Description</label>
-						    <div class="controls">
-						      <textarea rows="6" class="span4" name="networkDesc" id="networkDesc"><?php  echo $networkInfo['networkDesc']; ?></textarea>
-						    </div>
-						  </div>
-						</div>	 
-                        
 
-                            <hr class="soften">
-                            <button type="submit" name="submitEditNetwork" id="submitEditNetwork" class="btn btn-primary pull-right">Edit Network </button>
-                        </form>
+                <div class="span8">
+                    <div class="">
+                        <h3>Navigation</h3>
+
+                        <p>Dscourse is a <b>one-page web application</b>. Clicking the back button on your browser will take you to the previous website but not to the previous page. Please use the links on the page to navigate around the website. You can see all your courses and discussions with the links at the top.</p>
+                        <hr class="soften">
+
+                        <p></p>
+
+                        <ul>
+                            <li><b>Users</b> page provides a list of all users currently in the dscourse system. You can click on the user names to go to their profile pages.</li>
+
+                            <li style="list-style: none"><br></li>
+
+                            <li><b>Courses</b> link will show the courses you are involved with whether as Instructor, TA or Student. These roles are assigned by the person creating the course.</li>
+
+                            <li style="list-style: none"><br></li>
+
+                            <li><b>Discussions</b> provides a list of all your discussions in all courses. Discussion are also accessible through the individual course pages.</li>
+                        </ul>
+                        <p>
+                        <hr class="soften">
                     </div>
                 </div>
-            </div>
-            
-            <?php
 
-                           }  
-                                
-                        ?>
-        </div>
-    </div>
+                <div class="span4">
+                    <div class="well">
+                        <h3>Roadmap for v2</h3>
+
+                        <p><em class="timeLog">Here's brief list of planned feature additions for release in version 2</em></p>
+
+                        <p></p>
+
+                        <p></p>
+
+                        <ul class="unstyled">
+                            <li>Breadcrumbs for navigation will enable going back and forth in the application without using browser buttons</li>
+                        </ul>
+                        <p>
+                    </div>
+                </div>
+
+
+            </div><!-- close row -->
+        </div><!-- close container -->
+    </div><!-- close helpPage -->
+
+
+        <?php
+
+       }  
+            
+    ?>
 </body>
 </html>

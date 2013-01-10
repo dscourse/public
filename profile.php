@@ -92,18 +92,49 @@ ini_set('display_errors',1);
 
 <body>
     
-    	<?php include('php/navbar_includes.php'); ?>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a href="index.php" class="brand" id="homeNav">dscourse</a>
+
+                <ul class="nav">
+                    <li class="navLevel active"><a href="#" id="userNav"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></a></li>
+                </ul>
+
+                <ul class="nav pull-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a>
+
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <li><a id="profileNav" href="profile.php?u=<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
+
+                            <li><a id="helpNav" href="help.php">Help</a></li>
+
+                            <li><a href="php/logout.php">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div><!-- End of header content-->
 
     <!-- Begin profile.php-->
 
     <div id="profilePage" class=" wrap page">
         <header class="jumbotron subhead">
             <div class="container-fluid">
-                <h1><span id="profileName"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></span> <small><span id="profileEmail"><?php  echo $userInfo['username']; ?></span></small></h1>
-
-                <div id="editProfileButtons" class="pull-right">
-                    <a href="editprofile.php?u=<?php echo $userID; ?>" id="editProfileButton" class="btn">Edit Profile</a>
-                </div>
+            	<div class="row-fluid">
+		            <div class="span3">
+			            	<div id="userPicture"><img src="<?php  echo $userInfo['userPictureURL']; ?>"> </div>
+			            </div>
+			            <div class="span9">
+			                <h1><span id="profileName"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></span></h1><h1> <small><span id="profileEmail"><?php  echo $userInfo['username']; ?></span></small></h1>
+			
+			                <div id="editProfileButtons" class="pull-right">
+			                    <a href="editprofile.php?u=<?php echo $userID; ?>" id="editProfileButton" class="btn">Edit Profile</a>
+			                </div>
+			            </div>
+            	</div>
             </div>
         </header>
 
@@ -111,7 +142,7 @@ ini_set('display_errors',1);
             <div class="row-fluid" id="profileDetails">
                 <div id="userInfoWrap">
                     <div class="span4">
-                        <div id="profilePicture"><img src="<?php  echo $userInfo['userPictureURL']; ?>"></div>
+                        <div id="profilePicture"></div>
 
                         <div id="profileInfo">
                             <table class="table">

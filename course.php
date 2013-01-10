@@ -93,12 +93,26 @@ ini_set('display_errors',1);
 				{
 					$discID 	= $courseDiscussions[$j]['dID'];
 					$discName	= $courseDiscussions[$j]['dTitle'];
-					$discStatus = ''; //$dscourse->DiscussionStatus($discID);  
-					$numberofPosts= ''; //$dscourse->CountPosts($discID); 
+					$status = '<span style="color:#BD838F">Closed</span>'; 
+					$discStatus = $dscourse->DiscussionStatus($discID);
+					switch($discStatus)
+					{
+						case 'all':
+							$status = '<span style="color:#74AA81">Open Posting</span>';
+						break;	
+						case 'student':
+							$status = '<span style="color:#F3BC6A">Individual Posting</span>';
+						break;
+						case 'closed':
+							$status = '<span style="color:#BD838F">Closed</span>';
+						break;
+					}
+					  
+					$numberofPosts= $dscourse->CountPosts($discID); 
 					if($currentRole == 'Instructor' || $currentRole == 'TA'){
 						$discEdit = '<a href="editdisc.php?d='.$discID.'&c='.$cID.'&n='.$nID.'" class="btn btn-info btn-small">Edit</a> ';  
 					} else { $discEdit = ''; }
-					$discPrint .= '<tr><td><a href="discussion.php?d='.$discID.'&c='.$cID.'&n='.$nID.'"> '.$discName.'</a></td><td>'.$discStatus.'</td><td>'.$numberofPosts.'</td><td>'.$discEdit.' </td></tr>'; 
+					$discPrint .= '<tr><td><a href="discussion.php?d='.$discID.'&c='.$cID.'&n='.$nID.'"> '.$discName.'</a></td><td>'.$status.'</td><td>'.$numberofPosts.'</td><td>'.$discEdit.' </td></tr>'; 
 		}
 ?>
 <!DOCTYPE html>
@@ -124,8 +138,6 @@ ini_set('display_errors',1);
 				} 
             }            
             ?>
-			 
-           
         
         }); 
     </script>
@@ -147,11 +159,9 @@ ini_set('display_errors',1);
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a>
 
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                            <li><a id="profileNav" userid="<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
+                            <li><a id="profileNav" href="profile.php?u=<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
 
-                            <li><a id="usersNav">Users</a></li>
-
-                            <li><a id="helpNav">Help</a></li>
+                            <li><a id="helpNav" href="help.php">Help</a></li>
 
                             <li><a href="php/logout.php">Logout</a></li>
                         </ul>
@@ -205,13 +215,12 @@ ini_set('display_errors',1);
                                 <tr>
                                     <td class="profileHead">Start Date:</td>
 
-                                    <td id="iCourseStartDate"><?php echo $courseInfo['courseStartDate']; ?></td>
+                                    <td id="iCourseStartDate"><?php echo date("l, F jS, Y",strtotime($courseInfo['courseStartDate'])); ?></td>
                                 </tr>
 
                                 <tr>
                                     <td class="profileHead">End Date</td>
-
-                                    <td id="iCourseEndDate"><?php echo $courseInfo['courseEndDate']; ?></td>
+                                    <td id="iCourseEndDate"><?php echo date("l, F jS, Y ",strtotime($courseInfo['courseEndDate'])); ?></td>
                                 </tr>
 
                                 <tr>

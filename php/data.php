@@ -427,6 +427,8 @@ function EditDiscussion(){
 		$dOpenDate	=  $_POST['discussionOpenDate']  ." " .$_POST['oDateTime'] . ":00:00";
 		$dEndDate	=  $_POST['discussionEndDate']   ." " .$_POST['eDateTime'] . ":00:00"; 
 		$discID		=  $_POST['discID'];
+		$courseID	= $_POST['courseID']; 
+		$networkID	= $_POST['networkID'];
 		// Add row to discussions table
 		$discInsert = mysql_query("UPDATE discussions SET dTitle = '".$dTitle."', dPrompt = '".$dPrompt."', dStartDate = '".$dStartDate."', dOpenDate = '".$dOpenDate."', dEndDate = '".$dEndDate."' WHERE dID = '".$discID."'"); 
 	
@@ -437,20 +439,23 @@ function EditDiscussion(){
 		$courses	=  $_POST['course'] ;
 		$totalCourses = count($courses); 
 		$i = 0; 
+
+		//print_r($courses);
 		while($i < $totalCourses) {
 			if($i%2 == 0){
-				$b = $i-1; 
-				if($courses[$i] == 'yes'){
-					$discCourseDelete = mysql_query("DELETE FROM courseDiscussions WHERE courseID = '".$courses[$b]."' AND discussionID = '".$discID."' "); 
-				} else {
-					$discCourseInsert = mysql_query("INSERT INTO courseDiscussions (courseID, discussionID) VALUES('".$courses[$b]."', '".$discID."')"); 
+				$b = $i+1; 
+				if($courses[$b] == 'yes'){
+					$discCourseDelete = mysql_query("DELETE FROM courseDiscussions WHERE courseID = '".$courses[$i]."' AND discussionID = '".$discID."' "); 
+				} elseif ($courses[$b] == 'add') {
+					$discCourseInsert = mysql_query("INSERT INTO courseDiscussions (courseID, discussionID) VALUES('".$courses[$i]."', '".$discID."')"); 
 				}
 			}
 			$i = $i+1; 
 		}
+
 		
  		$message = '2' ;
-	  	$gotoPage = "../index.php&m=".$message;  // All good
+	  	$gotoPage = "../course.php?c=".$courseID."&n=".$networkID;  // All good
 	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 
 }

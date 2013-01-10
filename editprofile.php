@@ -70,8 +70,32 @@ $(function(){
 
 <body>
 
-	<?php include('php/navbar_includes.php'); ?>
+   
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
+                <ul class="nav">
+                    <li class="navLevel active"><a href="#" id="userNav"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></a></li>
+                </ul>
+
+                <ul class="nav pull-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a>
+
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <li><a id="profileNav" href="profile.php?u=<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
+
+                            <li><a id="helpNav" href="help.php">Help</a></li>
+
+                            <li><a href="php/logout.php">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div><!-- End of header content-->
 
 <!-- Begin Edit Profile-->
 
