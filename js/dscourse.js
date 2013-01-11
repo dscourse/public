@@ -33,7 +33,21 @@ function Dscourse()
 
 	/************************ DISCUSSION EVENTS  ************************/
 	/* Make the commenting box draggable */
-	$('#commentWrap').draggable();			
+	$('#commentWrap').append($('<div>',{
+		class: 'commentWrapHandle',
+		css:{
+			height: '30px',
+			position: 'absolute',
+			top: '-25px',
+			boxShadow: '0 0 10px 0 #CCCCCC inset, 0 0 19px 0 #999999',
+			left: '2px',
+			right: '2px',
+			backgroundColor: 'lightgray',
+			borderTopRightRadius: '8px',
+			borderTopLeftRadius: '8px',
+		}
+	}));
+	$('#commentWrap').draggable({handle: '.commentWrapHandle'});			
 
 	/* Add highlighted text to the comment */
 	$('#highlightShow').live('mouseup', function () {
@@ -89,7 +103,7 @@ function Dscourse()
 		var searchText = $('#keywordSearchText').val();  // get contents of the box
 		if(searchText.length > 0 && searchText != ' '){
 			top.ClearVerticalHeatmap();
-			console.log('Search text: ' + searchText); // Works
+			//console.log('Search text: ' + searchText); // Works
 			top.VerticalHeatmap('keyword', searchText);// Send text to the vertical heatmap app
 		} else {
 			top.ClearKeywordSearch('#dMain'); 
@@ -385,7 +399,7 @@ function Dscourse()
 	$('#continuePost').live('click', function () {						 
 		top.currentDrawing = ''; 
 		ShivaMessage('node','GetJSON'); 
-		console.log(top.currentDrawing);
+		//console.log(top.currentDrawing);
 		$('#mediaBox').hide();
 		$('#commentWrap').show();
 	}); 
@@ -409,7 +423,7 @@ function Dscourse()
 		for(i = 0; i < top.data.posts.length; i++){
 			 o = top.data.posts[i];
 			 if(o.postID == postId){
-			 	console.log(o.postMedia); 
+			 	//console.log(o.postMedia); 
 				cmd ="PutJSON="+o.postMedia;
 				$('#displayFrame').show();
 				$('html, body').animate({scrollTop:0});	
@@ -482,10 +496,10 @@ Dscourse.prototype.GetData=function(discID)
 			  success: function(data) {								// If addNewUser.php was successfully run, the output is printed on this page as notification. 
 			  		main.data = data;
 			  		main.SingleDiscussion(discID);  
-			  		console.log(main.data);
+			  		//console.log(main.data);
 			  	}, 
 			  error: function() {									// If there was an error
-				 		console.log('There was an error talking to data.php');
+				 		//console.log('There was an error talking to data.php');
 			  }
 		});	
 
@@ -532,7 +546,7 @@ Dscourse.prototype.GetData=function(discID)
 		
 		// What is the role of the current user for this discussion?
 		userRole = main.UserCourseRole(o.dID, currentUserID);	 			
-		console.log(userRole);
+		//console.log(userRole);
 			
 		// Draw up posts and timeline
 		if(main.data.posts){
@@ -701,7 +715,7 @@ Dscourse.prototype.ListDiscussionPosts=function(dStatus, userRole, discID)	 			 
 		 
 			 /********** RECENT ACTIVITY SECTION ***********/
 			 if ($(selector).length > 0){
-				 console.log(n);
+				 //console.log(n);
 				 var range = main.data.posts.length-8; 			// How many of the most recent we show + 1
 				 var prettyTime = jQuery.timeago(d.postTime) ;
 				 var shortMessage = main.truncateText(message, 60);
@@ -725,16 +739,16 @@ Dscourse.prototype.ListDiscussionPosts=function(dStatus, userRole, discID)	 			 
 	    
      $(".postTypeView").draggable({
         start: function() {
-            console.log('Drag started');
+            //console.log('Drag started');
 
             main.sPostID = $(this).attr('slevel'); // The id of the post
             main.sPostContent = $(this).parent().children('.postTextWrap').children('.postMessageView').html() // The content of the post
         },
         drag: function() {
-            console.log('Drag happening');
+            //console.log('Drag happening');
         },
         stop: function() {
-            console.log('Drag stopped!');
+            //console.log('Drag stopped!');
         }, 
 
 		helper: function( event ) {
@@ -795,7 +809,7 @@ Dscourse.prototype.AddPost=function(){
 		postContext = ''; // this is used for the synthesis posts but needs a value here. 
 			
 	// Create post object and append it to allPosts
-	
+		
 			post = {
 				'postFromId': postFromId,
 				'postAuthorId': postAuthorId,
@@ -808,7 +822,7 @@ Dscourse.prototype.AddPost=function(){
 				};
 		
 	// run Ajax to save the post object
-	
+	console.log(post);
 	$.ajax({																						
 			type: "POST",
 			url: "php/data.php",
@@ -821,7 +835,7 @@ Dscourse.prototype.AddPost=function(){
 			    	  post.postTime = main.GetCurrentDate();   
 			    	  post.postID 	= data; 
 			    	  main.data.posts.push(post); 
-			    	  console.log(data);
+			    	  //console.log(data);
 			    	  
 			 	
 			    	  $('.levelWrapper[level="0"]').html('');
@@ -835,7 +849,7 @@ Dscourse.prototype.AddPost=function(){
 			    }, 
 			  error: function() {					// If connection is not successful.  
 					//main.AddLog('discussion',currentDisc,'addPost','','Error: Dscourse Log: the connection to data.php failed. ')
-					console.log("Dscourse Log: the connection to data.php failed.");  
+					//console.log("Dscourse Log: the connection to data.php failed.");  
 			  }
 		});	
 	
@@ -892,7 +906,7 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 			postContext += thisPostID; 
 
 		}); 
-		console.log('post context ' + postContext);
+		//console.log('post context ' + postContext);
 
 		
 			
@@ -943,7 +957,7 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 			    }, 
 			  error: function() {					// If connection is not successful.  
 					
-					console.log("Dscourse Log: the connection to data.php failed. Did not save synthesis");  
+					//console.log("Dscourse Log: the connection to data.php failed. Did not save synthesis");  
 			  }
 		});	
 	
@@ -1175,10 +1189,10 @@ Dscourse.prototype.DiscDateStatus=function(dID)
 	 		o = main.data.discussion;
 	 		if(o.dID === dID ){
 	 			// Compare dates of the discussion to todays date.  
-			    var beginDate = new Date(o.dStartDate);	    
-			    var openDate = new Date(o.dOpenDate);	    
-			    var endDate = new Date(o.dEndDate);	    
-			    var currentDate = new Date(); 
+			    var beginDate = new Date(o.dStartDate.split(' ').join('T'));	    
+			    var openDate = new Date(o.dOpenDate.split(' ').join('T'));	    
+			    var endDate = new Date(o.dEndDate.split(' ').join('T'));	    
+			    var currentDate = new Date();
 			    if(currentDate >= beginDate && currentDate <= endDate) {// IF today's date bigger than start date and smaller than end date? 
 				    	if(currentDate <= openDate) {    				// If today's date smaller than Open Date
 			    		dStatus = 'student'; 							// The status is open to individual contribution
@@ -1319,7 +1333,7 @@ Dscourse.prototype.DiscResize=function()
 						var postID = $(this).attr('level'); 
 						if(postID == postValue){
 							var divPosition = $(this).position();  // get the location of this div from the top
-							console.log(divPosition);
+							//console.log(divPosition);
 							var ribbonMargin = (divPosition.top) * boxHeight / totalHeight; // calculate a yellow ribbon top for the vertical heatmap
 								ribbonMargin = ribbonMargin; // this correction is for better alignment of the lines with the scroll box. 
 								
@@ -1384,8 +1398,8 @@ Dscourse.prototype.VerticalHeatmap=function(mapType, mapInfo)
 				
 				// dynamically find. 
 				var mainDivTop = $('#dMain').scrollTop();  
-				console.log('main div scroll: ' + mainDivTop); 
-				console.log(divPosition);
+				//console.log('main div scroll: ' + mainDivTop); 
+				//console.log(divPosition);
 				var ribbonMargin = (divPosition.top+mainDivTop) * boxHeight / totalHeight; // calculate a yellow ribbon top for the vertical heatmap
 					ribbonMargin = ribbonMargin; // this correction is for better alignment of the lines with the scroll box. 
 					
@@ -1398,7 +1412,7 @@ Dscourse.prototype.VerticalHeatmap=function(mapType, mapInfo)
 
 	if(mapType == 'keyword'){ // if mapType is -keyword- mapInfo is the text searched
 		main.ClearKeywordSearch('#dMain'); 
-		console.log(mapInfo); // Works
+		//console.log(mapInfo); // Works
 		$('.threadText').each(function(){  // go through each post to see if the text contains the mapInfo text
 			var postID = $(this).attr('level');
 			var postContent =  $(this).children('.postTextWrap').children('.postMessageView').text();  // get post text
@@ -1407,7 +1421,7 @@ Dscourse.prototype.VerticalHeatmap=function(mapType, mapInfo)
 			// search for post text with the keyword text if there is a match get location information
 			if(a != -1){
 				var divPosition = $(this).position();  // get the location of this div from the top
-				console.log(divPosition);
+				//console.log(divPosition);
 				var ribbonMargin = (divPosition.top) * boxHeight / totalHeight; // calculate a yellow ribbon top for the vertical heatmap
 				$('#vHeatmap').append('<div class="vHeatmapPoint" style="margin-top:'+ ribbonMargin + 'px" divPostID="'+ postID +'" ></div>'); // append the vertical heatmap with post id and author id information (don't forgetto create an onclick for this later on)				
 				var replaceText = $(this).children('.postTextWrap').children('.postMessageView').html(); 
@@ -1492,10 +1506,12 @@ Dscourse.prototype.truncateText=function(text, length)
 Dscourse.prototype.FormattedDate=function(date)
 {
 	var d, m, curr_hour, dateString; 
-	d = new Date(date);				// Write out the date in readable form.
+	d = (typeof date == "string")?new Date(date.split(' ').join('T')):new Date(date);				// Write out the date in readable form.
+	//console.log(d);
 	m = d.toDateString();
     curr_hour = d.getHours(); 
     dateString = m + '  ' + curr_hour + ':00';
+    //console.log(dateString);
 	return dateString;				 				    
 }
 
@@ -1511,10 +1527,9 @@ Dscourse.prototype.FunctionTemplate=function()
 Dscourse.prototype.GetCurrentDate=function()
 {
 	var x = new Date();
-	var monthReplace = (x.getMonth() < 10) ? '0'+x.getMonth() : x.getMonth();
+	var monthReplace = (x.getMonth() < 10) ? '0'+(x.getMonth()+1) : x.getMonth();
 	var dayReplace = (x.getDate() < 10) ? '0'+x.getDate() : x.getDate();
 	var dateNow = x.getFullYear() + '-' + monthReplace + '-' + dayReplace + ' ' + x.getHours() + ':' + x.getMinutes() + ':' + x.getSeconds() ;
-	
 	return dateNow; 
 }			    	 
 
