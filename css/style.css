@@ -613,6 +613,7 @@ width: 2%;
 	position:absolute;
 	margin-left:-4px;
 	border-radius:3px;
+overflow: hidden;
 }
 
 #lines {
