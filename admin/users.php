@@ -16,9 +16,8 @@ include('admin_header.php');
  
 echo "<table border=1 >"; 
 echo "<tr>"; 
-echo "<td><b>UserID</b></td>"; 
+echo "<td><b></b></td>"; 
 echo "<td><b>Username</b></td>"; 
-echo "<td><b>Password</b></td>"; 
 echo "<td><b>FirstName</b></td>"; 
 echo "<td><b>LastName</b></td>"; 
 echo "<td><b>SysRole</b></td>"; 
@@ -39,7 +38,6 @@ foreach($row AS $key => $value) { $row[$key] = stripslashes($value); }
 echo "<tr>";  
 echo "<td valign='top'>" . nl2br( $row['UserID']) . "</td>";  
 echo "<td valign='top'>" . nl2br( $row['username']) . "</td>";  
-echo "<td valign='top'>" . nl2br( $row['password']) . "</td>";  
 echo "<td valign='top'>" . nl2br( $row['firstName']) . "</td>";  
 echo "<td valign='top'>" . nl2br( $row['lastName']) . "</td>";  
 echo "<td valign='top'>" . nl2br( $row['sysRole']) . "</td>";  
@@ -53,7 +51,7 @@ echo "<td valign='top'>" . nl2br( $row['userProfile']) . "</td>";
 echo "<td valign='top'>" . nl2br( $row['userAbout']) . "</td>";  
 echo "<td valign='top'>" . nl2br( $row['userRecovery']) . "</td>";  
 echo "<td valign='top'>" . nl2br( $row['userRecoveryTime']) . "</td>";  
-echo "<td valign='top'><a href=edituser.php?UserID={$row['UserID']} class='btn btn-info'>Edit</a></td><td><a href=deleteuser.php?UserID={$row['UserID']} class='btn btn-error'>Delete</a></td> "; 
+echo "<td valign='top'><a href=edituser.php?UserID={$row['UserID']} class='btn btn-info'>Edit</a></td>";  //<td><a href=deleteuser.php?UserID={$row['UserID']} class='btn btn-error'>Delete</a></td> "; 
 echo "</tr>"; 
 } 
 echo "</table>"; 
