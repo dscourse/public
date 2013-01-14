@@ -760,9 +760,8 @@ Dscourse.prototype.ListDiscussionPosts=function(dStatus, userRole, discID)	 			 
 
 	 $( "#synthesisDrop" ).droppable({
 	        hoverClass: "sDropHover",
-	        drop: function( event, ui ) {
-	            $( this )
-	                    .html( "Added!" );
+	        drop: function( event, ui) {
+	           $(this).html("Added!");
 	           $('#synthesisPostWrapper').prepend('<div sPostID="'+ main.sPostID +'" class=" synthesisPosts">' + main.sPostContent + ' <div>');  // Append original post
 	    
 	        }
@@ -1309,7 +1308,7 @@ Dscourse.prototype.DiscResize=function()
 	  mHeight = wHeight - (nbHeight + jHeight + cHeight + 30);
 	  mHeight = -mHeight; 		   
 	  $('#dSidebar').css({'height' : height, 'overflow-y' : 'scroll', 'overflow-x' : 'hidden'});
-	  $('#vHeatmap').css({'height' : height, 'overflow-y' : 'scroll', 'overflow-x' : 'hidden'});
+	  $('#vHeatmap').css({'height' : height, 'overflow-y' : 'hidden', 'overflow-x' : 'hidden'});
 	  $('#dMain').css({'height' : height, 'overflow-y' : 'scroll', 'overflow-x' : 'hidden'});
 	  $('#dRowMiddle').css({'margin-top' : 10}); //jHeight+30});
 	  $('#lines').css({'height' : height, 'margin-top' : mHeight + 'px'});
@@ -1365,7 +1364,7 @@ Dscourse.prototype.ClearVerticalHeatmap=function()
   */	
 	// Check to see how clearing will function, this is probably the place for it. 
 	$('#vHeatmap').html('');
-	$('#vHeatmap').append('<div id="scrollBox"> </div>'); // Add scrolling tool
+	$('#vHeatmap').append('<div id="scrollBox" style="overflow:hidden;"> </div>'); // Add scrolling tool
 
 }	
 
@@ -1381,13 +1380,15 @@ Dscourse.prototype.VerticalHeatmap=function(mapType, mapInfo)
 	var totalHeight = $('#dMain')[0].scrollHeight; // Get height for the entire main section
 	
 	// Size the box
+	// That gives the right relative size to the box
 	var scrollBoxHeight = visibleHeight * boxHeight / totalHeight; 
-	$('#scrollBox').css('height',scrollBoxHeight-7); // That gives the right relative size to the box
 
 	// Scroll box to visible area
 	var mainScrollPosition = $('#dMain').scrollTop(); 
 	var boxScrollPosition = mainScrollPosition * boxHeight / totalHeight; 
-	$('#scrollBox').css('margin-top',boxScrollPosition); // Gives the correct scrolling location to the box	
+	// Gives the correct scrolling location to the box 
+	
+	$('#scrollBox').css({height: scrollBoxHeight-7, marginTop : boxScrollPosition}); 
 
 	if(mapType == 'user'){  	// if mapType is -user- mapInfo is the user ID
 		$('.threadText').each(function(){  // Go through each post to see if postAuthorId in Divs is equal to the mapInfo
@@ -1417,23 +1418,44 @@ Dscourse.prototype.VerticalHeatmap=function(mapType, mapInfo)
 			var postID = $(this).attr('level');
 			var postContent =  $(this).children('.postTextWrap').children('.postMessageView').text();  // get post text
 			postContent = postContent.toLowerCase(); // turn search items into lowercase
-			var a=postContent.indexOf(mapInfo);			
+			var a=postContent.indicesOf(mapInfo);			
 			// search for post text with the keyword text if there is a match get location information
 			if(a != -1){
-				var divPosition = $(this).position();  // get the location of this div from the top
-				//console.log(divPosition);
-				var ribbonMargin = (divPosition.top) * boxHeight / totalHeight; // calculate a yellow ribbon top for the vertical heatmap
-				$('#vHeatmap').append('<div class="vHeatmapPoint" style="margin-top:'+ ribbonMargin + 'px" divPostID="'+ postID +'" ></div>'); // append the vertical heatmap with post id and author id information (don't forgetto create an onclick for this later on)				
-				var replaceText = $(this).children('.postTextWrap').children('.postMessageView').html(); 
-				// Find out if there is alreadt a span for highlighting here				
-				var newSelected = '<search class="highlightblue">' + mapInfo + '</search>'; 
-				var n = replaceText.replace(mapInfo, newSelected); 
-				$(this).children('.postTextWrap').children('.postMessageView').html(n); 
+			    var divPosition = $(this).position();  // get the location of this div from the top
+                //console.log(divPosition);
+                var ribbonMargin = (divPosition.top) * boxHeight / totalHeight; // calculate a yellow ribbon top for the vertical heatmap
+                $('#vHeatmap').append('<div class="vHeatmapPoint" style="margin-top:'+ ribbonMargin + 'px" divPostID="'+ postID +'" ></div>'); // append the vertical heatmap with post id and author id information (don't forgetto create an onclick for this later on)               
+                $('.highlightblue').remove();
+			    for(var i=0; i<a.length; a++){
+			        var replaceText = $(this).children('.postTextWrap').children('.postMessageView').html(); 
+				    // Find out if there is already a span for highlighting here				
+				    var newSelected = '<search class="highlightblue">' + mapInfo + '</search>'; 
+				    var n = replaceText.replace(RegExp(mapInfo, 'g'), newSelected); 
+				    $(this).children('.postTextWrap').children('.postMessageView').html(n); 
+				}
 			}
 		}); 
 		
 	}	
 			  main.DrawShape();
+}
+
+String.prototype.indicesOf = function(key){
+    if(this.indexOf(key)==-1)
+        return -1;
+    var instances = [];
+    var str = this;
+    for(var i=0; i<str.length; i++){
+        var i = str.indexOf(key);
+        if(i!=-1){
+            if(i==str.lastIndexOf(key)){
+                break;
+            }
+            instances.push(i);
+            str = str.slice(i+key.length);
+        }
+    }
+    return instances;
 }
 
 Dscourse.prototype.ClearKeywordSearch=function(selector)
