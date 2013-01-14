@@ -631,9 +631,16 @@ color: rgb(17, 136, 182);
 
 #scrollBox {
 width: 2%;
+<<<<<<< HEAD
 position: absolute;
 margin-left: -2px;
 border: 2px solid rgb(179, 96, 64);
+=======
+	position:absolute;
+	margin-left:-4px;
+	border-radius:3px;
+overflow: hidden;
+>>>>>>> local
 }
 
 #lines {
