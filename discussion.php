@@ -116,7 +116,7 @@ ini_set('display_errors',1);
         <header class="jumbotron subhead">
             <div class="container-fluid">
                 <div class="btn-toolbar" id="toolbox">
-                    <button id="showTimeline" class="btn btn-small btn-info">Timeline</button> <button id="showSynthesis" class="btn btn-small btn-warning">Connected Posts</button> <button id="" class="btn btn-small btn-success sayBut2" postid="0"> Say</button> <input id="dIDhidden" type="hidden" name="discID" value="">
+                    <button id="showTimeline" class="btn btn-small btn-info">Timeline</button> <button id="showSynthesis" class="btn btn-small btn-warning">Connected Posts</button> <button id="" class="btn btn-small btn-success sayBut2" postid="0"><i class="icon-comment icon-white"></i> Say</button> <input id="dIDhidden" type="hidden" name="discID" value="">
 
                     <div class="btn-group" id="participantList">
                         <button class="btn disabled ">Participants:</button>
@@ -214,7 +214,16 @@ Your synthesis comment...
                                         <hr class="soften">
                                     </div>
 
-                                    <p>Connected posts include references to multiple posts at once. Below you can see all connected posts. Scroll for more, click on the posts to expand or collapse.</p>
+                                    <div class="alert alert-info information">
+                                    	<div class="row-fluid">
+                                    		<div class="span2">
+                                    		<span class="typicn unknown">
+                                    		</div>
+                                    		<div class="span10">
+	                                    			<p>Connected posts include references to multiple posts at once. Below you can see all connected posts. Scroll for more, click on the posts to expand or collapse.</p>
+                                    		</div>
+                                    	</div>
+                                    </div>
 
                                     <ul class="synthesisFeed" id="synthesisList"></ul>
                                 </div>
@@ -244,7 +253,7 @@ Your synthesis comment...
                 <div id="top">
                     <div id="quick">
                         <div class="btn-group" id="postTypeID">
-                            <button class="btn postTypeOptions active" id="comment">Comment</button> <button class="btn postTypeOptions" id="agree">Agree</button> <button class="btn postTypeOptions" id="disagree">Disagree</button> <button class="btn postTypeOptions" id="clarify">Ask to Clarify</button> <button class="btn postTypeOptions" id="offTopic">Off Topic</button>
+                            <button class="btn postTypeOptions active" id="comment"> <span class="typicn message "></span>Comment</button> <button class="btn postTypeOptions" id="agree"> <span class="typicn thumbsUp "></span> Agree</button> <button class="btn postTypeOptions" id="disagree"> <span class="typicn thumbsDown "></span> Disagree</button> <button class="btn postTypeOptions" id="clarify"> <span class="typicn unknown "></span> Ask to Clarify</button> <button class="btn postTypeOptions" id="offTopic"> <span class="typicn forward "></span> Off Topic</button>
                         </div>
                     </div>
                 </div>

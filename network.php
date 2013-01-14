@@ -226,7 +226,7 @@ ini_set('display_errors',1);
             <div class="row-fluid">
                 <div class="span4">
                     <div class="">
-                        <h3>Courses in this Network <a href="addcourse.php?n=<?php echo $nID; ?>"  class="btn btn-small" ><i class="icon-list-add"></i> Add</a></h3>
+                        <h3>Courses in this Network <a href="addcourse.php?n=<?php echo $nID; ?>"  class="btn btn-small" ><i class="icon-plus"></i> Add</a></h3>
 
                         <hr class="soften">
                              <input type="text" class="input-large" id="filterCourseText" name="filterCourseText" placeholder="Filter by name...">
@@ -240,7 +240,7 @@ ini_set('display_errors',1);
 
                 <div class="span4">
                     <div class="">
-                        <h3>People in this Network <a href="#addUsertoNetwork" role="button" class="btn btn-small " data-toggle="modal"><i class="icon-user-add"></i> Add</a></h3>
+                        <h3>People in this Network <a href="#addUsertoNetwork" role="button" class="btn btn-small " data-toggle="modal"><i class="icon-plus"></i> Add</a></h3>
                         <hr class="soften">
                          <input type="text" class="input-large" id="filterUserText" name="filterUserText" placeholder="Filter by name or email ...">
                         <ul class="unstyled dashboardList">

@@ -45,6 +45,19 @@ ini_set('display_errors',1);
         // GET Info About This User
         $userInfo = $dscourse->UserInfo($uID);
 
+        $courseData = $dscourse->GetUserCourses($uID);
+	    $totalCourses = count($courseData);
+	    $coursePrint = ''; 
+	    for($i = 0; $i < $totalCourses; $i++) 
+				{
+				$cName 	= $courseData[$i]['courseName'];
+				$cID	= $courseData[$i]['courseID'];
+				$cRole	= $courseData[$i]['userRole'];
+				$courseImage = $courseData[$i]['courseImage'];
+				$courseNetworks = $dscourse->CourseNetworks($cID); 				
+				$coursePrint .='<tr><td courseID="'.$cID.'"><a href="course.php?c='.$cID.'&n='.$courseNetworks[0]['networkID'].'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a> </td><td>'.$cRole.'</td></tr>'; 
+				}
+		
         
 ?>
 <!DOCTYPE html>
@@ -61,8 +74,6 @@ ini_set('display_errors',1);
             <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
-
-            var dscourse = new Dscourse();              // Fasten seat belts, dscourse is starting...
  
             <?php  if(isset($_GET['m'])){ 
 	            	
@@ -194,7 +205,7 @@ ini_set('display_errors',1);
                                     <th>Role</th>
                                 </tr>
                             </thead>
-
+                            	<?php echo $coursePrint; ?>
                             <tbody id="profileCourses"></tbody>
                         </table>
                     </div>

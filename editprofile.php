@@ -62,7 +62,6 @@ $(function(){
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
 
-            var dscourse = new Dscourse();              // Fasten seat belts, dscourse is starting...
         
         }); 
     </script>

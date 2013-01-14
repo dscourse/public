@@ -552,7 +552,7 @@ function AddPost()
 			
 			$postID = mysql_insert_id();
 			
-			echo json_encode($post);
+			echo json_encode($postID);
 			
 			// Then save the post id to the discussion
 			$currentDiscussion =   $_POST['currentDiscussion'];

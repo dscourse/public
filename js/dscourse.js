@@ -61,7 +61,7 @@ function Dscourse()
 		var replaceText = $('#highlightShow').html(); 
 		var newSelected = '<span class="highlight">' + top.currentSelected + '</span>'; 
 		var n = replaceText.replace(top.currentSelected, newSelected); 
-		$('#highlightShow').html(n);									// add highlight to text. 
+		$('#highlightShow').html(n);
 	});		
 
 	/* Tooltips */
@@ -82,13 +82,19 @@ function Dscourse()
 	/* When mouse hovers over the post */
 	$('.threadText').live('mouseover', function (event) {
 		event.stopImmediatePropagation();
+			var postClickId = $(this).closest('div').attr('level');
+			top.HighlightRelevant(postClickId);
 		$(this).children('.sayBut2').show();
+		if(!$(this).hasClass('lightHighlight')){	$(this).addClass('lightHighlight'); }
+
 	});
 
 	/* When mouse hovers out of the post */
 	$('.threadText').live('mouseout', function (event) {
 		event.stopImmediatePropagation();
 		$(this).children('.sayBut2').hide();
+		$(this).removeClass('lightHighlight'); 
+
 	});
 
 	/* When there are new posts and a refresh is required */
@@ -98,6 +104,12 @@ function Dscourse()
 		top.GetData(discID);  // We load our new discussion with all the posts up to date	
 	});
 
+	    // When the main window scrolls heatmap needs to redraw
+	    $('#dMain').scroll(function() {
+				  top.VerticalHeatmap();
+				  top.DrawShape(); 	
+		});
+		
 	/* Keyword search functionality within the discussion page */
 	$('#keywordSearchText').live('keyup', function () {
 		var searchText = $('#keywordSearchText').val();  // get contents of the box
@@ -174,9 +186,10 @@ function Dscourse()
 			postQuote = $.trim(postQuote);					
 			var xLoc = e.pageX-80; 
 			var yLoc = e.pageY+10; 
-			$('#commentWrap').css({'top' : yLoc, 'left' : '30%'});
+			$('#commentWrap').css({'top' : '20%', 'left' : '30%'});
 			$('.threadText').removeClass('highlight');		
 			var postID = $(this).attr("postID");
+			console.log(postID);
 			if(postQuote != ''){
 				$('#highlightDirection').show();
 				$('#highlightShow').show().html(postQuote);
@@ -696,7 +709,7 @@ Dscourse.prototype.ListDiscussionPosts=function(dStatus, userRole, discID)	 			 
 			 	+  '<span class="postMessageView"> ' + message  + '</span>'
 			 	+ media + selection + synthesis
 			 	+  '</div>'	
-			 	+ ' <button class="btn btn-small btn-success sayBut2" style="display:none" postID="'+ d.postID + '"><i class="icon-comment icon-white"></i> say</button> '								 	
+			 	+ ' <button class="btn btn-small btn-success sayBut2" style="display:none" postID="'+ d.postID + '"><i class="icon-comment icon-white"></i> </button> '								 	
 			 	+ '<div class="responseWrap" >' + responses + '</div>' 
 			 	
 			 	+ '</div>'
@@ -763,7 +776,8 @@ Dscourse.prototype.ListDiscussionPosts=function(dStatus, userRole, discID)	 			 
 	        drop: function( event, ui ) {
 	            $( this )
 	                    .html( "Added!" );
-	           $('#synthesisPostWrapper').prepend('<div sPostID="'+ main.sPostID +'" class=" synthesisPosts">' + main.sPostContent + ' <div>');  // Append original post
+	                   var shortText = main.truncateText(main.sPostContent, 100); 
+	           $('#synthesisPostWrapper').prepend('<div sPostID="'+ main.sPostID +'" class=" synthesisPosts">' + shortText + ' <div>');  // Append original post
 	    
 	        }
 	    });
@@ -798,7 +812,8 @@ Dscourse.prototype.AddPost=function(){
 	
 		// locationIDhidden -- postSelection 
 		var postSelection = $('#locationIDhidden').val();
-		if(postSelection = '0,0' ){				// fix for firefox and fool proofing in case nothing is actually selected. 
+		console.log(postSelection); 
+		if(postSelection == '0,0' ){				// fix for firefox and fool proofing in case nothing is actually selected. 
 			postSelection = ''; 
 		}
 	
@@ -836,7 +851,7 @@ Dscourse.prototype.AddPost=function(){
 			    	  post.postID 	= data; 
 			    	  main.data.posts.push(post); 
 			    	  //console.log(data);
-			    	  
+			    	  console.log(data);
 			 	
 			    	  $('.levelWrapper[level="0"]').html('');
 			    	  main.SingleDiscussion(currentDisc);
@@ -918,6 +933,7 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 				'postMessage': postMessage,
 				'postType': postType,
 				'postSelection': postSelection,
+				'postMediaType' :  main.postMediaType,
 				'postMedia' : postMedia, 
 				'postContext' : postContext
 			};
@@ -927,7 +943,7 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 	
 	$.ajax({																						
 			type: "POST",
-			url: "scripts/php/data.php",
+			url: "php/data.php",
 			data: {
 				post: post,							
 				action: 'addPost',
@@ -950,14 +966,10 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 						+ '	</div>' 
 						); 
 						main.ListSynthesisPosts(postContext, data); 
-
-			   
-			    	  
-			    	  
 			    }, 
-			  error: function() {					// If connection is not successful.  
-					
-					//console.log("Dscourse Log: the connection to data.php failed. Did not save synthesis");  
+			  error: function(data) {					// If connection is not successful.  
+					console.log(data);
+					console.log("Dscourse Log: the connection to data.php failed. Did not save synthesis");  
 			  }
 		});	
 	
@@ -1045,6 +1057,26 @@ Dscourse.prototype.PostInSynthesis=function(postID)
 	 return output; 
 }
 
+Dscourse.prototype.ListSynthesisPosts=function(postList, sPostID){					// Populate unique participants.  
+	
+		 var main = this;
+		 
+		 var i, o, j, k;
+		 var posts = postList.split(",");
+		 
+		 for(i = 0; i < posts.length; i++){
+			 o = posts[i]; 
+			 
+			 for(j = 0; j < main.data.posts.length; j++){
+			 	k = main.data.posts[j];
+			 	if(k.postID == o){
+				 	var postMessage = main.truncateText(k.postMessage, 100);
+				 	$('.synthesisPost[sPostID="'+  sPostID + '"]').append('<div sPostID="'+ k.postID +'" class=" synthesisPosts hide"> ' + main.getAuthorThumb(k.postAuthorId, 'tiny') + ' ' + main.getName(k.postAuthorId) + ': <br /><span class="synMessage">'  + postMessage + ' </span><div>');  				 	
+			 	}
+			 }
+		 }		 
+}
+
 Dscourse.prototype.ResponseCounters=function(postId)
 {
  /* 
@@ -1128,6 +1160,48 @@ Dscourse.prototype.ResponseCounters=function(postId)
 	return text; 
 }
 
+Dscourse.prototype.GetSelectedText=function()					// Select text
+{
+	 var main = this;
+
+  	 var text; 
+	 
+	 if (window.getSelection) {
+	        text = window.getSelection().toString();
+	    } else if (document.selection && document.selection.type != "Control") {
+	        text = document.selection.createRange().text;
+	    }
+  
+	    return text; 
+}
+
+Dscourse.prototype.GetSelectedLocation=function(element)					// Data about begin and end of selection
+{
+	 var main = this;
+
+    var start = 0, end = 0;
+    var sel, range, priorRange;
+    if (typeof window.getSelection != "undefined") {
+        range = window.getSelection().getRangeAt(0);
+        priorRange = range.cloneRange();
+        priorRange.selectNodeContents(element);
+        priorRange.setEnd(range.startContainer, range.startOffset);
+        start = priorRange.toString().length;
+        end = start + range.toString().length;
+    } else if (typeof document.selection != "undefined" &&
+            (sel = document.selection).type != "Control") {
+        range = sel.createRange();
+        priorRange = document.body.createTextRange();
+        priorRange.moveToElementText(element);
+        priorRange.setEndPoint("EndToStart", range);
+        start = priorRange.text.length;
+        end = start + range.text.length;
+    }
+    return {
+        start: start,
+        end: end
+    };
+}
 
 Dscourse.prototype.listDiscussionCourses=function(dID)	 			  
  {
@@ -1149,6 +1223,9 @@ Dscourse.prototype.HighlightRelevant=function(postID)
  *  Highlights the relevant sections of host post when hovered over
  */
 	 var main = this;	 
+	 // First remove all highlights anywhere
+	 $('.postTextWrap').find('.highlight').removeClass('highlight'); // Find all postTextWrap spans with class highlight and remove class highlight. 
+	 
 	 // get selection of this post ID 
 	 var i, o, thisSelection, j, m, highlight, newHighlight, n, selector; 
 	 for(i = 0; i < main.data.posts.length; i++){
@@ -1160,8 +1237,8 @@ Dscourse.prototype.HighlightRelevant=function(postID)
 				 var num2 = parseInt(thisSelection[1]);
 				 // var num3 = num2-num1;   // delete if substring() works. 
 				 // find the selection in reference post 
-				 for(j = 0; j < main.data.allPosts.length; j++){
-				 	m = main.data.allPosts[j];				 	
+				 for(j = 0; j < main.data.posts.length; j++){
+				 	m = main.data.posts[j];				 	
 				 	if(m.postID == o.postFromId){
 					 	highlight = m.postMessage.substring(num1,num2); 
 					 	newHighlight = '<span class="highlight">' + highlight + '</span>';
@@ -1349,10 +1426,11 @@ Dscourse.prototype.DiscResize=function()
 	  //Fixing the width of the threadtext
 	  $('.threadText').each(function() { 
 		  var parentwidth = $(this).parent().width();			  
-		  var thiswidth = parentwidth-12; 
-		  $(this).css('width',thiswidth+'px'); 
+		  var parentheight =$(this).children('.postTextWrap').height(); 
+		  var thiswidth = parentwidth-42; 
+		  $(this).css({'width': thiswidth+'px', 'padding-left': '40px' }); 
 		  $(this).children('.postTypeView').css('width','20px');
-		  $(this).children('.sayBut2').css('width','50px');
+		  $(this).children('.sayBut2').css({'width':'30px', 'margin-left' : '0px', 'height' : parentheight+10+'px'});
 		  $(this).children('.responseWrap').css('width','40px');
 		  $(this).children('.postTextWrap').css('width',thiswidth-110+'px');
 	  });
@@ -1465,6 +1543,8 @@ Dscourse.prototype.DrawShape=function()
       scrollBoxHeight = Math.floor(scrollBoxHeight);  		
   var linesHeight = $('#lines').height();   
   	  canvas.height = linesHeight;  
+  var scrollWidth = $('#vHeatmap').width();
+  var correction = 27-scrollWidth; 
   var scrollBoxBottom = scrollBoxHeight + scrollBoxTop; // add the height to the top position to find the bottom. 
     // use getContext to use the canvas for rawing
     var ctx = canvas.getContext('2d');
@@ -1472,18 +1552,18 @@ Dscourse.prototype.DrawShape=function()
 	    ctx.clearRect(0, 0, canvas.width, canvas.height);
 	    // Options
 	    ctx.lineCap = 'round';
-	    ctx.lineWidth=3;
-	    ctx.strokeStyle = '#ccc';
+	    ctx.lineWidth=2;
+	    ctx.strokeStyle = 'rgb(179, 96, 64)';
 	    // Top line
 	    ctx.beginPath();
-	    ctx.moveTo(25,scrollBoxTop+3);
-	    ctx.lineTo(48,1);
+	    ctx.moveTo(scrollWidth+correction,scrollBoxTop+1);
+	    ctx.lineTo(scrollWidth+26,1);
 	    ctx.stroke();
 	    ctx.closePath();
 	    // Bottom line
 	    ctx.beginPath();
-	    ctx.moveTo(25,scrollBoxBottom+2);
-	    ctx.lineTo(48,linesHeight-3);
+	    ctx.moveTo(scrollWidth+correction,scrollBoxBottom+2);
+	    ctx.lineTo(scrollWidth+26,linesHeight-1);
 	    ctx.stroke();
 	    ctx.closePath(); 
 }
