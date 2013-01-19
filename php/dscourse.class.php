@@ -93,8 +93,8 @@ class Dscourse {
 		 *  Gets users in the network with their user information
 		 */
 		$query = mysql_query("SELECT * FROM networkUsers WHERE networkID = '".$nID."' AND userID = '".$userID."' ");
-		$results = mysql_fetch_array($query); 
-		$num_rows = mysql_num_rows($results);
+		//$results = mysql_fetch_array($query); 
+		$num_rows = mysql_num_rows($query);
 		if($num_rows > 0){
 			return true;
 		} else {

@@ -57,7 +57,7 @@ ini_set('display_errors',1);
 					$pLastName	= $peopleinNetwork[$i]['lastName'];
 					$pID		= $peopleinNetwork[$i]['UserID'];
 					$pPictureURL= $peopleinNetwork[$i]['userPictureURL'];
-				$peopleListPrint .='<li> <a href="profile.php?u='.$pID.'" ><img class="thumbSmall" src="'.$pPictureURL.'" /> '.$pFirstName.' '.$pLastName.'</a></li>'; 
+				$peopleListPrint .='<li class="userItem"> <a href="profile.php?u='.$pID.'" ><img class="thumbSmall" src="'.$pPictureURL.'" /> '.$pFirstName.' '.$pLastName.'</a></li>'; 
 				} 
 		//Courses in this network
 	    $coursesinNetwork =  $dscourse->NetworkCourses($nID);
@@ -68,7 +68,7 @@ ini_set('display_errors',1);
 					$courseName = $coursesinNetwork[$i]['courseName'];
 					$courseID	= $coursesinNetwork[$i]['courseID'];
 					$courseImage = $coursesinNetwork[$i]['courseImage'];
-				$courseListPrint .='<li> <a href="course.php?c='.$courseID.'&n='.$nID.'" ><img class="thumbSmall" src="'.$courseImage.'" /> '.$courseName.' </a></li>'; 
+				$courseListPrint .='<li class="courseItem"> <a href="course.php?c='.$courseID.'&n='.$nID.'" ><img class="thumbSmall" src="'.$courseImage.'" /> '.$courseName.' </a></li>'; 
 				} 		
 		
 ?>
@@ -176,6 +176,48 @@ ini_set('display_errors',1);
 	            	}
             }); 
 		
+            // Filter Users
+            $('#filterUserText').on('keyup', function() { 
+	            var value = $('#filterUserText').val(); // get value of the box
+	            	if(value.length < 1 || value == ' ') { // if the content is empty
+	            		$('.userItem').each(function(){
+		            		$(this).show();
+	            		});   // showeverything
+	            	} else { // else 
+			            $('.userItem').each(function(){  // go through each user info
+				            var content = $(this).text().toLowerCase(); 
+				            	value = value.toLowerCase();  
+				            if(content.indexOf(value) != -1){ // if there is match
+				               $(this).show(); // show
+				            } else { // if not 
+				            	$(this).hide(); // hide 
+				            }
+			            }); 
+			            }
+		        }); 
+            
+            // Filter Courses
+            $('#filterCourseText').on('keyup', function() { 
+	            var value = $('#filterCourseText').val(); // get value of the box
+	            	if(value.length < 1 || value == ' ') { // if the content is empty
+	            		$('.courseItem').each(function(){
+		            		$(this).show();
+	            		});   // showeverything
+	            	} else { // else 
+			            $('.courseItem').each(function(){  // go through each user info
+				            var content = $(this).text().toLowerCase(); 
+				            	value = value.toLowerCase();  
+				            if(content.indexOf(value) != -1){ // if there is match
+				               $(this).show(); // show
+				            } else { // if not 
+				            	$(this).hide(); // hide 
+				            }
+			            }); 
+			            }
+		        }); 
+
+
+
 		}); 
 	</script>
 

@@ -63,7 +63,12 @@ ini_set('display_errors',1);
     {
     	AddPost(); 
     }     
+    if ($action == 'checkNewPosts')
+    {
+    	CheckNewPosts(); 
     
+    }	
+        
 function UpdateNetwork(){
  	/**
  	 * network
@@ -561,6 +566,37 @@ function AddPost()
 
 }
 
+function CheckNewPosts()
+{
+
+	// Checks to see if there are new posts in this discussion, returns number
+			$currentDiscussion =   $_POST['currentDiscussion'];
+			$currentPosts =   $_POST['currentPosts'];
+			 
+			$discussionGet = mysql_query("SELECT * FROM `discussions` WHERE `dID` = '".$currentDiscussion."'");  	// Get everything 
+	
+			$r = mysql_fetch_array($discussionGet); 
+								
+			$posts = $r['dPosts']; 	
+			
+			$postsArray = explode(",", $posts); 				
+			$currentPostsArray = explode(",", $currentPosts); 
+
+			$numNew = count($postsArray);
+			$numOld = count($currentPostsArray);
+			
+			$newposts = array(); 
+			if($numNew > $numOld){
+				$newposts['result'] = $numNew-$numOld;
+				for($i = $numOld; $i <= $numNew-1; $i++ ){
+					$newposts['posts'] .=   $postsArray[$i] . ',';
+				}
+			} else {
+				$newposts['result'] = 0;
+			}
+			
+    	echo json_encode($newposts);
+}
 
 
 

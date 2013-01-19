@@ -8,7 +8,7 @@ function Dscourse()
 {
 
 	// Set global variables 
-	var top = this;								// For scope
+	var top = this;							// For scope
 	this.data = new Array(); 				// Main discussion data wrapper
 	this.timelineMin = 0;					// Minimum value for the timeline
 	this.timelineMax = 0;					// Maximum value for the timeline
@@ -24,6 +24,14 @@ function Dscourse()
 	this.currentMediaType = ''; 		// What kind of media should be displayed. 
 	this.postMediaType = 'draw'; 	// Used while saving the media type data. 
 	this.newPosts = ''; 	// A string of the posts for a discussion that are new when refreshed. This variable is used to transfer post ids between functions.  
+	this.options = {
+		charLimit : 500, 
+		synthesis : true,
+		infoPanel : true,
+		media : true,
+		timeline : true		
+	};
+	this.charCount; 
 	
 	// Run initializing functions
 	this.GetData(discID);					// Load all discussion related information
@@ -33,19 +41,8 @@ function Dscourse()
 
 	/************************ DISCUSSION EVENTS  ************************/
 	/* Make the commenting box draggable */
-	$('#commentWrap').append($('<div>',{
-		class: 'commentWrapHandle',
-		css:{
-			height: '30px',
-			position: 'absolute',
-			top: '-25px',
-			boxShadow: '0 0 10px 0 #CCCCCC inset, 0 0 19px 0 #999999',
-			left: '2px',
-			right: '2px',
-			backgroundColor: 'lightgray',
-			borderTopRightRadius: '8px',
-			borderTopLeftRadius: '8px',
-		}
+	$('#commentWrap').prepend($('<div>',{
+		class: 'commentWrapHandle'
 	}));
 	$('#commentWrap').draggable({handle: '.commentWrapHandle'});			
 
@@ -125,19 +122,24 @@ function Dscourse()
 
 	/* Adding a new post to the discussion */
 	$('#addPost').live('click', function() {
-		var checkDefault = $('#text').val();				// Check to see if the user is adding default comment text. 
-		var buttonType = $('#postTypeID > .active').attr('id');
-		// If comment button has class active
-		if(buttonType == 'comment'){
-			if(checkDefault == 'Your comment...' || checkDefault == ''){
-					$('#text').addClass('textErrorStyle');	
-					$('#textError').show();
+		if(!top.charCount){
+			alert('You can\'t post because you went above the character limit'); 
+		} else {
+					var checkDefault = $('#text').val();				// Check to see if the user is adding default comment text. 
+			var buttonType = $('#postTypeID > .active').attr('id');
+			// If comment button has class active
+			if(buttonType == 'comment'){
+				if(checkDefault == 'Your comment...' || checkDefault == ''){
+						$('#text').addClass('textErrorStyle');	
+						$('#textError').show();
+				} else {
+					postOK();
+				}
 			} else {
 				postOK();
 			}
-		} else {
-			postOK();
 		}
+
 		// if checks out then do it. 
 		function postOK() {
 			$('.threadText').removeClass('highlight');	
@@ -169,7 +171,20 @@ function Dscourse()
 			$('#text').val(''); 
 		}
 	});
-
+	
+	$('#text').live('keyup', function () {
+		var value = $('#text').val(); 
+		var charLength = value.length; 
+		$('#charCount').html(charLength); 
+		if(charLength > top.options.charLimit){
+			$('#charCount').css('color', 'red'); 
+			top.charCount = false; 
+		} else {
+			$('#charCount').css('color', 'black');
+			top.charCount = true; 
+		}
+	});
+	
 	/* When say button is clicked comment box appears and related adjustments take place */	
 	$('.sayBut2').live('click', function (e) {
 		var discID = $('#dIDhidden').val();
@@ -255,6 +270,16 @@ function Dscourse()
     	$('.synthesisPosts').css('background-color', '#FAFDF0') // Original background color 
     	$(this).addClass('animated flash').css('background-color', 'rgba(255,255,176,1)');  // Change the background color of the clicked div as well. 
 	});
+
+	/* When user clicks on discuss this post on synthesis */
+ 	$('.gotoSynthesis').live('click', function (event) {  
+		event.stopImmediatePropagation();
+	 	var thisPost = $(this).attr('gotoID'); 
+ 		var postRef = 'div[level="'+ thisPost +'"]';
+ 		$('#dMain').scrollTo( $(postRef), 400 , {offset:-100});	
+    	$(postRef).addClass('animated flash').css('background-color', 'rgba(255,255,176,1)').delay(5000).queue(function () {$(this).removeClass('highlight animated flash').css('background-color', '#fff');$(this).dequeue();});    	
+	});
+
 
 	/* Single synthesis wrapper click event */
 	$('.synthesisPost').live('click', function () {  
@@ -524,6 +549,8 @@ Dscourse.prototype.GetData=function(discID)
  *	Prints out the components of the discussion page. Has multiple dependancies on other functions in Dscourse object.    
  */
  	    var main = this;
+	 	
+	 	$('#charCountTotal').html('/ '+ main.options.charLimit); // Add character limit information to commentwrap 
 	 	$('.levelWrapper[level="0"]').html('');						// Empty the discussion div for refresh
  		var o, userRole, dStatus;	 	
  		o = main.data.discussion;									// We have one discussion data loaded for this discussion
@@ -578,8 +605,9 @@ Dscourse.prototype.GetData=function(discID)
 		
 
 	 		
+
+//	 	setInterval(function(){main.CheckNewPosts(discID, userRole, dStatus)},5000);
 /*
-	 	setInterval(function(){main.CheckNewPosts(discID, userRole, dStatus)},5000);
 	 	main.AddLog('discussion',discID,'view',0,'');
 */	
 }
@@ -686,11 +714,13 @@ Dscourse.prototype.ListDiscussionPosts=function(dStatus, userRole, discID)	 			 
 		 
 		 var showPost = 'yes';
 		 var userRoleAuthor = main.UserCourseRole(discID, d.postAuthorId);  
-		 if(dStatus == 'student' && currentUserID != d.postAuthorId && userRoleAuthor == 'student'){
-		 	 	if(userRole == 'student' || userRole == 'unrelated'){
+		 if(dStatus == 'student' && currentUserID != d.postAuthorId && userRoleAuthor == 'Student'){
+		 	 	if(userRole == 'Student' || userRole == 'unrelated'){
 		 	 		showPost = 'no'; 
 		 	 		}
-		 }
+		 	 	}
+		 console.log(showPost); 
+		 console.log(userRole); 
 		 
 		 // Is this post part of any synthesis? 
 		 var synthesis = ''; 
@@ -721,6 +751,7 @@ Dscourse.prototype.ListDiscussionPosts=function(dStatus, userRole, discID)	 			 
 				  '<div class="synthesisPost well" sPostID="' + d.postID + '">' 
 				+  '<span class="postAuthorView" rel="tooltip" > ' + authorID + '</span>'
 				+ '		<p>' + message + '</p>' 
+				+ '		<div class="gotoSynthesis alert alert-info" gotoID="' + d.postID + '"> Discuss This Post </div>'					
 				+ '	</div>' 
 				); 
 				main.ListSynthesisPosts(d.postContext, d.postID); 
@@ -763,27 +794,21 @@ Dscourse.prototype.ListDiscussionPosts=function(dStatus, userRole, discID)	 			 
         stop: function() {
             //console.log('Drag stopped!');
         }, 
-
+        revert: 'invalid',
+            containment: '#discussionWrap',
 		helper: function( event ) {
-			var contents = $(this).html(); 
-			return $( '<div style="font-size:50px; position: absolute; z-index: 1100">' + contents + ' </div>' );
-		}
+			var contents = $(this).siblings('.postTextWrap').html(); 
+			return $( '<div class="draggablePost">' + contents + ' </div>' );
+		},
 
+            appendTo: '#discussionWrap'
     });
-
-	 $( "#synthesisDrop" ).droppable({
+ 	 $( "#synthesisDrop" ).droppable({  
 	        hoverClass: "sDropHover",
-<<<<<<< HEAD
 	        drop: function( event, ui ) {
-	            $( this )
-	                    .html( "Added!" );
-	                   var shortText = main.truncateText(main.sPostContent, 100); 
+	            $( this ).html( "Added!" );
+	            var shortText = main.truncateText(main.sPostContent, 100); 
 	           $('#synthesisPostWrapper').prepend('<div sPostID="'+ main.sPostID +'" class=" synthesisPosts">' + shortText + ' <div>');  // Append original post
-=======
-	        drop: function( event, ui) {
-	           $(this).html("Added!");
-	           $('#synthesisPostWrapper').prepend('<div sPostID="'+ main.sPostID +'" class=" synthesisPosts">' + main.sPostContent + ' <div>');  // Append original post
->>>>>>> local
 	    
 	        }
 	    });
@@ -969,6 +994,7 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 						  '<div class="synthesisPost well" sPostID="' + data + '">' 
 						+  '<span class="postAuthorView" rel="tooltip" > ' + authorID + '</span>'
 						+ '		<p>' + postMessage + '</p>' 
+						+ '		<div class="gotoSynthesis alert alert-info" gotoID="' + data + '"> Discuss This Post </div>'					
 						+ '	</div>' 
 						); 
 						main.ListSynthesisPosts(postContext, data); 
@@ -1300,7 +1326,9 @@ Dscourse.prototype.UserCourseRole=function(dID, userID)
 		var j, k;
 			for(j = 0; j < main.data.users.length; j++){		// Loop through courses
 				k = main.data.users[j];				
-				userRole = k.userRole; 				
+				if(k.UserID == userID){ 
+					userRole = k.userRole; 				
+				}
 			}			
 	   return userRole; 		  	    
  } 
@@ -1392,7 +1420,7 @@ Dscourse.prototype.DiscResize=function()
 	  mHeight = wHeight - (nbHeight + jHeight + cHeight + 30);
 	  mHeight = -mHeight; 		   
 	  $('#dSidebar').css({'height' : height, 'overflow-y' : 'scroll', 'overflow-x' : 'hidden'});
-	  $('#vHeatmap').css({'height' : height, 'overflow-y' : 'hidden', 'overflow-x' : 'hidden'});
+	  $('#vHeatmap').css({'height' : height, 'overflow-y' : 'scroll', 'overflow-x' : 'hidden'});
 	  $('#dMain').css({'height' : height, 'overflow-y' : 'scroll', 'overflow-x' : 'hidden'});
 	  $('#dRowMiddle').css({'margin-top' : 10}); //jHeight+30});
 	  $('#lines').css({'height' : height, 'margin-top' : mHeight + 'px'});
@@ -1449,7 +1477,7 @@ Dscourse.prototype.ClearVerticalHeatmap=function()
   */	
 	// Check to see how clearing will function, this is probably the place for it. 
 	$('#vHeatmap').html('');
-	$('#vHeatmap').append('<div id="scrollBox" style="overflow:hidden;"> </div>'); // Add scrolling tool
+	$('#vHeatmap').append('<div id="scrollBox"> </div>'); // Add scrolling tool
 
 }	
 
@@ -1465,15 +1493,13 @@ Dscourse.prototype.VerticalHeatmap=function(mapType, mapInfo)
 	var totalHeight = $('#dMain')[0].scrollHeight; // Get height for the entire main section
 	
 	// Size the box
-	// That gives the right relative size to the box
 	var scrollBoxHeight = visibleHeight * boxHeight / totalHeight; 
+	$('#scrollBox').css('height',scrollBoxHeight-7); // That gives the right relative size to the box
 
 	// Scroll box to visible area
 	var mainScrollPosition = $('#dMain').scrollTop(); 
 	var boxScrollPosition = mainScrollPosition * boxHeight / totalHeight; 
-	// Gives the correct scrolling location to the box 
-	
-	$('#scrollBox').css({height: scrollBoxHeight-7, marginTop : boxScrollPosition}); 
+	$('#scrollBox').css('margin-top',boxScrollPosition); // Gives the correct scrolling location to the box	
 
 	if(mapType == 'user'){  	// if mapType is -user- mapInfo is the user ID
 		$('.threadText').each(function(){  // Go through each post to see if postAuthorId in Divs is equal to the mapInfo
@@ -1487,7 +1513,7 @@ Dscourse.prototype.VerticalHeatmap=function(mapType, mapInfo)
 				//console.log('main div scroll: ' + mainDivTop); 
 				//console.log(divPosition);
 				var ribbonMargin = (divPosition.top+mainDivTop) * boxHeight / totalHeight; // calculate a yellow ribbon top for the vertical heatmap
-					ribbonMargin = ribbonMargin; // this correction is for better alignment of the lines with the scroll box. 
+					//ribbonMargin = ribbonMargin; // this correction is for better alignment of the lines with the scroll box. 
 					
 					// There is an error when the #dMain layer is scrolled the position value is relative so we have minus figures.
 
@@ -1497,6 +1523,34 @@ Dscourse.prototype.VerticalHeatmap=function(mapType, mapInfo)
 	}
 
 	if(mapType == 'keyword'){ // if mapType is -keyword- mapInfo is the text searched
+		main.ClearKeywordSearch('#dMain'); 
+		//console.log(mapInfo); // Works
+		$('.threadText').each(function(){  // go through each post to see if the text contains the mapInfo text
+			var postID = $(this).attr('level');
+			var postContent =  $(this).children('.postTextWrap').children('.postMessageView').text();  // get post text
+			postContent = postContent.toLowerCase(); // turn search items into lowercase
+			var a=postContent.indexOf(mapInfo);			
+			// search for post text with the keyword text if there is a match get location information
+			if(a != -1){
+				var divPosition = $(this).position();  // get the location of this div from the top
+				//console.log(divPosition);
+				var mainDivTop = $('#dMain').scrollTop();  
+
+
+				var ribbonMargin = (divPosition.top+mainDivTop) * boxHeight / totalHeight; // calculate a yellow ribbon top for the vertical heatmap
+				$('#vHeatmap').append('<div class="vHeatmapPoint" style="margin-top:'+ ribbonMargin + 'px" divPostID="'+ postID +'" ></div>'); // append the vertical heatmap with post id and author id information (don't forgetto create an onclick for this later on)				
+				var replaceText = $(this).children('.postTextWrap').children('.postMessageView').html(); 
+				// Find out if there is alreadt a span for highlighting here				
+				var newSelected = '<search class="highlightblue">' + mapInfo + '</search>'; 
+				var n = replaceText.replace(RegExp(mapInfo, 'g'), newSelected); 
+				$(this).children('.postTextWrap').children('.postMessageView').html(n); 
+			}
+		}); 
+		
+	}	
+	
+/*
+if(mapType == 'keyword'){ // if mapType is -keyword- mapInfo is the text searched
 		main.ClearKeywordSearch('#dMain'); 
 		//console.log(mapInfo); // Works
 		$('.threadText').each(function(){  // go through each post to see if the text contains the mapInfo text
@@ -1520,28 +1574,51 @@ Dscourse.prototype.VerticalHeatmap=function(mapType, mapInfo)
 				}
 			}
 		}); 
-		
-	}	
+
+	}
+*/		
+	
+
 			  main.DrawShape();
 }
 
-String.prototype.indicesOf = function(key){
-    if(this.indexOf(key)==-1)
-        return -1;
-    var instances = [];
-    var str = this;
-    for(var i=0; i<str.length; i++){
-        var i = str.indexOf(key);
-        if(i!=-1){
-            if(i==str.lastIndexOf(key)){
-                break;
-            }
-            instances.push(i);
-            str = str.slice(i+key.length);
-        }
-    }
-    return instances;
+
+
+
+/*
+
+TO-DO
+
+ Dscourse.prototype.CheckNewPosts=function(discID, userRole, dStatus)					// Highlights the relevant sections of host post when hovered over 
+{
+	 var main = this;
+	 	
+	 	 
+	$.ajax({																							
+		type: "POST",
+		url: "scripts/php/data.php",
+		data: {
+			currentDiscussion: discID,
+			currentPosts: 	posts,						
+			action: 'checkNewPosts'							
+		},
+		  success: function(data) {						// If connection is successful . 
+				if(data.result > 0){
+					$('#checkNewPosts').addClass('animated flipInY');
+					$('#checkNewPosts').html('<div class="alert alert-success refreshBox" discID="' + discID + '">    <button id="hideRefreshMsg"type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><span class="typicn refresh refreshIcon"></span> There are <b>' + data.result + '</b> new posts. Click to refresh!</span>'); 
+					main.newPosts = data.posts;
+				} else {
+					console.log('No new posts...');
+				}
+		    }, 
+		  error: function() {					// If connection is not successful.  
+				console.log("Dscourse Log: the connection to data.php failed for Checking new posts.");  
+		  }
+	});	
+		 
 }
+*/
+
 
 Dscourse.prototype.ClearKeywordSearch=function(selector)
 {

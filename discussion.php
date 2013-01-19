@@ -147,7 +147,7 @@ ini_set('display_errors',1);
                     <div id="row-fluid">
                         <div class="span11" id="dSidebar">
                             <div class="dCollapse" id="dInfo">
-                                <span class="boxHeaders"><span id="dTitleView"></span></span> <!--
+                                <span class="boxHeaders"><span id="dTitleView"></span></span><br /> <!--
                         <div class="sayBut2" postid="0">
                             say <input id="dIDhidden" type="hidden" name="discID" value="">
                         </div>
@@ -174,24 +174,9 @@ ini_set('display_errors',1);
                                         <b>End Date:</b>
                                     </div>
 
-                                    <div id="dInstView">
-                                        <b>Instructor:</b><br>
-                                    </div>
-
-                                    <div id="dTAView">
-                                        <b>Teaching Assistant:</b><br>
-                                    </div>
-
-                                    <div id="dStudentView">
-                                        <b>Students:</b><br>
-                                    </div>
                                 </div>
 
                                 <h4>Recent Posts</h4>
-
-                                <div class="alert alert-info smallAlert">
-                                    Click on the item below to go to post.
-                                </div>
 
                                 <div class="content">
                                     <ul class="discussionFeed" id="recentContent"></ul>
@@ -244,7 +229,7 @@ Your synthesis comment...
                     <div id="discussionDivs">
                         <div class="levelWrapper" level="0"></div>
                     </div>
-                </div><!-- close span9 -->
+                </div><!-- close span8 -->
             </div><!-- close row -->
 
             <div id="commentWrap">
@@ -274,6 +259,7 @@ Your synthesis comment...
                         <textarea id="text">
 Your comment...
 </textarea>
+<div class="pull-right">Characters: <span id="charCount">0</span> <span id="charCountTotal"></span> </div>
                     </div><button id="media" class="btn btn-small btn-danger">Add Media</button> <button id="synthesize" class="btn btn-small btn-warning">Connect</button>
                 </div>
 
@@ -307,6 +293,8 @@ Your comment...
             </div>
         </div><!-- close container -->
     </div><!-- End individual discussion page -->
+
+
     <?php
 	 		
  		} else {
