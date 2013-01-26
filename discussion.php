@@ -219,7 +219,10 @@ Your synthesis comment...
 
                 <div class="span8 " id="dMain">
                     <div id="discussionDivs">
-                        <div class="levelWrapper" level="0"></div>
+                        <div class="levelWrapper" level="0">
+                        	<img src="img/ajax-loader.gif" alt="ajax-loader" width="32" height="32" style="margin-top: 35%; margin-left: 45%">
+	                        <!-- Discussion gets built here.. -->
+                        </div>
                     </div>
                 </div><!-- close span8 -->
             </div><!-- close row -->
