@@ -39,10 +39,22 @@ ini_set('display_errors',1);
 	    include_once('php/dscourse.class.php');
 	    
 	    $nID = $_GET["n"]; 						// The network ID from link
-
-	    
 	    
 	    $userID = $_SESSION['UserID'];			// Allocate userID to use throughout the page
+
+	    if(isset($_GET['m'])){
+		  $m = $_GET['m'];
+		  $message = $dscourse->Messages($m);    
+	    }
+	    
+	    
+	    
+	    // Check if user can access the page
+	    $networkRole =  $dscourse->CheckNetworkAccess($userID, $nID); 
+	    if($networkRole == 'restricted'){
+		  	$gotoPage = "index.php?m=6";  // All good
+		  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 	    
+	    }
 	    
 	    // GET Info About This Network
 	    $networkInfo = $dscourse->NetWorkInfo($nID);
@@ -56,7 +68,11 @@ ini_set('display_errors',1);
 					$pFirstName = $peopleinNetwork[$i]['firstName'];
 					$pLastName	= $peopleinNetwork[$i]['lastName'];
 					$pID		= $peopleinNetwork[$i]['UserID'];
-					$pPictureURL= $peopleinNetwork[$i]['userPictureURL'];
+					if($peopleinNetwork[$i]['userPictureURL'] != ''){
+						$pPictureURL= $peopleinNetwork[$i]['userPictureURL'];
+					} else {
+						$pPictureURL= 'img/user_default.png';					
+					}
 				$peopleListPrint .='<li class="userItem"> <a href="profile.php?u='.$pID.'" ><img class="thumbSmall" src="'.$pPictureURL.'" /> '.$pFirstName.' '.$pLastName.'</a></li>'; 
 				} 
 		//Courses in this network
@@ -68,6 +84,11 @@ ini_set('display_errors',1);
 					$courseName = $coursesinNetwork[$i]['courseName'];
 					$courseID	= $coursesinNetwork[$i]['courseID'];
 					$courseImage = $coursesinNetwork[$i]['courseImage'];
+					if($coursesinNetwork[$i]['courseImage'] != '' ){
+						$courseImage= $coursesinNetwork[$i]['courseImage'];
+					} else {
+						$courseImage= 'img/course_default.jpg';					
+					}
 				$courseListPrint .='<li class="courseItem"> <a href="course.php?c='.$courseID.'&n='.$nID.'" ><img class="thumbSmall" src="'.$courseImage.'" /> '.$courseName.' </a></li>'; 
 				} 		
 		
@@ -152,19 +173,22 @@ ini_set('display_errors',1);
 		});	
 		
 
-            <?php if(isset($_GET['m'])){
-	            switch ($_GET['m']) {
-				    case 2:
-				        echo "$.notification ( { title:'Done!', content:'Network changes are saved. ', timeout:5000, border:true, fill:true, icon:'N', color:'#333'});"; 
-				        break;
-					case 1:
-				        echo "$.notification ( { title:'Done!', content:'Users were added to your network. ', timeout:5000, border:true, fill:true, icon:'N', color:'#333'});"; 
-					        break;
-					    } 
-            }            
-            ?>
 
-		
+			<?php 
+			if(isset($_GET['m'])){
+				?>
+				$.notification ({
+				        content:    '<?php echo $message['content']; ?>',
+				        timeout:    5000,
+				        border:     true,
+				        icon:       '<?php echo $message['icon']; ?>',
+				        color:      '<?php echo $message['color']; ?>',
+				        error:      <?php echo $message['error']; ?>  
+				     }); 
+				<?php 				
+			}
+			?>	
+			
 		
             $('#showCode').on('click', function() {
 	            	$('#networkCode').fadeToggle(); 
@@ -259,7 +283,10 @@ ini_set('display_errors',1);
                 <h4><?php echo $networkInfo['networkDesc']; ?></h4>
                 <h5>Secret network Code: <button id="showCode" class="btn btn-small">Show</button> <span id="networkCode" class="alert" style="display:none"><b> <?php echo $networkInfo['networkCode']; ?> </b></span> <i> Users can join your network with this code. Please keep the code from public viewing.</i> </h5>
                  <div id="editNetworkButton" class="pull-right">
+                    <?php 	    
+                        if($networkRole == 'owner'){ ?>
                     <a href="editnetwork.php?n=<?php echo $nID; ?>" id="editNetworkButton" class="btn">Edit Network</a>
+                <?php } ?>
                 </div>
             </div>
         </header>
@@ -282,7 +309,12 @@ ini_set('display_errors',1);
 
                 <div class="span4">
                     <div class="">
-                        <h3>People in this Network <a href="#addUsertoNetwork" role="button" class="btn btn-small " data-toggle="modal"><i class="icon-plus"></i> Add</a></h3>
+                        <h3>People in this Network 
+                        <?php 	    
+                        if($networkRole == 'owner'){ ?>
+	              	    <a href="#addUsertoNetwork" role="button" class="btn btn-small " data-toggle="modal"><i class="icon-plus"></i> Add</a>
+          	
+	                       <?php }?> </h3>
                         <hr class="soften">
                          <input type="text" class="input-large" id="filterUserText" name="filterUserText" placeholder="Filter by name or email ...">
                         <ul class="unstyled dashboardList">

@@ -51,8 +51,7 @@ ini_set('display_errors',1);
  
        $nID = $_GET['n'];
        $networkInfo = $dscourse->NetWorkInfo($nID);
-
-       
+   
        
        $load = $dscourse->LoadDiscussion($discID, $userID, $nID); 
        if($load){
@@ -195,22 +194,15 @@ Your synthesis comment...
                                             Drag and drop posts here to add to synthesis.
                                         </div>
 
-                                        <div id="synthesisPostWrapper"></div><input id="addSynthesisButton" type="button" class="buttons btn btn-primary" value="Add Post"> <input id="cancelSynthesisButton" type="button" class="buttons btn btn-info" value="Cancel">
+                                        <div id="synthesisPostWrapper"></div>
+                                        
+                                        <input id="addSynthesisButton" type="button" class="buttons btn btn-primary" value="Add Post"> <input id="editSynthesisSaveButton" type="button" class="buttons btn btn-primary hide" value="Edit Post"> <input id="cancelSynthesisButton" type="button" class="buttons btn btn-info" value="Cancel">
                                         <hr class="soften">
                                     </div>
 
-                                    <div class="alert alert-info information">
-                                    	<div class="row-fluid">
-                                    		<div class="span2">
-                                    		<span class="typicn unknown">
-                                    		</div>
-                                    		<div class="span10">
-	                                    			<p>Connected posts include references to multiple posts at once. Below you can see all connected posts. Scroll for more, click on the posts to expand or collapse.</p>
-                                    		</div>
-                                    	</div>
-                                    </div>
-
-                                    <ul class="synthesisFeed" id="synthesisList"></ul>
+                                    <ul class="synthesisFeed" id="synthesisList">
+	                                    <p id="synthesisHelpText"> There are no connected posts in this discussion yet. Click on the Say button anywhere in the discussion to create one. </p>
+                                    </ul>
                                 </div>
                             </div>
                         </div><!-- close span11 -->

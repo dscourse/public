@@ -234,13 +234,16 @@ box-shadow: inset 0px 0px 14px 0px #CCC;
 	 margin-top: -20px; 
  }
 
-#profilePicture img {
+#profilePicture img, #imgPath img {
 	margin-bottom:10px;
 	border:1px solid #CCC;
 	padding:5px;
 	background:#EEE;
 }
 
+#imgPath img {
+	width: 250px; 
+}
  
  /********** BOOTSTRAP FIXES  ************/
  .jumbotron h1 {
@@ -621,6 +624,14 @@ font-size: 12px;
 padding-left: 10px;
 }
 
+.synthesisP {
+	margin-top: 17px; 
+}
+
+.editSynthesis {
+	float: right; 
+}
+
 .information div p {
 	font-size: 12px;
 line-height: 18px;
@@ -630,9 +641,19 @@ line-height: 18px;
 font-size: 40px;
 margin: 0px;
 line-height: 50px; 
-color: rgb(17, 136, 182);
-	
-	
+color: rgb(17, 136, 182);	
+}
+
+.gotoSynthesis, .showPosts {
+	display: inline;
+}
+
+.showPosts {
+	margin-left: 15px; 
+}
+
+.synthesisButtonWrap {
+	margin: 15px 0; 
 }
 
 #vHeatmap {
@@ -762,6 +783,10 @@ padding-left: 5px;
 #mediaDisplayWrap {
 	padding:20px;
 	width:90%;
+}
+
+#containerDivIF {
+	width: 100% !important; 
 }
 
 .postAuthorView {

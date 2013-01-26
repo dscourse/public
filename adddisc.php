@@ -59,11 +59,8 @@ ini_set('display_errors',1);
 <html lang="en">
 <head>
     <title>dscourse | Add discussion</title>
-    
      <?php include('php/header_includes.php');  ?>
-   
-
-    
+     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
     <script type="text/javascript">
 $(function(){
             // Add some global variables about current user if we need them:
@@ -93,15 +90,14 @@ $(function(){
 
                             }
                 }
-                
                 ?>
             ];
             
             $('.removeCourses').live('click', function() {
                             $(this).closest('tr').remove();
             });
-
-            $("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd" });           // Date picker jquery ui initialize for the date fields
+			// Date picker jquery ui initialize for the date fields
+            $("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd"});
             $("#discussionOpenDate").datepicker({ dateFormat: "yy-mm-dd" });
             $("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd" });
 
@@ -119,6 +115,65 @@ $(function(){
                             return false;
                         }
                     }); 
+           //validation for Jquery Datepickers         
+           $.validator.addMethod("logicalDate", function(value, el){
+				var ind = $(el).index('.hasDatepicker');
+		        var one = false;
+		        var twp = false;
+		        var three = false;
+				switch(ind){ 
+					case 0:
+						one = ($(el).datepicker('getDate')!=null);
+						two = ($("#discussionOpenDate").datepicker('getDate')==null || $(el).datepicker('getDate')<= $("#discussionOpenDate").datepicker('getDate')); 
+						three =  ($("#discussionEndDate").datepicker('getDate')==null || $(el).datepicker('getDate') <= $("#discussionEndDate").datepicker('getDate'));
+					break;
+				    case 1:
+						one = ($(el).datepicker('getDate')!=null);
+						two = ($(el).datepicker('getDate') >= $("#discussionStartDate").datepicker('getDate') || $("#discussionStartDate").datepicker('getDate')==null);
+						three = ($(el).datepicker('getDate') <= $("#discussionEndDate").datepicker('getDate')|| $("#discussionEndDate").datepicker('getDate')==null);
+					break
+					case 2:
+						one = ($(el).datepicker('getDate')!=null);
+						two = ($(el).datepicker('getDate') >= $("#discussionStartDate").datepicker('getDate')||$("#discussionStartDate").datepicker('getDate')==null);
+						three = ($(el).datepicker('getDate') >= $("#discussionOpenDate").datepicker('getDate') || $("#discussionOpenDate").datepicker('getDate')==null);
+					break;
+				  }
+				return one&&two&&three;
+		   }, "Please make sure your dates make sense");
+		   //general form validation rules/messages         
+           $('form[name="addDiscussionForm"]').validate({
+				rules: {
+					discussionQuestion: "required",
+					discussionPrompt: {
+						maxlength: 1000,
+					},
+					discussionStartDate: {
+						logicalDate: true	
+					},
+					discussionOpenDate: {
+						logicalDate: true
+					},
+					discussionEndDate: {
+						logicalDate: true
+					}
+				},
+				messages: {
+					discussionQuestion: "A discussion question is required.",
+				},
+				highlight: function(label){
+					$(label).closest('.control-group').removeClass('success');
+					$(label).closest('.control-group').addClass('error');
+				},
+				success: function(label){
+					$(label).closest('.control-group').removeClass('error');
+					$(label).closest('.control-group').addClass('success');
+				},
+		   });
+		   $('#discussionFormSubmit').on('click', function(e){
+			   if(!$('form[name="addDiscussionForm"]').valid())
+					e.preventDefault();
+		   });
+		  
     });                        
     </script>
 </head>

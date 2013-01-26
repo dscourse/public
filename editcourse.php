@@ -47,6 +47,13 @@ ini_set('display_errors',1);
 
 	    $networkInfo = $dscourse->NetWorkInfo($courseInfo['networkID']);
 
+	    $userCourseRole = $dscourse->UserCourseRole($cID, $userID); 
+	    
+	    if($userCourseRole[0] != 'Instructor' && $userCourseRole[0] != 'TA' ){
+		     header('Location: index.php');                  
+		     exit(); 
+	    }
+
         // Get Course Roles
         $courseRoles = $dscourse->CourseRoles($cID);
  	    $totalRoles = count($courseRoles);

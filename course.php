@@ -130,14 +130,20 @@ ini_set('display_errors',1);
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
  
-            <?php if(isset($_GET['m'])){
-	            switch ($_GET['m']) {
-				    case 'd':
-				        echo "$.notification ( { title:'Done!', content:'Your discussion was added. ', timeout:5000, border:true, fill:true, icon:'N', color:'#333'});"; 
-				        break;
-				} 
-            }            
-            ?>
+			<?php 
+			if(isset($_GET['m'])){
+				?>
+				$.notification ({
+				        content:    '<?php echo $message['content']; ?>',
+				        timeout:    5000,
+				        border:     true,
+				        icon:       '<?php echo $message['icon']; ?>',
+				        color:      '<?php echo $message['color']; ?>',
+				        error:      <?php echo $message['error']; ?>  
+				     }); 
+				<?php 				
+			}
+			?>	
         
         }); 
     </script>
@@ -179,13 +185,24 @@ ini_set('display_errors',1);
             <div class="container-fluid">
 	            <div class="row-fluid">
 		            <div class="span3">
-		            	<div id="iCoursePicture"><img src="<?php echo $courseInfo['courseImage']; ?>" /> </div>
+		            	<div id="iCoursePicture"><img src="<?php 
+		            	
+					if($courseInfo['courseImage'] != ''){
+						$courseImage= $courseInfo['courseImage'];
+					} else {
+						$courseImage= 'img/course_default.jpg';					
+					}
+							            	
+		            	echo $courseImage ?>" /> </div>
 		            </div>
 	                <div class="span9">
 							<h1><?php echo $courseInfo['courseName']; ?></h1>
 							<p><?php echo $courseInfo['courseDescription']; ?></p>
 							<div id="editCourseButton" class="pull-right">
-							    <a href="editcourse.php?c=<?php echo $cID.'&n='.$nID; ?>" id="editCourseButton" class="btn">Edit Course</a>
+							    <?php if($currentRole == 'Instructor' || $currentRole == 'TA'){ ?>
+							    	<a href="editcourse.php?c=<?php echo $cID.'&n='.$nID; ?>" id="editCourseButton" class="btn">Edit Course</a>
+								    
+							    <?php } ?>
 							</div>                
 	                </div>
 	            </div>             
@@ -235,7 +252,12 @@ ini_set('display_errors',1);
 
                 <div class="span8">
                     <div id="courseDiscussions">
-                        <h3>Course Discussions <a href="adddisc.php?c=<?php echo $courseInfo['courseID'].'&n='.$nID; ?>" id="addDiscussionView" class="btn btn-small"> Add Discussion</a></h3>
+                        <h3>Course Discussions
+                        <?php if($currentRole == 'Instructor' || $currentRole == 'TA'){ ?>
+
+                         <a href="adddisc.php?c=<?php echo $courseInfo['courseID'].'&n='.$nID; ?>" id="addDiscussionView" class="btn btn-small"> Add Discussion</a>
+                         <?php }?>
+                         </h3>
 
                         <table class="table table-striped table-bordered">
                             <thead>

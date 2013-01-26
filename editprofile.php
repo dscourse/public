@@ -153,10 +153,10 @@ $(function(){
                             <label class="control-label" for="userPicture">User Picture</label>
 
                             <div class="controls">
-                                <div id="imgPath"><img src="<?php  echo $userInfo['userPictureURL']; ?>"></div><input type="hidden" name="userPictureURL" id="userPictureURL" value="<?php  echo $userInfo['userPictureURL']; ?>"> <input type="file" name="userPicture" id="userPicture">
+                                <div id="imgPath"><img src="<?php  echo $userInfo['userPictureURL']; ?>" ></div><input type="hidden" name="userPictureURL" id="userPictureURL" value="<?php  echo $userInfo['userPictureURL']; ?>"> <input type="file" name="userPicture" id="userPicture">
                             </div>
 
-                            <p class="help-inline">Upload a new image to change your picture.</p>
+                            <p class="help-inline">Upload a new image to change your picture. Your image must have jpeg, jpg, png or gif extension and be less than 2MB in size. </p>
                         </div>
                     
 	                    <div class="control-group" id="aboutControl">

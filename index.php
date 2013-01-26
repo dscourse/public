@@ -48,41 +48,64 @@ ini_set('display_errors',1);
 	    
 	    $networkData = $dscourse->GetUserNetworks($userID);
 	    $totalNetworks = count($networkData);
-	    $networkPrint = ''; 		
-	    for($i = 0; $i < $totalNetworks; $i++) 
-				{
-				$nName 	= $networkData[$i]['networkName'];
-				$nID	= $networkData[$i]['networkID'];
-				$nDesc	= $networkData[$i]['networkDesc'];
-				
-				$networkPrint .='<div class="alert" networkID="'.$nID.'"><a href="network.php?n='.$nID.'">'.$nName.'</a></div>'; 
-				}
+	    $networkPrint = ''; 	
+	    if($totalNetworks > 0){
+		    for($i = 0; $i < $totalNetworks; $i++) 
+					{
+					$nName 	= $networkData[$i]['networkName'];
+					$nID	= $networkData[$i]['networkID'];
+					$nDesc	= $networkData[$i]['networkDesc'];
+					
+					$networkPrint .='<div class="alert" networkID="'.$nID.'"><a href="network.php?n='.$nID.'">'.$nName.'</a></div>'; 
+					}		    
+	    }	else {
+		    $networkPrint .='<div class="alert alert-info">You are not part of any networks. Create a network or join one with the buttons below.</div>';  
+	    }
+
 	    
 	    $courseData = $dscourse->GetUserCourses($userID);
 	    $totalCourses = count($courseData);
 	    $coursePrint = ''; 
-	    $discussionPrint = ''; 		
-	    for($i = 0; $i < $totalCourses; $i++) 
-				{
-				$cName 	= $courseData[$i]['courseName'];
-				$cID	= $courseData[$i]['courseID'];
-				$cRole	= $courseData[$i]['userRole'];
-				$courseImage = $courseData[$i]['courseImage'];
-				$courseNetworks = $dscourse->CourseNetworks($cID); 				
-				$coursePrint .='<li courseID="'.$cID.'"><a href="course.php?c='.$cID.'&n='.$courseNetworks[0]['networkID'].'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a>  <i>'.$cRole.'</i></li>'; 
-				
-				// Get discussions for each course
-				$discussionData = $dscourse->GetCourseDiscussions($cID);
-				$totalDiscussions = count($discussionData); 
-				for($j = 0; $j < $totalDiscussions; $j++)
+	    $discussionPrint = ''; 
+	    $discussionCount = 'none'; 
+	    if($totalCourses > 0){	
+		    for($i = 0; $i < $totalCourses; $i++) 
 					{
-						$discID = $discussionData[$j]['dID']; 
-						$discussionName = $discussionData[$j]['dTitle'];  // Name
-						$discussionPrint .='<li discID="'.$cID.'"><a href="discussion.php?d='.$discID.'&c='.$cID.'&n='.$courseNetworks[0]['networkID'].'">'.$discussionName.'</a></li>'; 
-						
+					$cName 	= $courseData[$i]['courseName'];
+					$cID	= $courseData[$i]['courseID'];
+					$cRole	= $courseData[$i]['userRole'];
+					$courseImage = $courseData[$i]['courseImage'];
+					if($courseData[$i]['courseImage'] != ''){
+						$courseImage= $courseData[$i]['courseImage'];
+					} else {
+						$courseImage= 'img/course_default.jpg';					
 					}
-				
-				}				
+					
+					$courseNetworks = $dscourse->CourseNetworks($cID); 				
+					$coursePrint .='<li courseID="'.$cID.'"><a href="course.php?c='.$cID.'&n='.$courseNetworks[0]['networkID'].'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a>  <i>'.$cRole.'</i></li>'; 
+					
+					// Get discussions for each course
+					$discussionData = $dscourse->GetCourseDiscussions($cID);
+					$totalDiscussions = count($discussionData);
+					if($totalDiscussions > 0){ 
+						$discussionCount = 'some'; 
+						for($j = 0; $j < $totalDiscussions; $j++)
+							{
+								$discID = $discussionData[$j]['dID']; 
+								$discussionName = $discussionData[$j]['dTitle'];  // Name
+								$discussionPrint .='<li discID="'.$cID.'"><a href="discussion.php?d='.$discID.'&c='.$cID.'&n='.$courseNetworks[0]['networkID'].'">'.$discussionName.'</a></li>'; 
+							}						
+					}
+				}
+				if($discussionCount == 'none'){
+						$discussionPrint .= '<div class="alert alert-info">You are not part of any discussions yet.</div>'; 	
+
+				} 	
+			} else {
+			    $coursePrint .= '<div class="alert alert-info">  You are not part of any courses yet. To start a course enter or create a network that you belong to and click Add Course.</div> '; 
+						$discussionPrint .= '<div class="alert alert-info">You are not part of any discussions yet because you don\'t have any courses.</div>'; 	
+
+			}				
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,6 +122,19 @@ ini_set('display_errors',1);
 		    <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
 		    <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
 		    <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
+
+			$('.addNetworkOpen').on('click', function () {
+				$('#networkName').val(' '); // clear network Name
+				$('#networkDesc').val(' '); // clear Network description
+			}); 
+			$('.joinNetworkOpen').on('click', function () {
+				$('#networkCode').val(' '); // clear Network code
+			}); 
+
+
+
+
+
 			
 			// Add Network when #addNetwork is clicked 
 			$('#addNetwork').on('click', function () {
@@ -147,7 +183,13 @@ ini_set('display_errors',1);
 						action: 'joinNetwork'							
 					},
 					  success: function(data) {						// If connection is successful . 							
-						  $('#joinNetworkNotify').addClass('alert alert-warning').html(data);
+						  console.log(typeof data );
+						  if(typeof data == 'number'){ 
+						 	 window.location = 'network.php?n='+data+'&m=9';						  	
+						  } else {
+							$('#joinNetworkNotify').addClass('alert alert-warning').html(data);
+			  
+						  }
 							    }, 
 					  error: function(data) {					// If connection is not successful.  
 						  window.location = 'index.php?m=e';
@@ -161,16 +203,15 @@ ini_set('display_errors',1);
 			if(isset($_GET['m'])){
 				?>
 				$.notification ({
-				        content:    '<?php echo $message; ?>',
+				        content:    '<?php echo $message['content']; ?>',
 				        timeout:    5000,
 				        border:     true,
-				        fill:       true
+				        icon:       '<?php echo $message['icon']; ?>',
+				        color:      '<?php echo $message['color']; ?>',
+				        error:      <?php echo $message['error']; ?>  
 				     }); 
-				<?php 
-				
+				<?php 				
 			}
-			
-			
 			?>	
 		
 		
@@ -214,7 +255,7 @@ ini_set('display_errors',1);
         <div class="container-fluid">
             <h1> Welcome to Dscourse </h1>
             <p>dscourse is a project that aims to provide the next generation platform-agnostic discussion tool for online learning. You are using stable version 1.2; which means you will not lose any data but functional errors may occur from time to time. In such instances please go to the support discussion for help. If you are new to dscourse please read our documentation. </p>
-            <p> <a role="button" class="btn btn-small"> Read Documentation </a> <a role="button" class="btn btn-small"> Support Discussion </a> </p>
+            <p> <a href="help.php" class="btn btn-small"> Read Documentation </a> <a role="button" class="btn btn-small"> Support Discussion </a> </p>
             
         </div>
     </header>
@@ -234,7 +275,7 @@ ini_set('display_errors',1);
                         <p><?php echo $networkPrint; ?></p>
 
                         <p>
-                        	<a href="#addNetworkModal" role="button" class="btn btn-small btn-success" data-toggle="modal"> <i class="icon-plus icon-white"></i> Create Network</a> <a href="#joinNetworkModal" role="button" class="btn btn-small btn-primary" data-toggle="modal"><i class="icon-user icon-white"></i> Join Network</a> 
+                        	<a href="#addNetworkModal" role="button" class="btn btn-small btn-success addNetworkOpen" data-toggle="modal"> <i class="icon-plus icon-white"></i> Create Network</a> <a href="#joinNetworkModal" role="button" class="btn btn-small btn-primary joinNetworkOpen" data-toggle="modal"><i class="icon-user icon-white"></i> Join Network</a> 
                         </p>
 
                     </div>
@@ -253,7 +294,7 @@ ini_set('display_errors',1);
                  </div>
                 <div class="span4">                                                          
                     <div class="">
-                        <h4>Recent Discussions</h4>
+                        <h4>My Discussions</h4>
                         <hr class="soften">
 
                         <p></p>
@@ -272,7 +313,7 @@ ini_set('display_errors',1);
 	<!-- Create Network Modal -->
 	<div id="addNetworkModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-header">
-	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
 	    <h3 id="myModalLabel">Create Network</h3>
 	  </div>
 	  <div class="modal-body">
@@ -294,7 +335,7 @@ ini_set('display_errors',1);
 		</div>	  
 	  </div>
 	  <div class="modal-footer">
-	    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+	    <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancel</button>
 	    <button class="btn btn-primary" id="addNetwork">Add Network</button>
 	  </div>
 	</div>
@@ -304,7 +345,7 @@ ini_set('display_errors',1);
 	<!-- Join Network Modal -->
 	<div id="joinNetworkModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modal2Label" aria-hidden="true">
 	  <div class="modal-header">
-	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
 	    <h3 id="modal2Label">Join Network</h3>
 	  </div>
 	  <div class="modal-body">
@@ -320,7 +361,7 @@ ini_set('display_errors',1);
 		</div>	  
 	  </div>
 	  <div class="modal-footer">
-	    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+	    <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancel</button>
 	    <button class="btn btn-primary" id="joinNetwork">Join Network</button>
 	  </div>
 	</div>

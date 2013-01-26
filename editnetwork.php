@@ -43,7 +43,14 @@ ini_set('display_errors',1);
 	    $nID = $_GET["n"]; 						// The network ID from link
 
 	    $networkInfo = $dscourse->NetWorkInfo($nID);
-                
+
+	    // Check if user can access the page
+	    $networkRole =  $dscourse->CheckNetworkAccess($userID, $nID); 
+	    if($networkRole != 'owner'){
+		  	$gotoPage = "index.php";  
+		  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 	    
+	    }
+	                    
 ?>
 <!DOCTYPE html>
 
@@ -58,8 +65,6 @@ $(function(){
             <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
-
-            var dscourse = new Dscourse();              // Fasten seat belts, dscourse is starting...
             
 
 });                        

@@ -43,7 +43,43 @@ class Dscourse {
 			$i++;
 		endwhile;
 
+		// Get public networks 
+		$query2 = mysql_query("SELECT * FROM networks WHERE networkStatus = 'public' " );
+
+		$j = 0;
+		while($row2 = mysql_fetch_array($query2)) :
+			array_push($results, $row2);
+			$j++;
+		endwhile;
+
 		return $results; 
+	}
+
+	public function CheckNetworkAccess($userID, $nID){
+		/*  
+		 *  Checks to see if the current user can access the network. Returns the user role. 
+		 */		
+		 $status = 'unset'; 
+
+		 // Check if user is in network, set the user role
+		$query = mysql_query("SELECT * FROM networks INNER JOIN networkUsers ON networks.networkID = networkUsers.networkID WHERE networkUsers.userID = '".$userID."' AND networkUsers.networkID = '".$nID."' ");
+		$results = mysql_fetch_array($query);
+		if($results['networkUserRole'] == 'owner'){
+			$status = 'owner'; 			
+		} else if($results['networkUserRole'] == 'member') {
+			$status = 'member'; 						
+		} else {
+			 // Check if network is public 
+			$query2 = mysql_query("SELECT * FROM networks WHERE networkID = '".$nID."' " );
+			$results2 = mysql_fetch_array($query2); 
+			if($results2['networkStatus'] == 'public'){
+				$status = 'public'; 
+			} else {
+				$status = 'restricted'; 
+				
+			}						
+		}
+		return $status; 
 	}
 
 	public function NetworkInfo($nID){
@@ -301,22 +337,54 @@ class Dscourse {
 		/*  
 		 *  Returns message content  
 		 */
-		 $message = ''; 
+		 $message = array(); 
+        $message['icon'] = "N";
+        $message['color'] = "#333";
+        $message['error'] = "false";
 		 switch ($m) {
+		    case 1:
+		        $message['content'] = "Profile changes saved. ";
+		        break;
 		    case 2:
-		        $message = "Changes to the discussion were saved. ";
+		        $message['content'] = "Changes to the discussion were saved. ";
 		        break;
 		    case 4:
-		        $message = "You uploaded an invalid file please try again. ";
+		        $message['content'] = "You uploaded an invalid file please try again. ";
+		        $message['color'] = "#999";
+		        $message['error'] = "true";
 		        break;
 		    case 5:
-		        $message = "You were added to the network.";
+		        $message['content'] = "You were added to the network.";
+		        break;
+		    case 6:
+		        $message['content'] = "You are not part of that network.";
+		        $message['icon'] = "A";
+		        $message['color'] = "#999";
+		        $message['error'] = "true";
+		        break;
+		    case 7:
+		        $message['content'] = "Network changes are saved.";
+		        $message['icon'] = "A";
+		        break;
+		    case 8:
+		        $message['content'] = "Users were added to your network. ";
+		        $message['icon'] = "A";
+		        break;
+		    case 9:
+		        $message['content'] = "You were just added to this network. ";
+		        $message['icon'] = "Q";
+		        break;
+		    case 10:
+		        $message['content'] = "Course changes were saved ";
+		        $message['icon'] = "Q";
 		        break;
 		    case 'e':
-		        $message = "There was an error reaching the database. Your changes were not saved.";
+		        $message['content'] = "There was an error reaching the database. Your changes were not saved.";
+		        $message['color'] = "#999";
+		        $message['error'] = "true";
 		        break;
 		    case 'd':
-		        $message = "Your discussion was added to this course.";
+		        $message['content'] = "Your discussion was added to this course.";
 		        break;
 
 		 }

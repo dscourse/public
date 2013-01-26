@@ -31,7 +31,7 @@ function Dscourse()
 		media : true,
 		timeline : true		
 	};
-	this.charCount; 
+	this.charCount = true; 
 	
 	// Run initializing functions
 	this.GetData(discID);					// Load all discussion related information
@@ -159,10 +159,8 @@ function Dscourse()
 		}
 	});
 	
-	/* Adding a new synthesis post */
-	$('#addSynthesisButton').live('click', function() {
-		top.AddSynthesis();		 
-	});
+
+	
 	
 	/* When the comment box is clicked change the placeholder text */
 	$('#text').live('click', function () {
@@ -233,6 +231,8 @@ function Dscourse()
 	/* When user decides to turn a comment into a synthesis post instead */
  	$('#synthesize').live('click', function () {
 		$('#synthesisPostWrapper').html(''); // Clear existing posts 		
+		$('#synthesisText').val(''); 	
+		$('#addSynthesis').removeAttr('synthesisID');
 		// Get rid of comment tab -- we need to be able to carry the content and info for this. 
 		$('.threadText').removeClass('highlight');		
 		$('#commentWrap').fadeOut();
@@ -247,13 +247,21 @@ function Dscourse()
 		    	postQuote = top.truncateText(postQuote, 30);	// Shorten the comment to one line. 
 		    }		
 		$('#addSynthesis').show(); 
+		$('#editSynthesisSaveButton').hide();  // show editSynthesisSaveButton
+		$('#addSynthesisButton').show();  // hide addSynthesisButton
+
+		
 		$('.dCollapse').hide(); 					// hide every dCollapse
 		var selector = '.dCollapse[id="dSynthesis"]'; 
 		$(selector).slideDown(); 				// show the item with dTab id
+
+
+			$('#synthesisText').val(synthesisComment);  // Carry over synthesis comment text
+			$('#spostIDhidden').val('0');  // Set default from id as 0, this can be overridden below
+
 		
 		// Populate the fields for the synthesis if the source is not top level
 		if(synthesisFromID != 0){
-			$('#synthesisText').val(synthesisComment);
 			$('#spostIDhidden').val(synthesisFromID); 
 			$('#synthesisPostWrapper').prepend('<div sPostID="'+ synthesisFromID +'" class="synthesisPosts">' + postQuote + ' <div>');  // Append original post
 		}
@@ -281,9 +289,61 @@ function Dscourse()
 	});
 
 
+	/* Adding a new synthesis post */
+	$('#addSynthesisButton').live('click', function() {
+		top.AddSynthesis();		 
+	});
+
+	/* Adding a new synthesis post */
+	$('#editSynthesisSaveButton').live('click', function() {
+		top.EditSynthesis();		 
+	});
+
+	/* Editing a new synthesis post */
+	$('.editSynthesis').live('click', function(event) {
+	  event.preventDefault();
+	  	$('#dSidebar').animate({scrollTop:0});	
+
+		// -- show the synthesis form  
+		$('#synthesisPostWrapper').html(''); // Clear existing posts 				
+		$('#synthesisText').val('');  // Clear the comment box
+		$('#addSynthesis').show();  // show the form
+		$('#editSynthesisSaveButton').show();  // show editSynthesisSaveButton
+		$('#addSynthesisButton').hide();  // hide addSynthesisButton
+		// -- fill form with the post information
+		var postID = $(this).attr('sPostID');
+		for (var j = 0; j < top.data.posts.length; j++){			// Go through all the posts
+		 	var d = top.data.posts[j];
+		 	if(d.postID == postID){
+			 	$('#synthesisText').val(d.postMessage);  // Clear the comment box
+			 	$('#sPostIDhidden').val(d.postFromId); 
+			 	$('#addSynthesis').attr('synthesisID', postID);
+			 	top.ListSynthesisPosts(d.postContext, d.postID, 'edit'); 
+		 	}
+		 
+		 }
+	});
+
+
+	/* Removing a post from synthesis */
+	$('.removeSynthesisPost').live('click', function(event) {
+	  		event.preventDefault();
+			$(this).parent().remove();
+	});
+
+	
 	/* Single synthesis wrapper click event */
-	$('.synthesisPost').live('click', function () {  
-    	$(this).children('.synthesisPosts').fadeToggle(); 
+	$('.showPosts').live('click', function () {  
+    	if($(this).hasClass('on') == true){
+	    	$(this).parents('.synthesisPost').children('.synthesisPosts').fadeOut();  // hide posts
+	    	$(this).removeClass('on').addClass('off'); // add class off
+	    	$(this).text('Show Posts')
+    	} else {
+		  $(this).parents('.synthesisPost').children('.synthesisPosts').fadeIn(); // show posts
+		   $(this).removeClass('off').addClass('on');	 // add class on
+	    	$(this).text('Hide Posts')
+    	}
+
 	});
 
 	/* Show which post is synthesized */		
@@ -624,7 +684,7 @@ Dscourse.prototype.ListDiscussionPosts=function(dStatus, userRole, discID)	 			 
 	 $('.singleDot').remove();																	// Clear all dots in the timeline
 	 main.timelineMin = 0; main.timelineMax = 0; 												// Clear timeline range
 	 $('#participantList').html('<button class="btn disabled">Participants: </button>' );		// Clear participant list	 	 	 
-	 var j, p, d, q, typeText, authorID, message, authorThumb;
+	 var j, p, d, q, typeText, authorID, message, authorThumb, synthesisCount;
 
 	 for (j = 0; j < main.data.posts.length; j++){			// Go through all the posts
 		 d = main.data.posts[j];		
@@ -747,14 +807,22 @@ Dscourse.prototype.ListDiscussionPosts=function(dStatus, userRole, discID)	 			 
 			 
 			 /********** SYNTHESIS POSTS ***********/
 			if(d.postType == 'synthesis'){ 
+				 if((currentUserID == d.postAuthorId) || (userRoleAuthor == 'Instructor' || userRoleAuthor == 'TA')){
+				 	var editPostButton = '<button class="btn btn-small editSynthesis" sPostID="' + d.postID + '">Edit</button> '; 
+				 } else {
+					 var editPostButton = ''; 
+				 }
+				 
 				 $('#synthesisList').prepend(
 				  '<div class="synthesisPost well" sPostID="' + d.postID + '">' 
+				+ editPostButton  
 				+  '<span class="postAuthorView" rel="tooltip" > ' + authorID + '</span>'
-				+ '		<p>' + message + '</p>' 
-				+ '		<div class="gotoSynthesis alert alert-info" gotoID="' + d.postID + '"> Discuss This Post </div>'					
+				+ '		<p class="synthesisP">' + message + '</p>' 
+				+ '		<div class="synthesisButtonWrap"> <div class="gotoSynthesis alert alert-info" gotoID="' + d.postID + '"> Discuss This Post </div><div class="alert alert-warning showPosts">Show Posts</div></div>'					
 				+ '	</div>' 
 				); 
-				main.ListSynthesisPosts(d.postContext, d.postID); 
+				main.ListSynthesisPosts(d.postContext, d.postID, 'add'); 
+				synthesisCount = 'some'; 
 			}
 		 
 			 /********** RECENT ACTIVITY SECTION ***********/
@@ -778,6 +846,10 @@ Dscourse.prototype.ListDiscussionPosts=function(dStatus, userRole, discID)	 			 
 		} // end if showpost. 
 	 } // End looping through posts 
 
+	 if(synthesisCount == 'some'){
+		 $('#synthesisHelpText').hide(); 
+	 }
+	 
 	 main.timelineValue = main.timelineMax;						// Set the timeline value to the max. 
 	 main.UniqueParticipants();
 	    
@@ -981,33 +1053,136 @@ Dscourse.prototype.AddSynthesis=function(){							// Revise for synthesis posts
 				currentDiscussion: currentDisc							
 			},
 			  success: function(data) {						// If connection is successful . 
+			   		 location.reload();
+			    /*
+	  	 	console.log(data); 
+			    	  	 	post.postID = data;
+			    	  	 	console.log(post);  
+			    	  	 	main.data.posts.push(post);
+
 			    	  	 	$('#addSynthesis').slideUp('fast');   // Hide the form
-			    	  	 	
-			    	  	 	$('.levelWrapper[level="0"]').html(''); // redraw the discussion page at synthesis
+
+			    	  	 	$('.levelWrapper[level="0"]').html(' '); // redraw the discussion page at synthesis
+			    	  	 	$('.synthesisFeed').html(' '); // redraw the discussion page at synthesis
+
 			    	  	 	main.SingleDiscussion(currentDisc);
 			    	  	 	main.DiscResize();
 			    	  	 	main.VerticalHeatmap();
+*/
 			   
 			    /********** APPEND NEW SYNTHESIS POSTS ***********/
+/*
     					 authorID = main.getName(postAuthorId, 'first');
+    					 if((currentUserID == d.postAuthorId) || (userRoleAuthor == 'Instructor' || userRoleAuthor == 'TA')){
+							 	var editPostButton = '<button class="btn btn-small editSynthesis" sPostID="' + data + '">Edit</button> '; 
+							 } else {
+								 var editPostButton = ''; 
+							 }
 						 $('#synthesisList').prepend(
 						  '<div class="synthesisPost well" sPostID="' + data + '">' 
+						+ editPostButton  
 						+  '<span class="postAuthorView" rel="tooltip" > ' + authorID + '</span>'
 						+ '		<p>' + postMessage + '</p>' 
 						+ '		<div class="gotoSynthesis alert alert-info" gotoID="' + data + '"> Discuss This Post </div>'					
 						+ '	</div>' 
 						); 
-						main.ListSynthesisPosts(postContext, data); 
+						main.ListSynthesisPosts(postContext, data, 'add'); 
+*/
 			    }, 
 			  error: function(data) {					// If connection is not successful.  
 					console.log(data);
 					console.log("Dscourse Log: the connection to data.php failed. Did not save synthesis");  
 			  }
 		});	
+}
+
+Dscourse.prototype.EditSynthesis=function(){							// Revise for synthesis posts
+	
+		 var main = this;
+
+		 main.sPostID = '';
+		 main.sPostContent = ''; 
+		 
+		 var currentDisc = $('#dIDhidden').val();
+		 var editPostID = $('#addSynthesis').attr('synthesisID'); 
+		 
+		 // Get post values from the synthesis form.
+		// postID -- postFromId
+		var postFromId = $('#sPostIDhidden').val();					// Done
+		
+		// author ID -- postAuthorId -- this is the session user
+		var postAuthorId = $('#userIDhidden').val();				// Done
+		var postMessage = $('#synthesisText').val();				// Done
+
+		// type -- postType
+		var postType = 'synthesis';	
+	
+		// locationIDhidden -- postSelection 
+		var postSelection = ' ' ;									// Not done but works.
+
+		var postMedia = ''; 										// Synthesis doesn't have media yet. 
+
+		var postContext = ''; 
+		
+		$('#synthesisPostWrapper > .synthesisPosts').each(function() { 
+			if(postContext.length  > 0){
+				postContext += ',';
+			}
+			var thisPostID = $(this).attr('sPostID'); 
+			postContext += thisPostID; 
+
+		}); 
+
+		
+			
+	// Create post object and append it to allPosts
+	
+			post = {
+				'postID': editPostID,
+				'postFromId': postFromId,
+				'postAuthorId': postAuthorId,
+				'postMessage': postMessage,
+				'postType': postType,
+				'postSelection': postSelection,
+				'postMediaType' :  main.postMediaType,
+				'postMedia' : postMedia, 
+				'postContext' : postContext
+			};
+		
+		
+	// run Ajax to save the post object
+	
+	$.ajax({																						
+			type: "POST",
+			url: "php/data.php",
+			data: {
+				post: post,							
+				action: 'editPost',
+				currentDiscussion: currentDisc							
+			},
+			  success: function(data) {						// If connection is successful . 
+			    	  	 	location.reload();
+			    	  	 	/*
+$('#addSynthesis').slideUp('fast');   // Hide the form
+			    	  	 	console.log('is this happening?');
+			    	  	 	$('.levelWrapper[level="0"]').html(''); // redraw the discussion page at synthesis
+			    	  	 	main.SingleDiscussion(currentDisc);
+			    	  	 	main.DiscResize();
+			    	  	 	main.VerticalHeatmap();
+*/
+			   
+			   			    }, 
+			  error: function(data) {					// If connection is not successful.  
+					console.log(data);
+					console.log("Dscourse Log: the connection to data.php failed. Did not edit synthesis");  
+			  }
+		});	
 	
 	
 	
 }
+
+
 
 
 Dscourse.prototype.DrawTimeline=function()	 			  // Draw the timeline. 
@@ -1017,10 +1192,13 @@ Dscourse.prototype.DrawTimeline=function()	 			  // Draw the timeline.
   */
     var main = this;
 
+    // Let's make the step a division between the max and min numbers. 
+	var step =  (main.timelineMax - main.timelineMin)/100; 
+	
 	// Create the Slider
     $( "#slider-range" ).slider({					// Create the slider
 		range: "min",
-		step: 360000,
+		step: step,
 		value: main.timelineMax,
 		min: main.timelineMin,
 		max: main.timelineMax,
@@ -1089,9 +1267,13 @@ Dscourse.prototype.PostInSynthesis=function(postID)
 	 return output; 
 }
 
-Dscourse.prototype.ListSynthesisPosts=function(postList, sPostID){					// Populate unique participants.  
+Dscourse.prototype.ListSynthesisPosts=function(postList, sPostID, role){					// Populate unique participants.  
 	
 		 var main = this;
+		 
+		 if(!role){
+			 role = 'add'; 
+		 }
 		 
 		 var i, o, j, k;
 		 var posts = postList.split(",");
@@ -1103,7 +1285,13 @@ Dscourse.prototype.ListSynthesisPosts=function(postList, sPostID){					// Popula
 			 	k = main.data.posts[j];
 			 	if(k.postID == o){
 				 	var postMessage = main.truncateText(k.postMessage, 100);
-				 	$('.synthesisPost[sPostID="'+  sPostID + '"]').append('<div sPostID="'+ k.postID +'" class=" synthesisPosts hide"> ' + main.getAuthorThumb(k.postAuthorId, 'tiny') + ' ' + main.getName(k.postAuthorId) + ': <br /><span class="synMessage">'  + postMessage + ' </span><div>');  				 	
+				 	if (role == 'add'){
+				 		$('.synthesisPost[sPostID="'+  sPostID + '"]').append('<div sPostID="'+ k.postID +'" class=" synthesisPosts hide"> ' + main.getAuthorThumb(k.postAuthorId, 'tiny') + ' ' + main.getName(k.postAuthorId) + ': <br /><span class="synMessage">'  + postMessage + ' </span><div>');  				 						 	
+				 	} else if( role == 'edit'){
+					 	console.log('role is edit');
+				 		$('#synthesisPostWrapper').append('<div sPostID="'+ k.postID +'" class=" synthesisPosts hide"> ' + main.getAuthorThumb(k.postAuthorId, 'tiny') + ' ' + main.getName(k.postAuthorId) + ': <br /><span class="synMessage">'  + postMessage + ' </span><button class="btn btn-mini removeSynthesisPost">Remove</button><div>');  				 						 	
+					 	$('#synthesisPostWrapper').children('div').show();
+				 	}
 			 	}
 			 }
 		 }		 

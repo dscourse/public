@@ -41,7 +41,7 @@
 	color: white!important;
 	text-shadow: rgba(0,0,0,0.4) 0px 1px 1px!important;
 }
-.notification.error .left:after {
+.notification.error .Nleft:after {
 	background: rgba(255,255,255,0.5)!important;
 	box-shadow: rgba(0,0,0,0.4) 0px 1px 1px!important;
 }
@@ -74,7 +74,7 @@
 .notification .hide:hover {
 	opacity: 1;
 }
-.notification .right, .notification .left {
+.notification .Nright, .notification .Nleft {
 	width: 350px;
 	height: 100%;
 	float: left;
@@ -84,13 +84,13 @@
 	font-size: 9px;
 	position: relative;
 }
-.notification .right .time {
+.notification .Nright .time {
 	margin-left: 10px;
 	margin-top: -8px;
 	margin-bottom: 10px;
 	opacity: 0.4;
 }
-.notification .left {
+.notification .Nleft {
 	height: 100%;
 	width: 30px;
 	padding: 10px;
@@ -99,13 +99,13 @@
 	padding-bottom: 0px;
 	overflow: hidden;
 }
-.notification .right {
+.notification .Nright {
 	margin-left: 50px;
 }
-.notification .right .inner {
+.notification .Nright .inner {
 	padding: 10px;
 }
-.notification .left:after {
+.notification .Nleft:after {
 	content: '';
 	background: #c1c1c1;
 	-moz-box-shadow: white 1px 0px 0px;
@@ -162,7 +162,7 @@
 	-webkit-border-bottom-left-radius: 5px;
 	border-bottom-left-radius: 5px;
 }
-.notification .left > .icon {
+.notification .Nleft > .icon {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -173,7 +173,7 @@
 	font: normal 40px/28px 'EntypoRegular';
 	text-shadow: white 0px 1px 0px;
 }
-.notification.big .left > .icon {
+.notification.big .Nleft > .icon {
 	font-size: 60px;
 	line-height: 38px;
 }

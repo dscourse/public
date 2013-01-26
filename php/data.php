@@ -63,6 +63,10 @@ ini_set('display_errors',1);
     {
     	AddPost(); 
     }     
+    if ($action == 'editPost') 
+    {
+    	EditPost(); 
+    }  
     if ($action == 'checkNewPosts')
     {
     	CheckNewPosts(); 
@@ -141,9 +145,8 @@ function UpdateNetwork(){
 	 	$allowedExts = array("jpg", "jpeg", "gif", "png");
 		$extension = end(explode(".", $_FILES["userPicture"]["name"]));
 		$uploadLocation = "../uploads/userImg/"; 
-		$getExt = findexts ($_FILES["userPicture"]["name"]); 
 		$randomName = rand(100000, 100000000000000000);
-		$newName = $randomName . '.' . $getExt; 
+		$newName = $randomName . '.' . $extension; 
 		
 		$message = ""; 
 		
@@ -195,17 +198,6 @@ function UpdateNetwork(){
 	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 
 }
-
-//This function separates the extension from the rest of the file name and returns it 
- function findexts ($filename) 
- { 
-	 $filename = strtolower($filename) ; 
-	 $exts = preg_split("[/\\.]", $filename) ; 
-	 $n = count($exts)-1; 
-	 $exts = $exts[$n]; 
-	 return $exts; 
- } 
- 
  
  function AddUsersToNetwork() {
 	 $items 	= $_POST['items'];
@@ -245,14 +237,13 @@ function AddCourse() {
 	
 	$message = "";
 	// But if there is a new picture
-	if($_FILES["courseImage"]) {
+	if($_FILES["courseImage"]["size"] > 0 ) {
 		// File upload
 	 	$allowedExts = array("jpg", "jpeg", "gif", "png");
 		$extension = end(explode(".", $_FILES["courseImage"]["name"]));
 		$uploadLocation = "../uploads/courseImg/"; 
-		$getExt = findexts ($_FILES["courseImage"]["name"]); 
 		$randomName = rand(100000, 100000000000000000);
-		$newName = $randomName . '.' . $getExt; 
+		$newName = $randomName . '.' . $extension; 
 		
 		if ((($_FILES["courseImage"]["type"] == "image/gif")
 		|| ($_FILES["courseImage"]["type"] == "image/jpeg")
@@ -294,15 +285,18 @@ function AddCourse() {
 	$networkCourseInsert = mysql_query("INSERT INTO networkCourses (networkID, courseID) VALUES('".$networkID."', '".$courseID."')"); 
 
 	// Add Users to courses		
-	$user  	=  $_POST['user'];
-	$totalUser = count($user); 
-	$i = 0; 
-	while($i < $totalUser) {
-		if($i%2 == 0){
-				$CourseUserInsert = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES('".$courseID."', '".$user[$i]."', '".$user[$i+1]."')"); 
-		}
-		$i = $i+1; 
+	if(isset($_POST['user'])){
+		$user  	=  $_POST['user'];
+		$totalUser = count($user); 
+		$i = 0; 
+		while($i < $totalUser) {
+			if($i%2 == 0){
+					$CourseUserInsert = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES('".$courseID."', '".$user[$i]."', '".$user[$i+1]."')"); 
+			}
+			$i = $i+1; 
+		}		
 	}
+
 
   		$message =  3;
 	  	$gotoPage = "../course.php?c=".$courseID."&n=".$networkID."&m=".$message;  // All good
@@ -324,15 +318,15 @@ function EditCourse() {
 	
 	$message = "";
 	$courseImage = $_POST['courseImageURL'];
+	
 	// But if there is a new picture
-	if($_FILES["editCourseImage"]) {
+	if($_FILES["editCourseImage"]["size"] > 0 ) {
 		// File upload
 	 	$allowedExts = array("jpg", "jpeg", "gif", "png");
 		$extension = end(explode(".", $_FILES["editCourseImage"]["name"]));
 		$uploadLocation = "../uploads/courseImg/"; 
-		$getExt = findexts ($_FILES["editCourseImage"]["name"]); 
 		$randomName = rand(100000, 100000000000000000);
-		$newName = $randomName . '.' . $getExt; 
+		$newName = $randomName . '.' . $extension; 
 		
 		if ((($_FILES["editCourseImage"]["type"] == "image/gif")
 		|| ($_FILES["editCourseImage"]["type"] == "image/jpeg")
@@ -359,8 +353,9 @@ function EditCourse() {
 			    }
 		  } else {
 		  		$message =  "You uploaded an invalid file please try again. ";
-		  	  	$gotoPage = "../editCourse.php?c=".$courseID."&n=".$networkID."&m=".$message;  // All good
+		  	  	$gotoPage = "../editcourse.php?c=".$courseID."&n=".$networkID."&m=".$message;  // All good
 		  	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
+		  	  	exit(); 
 		  }	  
 	} 
 	
@@ -369,27 +364,30 @@ function EditCourse() {
 
 
 	// Change User Information		
-	$user  	=  $_POST['user'];
-	$totalUser = count($user); 
-	$i = 0; 
-	while($i < $totalUser) {
-		if($i%2 == 0){
-				$query = mysql_query("SELECT * FROM courseRoles WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'");
-				$results = mysql_fetch_array($query); 
-				if($results){
-						if($user[$i+1] == 'Delete'){
-							$deleteQuery = mysql_query("DELETE FROM courseRoles WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'"); 
-						} else {
-							$CourseUserUpdate = mysql_query("UPDATE courseRoles SET userRole = '".$user[$i+1]."'  WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'"); // UPDATE							
-						}
-				} else {
-					$CourseUserInsert = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES('".$courseID."', '".$user[$i]."', '".$user[$i+1]."')"); 
-				}
+	if(isset($_POST['user'])){
+		$user  	=  $_POST['user'];
+		$totalUser = count($user); 
+		$i = 0; 
+		while($i < $totalUser) {
+			if($i%2 == 0){
+					$query = mysql_query("SELECT * FROM courseRoles WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'");
+					$results = mysql_fetch_array($query); 
+					if($results){
+							if($user[$i+1] == 'Delete'){
+								$deleteQuery = mysql_query("DELETE FROM courseRoles WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'"); 
+							} else {
+								$CourseUserUpdate = mysql_query("UPDATE courseRoles SET userRole = '".$user[$i+1]."'  WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'"); // UPDATE							
+							}
+					} else {
+						$CourseUserInsert = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES('".$courseID."', '".$user[$i]."', '".$user[$i+1]."')"); 
+					}
+			}
+			$i = $i+1; 
 		}
-		$i = $i+1; 
+		
 	}
 	
-  		$message =  1;
+  		$message =  10;
 	  	$gotoPage = "../course.php?c=".$courseID."&n=".$networkID."&m=".$message;  // All good
 	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 
@@ -531,8 +529,8 @@ function JoinNetwork() {
 					$message =  "You already seem to be in this network.";
 				} else {
 					$networkUsersInsert = mysql_query("INSERT INTO networkUsers (networkID, userID, networkUserRole) VALUES(".$networkID.", '".$userID."', 'member')"); 
-					$message = "You were added to this network. You can close this box.";					
-				}
+					  	$message = intval($results['networkID']); 
+					}
 		} else {
 			$message = "Sorry this code is not in our system."; 
 		}
@@ -565,6 +563,27 @@ function AddPost()
 			$addPosttoDiscussion = mysql_query("INSERT INTO discussionPosts (discussionID, postID) VALUES(".$currentDiscussion.", '".$postID."')");  			 		
 
 }
+
+function EditPost()
+{
+			// Save post first
+			$post = $_POST['post'];
+			
+			$postID			= 	$post['postID'];
+			$postFromId		= 	$post['postFromId'];
+			$postAuthorId	= 	$post['postAuthorId'];
+			$postMessage	= 	$post['postMessage'];
+			$postType		= 	$post['postType'];
+			$postSelection	= 	$post['postSelection'];			
+			$postMedia		= 	$post['postMedia'];
+			$postMediaType  = 	$post['postMediaType'];
+			$postContext	= 	$post['postContext'];
+																		
+			$editPostQuery = mysql_query("UPDATE posts SET  postFromId = '".$postFromId."', postAuthorId = '".$postAuthorId."', postMessage = '".$postMessage."', postType  = '".$postType."', postSelection  = '".$postSelection."', postMedia  = '".$postMedia."', postMediaType = '".$postMediaType."', postContext  = '".$postContext."'  WHERE postID  = '".$postID."' "); 
+									
+}
+
+
 
 function CheckNewPosts()
 {
