@@ -182,18 +182,17 @@ function UpdateNetwork(){
 
 
 	// If there is a password 
-	if(strlen($_POST['password']) > 3){
-			$userPassword 	= md5($_POST['password']);
-			// Update with password 	
-			$userUpdate = mysql_query("UPDATE users SET firstName = '".$firstName."', lastName = '".$lastName."', userAbout = '".$userAbout."', userPictureURL = '".$userPicture."', userFacebook = '".$userFacebook."', userTwitter = '".$userTwitter."', userPhone = '".$userPhone."', userWebsite = '".$userWebsite."', userPassword = '".$userPassword."' WHERE UserID = '".$UserID."' "); // UPDATE
-	} else {
+	if(strlen($_POST['password']) === 0){
 			// Update without password
 			$userUpdate = mysql_query("UPDATE users SET firstName = '".$firstName."', lastName = '".$lastName."', userAbout = '".$userAbout."', userPictureURL = '".$userPicture."', userFacebook = '".$userFacebook."', userTwitter = '".$userTwitter."', userPhone = '".$userPhone."', userWebsite = '".$userWebsite."' WHERE UserID = '".$UserID."' "); // UPDATE
 
+	} else {
+			$userPassword 	= md5($_POST['password']);
+			// Update with password 	
+			$userUpdate = mysql_query("UPDATE users SET firstName = '".$firstName."', lastName = '".$lastName."', userAbout = '".$userAbout."', userPictureURL = '".$userPicture."', userFacebook = '".$userFacebook."', userTwitter = '".$userTwitter."', userPhone = '".$userPhone."', userWebsite = '".$userWebsite."', password = '".$userPassword."' WHERE UserID = '".$UserID."' "); // UPDATE	
 	}
 
 
- 	
   	$gotoPage = "../profile.php?u=".$UserID."&m=1";  // All good
 	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 

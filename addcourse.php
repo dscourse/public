@@ -9,32 +9,34 @@ ini_set('display_errors',1);
     if(empty($_SESSION['Username']))                        // Checks to see if user is logged in, if not sends the user to login.php
     {  
         // is cookie set? 
-        if (isset($_COOKIE["userCookieDscourse"])){
+        if (array_key_exists('userCookieDscourse', $_COOKIE)){
              
              $getUserInfo = mysql_query("SELECT * FROM users WHERE UserID = '".$_COOKIE["userCookieDscourse"]."' ");  
   
             if(mysql_num_rows($getUserInfo) == 1)  
             {  
-                $row = mysql_fetch_array($checklogin);   
+                $row = mysql_fetch_array($getUserInfo);   
           
-                $_SESSION['Username'] = $username; 
+                $_SESSION['Username'] = $row[1]; 
                 $_SESSION['firstName'] = $row[3]; 
                 $_SESSION['lastName'] = $row[4];   
                 $_SESSION['LoggedIn'] = 1;  
                 $_SESSION['status'] = $row[5];
-                $_SESSION['UserID'] = $row[0];  
+                $_SESSION['UserID'] = $row[0]; 
+                header('Location: index.php'); 
+                
             } else {
                 echo "Error: Could not load user info from cookie.";
             }
             
         } else {
-        
+
             header('Location: info.php');                   // Not logged and and does not have cookie
         
         }
         
-    }  else {                                               // User is logged in, show page. 
-        
+    }  else {  
+           
         include_once('php/dscourse.class.php');
 
 
@@ -57,8 +59,19 @@ ini_set('display_errors',1);
     <title>dscourse | Add Course</title>
     
     <?php include('php/header_includes.php');  ?>
-    
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
     <script type="text/javascript">
+    
+    //An auxillary function used to check whether or not a given course has an intructor/TA
+    Array.prototype.search= function(item, func){
+    	for(var i=0;i<this.length;i++){
+    		if(func(item, this[i]))
+    			return this[i]
+    	}
+    	return -1;
+    }
+    
+    
 $(function(){
             // Add some global variables about current user if we need them:
             <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
@@ -95,9 +108,10 @@ $(function(){
 				var role = $(this).text(); 
 				$(this).siblings('.userRoleInput').val(role);
 			});
-
-			$("#courseStartDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
-			$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
+			
+			var d = new Date();
+			$("#courseStartDate").datepicker({ dateFormat: "yy-mm-dd" }).datepicker('setDate',d);	// Date picker jquery ui initialize for the date fields
+			$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd" }).datepicker('setDate',d);			// Date picker jquery ui initialize for the date fields
 	
 			    
 		    $( "#coursePeople" ).autocomplete({
@@ -108,12 +122,72 @@ $(function(){
 	                return false;
 	            },
 	            select: function( event, ui ) {
+	            	console.log(ui)
 	                $('#addPeopleBody').append('<tr><td><input type="hidden" name="user[]" value="' + ui.item.value + '">' + ui.item.label + ' <\/td><td>' + ui.item.email  + ' <\/td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'+ ui.item.value + '">Instructor<\/button><button class="btn roleB" type="button" userid="'+ ui.item.value + '">TA<\/button><button type="button" class="btn active roleB" userid="'+ ui.item.value + '">Student</button><input type="hidden" name="user[]" class="userRoleInput" value="Student"></div></td><td><button class="btn removePeople" type="button">Remove</button> </td></tr>'); // Build the row of users. 
 	                console.log('did this. ')
 	                $( "#coursePeople" ).val('');
 	                return false;
 	            }
 	        }); 
+	        
+	        $.validator.addMethod("logicalDate", function(value, el){
+	        	var one = false;
+		        var two = false;
+		        var ind = $(el).index('.hasDatepicker');
+		        switch(ind){
+		        	case 0:
+		        		one = $(el).datepicker('getDate')!=null;
+		        		two = $('#courseEndDate').datepicker('getDate')==null || ($(el).datepicker('getDate') <= $('#courseEndDate').datepicker('getDate'));
+		        	break;
+		        	case 1:
+		        		one = $(el).datepicker('getDate')!=null;
+		        		two = $('#courseStartDate').datepicker('getDate')==null || ($(el).datepicker('getDate') >= $('#courseStartDate').datepicker('getDate'));
+		        	break;
+		        }
+		        return one&&two;
+	        }, "Please make sure your dates make sense.");
+	        
+	         $('form[name="addCourseForm"]').validate({
+	         	rules: {
+	         		courseName: {
+	         			required: true,
+	         			maxlength: 255,
+	         		},
+	         		courseDescription: {
+	         			required: true,
+	         			maxlength: 500,
+	         		},
+	         		courseStartDate: {
+	         			logicalDate: true,
+	         		},
+	         		courseEndDate: {
+	         			logicalDate: true,
+	         		}
+	         	},
+	         	messages: {
+	         		courseName: 'A course name is required.',
+	         		courseDescription: 'A course description is required.'
+	         	},
+	         	highlight: function(label){
+	         		$(label).closest('.control-group').removeClass('success');
+					$(label).closest('.control-group').addClass('error');
+				},
+				success: function(label){
+					$(label).closest('.control-group').removeClass('error');
+					$(label).closest('.control-group').addClass('success');
+				}
+	         });
+	         $('#submitNewCourse').on('click', function(e){
+	         	if(!$('form[name="addCourseForm"]').valid())
+				   	e.preventDefault();	
+				var admin = $('#addPeopleBody').find('.btn').filter('.active').filter(function(){
+					return $(this).index() != 2;
+				});
+				if(admin.length == 0){
+					e.preventDefault();
+					alert('Every course must have at least one instructor or teaching assistant.');
+				}
+		   });
 	        
 	      <?php 
 			if(isset($_GET['m'])){
@@ -131,6 +205,15 @@ $(function(){
 			
 			
 			?>	
+			  //make the current user default instructor 
+           var cur = nameList.search(currentUserID, function(item,obj){
+					if(obj.value==item)
+						return true;
+					return false;
+		   });
+		   var user = '<tr><td><input type=\"hidden\" name=\"user[]\" value=\"' + cur.value + '\">' + cur.label + ' <\/td><td>' + cur.email  + ' <\/td><td><div class=\"btn-group\"  data-toggle=\"buttons-radio\" id=\"roleButtons\"><button class=\"btn roleB\" type=\"button\" userid=\"'+ cur.value + '\">Instructor<\/button><button class=\"btn roleB\" type=\"button\" userid=\"'+ cur.value + '\">TA<\/button><button type=\"button\" class=\"btn active roleB\" userid=\"'+ cur.value + '\">Student</button><input type=\"hidden\" name=\"user[]\" class=\"userRoleInput\" value=\"Student\"></div></td><td><button class=\"btn removePeople\" type=\"button\">Remove</button> </td></tr>'
+		   $('#addPeopleBody').append(user);	
+		   $('#addPeopleBody').children().find('.btn').eq(0).click()
 			
 });                        
     </script>

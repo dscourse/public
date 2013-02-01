@@ -13,7 +13,7 @@
     $autologin = $_POST['autologin']; 
   	
     $checklogin = mysql_query("SELECT * FROM users WHERE Username = '".$username."' AND Password = '".$password."'");  
-  
+    $something = ''; 
     if(mysql_num_rows($checklogin) == 1)  
     {  
         $row = mysql_fetch_array($checklogin);   
@@ -25,12 +25,12 @@
 		$_SESSION['status'] = $row[5];
 		$_SESSION['UserID'] = $row[0];  
 
-		if($autologin == 1){
+		if($autologin == 'checked'){
 			$expire=time()+60*60*24*10;
-			setcookie("userCookieDscourse", $_SESSION['UserID'] , $expire);
+			setcookie("userCookieDscourse", $row[0] , $expire, '/');
 		}
 
-        echo "redirect"; 										// Sends back a redirect message which the ajax will use to redirect to home.php
+        echo  "redirect"; 										// Sends back a redirect message which the ajax will use to redirect to home.php
           
     }  
     else  

@@ -24,6 +24,8 @@
         function Login(){
             var username = $('#username').val();                        // Gets username and password 
             var password  = $('#password').val(); 
+            var autologin  = $('#autologin').attr('checked'); 
+            console.log(autologin);
             
             if (!username) {
                 $('#loginNotify').html("<div class=\"alert alert-error animated flash \">Please enter a username<\/div>");   
@@ -35,7 +37,8 @@
                     url: "php/auth.php",
                     data: {
                         username: username,
-                        password: password                                      // Sends the login data as array
+                        password: password,                                       // Sends the login data as array
+                        autologin: autologin
                     },
                       success: function(data) { 
                             
@@ -89,7 +92,7 @@
                             <label for="username">Password:</label> <input type="password" name="password" id="password">
                         </div>
 
-                        <p><label>&nbsp;</label><input type="checkbox" name="autologin" value="1"> Remember Me on this computer</p>
+                        <p><label>&nbsp;</label><input type="checkbox" id="autologin" name="autologin" value="Yes"> Remember Me on this computer</p>
 
                         <p><button type="submit" id="loginSubmit" class="btn btn-primary">Login</button> <a href="recover.php" id="recoverLink">Forgot Password?</a></p>
                     </div>

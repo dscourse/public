@@ -27,7 +27,7 @@ $row = mysql_fetch_array ( mysql_query("SELECT * FROM `users` WHERE `UserID` = '
 
 <form action='' method='POST'> 
 <p><b>Username:</b><br /><input type='text' name='username' value='<?= stripslashes($row['username']) ?>' /> 
-<p><b>Password:</b><br /><input type='text' name='password' value='<?= stripslashes($row['password']) ?>' /> 
+<p><b>Password:</b><br /><input type='text' name='password' value='<?= md5(stripslashes($row['password'])) ?>' /> 
 <p><b>FirstName:</b><br /><input type='text' name='firstName' value='<?= stripslashes($row['firstName']) ?>' /> 
 <p><b>LastName:</b><br /><input type='text' name='lastName' value='<?= stripslashes($row['lastName']) ?>' /> 
 <p><b>SysRole:</b><br /><input type='text' name='sysRole' value='<?= stripslashes($row['sysRole']) ?>' /> 

@@ -9,32 +9,33 @@ ini_set('display_errors',1);
     if(empty($_SESSION['Username']))                        // Checks to see if user is logged in, if not sends the user to login.php
     {  
         // is cookie set? 
-        if (isset($_COOKIE["userCookieDscourse"])){
+        if (array_key_exists('userCookieDscourse', $_COOKIE)){
              
              $getUserInfo = mysql_query("SELECT * FROM users WHERE UserID = '".$_COOKIE["userCookieDscourse"]."' ");  
   
             if(mysql_num_rows($getUserInfo) == 1)  
             {  
-                $row = mysql_fetch_array($checklogin);   
+                $row = mysql_fetch_array($getUserInfo);   
           
-                $_SESSION['Username'] = $username; 
+                $_SESSION['Username'] = $row[1]; 
                 $_SESSION['firstName'] = $row[3]; 
                 $_SESSION['lastName'] = $row[4];   
                 $_SESSION['LoggedIn'] = 1;  
                 $_SESSION['status'] = $row[5];
-                $_SESSION['UserID'] = $row[0];  
+                $_SESSION['UserID'] = $row[0]; 
+                header('Location: index.php'); 
+                
             } else {
                 echo "Error: Could not load user info from cookie.";
             }
             
         } else {
-        
+
             header('Location: info.php');                   // Not logged and and does not have cookie
         
         }
         
-    }  else {                                               // User is logged in, show page. 
-        
+    }  else {       
 
         include_once('php/dscourse.class.php');
         
@@ -75,9 +76,11 @@ $(function(){
         $userNetworks = $dscourse->GetUserNetworks($userID);
         $totalNetworks = count($userNetworks); 
         $courseCount = 0; 
+        $courseText = ''; 
         for($i = 0; $i < $totalNetworks; $i++) 
                 {
                     $networkCourses = $dscourse->NetworkCourses($userNetworks[$i]['networkID']);
+                    
                     $courseTotal = count($networkCourses);
                         for($j = 0; $j < $courseTotal; $j++) 
                             {   
@@ -90,6 +93,7 @@ $(function(){
 
                             }
                 }
+                echo json_encode($courseText); 
                 ?>
             ];
             
@@ -97,9 +101,15 @@ $(function(){
                             $(this).closest('tr').remove();
             });
 			// Date picker jquery ui initialize for the date fields
-            $("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd"});
-            $("#discussionOpenDate").datepicker({ dateFormat: "yy-mm-dd" });
-            $("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd" });
+			var d = new Date();
+            $("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd"}).datepicker('setDate', d);
+            $("#discussionOpenDate").datepicker({ dateFormat: "yy-mm-dd"}).datepicker('setDate', d);
+            d.setFullYear(d.getFullYear()+1)
+            $("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd"}).datepicker('setDate',d);
+            
+            $('#sDateTime').children('option[value='+d.getHours()+']').attr('selected', 'selected');
+            $('#oDateTime').children('option[value='+d.getHours()+']').attr('selected', 'selected');
+            $('#eDateTime').children('option[value='+d.getHours()+']').attr('selected', 'selected');
 
                 
             $( "#discussionCourses" ).autocomplete({
@@ -119,7 +129,7 @@ $(function(){
            $.validator.addMethod("logicalDate", function(value, el){
 				var ind = $(el).index('.hasDatepicker');
 		        var one = false;
-		        var twp = false;
+		        var two = false;
 		        var three = false;
 				switch(ind){ 
 					case 0:
@@ -143,9 +153,13 @@ $(function(){
 		   //general form validation rules/messages         
            $('form[name="addDiscussionForm"]').validate({
 				rules: {
-					discussionQuestion: "required",
+					discussionQuestion: {
+						required: true,
+						maxlength: 255,
+					},
 					discussionPrompt: {
-						maxlength: 1000,
+						required: true,
+						maxlength: 500,
 					},
 					discussionStartDate: {
 						logicalDate: true	
@@ -171,7 +185,11 @@ $(function(){
 		   });
 		   $('#discussionFormSubmit').on('click', function(e){
 			   if(!$('form[name="addDiscussionForm"]').valid())
-					e.preventDefault();
+					if($('.dCourseList').length == 0)
+						$('#discAddCourseLabel').html('A discussion must be linked to at least one course.').css('color', 'red');
+					else
+						$('#discAddCourseLabel').html('').css('color', '#333');
+			   	e.preventDefault();	
 		   });
 		  
     });                        
@@ -241,7 +259,7 @@ $(function(){
                                     <textarea class="span6 textareaFixed" id="discussionPrompt" name="discussionPrompt">
 </textarea>
 
-                                    <p class="help-inline">If you like you can provide prompts to get into details or explain directions for the discussion. Please limit your text to 1000 characters.</p>
+                                    <p class="help-inline">If you like you can provide prompts to get into details or explain directions for the discussion. Please limit your text to 500 characters.</p>
                                 </div>
                             </div>
 

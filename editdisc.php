@@ -9,32 +9,33 @@ ini_set('display_errors',1);
     if(empty($_SESSION['Username']))                        // Checks to see if user is logged in, if not sends the user to login.php
     {  
         // is cookie set? 
-        if (isset($_COOKIE["userCookieDscourse"])){
+        if (array_key_exists('userCookieDscourse', $_COOKIE)){
              
              $getUserInfo = mysql_query("SELECT * FROM users WHERE UserID = '".$_COOKIE["userCookieDscourse"]."' ");  
   
             if(mysql_num_rows($getUserInfo) == 1)  
             {  
-                $row = mysql_fetch_array($checklogin);   
+                $row = mysql_fetch_array($getUserInfo);   
           
-                $_SESSION['Username'] = $username; 
+                $_SESSION['Username'] = $row[1]; 
                 $_SESSION['firstName'] = $row[3]; 
                 $_SESSION['lastName'] = $row[4];   
                 $_SESSION['LoggedIn'] = 1;  
                 $_SESSION['status'] = $row[5];
-                $_SESSION['UserID'] = $row[0];  
+                $_SESSION['UserID'] = $row[0]; 
+                header('Location: index.php'); 
+                
             } else {
                 echo "Error: Could not load user info from cookie.";
             }
             
         } else {
-        
+
             header('Location: info.php');                   // Not logged and and does not have cookie
         
         }
         
-    }  else {                                               // User is logged in, show page. 
-        
+    }  else {   
 
         include_once('php/dscourse.class.php');
         
@@ -91,7 +92,7 @@ ini_set('display_errors',1);
      <?php include('php/header_includes.php');  ?>
    
 
-    
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
     <script type="text/javascript">
 $(function(){
             // Add some global variables about current user if we need them:
@@ -156,6 +157,75 @@ $(function(){
                             return false;
                         }
                     }); 
+                    
+            //validation for Jquery Datepickers         
+           $.validator.addMethod("logicalDate", function(value, el){
+				var ind = $(el).index('.hasDatepicker');
+		        var one = false;
+		        var twp = false;
+		        var three = false;
+				switch(ind){ 
+					case 0:
+						one = ($(el).datepicker('getDate')!=null);
+						two = ($("#discussionOpenDate").datepicker('getDate')==null || $(el).datepicker('getDate')<= $("#discussionOpenDate").datepicker('getDate')); 
+						three =  ($("#discussionEndDate").datepicker('getDate')==null || $(el).datepicker('getDate') <= $("#discussionEndDate").datepicker('getDate'));
+					break;
+				    case 1:
+						one = ($(el).datepicker('getDate')!=null);
+						two = ($(el).datepicker('getDate') >= $("#discussionStartDate").datepicker('getDate') || $("#discussionStartDate").datepicker('getDate')==null);
+						three = ($(el).datepicker('getDate') <= $("#discussionEndDate").datepicker('getDate')|| $("#discussionEndDate").datepicker('getDate')==null);
+					break
+					case 2:
+						one = ($(el).datepicker('getDate')!=null);
+						two = ($(el).datepicker('getDate') >= $("#discussionStartDate").datepicker('getDate')||$("#discussionStartDate").datepicker('getDate')==null);
+						three = ($(el).datepicker('getDate') >= $("#discussionOpenDate").datepicker('getDate') || $("#discussionOpenDate").datepicker('getDate')==null);
+					break;
+				  }
+				return one&&two&&three;
+		   }, "Please make sure your dates make sense.");
+		   //general form validation rules/messages         
+           $('form[name="addDiscussionForm"]').validate({
+				rules: {
+					discussionQuestion: {
+						required: true,
+						maxlength: 255,
+					},
+					discussionPrompt: {
+						required: true,
+						maxlength: 500,
+					},
+					discussionStartDate: {
+						logicalDate: true	
+					},
+					discussionOpenDate: {
+						logicalDate: true
+					},
+					discussionEndDate: {
+						logicalDate: true
+					}
+				},
+				messages: {
+					discussionQuestion: "A discussion question is required.",
+					discussionPrompt: "A discussion prompt is required."
+				},
+				highlight: function(label){
+					$(label).closest('.control-group').removeClass('success');
+					$(label).closest('.control-group').addClass('error');
+				},
+				success: function(label){
+					$(label).closest('.control-group').removeClass('error');
+					$(label).closest('.control-group').addClass('success');
+				}
+		   });
+		   $('#discussionFormSubmit').on('click', function(e){
+			   if(!$('form[name="addDiscussionForm"]').valid())
+					if($('.dCourseList').length == 0)
+						$('#discAddCourseLabel').html('A discussion must be linked to at least one course.').css('color', 'red');
+					else
+						$('#discAddCourseLabel').html('').css('color', '#333');
+			   	e.preventDefault();	
+		   });
+            
             $('#sDateTime > option[value="<?php echo $dStartHour[0]; ?>"]').attr('selected', 'selected');     
             $('#oDateTime > option[value="<?php echo $dOpenHour[0]; ?>"]').attr('selected', 'selected');     
             $('#eDateTime > option[value="<?php echo $dEndHour[0]; ?>"]').attr('selected', 'selected');     
@@ -559,7 +629,7 @@ $(function(){
 
                                     <p>Start typing course names that you would like this discussion to be associated with. Only active courses are listed.</p>
 
-                                    <p></p>
+                                    <p id="discAddCourseLabel"></p>
 
                                     <div id="discInputDiv">
                                         <input type="text" class="input-large discussionCourses" id="discussionCourses" name="discussionCourses">

@@ -6,7 +6,7 @@
  */
       
   date_default_timezone_set('UTC');
- 
+
 class Dscourse {
 
 	public function __construct() {
@@ -112,6 +112,8 @@ class Dscourse {
 		/*  
 		 *  Gets users in the network with their user information
 		 */
+
+
 		$query = mysql_query("SELECT * FROM networkCourses INNER JOIN courses ON networkCourses.courseID = courses.courseID WHERE networkCourses.networkID = '".$nID."'");
 		$results = array(); 
 
