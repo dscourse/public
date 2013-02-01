@@ -2,5 +2,5 @@
 	$_SESSION = array(); 
 	session_destroy(); 
 	setcookie('userCookieDscourse', '', time()-3600, '/');
+	header("Location: info.php");
 ?> 
-<meta http-equiv="refresh" content="0;../index.php">
