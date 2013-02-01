@@ -227,7 +227,7 @@ $(function(){
     <div id="addDiscussionPage" class=" wrap page">
         <header class="jumbotron subhead">
             <div class="container-fluid">
-                <h1>Add discussions <button id="addDiscussionCancel" class="btn pull-right">Cancel</button></h1>
+                <h1>Add discussions <a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>"" id="addDiscussionCancel" class="btn pull-right">Cancel</a></h1>
             </div>
         </header>
 
