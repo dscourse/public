@@ -76,7 +76,6 @@ $(function(){
         $userNetworks = $dscourse->GetUserNetworks($userID);
         $totalNetworks = count($userNetworks); 
         $courseCount = 0; 
-        $courseText = ''; 
         for($i = 0; $i < $totalNetworks; $i++) 
                 {
                     $networkCourses = $dscourse->NetworkCourses($userNetworks[$i]['networkID']);
@@ -93,7 +92,6 @@ $(function(){
 
                             }
                 }
-                echo json_encode($courseText); 
                 ?>
             ];
             
@@ -204,7 +202,7 @@ $(function(){
 
                 <ul class="nav">
                     <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li>
+                    <li class="navLevel"><a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li>
                 </ul>
 
                 <ul class="nav pull-right">
