@@ -86,7 +86,7 @@ $(function(){
                                 $roleCheck = $dscourse->UserCourseRole($networkCourses[$j]['courseID'], $userID);
                                 if($roleCheck[0] == 'Instructor' || $roleCheck[0] == 'TA'){
                                     if($courseCount == 0){ $comma = "";} else { $comma = ",";}
-                                    echo $comma . "{ 'value' : '".$networkCourses[$j]['courseID']."', 'label' : '".$networkCourses[$j]['courseName']."'}"; 
+                                    echo $comma . "{ 'value' : '".$networkCourses[$j]['courseID']."', 'label' : '".addslashes($networkCourses[$j]['courseName'])."'}"; 
                                     $courseCount++;                                                                                                     
                                 } 
 

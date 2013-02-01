@@ -425,6 +425,8 @@ function Dscourse()
 			} else {
 				$(this).addClass('active');	
 			}
+		  top.DiscResize();
+		  top.VerticalHeatmap(); 
 	});
 
 	/* When show synthesis button is clicked */	

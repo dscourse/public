@@ -105,7 +105,7 @@ $(function(){
                 // Get people in this network 
         $userNetworks = $dscourse->GetUserNetworks($userID);
         $totalNetworks = count($userNetworks); 
-            $courseCount = 0; 
+        $courseCount = 0; 
         for($i = 0; $i < $totalNetworks; $i++) 
         {
             $networkCourses = $dscourse->NetworkCourses($userNetworks[$i]['networkID']);
@@ -114,8 +114,8 @@ $(function(){
                 {   
                     $roleCheck = $dscourse->UserCourseRole($networkCourses[$j]['courseID'], $userID);
                     if($roleCheck[0] == 'Instructor' || $roleCheck[0] == 'TA'){
-                        if($courseCount == 0){ $comma = "";} else { $comma = ",";}
-                        echo $comma . "{ 'value' : '".$networkCourses[$j]['courseID']."', 'label' : '".$networkCourses[$j]['courseName']."'}"; 
+                        if($courseCount == 0){ $comma = "";} else { $comma = ",";}                        
+                        echo  $comma . "{ 'value' : '".$networkCourses[$j]['courseID']."', 'label' : '".addslashes($networkCourses[$j]['courseName'])."'}"; 
                         $courseCount++;                                                                                                     
                     } 
 
