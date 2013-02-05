@@ -432,10 +432,16 @@ function Dscourse()
 		$('#dInfo').fadeToggle(); // toggle hide sidebar content
 		$('#dSynthesis').fadeToggle();
 		if($(this).hasClass('active') == true) {
-				$(this).removeClass('active');
-			} else {
-				$(this).addClass('active');	
-			}		
+                $(this).html('Connected Posts');
+                $(this).removeClass('btn-primary');
+                $(this).addClass('btn-warning');
+                $(this).removeClass('active');
+            } else {
+                $(this).html('Information');
+                $(this).removeClass('btn-warning');
+                $(this).addClass('btn-primary');
+                $(this).addClass('active'); 
+            }       	
 		if($('dSynthesis').is(':visible')){
 		    
 		}	
@@ -1292,10 +1298,22 @@ Dscourse.prototype.PostInSynthesis=function(postID)
 			} 	
 	   } 
 	 }	 
-	 if (count > 0){											// After collecting all the posts combine them into html output 
-	 	output = '<span class="synthesisWrap"> <b>' + count +'</b> Connections ' + output + '</span>'; 
-	 }
-	 return output; 
+	 if (count > 1){                                           // After collecting all the posts combine them into html output 
+        $(output).off('click');
+        output = '<span class="synthesisWrap"> <b>' + count +'</b> Connections ' + output + '</span>'; 
+     }
+     else if(count==1){
+     $(output).on('click', function () {
+        var thisPost = $(this).attr('synthesisSource'); 
+        var postRef = '.synthesisPost[sPostID="'+ thisPost +'"]';
+        $('#dSidebar').scrollTo( $(postRef), 400 , {offset:-100});
+        $(postRef).addClass('animated flash').css('background-color', 'rgba(255,255,176,1)').delay(5000).queue(function () {$(this).removeClass('highlight animated flash').css('background-color', 'whitesmoke');$(this).dequeue();});             
+        $('#dInfo').fadeOut(); // hide #dInfo
+        $('#dSynthesis').fadeIn(); // show #synthesis
+    
+        });
+     }
+     return output; 
 }
 
 Dscourse.prototype.ListSynthesisPosts=function(postList, sPostID, role){					// Populate unique participants.  

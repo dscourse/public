@@ -218,7 +218,7 @@ $(function(){
 				}
 		   });
 		   $('#discussionFormSubmit').on('click', function(e){
-			   if(!$('form[name="addDiscussionForm"]').valid())
+			   if(!$('form[name="editDiscussionForm"]').valid())
 					if($('.dCourseList').length == 0)
 						$('#discAddCourseLabel').html('A discussion must be linked to at least one course.').css('color', 'red');
 					else
