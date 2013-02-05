@@ -78,15 +78,15 @@ ini_set('display_errors',1);
 				$username = $launch->user->attrs['username'];
 				$first = $launch->user->attrs['firstName'];
 				$last = $launch->user->attrs['lastName'];
-				mysql_query("INSERT INTO users (username, firstName, lastName, sysRole) VALUES ('".$username."', '".$first."', '".$last."', 'pariticipant')");
+				mysql_query("INSERT INTO users (username, firstName, lastName, sysRole) VALUES ('".strtolower($username)."', '".$first."', '".$last."', 'pariticipant')");
 				$uId = mysql_insert_id(); 
 				//add user to network, course
 			}
 			else{
 				$uId = $u['UserID'];
 			}
-			mysql_query("INSERT IGNORE INTO networkUsers (userID, networkID, networkUserRole) VALUES('".$uId."', '".$netId."', 'member')");
-			mysql_query("INSERT IGNORE INTO courseRoles (userID, courseID, userRole) VALUES ('".$uId."','".$courseId."', 'Student')");
+			mysql_query("INSERT INTO networkUsers (userID, networkID, networkUserRole) SELECT '$uId', '$netId', 'member' FROM dual WHERE NOT EXISTS(SELECT * FROM networkUsers WHERE userID = '$uId')");
+			mysql_query("INSERT INTO courseRoles (userID, courseID, userRole) SELECT '$uId', '$courseId', 'Student' FROM dual WHERE NOT EXISTS(SELECT * FROM courseRoles WHERE userID = '$uId')");
 			//At this point we can be sure the network, course, discussion, and user exist in the DB
   		}
 	}

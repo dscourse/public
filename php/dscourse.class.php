@@ -289,7 +289,7 @@ class Dscourse {
 		 *  Checks to see whether discussion should be loaded based on user status and discussion status  
 		 */	
 		 
-		 $load = false; // Default status is to not load the discussion
+        $load = false; // Default status is to not load the discussion
 
 		$query = mysql_query("SELECT * FROM courseDiscussions  WHERE discussionID = '".$discID."'");		// Get courses this discussion belongs to
 
