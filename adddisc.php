@@ -76,7 +76,6 @@ $(function(){
         $userNetworks = $dscourse->GetUserNetworks($userID);
         $totalNetworks = count($userNetworks); 
         $courseCount = 0; 
-        $courseText = ''; 
         for($i = 0; $i < $totalNetworks; $i++) 
                 {
                     $networkCourses = $dscourse->NetworkCourses($userNetworks[$i]['networkID']);
@@ -87,13 +86,12 @@ $(function(){
                                 $roleCheck = $dscourse->UserCourseRole($networkCourses[$j]['courseID'], $userID);
                                 if($roleCheck[0] == 'Instructor' || $roleCheck[0] == 'TA'){
                                     if($courseCount == 0){ $comma = "";} else { $comma = ",";}
-                                    echo $comma . "{ 'value' : '".$networkCourses[$j]['courseID']."', 'label' : '".$networkCourses[$j]['courseName']."'}"; 
+                                    echo $comma . "{ 'value' : '".$networkCourses[$j]['courseID']."', 'label' : '".addslashes($networkCourses[$j]['courseName'])."'}"; 
                                     $courseCount++;                                                                                                     
                                 } 
 
                             }
                 }
-                echo json_encode($courseText); 
                 ?>
             ];
             
@@ -204,7 +202,7 @@ $(function(){
 
                 <ul class="nav">
                     <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li>
+                    <li class="navLevel"><a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li>
                 </ul>
 
                 <ul class="nav pull-right">
@@ -229,7 +227,7 @@ $(function(){
     <div id="addDiscussionPage" class=" wrap page">
         <header class="jumbotron subhead">
             <div class="container-fluid">
-                <h1>Add discussions <button id="addDiscussionCancel" class="btn pull-right">Cancel</button></h1>
+                <h1>Add discussions <a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>"" id="addDiscussionCancel" class="btn pull-right">Cancel</a></h1>
             </div>
         </header>
 
