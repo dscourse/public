@@ -6,38 +6,128 @@ ini_set('display_errors',1);
 
     include "../config/config.php"; 
     
-    if(empty($_SESSION['Username']))                        // Checks to see if user is logged in, if not sends the user to login.php
+   	//CHECK IF LTI
+	$LTI = FALSE;
+	$netId;
+	$courseId;
+	$discId;
+	$uId;
+	if(array_key_exists("HTTP_ORIGIN", $_SERVER)){
+		$origin = $_SERVER['HTTP_ORIGIN'];
+		$LTI_allowed = array('https://collab.itc.virginia.edu'=>'UVa Collab');
+  		if(array_key_exists($origin, $LTI_allowed)){
+  			$LTI = TRUE;
+			include "lti.php";
+			$postData =file_get_contents("php://input");
+			$launch = parseLTIrequest($postData);  
+			//Save vars for final pass:
+			//Step 1: CHECK if Network Exists=>networkId
+			$n = $LTI_allowed[$origin];
+			$net = mysql_query("SELECT * FROM networks WHERE networkName = '".$n."'");
+			$a = mysql_fetch_assoc($net);
+			if($net!=FALSE && empty($a)){ //Create the new network
+				$networkCode = rand(100000, 1000000000);
+				mysql_query("INSERT INTO networks (networkName, networkDesc, networkCode) VALUES('".$n."', 'The ".$n." network on dscourse', '".$networkCode."')"); 
+				$netId = mysql_insert_id(); 
+			}
+			else{
+				$netId = $a['networkID'];
+			}
+			//Step 2: CHECK if Course Exists=>networkId
+			$c = $launch->params['courseName'];
+			$course = mysql_query("SELECT * FROM courses WHERE courseName = '".$c."'");
+			$a = mysql_fetch_assoc($course);
+			if($course!=FALSE && empty($a)){ //Create the new course
+				$year = date('y');
+				$month = date('m');
+				$day = date('d');
+				$startDate = "20".$year."-".$month."-".$day;
+				$closeDate = "20".($year+1)."-".$month."-".$day;
+				mysql_query("INSERT INTO courses (courseName, courseStatus, courseStartDate, courseEndDate, courseDescription, courseView, courseParticipate) VALUES('".$c."', 'active', '".$startDate."', '".$closeDate."', '".$c." on dscourse', 'members', 'members')");
+				$courseId = mysql_insert_id(); 
+				//And add it to the network
+				mysql_query("INSERT INTO networkCourses (courseID, networkID) VALUES ('".$courseId."', '".$netId."')");
+			}
+			else{
+				$courseId = $a['courseID'];
+			}
+			//Step 3: CHECK if Discussion Exits=>courseId
+			$d = $launch->params['discID'];
+			$disc = mysql_query("SELECT * FROM discussions WHERE dTitle = '".$c."' AND dPrompt = '".$d."'");
+			$a = mysql_fetch_assoc($disc);
+			if($disc!=FALSE && empty($a)){ 
+				$year = date('y');
+				$month = date('m');
+				$day = date('d');
+				$startDate = "20".$year."-".$month."-".$day;			
+				$openDate = "20".$year."-".$month."-".$day;
+				$closeDate = "20".($year+1)."-".$month."-".$day;
+				mysql_query("INSERT INTO discussions (dTitle, dPrompt, dStartDate, dOpenDate, dEndDate) VALUES('".$c."', '".$d."', '".$startDate."', '".$openDate."', '".$closeDate."')");
+				$discId = mysql_insert_id(); 
+				//And add it to the course
+				mysql_query("INSERT INTO courseDiscussions (courseID, discussionID) VALUES ('".$courseId."', '".$discId."')");
+			}
+			else{
+				$discId = $a['dID'];
+			}
+			//Step 4: CHECK if User exists=>username 
+			$q = strtolower($launch->user->attrs['username']);
+			$user = mysql_query("SELECT * FROM users WHERE username = '".$q."'");
+			$u = mysql_fetch_assoc($user);
+			if($user!=FALSE && empty($a)){
+				$username = $launch->user->attrs['username'];
+				$first = $launch->user->attrs['firstName'];
+				$last = $launch->user->attrs['lastName'];
+				mysql_query("INSERT INTO users (username, firstName, lastName, sysRole) VALUES ('".$username."', '".$first."', '".$last."', 'pariticipant')");
+				$uId = mysql_insert_id(); 
+				//add user to network, course
+			}
+			else{
+				$uId = $u['UserID'];
+			}
+			mysql_query("INSERT IGNORE INTO networkUsers (userID, networkID, networkUserRole) VALUES('".$uId."', '".$netId."', 'member')");
+			mysql_query("INSERT IGNORE INTO courseRoles (userID, courseID, userRole) VALUES ('".$uId."','".$courseId."', 'Student')");
+			//At this point we can be sure the network, course, discussion, and user exist in the DB
+  		}
+	}
+    
+	
+    if(!$LTI && empty($_SESSION['Username']))                        // Checks to see if user is logged in, if not sends the user to login.php
     {  
         // is cookie set? 
-        if (array_key_exists('userCookieDscourse', $_COOKIE)){
+        if (isset($_COOKIE["userCookieDscourse"])){
              
              $getUserInfo = mysql_query("SELECT * FROM users WHERE UserID = '".$_COOKIE["userCookieDscourse"]."' ");  
   
             if(mysql_num_rows($getUserInfo) == 1)  
             {  
-                $row = mysql_fetch_array($getUserInfo);   
+                $row = mysql_fetch_array($checklogin);   
           
-                $_SESSION['Username'] = $row[1]; 
+                $_SESSION['Username'] = $username; 
                 $_SESSION['firstName'] = $row[3]; 
                 $_SESSION['lastName'] = $row[4];   
                 $_SESSION['LoggedIn'] = 1;  
                 $_SESSION['status'] = $row[5];
-                $_SESSION['UserID'] = $row[0]; 
-                header('Location: index.php'); 
-                
+                $_SESSION['UserID'] = $row[0];  
             } else {
                 echo "Error: Could not load user info from cookie.";
             }
             
         } else {
-
+        
             header('Location: info.php');                   // Not logged and and does not have cookie
         
         }
         
-    }  else {  
-
-       include_once('php/dscourse.class.php');
+    }  else {
+    	                                               // User is logged in, show page. 
+     	include_once('php/dscourse.class.php');
+        $courseInfo; 
+		$networkInfo;
+		$discussionInfo;
+		$load;
+		$discID;
+	if(!$LTI){
        $userID = $_SESSION['UserID'];           // Allocate userID to use throughout the page
        if(isset($_GET['d'])){                   // Check if discussion id is set. If not send them back to index
            $discID = $_GET['d']; 
@@ -52,9 +142,23 @@ ini_set('display_errors',1);
  
        $nID = $_GET['n'];
        $networkInfo = $dscourse->NetWorkInfo($nID);
-   
-       
-       $load = $dscourse->LoadDiscussion($discID, $userID, $nID); 
+   	   $load = $dscourse->LoadDiscussion($discID, $userID, $nID); 
+	}
+	else{
+		//CREATE A SESSION
+		$_SESSION['Username'] = $u['username']; 
+        $_SESSION['firstName'] = $u['firstName']; 
+        $_SESSION['lastName'] = $u['lastName'];   
+        $_SESSION['LoggedIn'] = 1;  
+        $_SESSION['status'] = 'Student';
+        $_SESSION['UserID'] = $u['UserID']; 
+		
+		$discID = $discId;
+		$discussionInfo = $dscourse->DiscussionInfo($discId); 
+		$courseInfo = $dscourse->CourseInfo($courseId);
+		$networkInfo = $dscourse->NetWorkInfo($netId);
+		$load = $dscourse->LoadDiscussion($discId, $uId, $netId);
+	}
        if($load){
 	 		 // Show content
 
