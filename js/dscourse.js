@@ -826,6 +826,9 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
     // Clear participant list
     var j, p, d, q, typeText, authorID, message, authorThumb, synthesisCount;
 
+    //clear recent posts
+    $('#recentContent').html('');
+    
     for ( j = 0; j < main.data.posts.length; j++) {// Go through all the posts
         d = main.data.posts[j];
 
@@ -846,7 +849,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
             main.timelineMax = time;
         }
         // END TIMELINE
-
+        
         /********** DISCUSSION SECTION ***********/
         authorID = main.getName(d.postAuthorId, 'first');
         // Get Authors name
@@ -954,6 +957,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
             }
 
             /********** RECENT ACTIVITY SECTION ***********/
+           //$('#recentContent').html('')
             if ($(selector).length > 0) {
                 //console.log(n);
                 var range = main.data.posts.length - 8;
@@ -1646,9 +1650,9 @@ Dscourse.prototype.DiscDateStatus = function(dID) {
     o = main.data.discussion;
     if (o.dID === dID) {
         // Compare dates of the discussion to todays date.
-        var beginDate = new Date(o.dStartDate.split(' ').join('T'));
-        var openDate = new Date(o.dOpenDate.split(' ').join('T'));
-        var endDate = new Date(o.dEndDate.split(' ').join('T'));
+        var beginDate = new Date(o.dStartDate);//.split(' ').join('T'));
+        var openDate = new Date(o.dOpenDate);//.split(' ').join('T'));
+        var endDate = new Date(o.dEndDate);//.split(' ').join('T'));
         var currentDate = new Date();
         if (currentDate >= beginDate && currentDate <= endDate) {// IF today's date bigger than start date and smaller than end date?
             if (currentDate <= openDate) {// If today's date smaller than Open Date
@@ -2082,7 +2086,7 @@ Dscourse.prototype.truncateText = function(text, length) {
 
 Dscourse.prototype.FormattedDate = function(date) {
     var d, m, curr_hour, dateString;
-    d = ( typeof date == "string") ? new Date(date.split(' ').join('T')) : new Date(date);
+    d = ( typeof date == "string") ? new Date(date) : new Date(date);
     // Write out the date in readable form.
     //console.log(d);
     m = d.toDateString();

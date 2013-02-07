@@ -199,14 +199,16 @@ $(function(){
 				}
 	         });
 	         $('#submitEditCourse').on('click', function(e){
-	         	if(!$('form[name="addCourseForm"]').valid())
+	         	if(!$('form[name="addCourseForm"]').valid()){
 				   	e.preventDefault();	
+				   	$('body').scrollTop(0);
 				var admin = $('#addPeopleBody').find('.btn').filter('.active').filter(function(){
 					return $(this).index() != 2;
 				});
 				if(admin.length == 0){
 					e.preventDefault();
 					alert('Every course must have at least one instructor or teaching assistant.');
+				}
 				}
 		   });
 	        

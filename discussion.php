@@ -85,8 +85,8 @@ ini_set('display_errors',1);
 			else{
 				$uId = $u['UserID'];
 			}
-			mysql_query("INSERT INTO networkUsers (userID, networkID, networkUserRole) SELECT '$uId', '$netId', 'member' FROM dual WHERE NOT EXISTS(SELECT * FROM networkUsers WHERE userID = '$uId')");
-			mysql_query("INSERT INTO courseRoles (userID, courseID, userRole) SELECT '$uId', '$courseId', 'Student' FROM dual WHERE NOT EXISTS(SELECT * FROM courseRoles WHERE userID = '$uId')");
+			mysql_query("INSERT INTO networkUsers (userID, networkID, networkUserRole) SELECT '$uId', '$netId', 'member' FROM dual WHERE NOT EXISTS(SELECT * FROM networkUsers WHERE userID = '$uId' AND networkID = '$netId')");
+			mysql_query("INSERT INTO courseRoles (userID, courseID, userRole) SELECT '$uId', '$courseId', 'Student' FROM dual WHERE NOT EXISTS(SELECT * FROM courseRoles WHERE userID = '$uId' AND courseID = '$courseId')");
 			//At this point we can be sure the network, course, discussion, and user exist in the DB
   		}
 	}

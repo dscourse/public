@@ -101,16 +101,17 @@ $(function(){
 			});	
 			
 			$('#roleButtons .btn').live('click', function () {
-				var buttonUserId = $(this).attr('userid');	
-				var selectorText = '#roleButtons .btn[userid="' + buttonUserId + '"]';
-				$(selectorText).removeClass('active');
-				$(this).addClass('active');
-				var role = $(this).text(); 
-				$(this).siblings('.userRoleInput').val(role);
+					var buttonUserId = $(this).attr('userid');	
+					var selectorText = '#roleButtons .btn[userid="' + buttonUserId + '"]';
+					$(selectorText).removeClass('active');
+					$(this).addClass('active');
+					var role = $(this).text(); 
+					$(this).siblings('.userRoleInput').val(role);
 			});
 			
 			var d = new Date();
 			$("#courseStartDate").datepicker({ dateFormat: "yy-mm-dd" }).datepicker('setDate',d);	// Date picker jquery ui initialize for the date fields
+			d.setFullYear(d.getFullYear()+1);
 			$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd" }).datepicker('setDate',d);			// Date picker jquery ui initialize for the date fields
 	
 			    
@@ -122,11 +123,18 @@ $(function(){
 	                return false;
 	            },
 	            select: function( event, ui ) {
-	            	console.log(ui)
-	                $('#addPeopleBody').append('<tr><td><input type="hidden" name="user[]" value="' + ui.item.value + '">' + ui.item.label + ' <\/td><td>' + ui.item.email  + ' <\/td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'+ ui.item.value + '">Instructor<\/button><button class="btn roleB" type="button" userid="'+ ui.item.value + '">TA<\/button><button type="button" class="btn active roleB" userid="'+ ui.item.value + '">Student</button><input type="hidden" name="user[]" class="userRoleInput" value="Student"></div></td><td><button class="btn removePeople" type="button">Remove</button> </td></tr>'); // Build the row of users. 
-	                console.log('did this. ')
-	                $( "#coursePeople" ).val('');
-	                return false;
+	            	var id = $(this).attr('userid');
+						if($('#addPeopleBody').find('input[value="'+ui.item.value+'"]').length>0){
+						alert("This user is already a member of the course.");
+						return false;
+					}
+					else{
+	            		console.log(ui)
+	                	$('#addPeopleBody').append('<tr><td><input type="hidden" name="user[]" value="' + ui.item.value + '">' + ui.item.label + ' <\/td><td>' + ui.item.email  + ' <\/td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'+ ui.item.value + '">Instructor<\/button><button class="btn roleB" type="button" userid="'+ ui.item.value + '">TA<\/button><button type="button" class="btn active roleB" userid="'+ ui.item.value + '">Student</button><input type="hidden" name="user[]" class="userRoleInput" value="Student"></div></td><td><button class="btn removePeople" type="button">Remove</button> </td></tr>'); // Build the row of users. 
+	                	console.log('did this. ')
+	                	$( "#coursePeople" ).val('');
+	                	return false;
+	                }
 	            }
 	        }); 
 	        
@@ -179,6 +187,7 @@ $(function(){
 	         });
 	         $('#submitNewCourse').on('click', function(e){
 	         	if(!$('form[name="addCourseForm"]').valid())
+	         		$('body').scrollTop(0);
 				   	e.preventDefault();	
 				var admin = $('#addPeopleBody').find('.btn').filter('.active').filter(function(){
 					return $(this).index() != 2;

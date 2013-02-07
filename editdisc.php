@@ -218,12 +218,14 @@ $(function(){
 				}
 		   });
 		   $('#discussionFormSubmit').on('click', function(e){
-			   if(!$('form[name="editDiscussionForm"]').valid())
+			   if(!$('form[name="editDiscussionForm"]').valid()){
+			   	$('body').scrollTop(0);
 					if($('.dCourseList').length == 0)
 						$('#discAddCourseLabel').html('A discussion must be linked to at least one course.').css('color', 'red');
 					else
 						$('#discAddCourseLabel').html('').css('color', '#333');
 			   	e.preventDefault();	
+			   }
 		   });
             
             $('#sDateTime > option[value="<?php echo $dStartHour[0]; ?>"]').attr('selected', 'selected');     

@@ -59,6 +59,7 @@ ini_set('display_errors',1);
     <title>dscourse | Edit Network </title>
     
     <?php include('php/header_includes.php');  ?>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
     <script type="text/javascript">
 $(function(){
             // Add some global variables about current user if we need them:
@@ -66,7 +67,39 @@ $(function(){
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
             
-
+            $('form[name="addCourseForm"]').validate({
+            	rules: {
+            		networkName : {
+            			required: true,
+            			maxlength: 255
+            		},
+            		networkDesc: {
+            			maxlength : 500
+            		}
+            	},
+            	messages: {
+            		networkName: "A network name is required."
+            	},
+            	highlight: function(label){
+					$(label).closest('.control-group').removeClass('success');
+					$(label).closest('.control-group').addClass('error');
+				},
+				success: function(label){
+					$(label).closest('.control-group').removeClass('error');
+					$(label).closest('.control-group').addClass('success');
+				},
+            });
+            
+			$('form[name="addCourseForm"]').on('click', function(e){
+			   if(!$('#courseForm').valid()){
+			   	$('body').scrollTop(0);
+					if($('.dCourseList').length == 0)
+						$('#discAddCourseLabel').html('A discussion must be linked to at least one course.').css('color', 'red');
+					else
+						$('#discAddCourseLabel').html('').css('color', '#333');
+			   	e.preventDefault();	
+			   }
+		   });
 });                        
     </script>
 </head>
