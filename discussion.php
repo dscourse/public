@@ -72,21 +72,29 @@ ini_set('display_errors',1);
 			}
 			//Step 4: CHECK if User exists=>username 
 			$q = strtolower($launch->user->attrs['username']);
-			$user = mysql_query("SELECT * FROM users WHERE username = '".$q."'");
+			$user = mysql_query("SELECT * FROM users WHERE username = '$q'");
 			$u = mysql_fetch_assoc($user);
-			if($user!=FALSE && empty($a)){
-				$username = $launch->user->attrs['username'];
+			if($user!=FALSE && empty($u)){
+				$username = strtolower($launch->user->attrs['username']);
 				$first = $launch->user->attrs['firstName'];
 				$last = $launch->user->attrs['lastName'];
-				mysql_query("INSERT INTO users (username, firstName, lastName, sysRole) VALUES ('".strtolower($username)."', '".$first."', '".$last."', 'pariticipant')");
+				mysql_query("INSERT INTO users (username, firstName, lastName, sysRole) VALUES ('$username', '$first', '$last', 'pariticipant')");
 				$uId = mysql_insert_id(); 
-				//add user to network, course
 			}
 			else{
+				exit("Exists");
 				$uId = $u['UserID'];
 			}
-			mysql_query("INSERT INTO networkUsers (userID, networkID, networkUserRole) SELECT '$uId', '$netId', 'member' FROM dual WHERE NOT EXISTS(SELECT * FROM networkUsers WHERE userID = '$uId' AND networkID = '$netId')");
-			mysql_query("INSERT INTO courseRoles (userID, courseID, userRole) SELECT '$uId', '$courseId', 'Student' FROM dual WHERE NOT EXISTS(SELECT * FROM courseRoles WHERE userID = '$uId' AND courseID = '$courseId')");
+			$netUser = mysql_query("SELECT * FROM networkUsers WHERE userID = '$uId' AND networkID = '$netId'");
+			$nu = mysql_fetch_assoc($netUser);
+			if($netUser!=FALSE && empty($nu)){
+				mysql_query("INSERT INTO networkUsers (userID, networkID, networkUserRole) VALUES ('$uId', '$netId', 'member')");
+			}
+			$courseRole = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uId' AND courseID = '$courseId'");
+			$cr = mysql_fetch_assoc($courseRole);
+			if($courseRole!=FALSE && empty($cr)){
+				mysql_query("INSERT INTO courseRoles (userID, courseID, userRole) VALUES ('$uId', '$courseId', 'Student')");
+			}
 			//At this point we can be sure the network, course, discussion, and user exist in the DB
   		}
 	}
@@ -114,12 +122,10 @@ ini_set('display_errors',1);
             }
             
         } else {
-        
             header('Location: info.php');                   // Not logged and and does not have cookie
-        
         }
         
-    }  else {
+    }else {
     	                                               // User is logged in, show page. 
      	include_once('php/dscourse.class.php');
         $courseInfo; 
@@ -146,12 +152,12 @@ ini_set('display_errors',1);
 	}
 	else{
 		//CREATE A SESSION
-		$_SESSION['Username'] = $u['username']; 
-        $_SESSION['firstName'] = $u['firstName']; 
-        $_SESSION['lastName'] = $u['lastName'];   
+		$_SESSION['Username'] = strtolower($launch->user->attrs['username']); 
+        $_SESSION['firstName'] = $launch->user->attrs['firstName'];
+        $_SESSION['lastName'] = $launch->user->attrs['lastName'];   
         $_SESSION['LoggedIn'] = 1;  
         $_SESSION['status'] = 'Student';
-        $_SESSION['UserID'] = $u['UserID']; 
+        $_SESSION['UserID'] = $uId; 
 		
 		$discID = $discId;
 		$discussionInfo = $dscourse->DiscussionInfo($discId); 
