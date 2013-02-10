@@ -314,12 +314,12 @@ $(function(){
                                 <label class="control-label" for="editCourseImage">Course Image</label>
                                 
                                 <div class="controls">
-                                    <img src="<?php echo $courseInfo['courseImage'];  ?>" />
+                                    <div id="imgPath"> <img src="<?php echo $courseInfo['courseImage'];  ?>" /></div>
                                     <div class="controls">
                                         <input type="hidden" name="courseImageURL" id="courseImageURL" value="<?php echo $courseInfo['courseImage'];  ?>"> <input type="file" name="editCourseImage" id="editCourseImage">
                                     </div>
 
-                                    <p class="help-inline">Add an image to the course description.</p>
+                                    <p class="help-inline">Please select a file below 5MB and in gif, png or  jpeg formats. </p>
                                 </div>
                             </div>
 

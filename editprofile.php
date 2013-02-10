@@ -156,7 +156,7 @@ $(function(){
                                 <div id="imgPath"><img src="<?php  echo $userInfo['userPictureURL']; ?>" ></div><input type="hidden" name="userPictureURL" id="userPictureURL" value="<?php  echo $userInfo['userPictureURL']; ?>"> <input type="file" name="userPicture" id="userPicture">
                             </div>
 
-                            <p class="help-inline">Upload a new image to change your picture. Your image must have jpeg, jpg, png or gif extension and be less than 2MB in size. </p>
+                            <p class="help-inline">Upload a new image to change your picture. Please select a file below 5MB and in gif, png or  jpeg formats. </p>
                         </div>
                     
 	                    <div class="control-group" id="aboutControl">

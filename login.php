@@ -38,7 +38,8 @@
                     data: {
                         username: username,
                         password: password,                                       // Sends the login data as array
-                        autologin: autologin
+                        autologin: autologin,
+                        action : 'login'
                     },
                       success: function(data) { 
                             
@@ -57,7 +58,7 @@
         }
         
         $('#loginSubmit').live('click', function() {                    // Execute login function when clicked
-            Login()                                         
+            Login();                                          
         }); 
         
         $(document).keypress(function(e) {
@@ -75,12 +76,12 @@
 <body class="login-page">
     <div class="container">
         <div class="row">
-            <div class="span4 offset4 animated fadeInDown">
+            <div class="span4 offset4 animated fadeInDown authForms">
                 <div class="page-header">
                     <h1>Login</h1>
                 </div>
 
-                <div class="well form-vertical ">
+                <div class="form-vertical">
                     <div id="loginNotify"></div>
 
                     <div id="loginform">
@@ -89,7 +90,7 @@
                         </div>
 
                         <div id="password_div">
-                            <label for="username">Password:</label> <input type="password" name="password" id="password">
+                            <label for="password">Password:</label> <input type="password" name="password" id="password">
                         </div>
 
                         <p><label>&nbsp;</label><input type="checkbox" id="autologin" name="autologin" value="Yes"> Remember Me on this computer</p>
@@ -98,9 +99,8 @@
                     </div>
                 </div>
 
-                <p><a href="index.php">Back to the home page</a></p>
+                <div class="link" > <i class="icon-arrow-left"></i> <a href="index.php">Back to the home page</a></div>
 
-                <p>To try out the system please use the guest account or contact us to become a beta tester.</p>
             </div>
         </div>
     </div>

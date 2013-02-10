@@ -7,8 +7,11 @@
 */
 	define('MyConst', TRUE);	// Avoids direct access to config.php
 	include "../../config/config.php"; 
-	
-  	$username = mysql_real_escape_string($_POST['username']);  
+
+	$action = $_POST['action']; 
+
+if($action == 'login'){
+	$username = mysql_real_escape_string($_POST['username']);  
     $password = md5(mysql_real_escape_string($_POST['password']));  
     $autologin = $_POST['autologin']; 
   	
@@ -37,6 +40,20 @@
     {  
         echo "<div class=\"alert alert-error animated flash \">The password/username does not match our records. Please try again</div>"; 
     } 
+}	
 
+if($action == 'register'){
+	foreach($_POST AS $key => $value) { $_POST[$key] = mysql_real_escape_string($value); } 
+	$pass = md5($_POST['password']); 
+	$sql = "INSERT INTO `users` ( `username` ,  `password` ,  `firstName` ,  `lastName` ) VALUES(  '{$_POST['username']}' ,  '{$pass}' ,  '{$_POST['firstName']}' ,  '{$_POST['lastName']}') "; 
+	$userNew = mysql_query($sql);
+	if($userNew){
+        echo "<div class=\"alert alert-success animated flash \">The user was created. Please <a href=\"login.php\"> Login to continue</a>.</div>"; 
+	} else {
+		echo "<div class=\"alert alert-error animated flash \">There was an error writing the user to the database. Please try again later.</div>"; 
+	}
+
+}
+  	
     
 /* End of file auth.php */

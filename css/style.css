@@ -183,14 +183,11 @@ margin-right: 3px;
 
  .masthead .inner {
 text-align: center; 
-/*
 background: whiteSmoke;
 border-bottom: 1px solid #DDD;
 box-shadow: inset 0px 0px 14px 0px #CCC;
-*/
+
 }
-
-
 
  .masthead .inner h2 {
 	margin-bottom:20px;
@@ -215,7 +212,23 @@ box-shadow: inset 0px 0px 14px 0px #CCC;
 } 
 
 
+ /********** login.php  ************/
 
+.authForms{
+background: url(../img/linedpaper.png);
+padding: 0px 30px;
+border: 1px solid #ccc;
+border-radius: 10px;	
+}
+.authForms h1 {
+text-align: center;
+color: #222;	
+}
+
+.authForms .link {
+text-align: center;
+padding: 10px 0px;
+}
  /********** network.php  ************/
 
 
@@ -254,6 +267,10 @@ box-shadow: inset 0px 0px 14px 0px #CCC;
 	font-size: 25px;
 }
 
+.navbar-inner {
+	height: 40px;
+//overflow: hidden;
+}
 /***********************************************************************************************/
 /*                					    DISCUSSIONS 		   							       */
 /***********************************************************************************************/
@@ -330,6 +347,35 @@ box-shadow: inset 0px 0px 14px 0px #CCC;
 	display:inline-block;
 	vertical-align:middle;
 }
+
+#checkNewPost {
+	position:fixed;
+	top:80px;
+	right:20px;
+	width:250px;
+	line-height:15px;
+	font-size:12px;
+}
+
+.refreshIcon {
+	font-size:15px;
+	font-weight:700;
+	display:block;
+	float:left;
+	border-right:1px solid #CCC;
+	margin:-2px 10px 0 0;
+	padding-right:10px;
+	font-size:18px;
+	padding-top:5px;
+	height:27px;
+}
+
+.refreshBox {
+	-webkit-box-shadow:0 0 10px 0 #999;
+	-moz-box-shadow:0 0 10px 0 #999;
+	box-shadow:0 0 10px 0 #999;
+}
+
 
 /* 
  *  Post Types
@@ -528,7 +574,7 @@ box-shadow:0px 0px 5px 0px #666;
 }
 
 #dSidebar {
-	padding:10px;
+	//padding:10px;
 	position: relative; 
 	z-index: 1;
 }
@@ -576,14 +622,22 @@ box-shadow:0px 0px 5px 0px #666;
 	margin:0;
 }
 
+.synTop {
+background: rgb(240, 240, 240);
+padding: 5px;
+margin: -5px -5px 7px -5px;}
+
 .synthesisPost {
-	margin-bottom:20px;
-	padding:5px 10px;
-	width:95%;
-line-height: 16px;
+margin-bottom: 20px;
+padding: 14px 10px;
+width: 88%;
 font-size: 13px;
+line-height: 16px;
 text-align: justify;
-white-space: pre-line;	
+white-space: pre-line;
+border: 1px solid #ddd;
+background: url(../img/linedpaper_80.png);
+	
 }
 
 .synthesisPosts {
@@ -625,13 +679,22 @@ padding-left: 10px;
 }
 
 .synthesisP {
-	margin-top: 17px; 
+	line-height: 20px;
+margin-top: 7px;
 }
 
 .editSynthesis {
-	float: right; 
+	float: right;
+margin-top: -9px;	 
 }
 
+.synButton {
+border: 1px solid #ccc;
+padding: 5px 15px;
+width: 40%;
+background: rgba(225, 225, 245, 0.28);
+border-radius: 5px;	
+}
 .information div p {
 	font-size: 12px;
 line-height: 18px;

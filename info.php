@@ -90,15 +90,11 @@
 
     <style>
     	body {
-	    	background: #fff url(img/dusk.jpg) top right repeat-x;
-	    	background-attachment:fixed;    	
+		    background: rgba(255,255,255,0.59);
 	    }
 	    .well {
 		    background: rgba(255,255,255,0.59);
-		    box-shadow: 0px 0px 11px -2px #333;
-		    -webkit-box-shadow: 0px 0px 11px -2px #333;
-		    -moz-box-shadow: 0px 0px 11px -2px #333;
-			border: none; 
+		   			border: none; 
 	    }
     </style>
 </head>
@@ -115,7 +111,7 @@
 
             <p id="indexSubtext">dscourse is a project that aims to provide the next generation platform-agnostic discussion tool for online learning. The framework of the tool has been developed at the Curry School of Education and it's currently under development with pilot testing planned for Fall 2012.</p>
 
-            <p class="download-info"><a class="btn btn-primary btn-large" href='login.php'>Sign in</a> <a href="#intro" class="btn btn-info btn-large">Learn More</a></p>
+            <p class="download-info"><a class="btn btn-primary " href='login.php'>Sign in</a> <a class="btn btn-success" href='register.php'>Register</a> <a href="#intro" class="btn btn-info">Learn More</a></p>
 
             <p></p>
 
