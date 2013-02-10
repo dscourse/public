@@ -166,6 +166,7 @@ ini_set('display_errors',1);
 		$load = $dscourse->LoadDiscussion($discId, $uId, $netId);
 	}
        if($load){
+	 		$currentSession = session_id(); 
 	 		 // Show content
 
 ?>
@@ -185,10 +186,9 @@ ini_set('display_errors',1);
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
-            <?php echo "var discID = " .  $discID . ";"; ?> 
-            
-    $(function(){
-    }); 
+            <?php echo "var discID = " .  $discID . ";"; ?>
+             <?php echo "var currentSession = '" .  $currentSession . "';"; ?>
+ 
     </script>
 </head>
 
@@ -199,9 +199,11 @@ ini_set('display_errors',1);
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID.'&n='.$nID; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
-                    <li class="navLevel"><a href="discussion.php?d=<?php echo $discID . '&c='. $cID. '&n='.$nID; ?>" id="discussionNav"><?php echo $discussionInfo['dTitle']; ?></a></li>
+                    <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo 
+                    $dscourse->myTruncate($networkInfo['networkName'], 15, ' ', '...'); ?></a></li>
+                    <li class="navLevel"><a href="course.php?c=<?php echo $cID.'&n='.$nID; ?>" id="coursesNav"><?php echo 
+                    $dscourse->myTruncate($courseInfo['courseName'], 15, ' ', '...'); ?></a></li>
+                    <li class="navLevel"><a href="discussion.php?d=<?php echo $discID . '&c='. $cID. '&n='.$nID; ?>" id="discussionNav"><?php echo $dscourse->myTruncate($discussionInfo['dTitle'], 15, ' ', '...'); ?></a></li>
 
                 </ul>
 
@@ -400,7 +402,7 @@ Your comment...
         </div><!-- close container -->
     </div><!-- End individual discussion page -->
 
-
+<div id="checkNewPost"></div>
     <?php
 	 		
  		} else {

@@ -12,6 +12,7 @@ ini_set('display_errors',1);
 	define('MyConst', TRUE);									// Avoids direct access to config.php
 	include "../../config/config.php"; 
 	include "dscourse.class.php"; 
+	include "simpleImage.class.php"; 
 
  	$action	= $_POST['action'];									// What the ajax call asks the php to do. 
 	$username = $_SESSION['Username'];
@@ -69,9 +70,12 @@ ini_set('display_errors',1);
     }  
     if ($action == 'checkNewPosts')
     {
-    	CheckNewPosts(); 
-    
+    	CheckNewPosts();     
     }	
+	if ($action == 'addLog')
+    {
+    	AddLog(); 
+    }
         
 function UpdateNetwork(){
  	/**
@@ -143,10 +147,11 @@ function UpdateNetwork(){
 	if($_FILES["userPicture"]) {
 		// File upload
 	 	$allowedExts = array("jpg", "jpeg", "gif", "png");
-		$extension = end(explode(".", $_FILES["userPicture"]["name"]));
+	 	$uploadedName = urlencode($_FILES["userPicture"]["name"]); 
+		$extension = end(explode(".", $uploadedName));
 		$uploadLocation = "../uploads/userImg/"; 
 		$randomName = rand(100000, 100000000000000000);
-		$newName = $randomName . '.' . $extension; 
+		$newName = $randomName . '_r' . '.' . $extension ; 
 		
 		$message = ""; 
 		
@@ -167,10 +172,17 @@ function UpdateNetwork(){
 				      }
 				    else
 				      {
-				    move_uploaded_file($_FILES["userPicture"]["tmp_name"], $uploadLocation . $newName);
+				      	## Image resize block
+				      	   $image = new SimpleImage();
+						   $image->load($_FILES["userPicture"]["tmp_name"]);
+						   $image->resizeToWidth(400);
+						   $image->save($_FILES["userPicture"]["tmp_name"]);
+						## End of image resize block
+
+					      move_uploaded_file($_FILES["userPicture"]["tmp_name"], $uploadLocation . $newName );
 				    
 				    // If things go well Write to the database 
-						$userPicture =  'uploads/userImg/'. $newName;
+						$userPicture =  'uploads/userImg/'. $newName ;
 				    }
 			    }
 		  } else {
@@ -239,16 +251,17 @@ function AddCourse() {
 	if($_FILES["courseImage"]["size"] > 0 ) {
 		// File upload
 	 	$allowedExts = array("jpg", "jpeg", "gif", "png");
-		$extension = end(explode(".", $_FILES["courseImage"]["name"]));
+	 	$uploadedName = urlencode($_FILES["courseImage"]["name"]); 
+		$extension = end(explode(".", $uploadedName));
 		$uploadLocation = "../uploads/courseImg/"; 
 		$randomName = rand(100000, 100000000000000000);
-		$newName = $randomName . '.' . $extension; 
+		$newName = $randomName . '_r' .'.' . $extension; 
 		
 		if ((($_FILES["courseImage"]["type"] == "image/gif")
 		|| ($_FILES["courseImage"]["type"] == "image/jpeg")
 		|| ($_FILES["courseImage"]["type"] == "image/png")
 		|| ($_FILES["courseImage"]["type"] == "image/pjpeg"))
-		&& ($_FILES["courseImage"]["size"] < 2000000)
+		&& ($_FILES["courseImage"]["size"] < 5242880)   // file size less than 5MB
 		&& in_array($extension, $allowedExts))
 		  {
 			  if ($_FILES["courseImage"]["error"] > 0) {
@@ -261,7 +274,15 @@ function AddCourse() {
 				      }
 				    else
 				      {
-				    move_uploaded_file($_FILES["courseImage"]["tmp_name"], $uploadLocation . $newName);
+				    
+					     ## Image resize block
+				      	   $image = new SimpleImage();
+						   $image->load($_FILES["courseImage"]["tmp_name"]);
+						   $image->resizeToWidth(400);
+						   $image->save($_FILES["courseImage"]["tmp_name"]);
+						## End of image resize block
+						
+					      move_uploaded_file($_FILES["courseImage"]["tmp_name"], $uploadLocation . $newName);
 				    
 				    // If things go well Write to the database 
 						$courseImage =  'uploads/courseImg/'. $newName;
@@ -331,7 +352,7 @@ function EditCourse() {
 		|| ($_FILES["editCourseImage"]["type"] == "image/jpeg")
 		|| ($_FILES["editCourseImage"]["type"] == "image/png")
 		|| ($_FILES["editCourseImage"]["type"] == "image/pjpeg"))
-		&& ($_FILES["editCourseImage"]["size"] < 2000000)
+		&& ($_FILES["editCourseImage"]["size"] < 5242880)	// File size less than 5MB
 		&& in_array($extension, $allowedExts))
 		  {
 			  if ($_FILES["editCourseImage"]["error"] > 0) {
@@ -591,24 +612,25 @@ function CheckNewPosts()
 			$currentDiscussion =   $_POST['currentDiscussion'];
 			$currentPosts =   $_POST['currentPosts'];
 			 
-			$discussionGet = mysql_query("SELECT * FROM `discussions` WHERE `dID` = '".$currentDiscussion."'");  	// Get everything 
-	
-			$r = mysql_fetch_array($discussionGet); 
-								
-			$posts = $r['dPosts']; 	
-			
-			$postsArray = explode(",", $posts); 				
-			$currentPostsArray = explode(",", $currentPosts); 
+			 
+	// Get posts within this discussion
+			$postData = mysql_query("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$currentDiscussion."'");
+			$num_rows = mysql_num_rows($postData);
+			$posts = array(); 	
+			if($num_rows > 0){
+				$i = 0;
+				while($row = mysql_fetch_array($postData)) :
+					array_push($posts, $row);
+					$i++;
+				endwhile;
+			} 
 
-			$numNew = count($postsArray);
-			$numOld = count($currentPostsArray);
+			$numNew = count($posts);
+			$numOld = count($currentPosts);
 			
 			$newposts = array(); 
 			if($numNew > $numOld){
 				$newposts['result'] = $numNew-$numOld;
-				for($i = $numOld; $i <= $numNew-1; $i++ ){
-					$newposts['posts'] .=   $postsArray[$i] . ',';
-				}
 			} else {
 				$newposts['result'] = 0;
 			}
@@ -617,10 +639,28 @@ function CheckNewPosts()
 }
 
 
+function AddLog()
+{
+			$log = $_POST['log'];
 
-
-
-
+				$logUserID	= $log['logUserID'];
+				$logPageType= $log['logPageType'];
+				$logPageID	= $log['logPageID'];
+				$logAction	= $log['logAction'];
+				$logActionID= $log['logActionID'];
+				$logMessage	= $log['logMessage'];
+				$logUserAgent	= $log['logUserAgent'];
+				$logSessionID   = $log['logSessionID']; 
+																
+			$addLogQuery = mysql_query("INSERT INTO logs (logUserID, logPageType,logPageID, logAction, logActionID, logMessage, logUserAgent, logSessionID) VALUES('".$logUserID."', '".$logPageType."', '".$logPageID."','".$logAction."','".$logActionID."','".$logMessage."','".$logUserAgent."','".$logSessionID."')"); 
+			if($addLogQuery){
+				echo 1; 
+			} else {
+				echo 0; 
+			}						
+				
+}
+			
 
 
 

@@ -330,7 +330,7 @@ $(function(){
                                         <input type="hidden" name="courseImageURL" id="courseImageURL" value="/assets/img/dscourse_logo4.png"> <input type="file" name="courseImage" id="courseImage">
                                     </div>
 
-                                    <p class="help-inline">Add an image to the course description.</p>
+                                    <p class="help-inline">Please select a file below 5MB and in gif, png or  jpeg formats.</p>
                                 </div>
                             </div>
 
