@@ -1650,9 +1650,9 @@ Dscourse.prototype.DiscDateStatus = function(dID) {
     o = main.data.discussion;
     if (o.dID === dID) {
         // Compare dates of the discussion to todays date.
-        var beginDate = new Date(o.dStartDate);//.split(' ').join('T'));
-        var openDate = new Date(o.dOpenDate);//.split(' ').join('T'));
-        var endDate = new Date(o.dEndDate);//.split(' ').join('T'));
+        var beginDate = ($.browser.webkit)?new Date(o.dStartDate):new Date(o.dStartDate.split(' ').join('T'));
+        var openDate = ($.browser.webkit)?new Date(o.dOpenDate):new Date(o.dOpenDate.split(' ').join('T'));
+        var endDate = ($.browser.webkit)?new Date(o.dEndDate):new Date(o.dEndDate.split(' ').join('T'));
         var currentDate = new Date();
         if (currentDate >= beginDate && currentDate <= endDate) {// IF today's date bigger than start date and smaller than end date?
             if (currentDate <= openDate) {// If today's date smaller than Open Date
@@ -2086,9 +2086,9 @@ Dscourse.prototype.truncateText = function(text, length) {
 
 Dscourse.prototype.FormattedDate = function(date) {
     var d, m, curr_hour, dateString;
-    d = ( typeof date == "string") ? new Date(date) : new Date(date);
+    d = ($.browser.webkit) ? new Date(date): new Date(date.split(' ').join('T'));
     // Write out the date in readable form.
-    //console.log(d);
+    console.log(d);
     m = d.toDateString();
     curr_hour = d.getHours();
     dateString = m + '  ' + curr_hour + ':00';
