@@ -13,7 +13,7 @@ ini_set('display_errors',1);
 	$discId;
 	$uId;
 	if(array_key_exists("HTTP_ORIGIN", $_SERVER)){
-		$origin = $_SERVER['HTTP_ORIGIN'];
+		$origin = $_SERVER['HTTP_ORIGIN'];		
 		$LTI_allowed = array('https://collab.itc.virginia.edu'=>'UVa Collab');
   		if(array_key_exists($origin, $LTI_allowed)){
   			$LTI = TRUE;
