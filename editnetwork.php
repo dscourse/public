@@ -88,6 +88,9 @@ $(function(){
 					$(label).closest('.control-group').removeClass('error');
 					$(label).closest('.control-group').addClass('success');
 				},
+				errorPlacement: function(error, element){
+					$(element).next('.help-inline').html(error);
+				} 
             });
             
 			$('form[name="addCourseForm"]').on('click', function(e){

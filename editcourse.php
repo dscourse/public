@@ -132,8 +132,12 @@ $(function(){
 				$(this).siblings('.userRoleInput').val(role);
 			});
 
-			$("#courseStartDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
-			$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd" });			// Date picker jquery ui initialize for the date fields
+			$("#courseStartDate").datepicker({ dateFormat: "yy-mm-dd", onSelect: function(){
+				$('.hasDatepicker').trigger('blur');
+			}});			// Date picker jquery ui initialize for the date fields
+			$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd", onSelect: function(){
+				$('.hasDatepicker').trigger('blur');
+			}});			// Date picker jquery ui initialize for the date fields
 	
 			    
 		    $( "#coursePeople" ).autocomplete({
@@ -196,19 +200,22 @@ $(function(){
 				success: function(label){
 					$(label).closest('.control-group').removeClass('error');
 					$(label).closest('.control-group').addClass('success');
-				}
+				},
+				errorPlacement: function(error, element){
+					$(element).next('.help-inline').html(error);
+				} 
 	         });
 	         $('#submitEditCourse').on('click', function(e){
 	         	if(!$('form[name="addCourseForm"]').valid()){
 				   	e.preventDefault();	
 				   	$('body').scrollTop(0);
+				}
 				var admin = $('#addPeopleBody').find('.btn').filter('.active').filter(function(){
-					return $(this).index() != 2;
+					return $(this).html() != "Student";
 				});
 				if(admin.length == 0){
 					e.preventDefault();
 					alert('Every course must have at least one instructor or teaching assistant.');
-				}
 				}
 		   });
 	        

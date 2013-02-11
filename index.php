@@ -114,11 +114,9 @@ ini_set('display_errors',1);
 <html lang="en">
 <head>
     <title>dscourse</title>
-    
-
     <?php include('php/header_includes.php');  ?>
-
-
+    
+	<script type="text/javascript" src="js/counter.js"></script>
     <script type="text/javascript">
 		$(function(){
 			// Add some global variables about current user if we need them:
@@ -126,6 +124,7 @@ ini_set('display_errors',1);
 		    <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
 		    <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
 
+			
 			$('.addNetworkOpen').on('click', function () {
 				$('#networkName').val(' '); // clear network Name
 				$('#networkDesc').val(' '); // clear Network description
@@ -135,15 +134,8 @@ ini_set('display_errors',1);
 			$('.joinNetworkOpen').on('click', function () {
 				$('#networkCode').val(' '); // clear Network code
 			}); 
-
-
-
-
-
-			
+	
 			$('#networkName').on('keyup',function(){
-				console.log(1);
-				console.log(!/^\s*$/.test($(this).val()))
 				if(!/^\s*$/.test($(this).val())){
 					$(this).css('border-color', '#356635');
 					$('label[for="networkName"]').css('color', '#356635');
@@ -151,14 +143,48 @@ ini_set('display_errors',1);
 				else{
 					$('#networkName').css('border-color', '#953B39');
 					$('label[for="networkName"]').css('color', '#953B39');
+					//$(this).closest('.control-group').find('control-label').html('A network name is required')
 				}
 			});
+			$('#networkDesc').on('keyup', function(){
+				if(!/^\s*$/.test($(this).val())){
+					if($(this).val().length > 500){
+						$("#networkDesc").css('border-color', '#953B39');
+						$('label[for="networkDesc"]').css('color', '#953B39');	
+						//$(this).closest('.control-group').find('control-label').html('A network description is required')
+					}
+					else{
+						$(this).css('border-color', '#356635');
+						$('label[for="networkDesc"]').css('color', '#356635');
+						//$(this).closest('.control-group').find('control-label').html('')
+					}
+				}
+				else{
+					$("#networkDesc").css('border-color', '#953B39');
+					$('label[for="networkDesc"]').css('color', '#953B39');
+					//$(this).closest('.control-group').find('control-label').html('A network name is required')
+				}
+			});
+			//Word counter
+			$("#networkDesc").counter({min:0, max:500});
+			
 			// Add Network when #addNetwork is clicked 
 			$('#addNetwork').on('click', function () {
-				if($('#networkName').val()==' ' || $('#networkName').val()==''){
+				var valid = true; 
+				if($('#networkName').val()==' ' || $('#networkName').val()==''){ 
 					$('#networkName').css('border-color', '#953B39');
 					$('label[for="networkName"]').css('color', '#953B39');
+					//$(this).closest('.control-group').find('control-label').html('A network name is required')
+					valid = false;
 				}
+				if($("#networkDesc").val() == '' || $("#networkDesc").val() == ' '){
+					$("#networkDesc").css('border-color', '#953B39');
+					$('label[for="networkDesc"]').css('color', '#953B39');
+					//$(this).closest('.control-group').find('control-label').html('A network description is required')
+					valid = false;
+				}
+				if(!valid)
+					return false;
 				else{
 				var networkID 	= 0; // This is a new network, there is no ID yet
 				var networkName = $('#networkName').val(); // get network Name

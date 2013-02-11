@@ -139,10 +139,20 @@ $(function(){
                }
             });
 
-            $("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd" });           // Date picker jquery ui initialize for the date fields
-            $("#discussionOpenDate").datepicker({ dateFormat: "yy-mm-dd" });
-            $("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd" });
-
+            $("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd", onSelect: function(){
+				$('.hasDatepicker').trigger('blur');
+			}});          
+            $("#discussionOpenDate").datepicker({ dateFormat: "yy-mm-dd" ,onSelect: function(){
+				$('.hasDatepicker').trigger('blur');
+			}});
+            $("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd" ,onSelect: function(){
+				$('.hasDatepicker').trigger('blur');
+			}});
+			$('.hasDatepicker').next('select').on('change', function(){
+				console.log(1);
+				$('.hasDatepicker').trigger('blur');
+			});
+			
                 
             $( "#discussionCourses" ).autocomplete({
                         minLength: 0,
@@ -152,6 +162,12 @@ $(function(){
                             return false;
                         },
                         select: function( event, ui ) {
+                        	if($('#addCoursesBody').children().filter(function(i){
+                        		return $('#addCoursesBody').children().eq(i).attr('id') == ui.item.value
+                        	}).length > 0){
+                        		alert("This course has already been added.");
+                        		return false;
+                        	}
                             $('#addCoursesBody').append('<tr id="' + ui.item.value +'" class="dCourseList"><td>'+ ui.item.label + ' </td><td><button class="btn removeCourses" courseID="' + ui.item.value + '">Remove</button> <input type="hidden" name="course[]" value="' + ui.item.value + '"> <input class="deleteToggle" courseID="' + ui.item.value + '" type="hidden" name="course[]" value="add"></td></tr>');               		     
                             $('.discussionCourses').val(' ').focus();
                             return false;
@@ -161,30 +177,28 @@ $(function(){
             //validation for Jquery Datepickers         
            $.validator.addMethod("logicalDate", function(value, el){
 				var ind = $(el).index('.hasDatepicker');
-		        var one = false;
-		        var twp = false;
-		        var three = false;
+		        var valid = false;
+		        var start = $('#discussionStartDate').datepicker('getDate');
+		        start.setHours($('#discussionStartDate').next('select').val());
+		        var open = $("#discussionOpenDate").datepicker('getDate');
+		        open.setHours($("#discussionOpenDate").next('select').val());
+		        var close = $("#discussionEndDate").datepicker('getDate');
+		        close.setHours($("#discussionEndDate").next('select').val());
 				switch(ind){ 
 					case 0:
-						one = ($(el).datepicker('getDate')!=null);
-						two = ($("#discussionOpenDate").datepicker('getDate')==null || $(el).datepicker('getDate')<= $("#discussionOpenDate").datepicker('getDate')); 
-						three =  ($("#discussionEndDate").datepicker('getDate')==null || $(el).datepicker('getDate') <= $("#discussionEndDate").datepicker('getDate'));
+						valid = start <= open && start < close;
 					break;
 				    case 1:
-						one = ($(el).datepicker('getDate')!=null);
-						two = ($(el).datepicker('getDate') >= $("#discussionStartDate").datepicker('getDate') || $("#discussionStartDate").datepicker('getDate')==null);
-						three = ($(el).datepicker('getDate') <= $("#discussionEndDate").datepicker('getDate')|| $("#discussionEndDate").datepicker('getDate')==null);
+				    	valid = open >= start && open <= close;
 					break
 					case 2:
-						one = ($(el).datepicker('getDate')!=null);
-						two = ($(el).datepicker('getDate') >= $("#discussionStartDate").datepicker('getDate')||$("#discussionStartDate").datepicker('getDate')==null);
-						three = ($(el).datepicker('getDate') >= $("#discussionOpenDate").datepicker('getDate') || $("#discussionOpenDate").datepicker('getDate')==null);
+						valid = close >= open && close > start;
 					break;
 				  }
-				return one&&two&&three;
+				return valid;
 		   }, "Please make sure your dates make sense.");
 		   //general form validation rules/messages         
-           $('form[name="addDiscussionForm"]').validate({
+           $('form[name="editDiscussionForm"]').validate({
 				rules: {
 					discussionQuestion: {
 						required: true,
@@ -215,7 +229,10 @@ $(function(){
 				success: function(label){
 					$(label).closest('.control-group').removeClass('error');
 					$(label).closest('.control-group').addClass('success');
-				}
+				},
+				errorPlacement: function(error, element){
+					$(element).siblings('.help-inline').html(error);
+				} 
 		   });
 		   $('#discussionFormSubmit').on('click', function(e){
 			   if(!$('form[name="editDiscussionForm"]').valid()){
@@ -225,6 +242,10 @@ $(function(){
 					else
 						$('#discAddCourseLabel').html('').css('color', '#333');
 			   	e.preventDefault();	
+			   }
+			   else if($('#addCoursesBody').children().length == 0){
+			   		alert("Every discussion must be associated with at least one course.");
+			   		e.preventDefault();	
 			   }
 		   });
             
