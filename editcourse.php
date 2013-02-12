@@ -88,6 +88,7 @@ ini_set('display_errors',1);
     <title>dscourse | Edit Course</title>
     
     <?php include('php/header_includes.php');  ?>
+    	<script src="js/counter.js" type="text/javascript"></script>
      <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
     <script type="text/javascript">
     //An auxillary function used to check whether or not a given course has an intructor/TA
@@ -154,6 +155,7 @@ $(function(){
 	                return false;
 	            }
 	        }); 
+	        $('#courseDescription').counter({max:0});
 	        
 	        $.validator.addMethod("logicalDate", function(value, el){
 	        	var one = false;
@@ -292,7 +294,7 @@ $(function(){
 
                                 <div class="controls">
                                     <textarea class="span6 textareaFixed" id="courseDescription" name="courseDescription"><?php echo $courseInfo['courseDescription'];  ?></textarea>
-
+									<span class="wordCount"></span>
                                     <p class="help-inline">Provide a summary for the course.</p>
                                 </div>
                             </div>

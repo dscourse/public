@@ -91,8 +91,8 @@ ini_set('display_errors',1);
     
      <?php include('php/header_includes.php');  ?>
    
-
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
+    <script src="js/counter.js" type="text/javascript"></script>
     <script type="text/javascript">
 $(function(){
             // Add some global variables about current user if we need them:
@@ -152,7 +152,8 @@ $(function(){
 				console.log(1);
 				$('.hasDatepicker').trigger('blur');
 			});
-			
+				
+			$('#discussionPrompt').counter({max:500});
                 
             $( "#discussionCourses" ).autocomplete({
                         minLength: 0,
@@ -318,9 +319,8 @@ $(function(){
 
                                 <div class="controls">
                                     <textarea class="span6 textareaFixed" id="discussionPrompt" name="discussionPrompt"><?php echo $discussionInfo['dPrompt']; ?></textarea> 
-</textarea>
-
-                                    <p class="help-inline">If you like you can provide prompts to get into details or explain directions for the discussion. Please limit your text to 1000 characters.</p>
+                                    <span class= "wordCount"></span>
+                                   	<p class="help-inline">If you like you can provide prompts to get into details or explain directions for the discussion. Please limit your text to 1000 characters.</p>
                                 </div>
                             </div>
 

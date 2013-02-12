@@ -61,6 +61,7 @@ ini_set('display_errors',1);
 <head>
     <title>dscourse | Add discussion</title>
      <?php include('php/header_includes.php');  ?>
+     <script src="js/counter.js" type="text/javascript"></script>
      <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
     <script type="text/javascript">
 $(function(){
@@ -135,6 +136,8 @@ $(function(){
                             return false;
                         }
                     }); 
+           $("#discussionPrompt").counter({max:500});         
+                    
            //validation for Jquery Datepickers         
            $.validator.addMethod("logicalDate", function(value, el){
 				var ind = $(el).index('.hasDatepicker');
@@ -194,7 +197,7 @@ $(function(){
 					$(label).closest('.control-group').addClass('success');
 				},
 				errorPlacement: function(error, element){
-					$(element).next('.help-inline').html(error);
+					$(element).siblings('.help-inline').html(error);
 				} 
 		   });
 		   $('#discussionFormSubmit').on('click', function(e){
@@ -274,11 +277,10 @@ Jquery validate success message
 
                             <div class="control-group" id="discussionPromptControl">
                                 <label class="control-label" for="discussionPrompt">Discussion Prompt</label>
-
+				
                                 <div class="controls">
-                                    <textarea class="span6 textareaFixed" id="discussionPrompt" name="discussionPrompt">
-</textarea>
-
+                                    <textarea class="span6 textareaFixed" id="discussionPrompt" name="discussionPrompt"></textarea>
+									<span class= "wordCount"></span>
                                     <p class="help-inline">If you like you can provide prompts to get into details or explain directions for the discussion. Please limit your text to 500 characters.</p>
                                 </div>
                             </div>

@@ -137,32 +137,30 @@ ini_set('display_errors',1);
 	
 			$('#networkName').on('keyup',function(){
 				if(!/^\s*$/.test($(this).val())){
-					$(this).css('border-color', '#356635');
-					$('label[for="networkName"]').css('color', '#356635');
+					$(this).closest('.control-group').removeClass('error');
+					$(this).closest('.control-group').addClass('success');
 				}
 				else{
-					$('#networkName').css('border-color', '#953B39');
-					$('label[for="networkName"]').css('color', '#953B39');
-					//$(this).closest('.control-group').find('control-label').html('A network name is required')
+					$(this).closest('.control-group').removeClass('success');	
+					$(this).closest('.control-group').addClass('error');
 				}
 			});
 			$('#networkDesc').on('keyup', function(){
 				if(!/^\s*$/.test($(this).val())){
 					if($(this).val().length > 500){
-						$("#networkDesc").css('border-color', '#953B39');
-						$('label[for="networkDesc"]').css('color', '#953B39');	
-						//$(this).closest('.control-group').find('control-label').html('A network description is required')
+						$(this).closest('.control-group').removeClass('success');
+						$(this).closest('.control-group').addClass('error');
+						$(this).siblings('.help-inline').html('*required');
 					}
 					else{
-						$(this).css('border-color', '#356635');
-						$('label[for="networkDesc"]').css('color', '#356635');
-						//$(this).closest('.control-group').find('control-label').html('')
+						$(this).closest('.control-group').addClass('success');
+						$(this).closest('.control-group').removeClass('error');
 					}
 				}
 				else{
-					$("#networkDesc").css('border-color', '#953B39');
-					$('label[for="networkDesc"]').css('color', '#953B39');
-					//$(this).closest('.control-group').find('control-label').html('A network name is required')
+					$(this).closest('.control-group').removeClass('success');
+					$(this).closest('.control-group').addClass('error');
+					$(this).siblings('.help-inline').html('*required');
 				}
 			});
 			//Word counter
@@ -172,15 +170,13 @@ ini_set('display_errors',1);
 			$('#addNetwork').on('click', function () {
 				var valid = true; 
 				if($('#networkName').val()==' ' || $('#networkName').val()==''){ 
-					$('#networkName').css('border-color', '#953B39');
-					$('label[for="networkName"]').css('color', '#953B39');
-					//$(this).closest('.control-group').find('control-label').html('A network name is required')
+					$('#networkName').closest('.control-group').addClass('error');
+					$('#networkName').siblings('.help-inline').html('*required');
 					valid = false;
 				}
 				if($("#networkDesc").val() == '' || $("#networkDesc").val() == ' '){
-					$("#networkDesc").css('border-color', '#953B39');
-					$('label[for="networkDesc"]').css('color', '#953B39');
-					//$(this).closest('.control-group').find('control-label').html('A network description is required')
+					$("#networkDesc").closest('.control-group').addClass('error');
+					$("#networkDesc").siblings('.help-inline').html('*required');
 					valid = false;
 				}
 				if(!valid)
@@ -372,12 +368,15 @@ ini_set('display_errors',1);
 		    <label class="control-label" for="networkName">Name of Network</label>
 		    <div class="controls">
 		      <input type="text" id="networkName" placeholder="">
+		      <p class="help-inline"></p>
 		    </div>
 		  </div>
 		  <div class="control-group">
 		    <label class="control-label" for="networkDesc">Network Description</label>
 		    <div class="controls">
 		      <textarea rows="6" class="span4" id="networkDesc"></textarea>
+		      <span class="wordCount"></span>
+		      <p class="help-inline"></p>
 		    </div>
 		  </div>
 		</div>	  

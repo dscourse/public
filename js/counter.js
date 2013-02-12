@@ -14,7 +14,9 @@
                     left: '5px'
                 }
             }).addClass('wordCount'));
-        } 
+        }
+        else
+            $(this).siblings('.wordCount').css('vertical-align', 'bottom').html($(this).val().length + '/' + max);
         
         $(this).on('keyup', function(){
             if($(this).val().length > max || $(this).val().length < min)

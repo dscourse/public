@@ -144,7 +144,7 @@ $(function(){
 	                }
 	            }
 	        }); 
-	        //$('#courseDescription').counter({min:0, max:500});
+	        $('#courseDescription').counter({max:500});
 	        
 	        $.validator.addMethod("logicalDate", function(value, el){
 	        	var one = false;
@@ -306,11 +306,10 @@ $(function(){
 
                             <div class="control-group">
                                 <label class="control-label" for="courseDescription">Course Description</label>
-
+								
                                 <div class="controls">
-                                    <textarea class="span6 textareaFixed" id="courseDescription" name="courseDescription">
-</textarea>
-
+                                    <textarea class="span6 textareaFixed" id="courseDescription" name="courseDescription"></textarea>
+									<span class="wordCount"></span>
                                     <p class="help-inline">Provide a summary for the course.</p>
                                 </div>
                             </div>
