@@ -137,9 +137,6 @@ $(function(){
     <header class="jumbotron subhead">
         <div class="container-fluid">
             <h1>Edit Network</h1>
-                 <div id="addCourseCancel" class="pull-right">
-                    <a href="network.php?n=<?php echo $nID; ?>" class="btn">Cancel</a>
-                </div>
         </div>
     </header>
 
@@ -165,11 +162,23 @@ $(function(){
 						      <textarea rows="6" class="span4" name="networkDesc" id="networkDesc"><?php  echo $networkInfo['networkDesc']; ?></textarea>
 						    </div>
 						  </div>
+						 <div class="control-group">
+						    <label class="control-label" for="networkType">Network Access Type</label>
+						    <div class="controls">
+							    <select id="networkType" name="networkType">
+								  <option value="private" <?php if($networkInfo['networkStatus'] == 'private') { echo 'selected'; } ?>>Private - Members can view.</option>
+								  <option value="public" <?php if($networkInfo['networkStatus'] == 'public') { echo 'selected'; } ?>>Public  - Everyone can view.</option>
+								</select>
+								<p class="help-inline">Participation in discussions is set through course settings. </p>
+						    </div>
+						  </div>
+
 						</div>	 
                         
 
                             <hr class="soften">
-                            <button type="submit" name="submitEditNetwork" id="submitEditNetwork" class="btn btn-primary pull-right">Edit Network </button>
+                            <button type="submit" name="submitEditNetwork" id="submitEditNetwork" class="btn btn-primary ">Edit Network </button>
+	                           <a href="network.php?n=<?php echo $nID; ?>" class="btn">Cancel</a>
                         </form>
                     </div>
                 </div>

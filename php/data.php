@@ -92,19 +92,21 @@ function UpdateNetwork(){
 	 	$networkID 	 = $network['networkID'];
 	 	$networkName = $network['networkName']; 
 	 	$networkDesc = $network['networkDesc'];
+	 	$networkType = $network['networkType']; 
 	 	$networkUser = $network['networkUser'];
 	 	$networkRole = $network['networkRole'];
 	 	$networkCode = rand(100000, 1000000000);
  	} else {
 	 	$networkName = $_POST['networkName']; 
 	 	$networkDesc = $_POST['networkDesc']; 
+	 	$networkType = $_POST['networkType']; 
 	 	$networkID	 = $_POST['networkID']; 
  	}
 
  	
  	if($networkID == 0 ) {		// New network 
 		// Add network
-		$networkInsert = mysql_query("INSERT INTO networks (networkName, networkDesc, networkCode) VALUES('".$networkName."', '".$networkDesc."', '".$networkCode."')"); 
+		$networkInsert = mysql_query("INSERT INTO networks (networkName, networkDesc, networkStatus, networkCode) VALUES('".$networkName."', '".$networkDesc."', '".$networkType."', '".$networkCode."')"); 
 		$networkNewID = mysql_insert_id(); // Get the ID of the newly created network. 
 
 	 	if($networkInsert){
@@ -125,8 +127,8 @@ function UpdateNetwork(){
 
 	 	
  	} else {					// Update network 
-		$networkUpdate = mysql_query("UPDATE networks SET networkName = '".$networkName."', networkDesc = '".$networkDesc."'  WHERE networkID = '".$networkID."' "); // UPDATE
-	  	$gotoPage = "../network.php?n=".$networkID."&m=2";  // All good
+		$networkUpdate = mysql_query("UPDATE networks SET networkName = '".$networkName."', networkDesc = '".$networkDesc."', networkStatus = '".$networkType."'  WHERE networkID = '".$networkID."' "); // UPDATE
+	  	$gotoPage = "../network.php?n=".$networkID."&m=11";  // All good
 	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
  	}
  } 

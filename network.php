@@ -242,7 +242,11 @@ ini_set('display_errors',1);
 		        }); 
 
 
-
+		        // When addUserModalLink is clicked hide the addUsertoNetwork modal
+		        $('#addUserModalLink').on('click', function() {
+		        	$('#addUsertoNetwork').modal('hide'); 
+		        	$('#addUser').modal('show'); 
+		        }); 
 		}); 
 	</script>
 
@@ -296,7 +300,11 @@ ini_set('display_errors',1);
             <div class="row-fluid">
                 <div class="span4">
                     <div class="">
-                        <h3>Courses in this Network <a href="addcourse.php?n=<?php echo $nID; ?>"  class="btn btn-small" ><i class="icon-plus"></i> Add</a></h3>
+                        <h3>Courses in this Network 
+                        	<?php if($networkRole == 'owner'){ ?>
+                        	<a href="addcourse.php?n=<?php echo $nID; ?>"  class="btn btn-small" ><i class="icon-plus"></i> Add</a>
+                        	<?php }?> 
+                        </h3>
 
                         <hr class="soften">
                              <input type="text" class="input-large" id="filterCourseText" name="filterCourseText" placeholder="Filter by name...">
@@ -311,8 +319,7 @@ ini_set('display_errors',1);
                 <div class="span4">
                     <div class="">
                         <h3>People in this Network 
-                        <?php 	    
-                        if($networkRole == 'owner'){ ?>
+                        <?php if($networkRole == 'owner'){ ?>
 	              	    <a href="#addUsertoNetwork" role="button" class="btn btn-small " data-toggle="modal"><i class="icon-plus"></i> Add</a>
           	
 	                       <?php }?> </h3>
@@ -345,12 +352,15 @@ ini_set('display_errors',1);
 <!-- Modal -->
 <div id="addUsertoNetwork" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> 
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
     <h3 id="myModalLabel">Add Users to Network</h3>
   </div>
   <div class="modal-body">
+  	<p> 
+  		User the form below to select users in our system. You can select multiple users.   	
+  	</p>
     <p>
-	    <input type="text" name="userSelect" id="userSelect">
+	    <input type="text" name="userSelect" id="userSelect"> 
     </p>
     	 <table class="table">
             <thead>
@@ -366,6 +376,10 @@ ini_set('display_errors',1);
 	            <!-- More rows will be added here -->
 	        </tbody>
     	 </table>
+    	 <hr class="soften">
+    	 <p>
+    	 	 Can't find a person in the system? <a href="#addUser" id="addUserModalLink"> Invite them to Dscourse. </a> 
+    	 </p>
   </div>
   <div class="modal-footer">
     <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -373,6 +387,25 @@ ini_set('display_errors',1);
   </div>
 </div>
 
+
+<!-- Modal 2 -->
+<div id="addUser" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addUserLabel" aria-hidden="true"> 
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+    <h3 id="addUserLabel">Invite Users to Dscourse</h3>
+  </div>
+  <div class="modal-body">
+  	<p> 
+  		Use this form to invite users to create and account on dscourse. The user will be sent an invitation email a link to join your network.     	
+  	</p>
+
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button id="saveUser" class="btn btn-primary">Add User</button>
+  </div>
+</div>
 
 </body>
 </html>    

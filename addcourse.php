@@ -262,9 +262,6 @@ $(function(){
     <header class="jumbotron subhead">
         <div class="container-fluid">
             <h1>Add a new Course</h1>
-                 <div id="addCourseCancel" class="pull-right">
-                    <a href="network.php?n=<?php echo $nID; ?>" class="btn">Cancel</a>
-                </div>
         </div>
     </header>
 
@@ -414,7 +411,8 @@ $(function(){
                                 </div>
                             </div>
                             <hr class="soften">
-                            <button type="submit" name="submitNewCourse" id="submitNewCourse" class="btn btn-primary pull-right">Add Course </button>
+                            <button type="submit" name="submitNewCourse" id="submitNewCourse" class="btn btn-primary">Add Course </button>
+                            <a href="network.php?n=<?php echo $nID; ?>" class="btn">Cancel</a>
                         </form>
                     </div>
                 </div>

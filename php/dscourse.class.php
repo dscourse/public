@@ -388,7 +388,9 @@ class Dscourse {
 		    case 'd':
 		        $message['content'] = "Your discussion was added to this course.";
 		        break;
-
+		    case 11:
+		        $message['content'] = "Changes to the network were saved. ";
+		        break;
 		 }
 		
 		 return $message; 

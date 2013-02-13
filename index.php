@@ -163,6 +163,7 @@ ini_set('display_errors',1);
 				var networkID 	= 0; // This is a new network, there is no ID yet
 				var networkName = $('#networkName').val(); // get network Name
 				var networkDesc = $('#networkDesc').val(); // get Network description
+				var networkType = $('#networkType').val(); // get Networktype
 				var userID		= currentUserID; // get user ID
 				var userRole	= 'owner'; 
 
@@ -171,6 +172,7 @@ ini_set('display_errors',1);
 				 	networkID : networkID,
 				 	networkName : networkName, 
 				 	networkDesc : networkDesc,
+				 	networkType: networkType,
 				 	networkUser : userID,
 				 	networkRole : userRole	 	
 			 	};
@@ -352,6 +354,16 @@ ini_set('display_errors',1);
 		    <label class="control-label" for="networkDesc">Network Description</label>
 		    <div class="controls">
 		      <textarea rows="6" class="span4" id="networkDesc"></textarea>
+		    </div>
+		  </div>
+		  <div class="control-group">
+		    <label class="control-label" for="networkType">Network Access Type</label>
+		    <div class="controls">
+			    <select id="networkType" name="networkType">
+				  <option value="private" selected>Private - Members can view.</option>
+				  <option value="public">Public  - Everyone can view.</option>
+				</select>
+				<p class="help-inline">Participation in discussions is set through course settings. </p>
 		    </div>
 		  </div>
 		</div>	  
