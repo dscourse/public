@@ -28,6 +28,9 @@ ini_set('display_errors',1);
 			include "lti.php";
 			$postData =file_get_contents("php://input");
 			$launch = parseLTIrequest($postData); 
+			if(!$LAUNCH){
+				header('Location: info.php'); 
+			}
 			//Step 1: CHECK if Network Exists=>networkId
 			$n = $LTI_allowed[$origin];
 			$net = mysql_query("SELECT * FROM networks WHERE networkName = '".$n."'");
