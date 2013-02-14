@@ -144,7 +144,6 @@ $(function(){
 	                }
 	            }
 	        }); 
-	        $('#courseDescription').counter({max:500});
 	        
 	        $.validator.addMethod("logicalDate", function(value, el){
 	        	var one = false;
@@ -170,8 +169,7 @@ $(function(){
 	         			maxlength: 255,
 	         		},
 	         		courseDescription: {
-	         			required: true,
-	         			maxlength: 500,
+	         			required: true
 	         		},
 	         		courseStartDate: {
 	         			logicalDate: true,
