@@ -12,15 +12,22 @@ ini_set('display_errors',1);
 	$courseId;
 	$discId;
 	$uId;
-	if(array_key_exists("HTTP_ORIGIN", $_SERVER)){
+	$origin; 
+	if(array_key_exists('HTTP_ORIGIN', $_SERVER)){
 		$origin = $_SERVER['HTTP_ORIGIN'];
+	}
+	else if(array_key_exists('HTTP_REFERER', $_SERVER)){
+		$ref = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+		$scheme = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_SCHEME);
+		$origin = $scheme.'://'.$ref;
+	}
+	if(count($origin)>0){
 		$LTI_allowed = array('https://collab.itc.virginia.edu'=>'UVa Collab', 'http://dev.canlead.net'=>'CANLEAD');
   		if(array_key_exists($origin, $LTI_allowed)){
   			$LTI = TRUE;
 			include "lti.php";
 			$postData =file_get_contents("php://input");
-			$launch = parseLTIrequest($postData);  
-			//Save vars for final pass:
+			$launch = parseLTIrequest($postData); 
 			//Step 1: CHECK if Network Exists=>networkId
 			$n = $LTI_allowed[$origin];
 			$net = mysql_query("SELECT * FROM networks WHERE networkName = '".$n."'");
