@@ -82,7 +82,6 @@ ini_set('display_errors',1);
 				$uId = mysql_insert_id(); 
 			}
 			else{
-				exit("Exists");
 				$uId = $u['UserID'];
 			}
 			$netUser = mysql_query("SELECT * FROM networkUsers WHERE userID = '$uId' AND networkID = '$netId'");
@@ -193,6 +192,8 @@ ini_set('display_errors',1);
 </head>
 
 <body>
+	<?php 
+	if(!$LTI){ ?>
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container-fluid">
@@ -223,7 +224,18 @@ ini_set('display_errors',1);
             </div>
         </div>
     </div><!-- End of header content-->
-    
+    <?php 
+	}
+	else{ ?>
+		<div class="navbar navbar-fixed-top">
+        	<div class="navbar-inner">
+        	<div class="container-fluid">
+        		<span class="brand" id="homeNav">dscourse</span>
+        	</div>
+        	</div>
+    	</div><!-- End of header content-->	
+	<?php }
+    ?>
     <div id="discussionWrap" class=" page" >
         <header class="jumbotron subhead">
             <div class="container-fluid">
@@ -266,7 +278,7 @@ ini_set('display_errors',1);
 -->
 
                                 <div id="discStatus" class="alert"></div>
-
+								<?php if(!$LTI) { ?>
                                 <div class="content">
                                     <div id="dPromptView"></div>
 
@@ -287,7 +299,7 @@ ini_set('display_errors',1);
                                     </div>
 
                                 </div>
-
+								<?php } ?>
                                 <h4>Recent Posts</h4>
 
                                 <div class="content">
