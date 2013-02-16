@@ -28,7 +28,7 @@ ini_set('display_errors',1);
 			include "lti.php";
 			$postData =file_get_contents("php://input");
 			$launch = parseLTIrequest($postData); 
-			if(!$LAUNCH){
+			if(!$launch){
 				header('Location: info.php'); 
 			}
 			//Step 1: CHECK if Network Exists=>networkId
