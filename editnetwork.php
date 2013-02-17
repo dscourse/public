@@ -59,6 +59,7 @@ ini_set('display_errors',1);
     <title>dscourse | Edit Network </title>
     
     <?php include('php/header_includes.php');  ?>
+    <script src="js/counter.js" type="text/javascript"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
     <script type="text/javascript">
 $(function(){
@@ -67,18 +68,22 @@ $(function(){
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
             
+            $('#networkDesc').counter({max:500});
+            
             $('form[name="addCourseForm"]').validate({
             	rules: {
             		networkName : {
-            			required: true,
+            		 	required: true,
             			maxlength: 255
             		},
             		networkDesc: {
+            			required: true,
             			maxlength : 500
             		}
             	},
             	messages: {
-            		networkName: "A network name is required."
+            		networkName: "A network name is required.",
+            		networkDesc: "A network description is required."
             	},
             	highlight: function(label){
 					$(label).closest('.control-group').removeClass('success');
@@ -88,10 +93,13 @@ $(function(){
 					$(label).closest('.control-group').removeClass('error');
 					$(label).closest('.control-group').addClass('success');
 				},
+				errorPlacement: function(error, element){
+					$(element).siblings('.help-inline').html(error);
+				} 
             });
             
-			$('form[name="addCourseForm"]').on('click', function(e){
-			   if(!$('#courseForm').valid()){
+			$('#submitEditNetwork').on('click', function(e){
+			   if(!$('form[name="addCourseForm"]').valid()){
 			   	$('body').scrollTop(0);
 					if($('.dCourseList').length == 0)
 						$('#discAddCourseLabel').html('A discussion must be linked to at least one course.').css('color', 'red');
@@ -154,12 +162,15 @@ $(function(){
 						    <label class="control-label" for="networkName">Name of Network</label>
 						    <div class="controls">
 						      <input type="text" id="networkName" name="networkName" value="<?php  echo $networkInfo['networkName']; ?>">
+						    	 <p class="help-inline"></p>
 						    </div>
 						  </div>
 						  <div class="control-group">
 						    <label class="control-label" for="networkDesc">Network Description</label>
 						    <div class="controls">
 						      <textarea rows="6" class="span4" name="networkDesc" id="networkDesc"><?php  echo $networkInfo['networkDesc']; ?></textarea>
+						      <span class="wordCount"></span>
+						      <p class="help-inline"></p>
 						    </div>
 						  </div>
 						 <div class="control-group">

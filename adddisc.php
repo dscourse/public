@@ -61,6 +61,7 @@ ini_set('display_errors',1);
 <head>
     <title>dscourse | Add discussion</title>
      <?php include('php/header_includes.php');  ?>
+     <script src="js/counter.js" type="text/javascript"></script>
      <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
     <script type="text/javascript">
 $(function(){
@@ -100,10 +101,16 @@ $(function(){
             });
 			// Date picker jquery ui initialize for the date fields
 			var d = new Date();
-            $("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd"}).datepicker('setDate', d);
-            $("#discussionOpenDate").datepicker({ dateFormat: "yy-mm-dd"}).datepicker('setDate', d);
+            $("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd", onSelect: function(){
+				$('.hasDatepicker').trigger('blur');
+			}}).datepicker('setDate', d);
+            $("#discussionOpenDate").datepicker({ dateFormat: "yy-mm-dd", onSelect: function(){
+				$('.hasDatepicker').trigger('blur');
+			}}).datepicker('setDate', d);
             d.setFullYear(d.getFullYear()+1)
-            $("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd"}).datepicker('setDate',d);
+            $("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd", onSelect: function(){
+				$('.hasDatepicker').trigger('blur');
+			}}).datepicker('setDate',d);
             
             $('#sDateTime').children('option[value='+d.getHours()+']').attr('selected', 'selected');
             $('#oDateTime').children('option[value='+d.getHours()+']').attr('selected', 'selected');
@@ -118,11 +125,19 @@ $(function(){
                             return false;
                         },
                         select: function( event, ui ) {
+                        	if($('#addCoursesBody').children().filter(function(i){
+                        		return $('#addCoursesBody').children().eq(i).attr('id') == ui.item.value
+                        	}).length > 0){
+                        		alert("This course has already been added.");
+                        		return false;
+                        	}
                             $('#addCoursesBody').append('<tr id="' + ui.item.value + '" class="dCourseList"><input type="hidden" name="course[]" value="' + ui.item.value + '"><td>' + ui.item.label + ' <\/td><td><button class="btn removeCourses" >Remove<\/button>   <\/td><\/tr>');               // Build the row of courses. 
                             $('.discussionCourses').val(' ').focus();
                             return false;
                         }
                     }); 
+           $("#discussionPrompt").counter({max:500});         
+                    
            //validation for Jquery Datepickers         
            $.validator.addMethod("logicalDate", function(value, el){
 				var ind = $(el).index('.hasDatepicker');
@@ -171,6 +186,7 @@ $(function(){
 				},
 				messages: {
 					discussionQuestion: "A discussion question is required.",
+					discussionPrompt: "A discussion prompt is required."
 				},
 				highlight: function(label){
 					$(label).closest('.control-group').removeClass('success');
@@ -180,6 +196,9 @@ $(function(){
 					$(label).closest('.control-group').removeClass('error');
 					$(label).closest('.control-group').addClass('success');
 				},
+				errorPlacement: function(error, element){
+					$(element).siblings('.help-inline').html(error);
+				} 
 		   });
 		   $('#discussionFormSubmit').on('click', function(e){
 			   if(!$('form[name="addDiscussionForm"]').valid()){
@@ -189,6 +208,10 @@ $(function(){
 					else
 						$('#discAddCourseLabel').html('').css('color', '#333');
 			   	e.preventDefault();	
+			   }
+			   else if($('#addCoursesBody').children().length == 0){
+			   		alert("Every discussion must be associated with at least one course.");
+			   		e.preventDefault();	
 			   }
 		   });
 		  
@@ -201,7 +224,7 @@ $(function(){
         <div class="navbar-inner">
             <div class="container-fluid">
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
-
+Jquery validate success message
                 <ul class="nav">
                     <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
                     <li class="navLevel"><a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li>
@@ -254,11 +277,10 @@ $(function(){
 
                             <div class="control-group" id="discussionPromptControl">
                                 <label class="control-label" for="discussionPrompt">Discussion Prompt</label>
-
+				
                                 <div class="controls">
-                                    <textarea class="span6 textareaFixed" id="discussionPrompt" name="discussionPrompt">
-</textarea>
-
+                                    <textarea class="span6 textareaFixed" id="discussionPrompt" name="discussionPrompt"></textarea>
+									<span class= "wordCount"></span>
                                     <p class="help-inline">If you like you can provide prompts to get into details or explain directions for the discussion. Please limit your text to 500 characters.</p>
                                 </div>
                             </div>

@@ -12,15 +12,25 @@ ini_set('display_errors',1);
 	$courseId;
 	$discId;
 	$uId;
-	if(array_key_exists("HTTP_ORIGIN", $_SERVER)){
-		$origin = $_SERVER['HTTP_ORIGIN'];		
-		$LTI_allowed = array('https://collab.itc.virginia.edu'=>'UVa Collab');
+	$origin; 
+	if(array_key_exists('HTTP_ORIGIN', $_SERVER)){
+		$origin = $_SERVER['HTTP_ORIGIN'];
+	}
+	else if(array_key_exists('HTTP_REFERER', $_SERVER)){
+		$ref = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+		$scheme = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_SCHEME);
+		$origin = $scheme.'://'.$ref;
+	}
+	if(count($origin)>0){
+		$LTI_allowed = array('https://collab.itc.virginia.edu'=>'UVa Collab', 'http://dev.canlead.net'=>'CANLEAD');
   		if(array_key_exists($origin, $LTI_allowed)){
   			$LTI = TRUE;
 			include "lti.php";
 			$postData =file_get_contents("php://input");
-			$launch = parseLTIrequest($postData);  
-			//Save vars for final pass:
+			$launch = parseLTIrequest($postData); 
+			if(!$launch){
+				header('Location: info.php'); 
+			}
 			//Step 1: CHECK if Network Exists=>networkId
 			$n = $LTI_allowed[$origin];
 			$net = mysql_query("SELECT * FROM networks WHERE networkName = '".$n."'");
@@ -82,7 +92,6 @@ ini_set('display_errors',1);
 				$uId = mysql_insert_id(); 
 			}
 			else{
-				exit("Exists");
 				$uId = $u['UserID'];
 			}
 			$netUser = mysql_query("SELECT * FROM networkUsers WHERE userID = '$uId' AND networkID = '$netId'");
@@ -193,6 +202,8 @@ ini_set('display_errors',1);
 </head>
 
 <body>
+	<?php 
+	if(!$LTI){ ?>
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container-fluid">
@@ -223,7 +234,18 @@ ini_set('display_errors',1);
             </div>
         </div>
     </div><!-- End of header content-->
-    
+    <?php 
+	}
+	else{ ?>
+		<div class="navbar navbar-fixed-top">
+        	<div class="navbar-inner">
+        	<div class="container-fluid">
+        		<span class="brand" id="homeNav">dscourse</span>
+        	</div>
+        	</div>
+    	</div><!-- End of header content-->	
+	<?php }
+    ?>
     <div id="discussionWrap" class=" page" >
         <header class="jumbotron subhead">
             <div class="container-fluid">
@@ -266,7 +288,7 @@ ini_set('display_errors',1);
 -->
 
                                 <div id="discStatus" class="alert"></div>
-
+								<?php if(!$LTI) { ?>
                                 <div class="content">
                                     <div id="dPromptView"></div>
 
@@ -287,7 +309,7 @@ ini_set('display_errors',1);
                                     </div>
 
                                 </div>
-
+								<?php } ?>
                                 <h4>Recent Posts</h4>
 
                                 <div class="content">

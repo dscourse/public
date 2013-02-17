@@ -75,7 +75,7 @@ if ($sentSig == $sig) {
 } else {
 	//$response = "null";
 	$msg .= "Validation fail <br /> Expected signature base string: ".$baseString . "<br />";
-	return -1;
+	return FALSE;
 }
 fclose($fh);
 }

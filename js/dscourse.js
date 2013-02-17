@@ -1968,7 +1968,7 @@ Dscourse.prototype.VerticalHeatmap = function(mapType, mapInfo) {
             // get post text
             postContent = postContent.toLowerCase();
             // turn search items into lowercase
-            var a = postContent.indexOf(mapInfo);
+            var a = postContent.indexOf(mapInfo.toLowerCase());
             // search for post text with the keyword text if there is a match get location information
             if (a != -1) {
                 var divPosition = $(this).position();

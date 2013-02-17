@@ -114,11 +114,9 @@ ini_set('display_errors',1);
 <html lang="en">
 <head>
     <title>dscourse</title>
-    
-
     <?php include('php/header_includes.php');  ?>
-
-
+    
+	<script type="text/javascript" src="js/counter.js"></script>
     <script type="text/javascript">
 		$(function(){
 			// Add some global variables about current user if we need them:
@@ -126,6 +124,7 @@ ini_set('display_errors',1);
 		    <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
 		    <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
 
+			
 			$('.addNetworkOpen').on('click', function () {
 				$('#networkName').val(' '); // clear network Name
 				$('#networkDesc').val(' '); // clear Network description
@@ -135,30 +134,53 @@ ini_set('display_errors',1);
 			$('.joinNetworkOpen').on('click', function () {
 				$('#networkCode').val(' '); // clear Network code
 			}); 
-
-
-
-
-
-			
+	
 			$('#networkName').on('keyup',function(){
-				console.log(1);
-				console.log(!/^\s*$/.test($(this).val()))
 				if(!/^\s*$/.test($(this).val())){
-					$(this).css('border-color', '#356635');
-					$('label[for="networkName"]').css('color', '#356635');
+					$(this).closest('.control-group').removeClass('error');
+					$(this).closest('.control-group').addClass('success');
 				}
 				else{
-					$('#networkName').css('border-color', '#953B39');
-					$('label[for="networkName"]').css('color', '#953B39');
+					$(this).closest('.control-group').removeClass('success');	
+					$(this).closest('.control-group').addClass('error');
 				}
 			});
+			$('#networkDesc').on('keyup', function(){
+				if(!/^\s*$/.test($(this).val())){
+					if($(this).val().length > 500){
+						$(this).closest('.control-group').removeClass('success');
+						$(this).closest('.control-group').addClass('error');
+						$(this).siblings('.help-inline').html('*required');
+					}
+					else{
+						$(this).closest('.control-group').addClass('success');
+						$(this).closest('.control-group').removeClass('error');
+					}
+				}
+				else{
+					$(this).closest('.control-group').removeClass('success');
+					$(this).closest('.control-group').addClass('error');
+					$(this).siblings('.help-inline').html('*required');
+				}
+			});
+			//Word counter
+			$("#networkDesc").counter({min:0, max:500});
+			
 			// Add Network when #addNetwork is clicked 
 			$('#addNetwork').on('click', function () {
-				if($('#networkName').val()==' ' || $('#networkName').val()==''){
-					$('#networkName').css('border-color', '#953B39');
-					$('label[for="networkName"]').css('color', '#953B39');
+				var valid = true; 
+				if($('#networkName').val()==' ' || $('#networkName').val()==''){ 
+					$('#networkName').closest('.control-group').addClass('error');
+					$('#networkName').siblings('.help-inline').html('*required');
+					valid = false;
 				}
+				if($("#networkDesc").val() == '' || $("#networkDesc").val() == ' '){
+					$("#networkDesc").closest('.control-group').addClass('error');
+					$("#networkDesc").siblings('.help-inline').html('*required');
+					valid = false;
+				}
+				if(!valid)
+					return false;
 				else{
 				var networkID 	= 0; // This is a new network, there is no ID yet
 				var networkName = $('#networkName').val(); // get network Name
@@ -348,12 +370,15 @@ ini_set('display_errors',1);
 		    <label class="control-label" for="networkName">Name of Network</label>
 		    <div class="controls">
 		      <input type="text" id="networkName" placeholder="">
+		      <p class="help-inline"></p>
 		    </div>
 		  </div>
 		  <div class="control-group">
 		    <label class="control-label" for="networkDesc">Network Description</label>
 		    <div class="controls">
 		      <textarea rows="6" class="span4" id="networkDesc"></textarea>
+		      <span class="wordCount"></span>
+		      <p class="help-inline"></p>
 		    </div>
 		  </div>
 		  <div class="control-group">

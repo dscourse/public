@@ -60,6 +60,7 @@ ini_set('display_errors',1);
     
     <?php include('php/header_includes.php');  ?>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
+  	<script src="js/counter.js" type="text/javascript"></script>
     <script type="text/javascript">
     
     //An auxillary function used to check whether or not a given course has an intructor/TA
@@ -110,9 +111,15 @@ $(function(){
 			});
 			
 			var d = new Date();
-			$("#courseStartDate").datepicker({ dateFormat: "yy-mm-dd" }).datepicker('setDate',d);	// Date picker jquery ui initialize for the date fields
+			// Date picker jquery ui initialize for the date fields
+			$("#courseStartDate").datepicker({ dateFormat: "yy-mm-dd", onSelect: function(){
+				$('.hasDatepicker').trigger('blur');
+			}}).datepicker('setDate',d);	
 			d.setFullYear(d.getFullYear()+1);
-			$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd" }).datepicker('setDate',d);			// Date picker jquery ui initialize for the date fields
+			$("#courseEndDate").datepicker({ dateFormat: "yy-mm-dd", onSelect: function(){
+				$('.hasDatepicker').trigger('blur');
+			}
+			}).datepicker('setDate',d);			// Date picker jquery ui initialize for the date fields
 	
 			    
 		    $( "#coursePeople" ).autocomplete({
@@ -153,7 +160,7 @@ $(function(){
 		        	break;
 		        }
 		        return one&&two;
-	        }, "Please make sure your dates make sense.");
+	        }, "Please check the chronological order of your dates.");
 	        
 	         $('form[name="addCourseForm"]').validate({
 	         	rules: {
@@ -162,8 +169,7 @@ $(function(){
 	         			maxlength: 255,
 	         		},
 	         		courseDescription: {
-	         			required: true,
-	         			maxlength: 500,
+	         			required: true
 	         		},
 	         		courseStartDate: {
 	         			logicalDate: true,
@@ -183,19 +189,24 @@ $(function(){
 				success: function(label){
 					$(label).closest('.control-group').removeClass('error');
 					$(label).closest('.control-group').addClass('success');
-				}
+				},
+				errorPlacement: function(error, element){
+					$(element).next('.help-inline').html(error);
+				} 
 	         });
 	         $('#submitNewCourse').on('click', function(e){
 	         	if(!$('form[name="addCourseForm"]').valid()){
-	         		$('body').scrollTop(0);
+	         		$('html, body').animate({
+	         			scrollTop: 0
+	         		});
 				   	e.preventDefault();	
+				}
 				var admin = $('#addPeopleBody').find('.btn').filter('.active').filter(function(){
-					return $(this).index() != 2;
+					return $(this).html() != "Student";
 				});
 				if(admin.length == 0){
 					e.preventDefault();
 					alert('Every course must have at least one instructor or teaching assistant.');
-				}
 				}
 		   });
 	        
@@ -290,11 +301,10 @@ $(function(){
 
                             <div class="control-group">
                                 <label class="control-label" for="courseDescription">Course Description</label>
-
+								
                                 <div class="controls">
-                                    <textarea class="span6 textareaFixed" id="courseDescription" name="courseDescription">
-</textarea>
-
+                                    <textarea class="span6 textareaFixed" id="courseDescription" name="courseDescription"></textarea>
+									<span class="wordCount"></span>
                                     <p class="help-inline">Provide a summary for the course.</p>
                                 </div>
                             </div>
