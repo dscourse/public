@@ -87,6 +87,11 @@ margin-right: 3px;
 .nav li a:hover {
 	color: #2599b3 !important;
 }
+
+.greyText {
+	color: #787878; 
+}
+
 /* 
 
 	Jquery autocomplete

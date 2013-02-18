@@ -85,12 +85,16 @@ ini_set('display_errors',1);
 					$courseName = $coursesinNetwork[$i]['courseName'];
 					$courseID	= $coursesinNetwork[$i]['courseID'];
 					$courseImage = $coursesinNetwork[$i]['courseImage'];
-					if($coursesinNetwork[$i]['courseImage'] != '' ){
-						$courseImage= $coursesinNetwork[$i]['courseImage'];
-					} else {
-						$courseImage= 'img/course_default.jpg';					
+					$courseView = $coursesinNetwork[$i]['courseView'];
+					$courseLoad = $dscourse->LoadCourse($courseID, $userID); 
+					if($courseLoad){
+							if($coursesinNetwork[$i]['courseImage'] != '' ){
+								$courseImage= $coursesinNetwork[$i]['courseImage'];
+							} else {
+								$courseImage= 'img/course_default.jpg';					
+							}
+						$courseListPrint .='<li class="courseItem"> <a href="course.php?c='.$courseID.'&n='.$nID.'" ><img class="thumbSmall" src="'.$courseImage.'" /> '.$courseName.' </a></li>'; 
 					}
-				$courseListPrint .='<li class="courseItem"> <a href="course.php?c='.$courseID.'&n='.$nID.'" ><img class="thumbSmall" src="'.$courseImage.'" /> '.$courseName.' </a></li>'; 
 				} 		
 		
 ?>
@@ -286,7 +290,14 @@ ini_set('display_errors',1);
                 <h1><?php echo $networkInfo['networkName']; ?> </h1>
 
                 <h4><?php echo $networkInfo['networkDesc']; ?></h4>
-                <h5>Secret network Code: <button id="showCode" class="btn btn-small">Show</button> <span id="networkCode" class="alert" style="display:none"><b> <?php echo $networkInfo['networkCode']; ?> </b></span> <i> Users can join your network with this code. Please keep the code from public viewing.</i> </h5>
+
+				<?php // check network status to see if showing the code is necessary	 
+					
+					if($networkInfo['networkStatus'] == 'private'){   ?> 
+					               
+						<h5>Secret network Code: <button id="showCode" class="btn btn-small">Show</button> <span id="networkCode" class="alert" style="display:none"><b> <?php echo $networkInfo['networkCode']; ?> </b></span> <i> Users can join your network with this code. Please keep the code from public viewing.</i> </h5>
+                	
+                	<?php  } ?>
                  <div id="editNetworkButton" class="pull-right">
                     <?php 	    
                         if($networkRole == 'owner'){ ?>
@@ -301,7 +312,7 @@ ini_set('display_errors',1);
                 <div class="span4">
                     <div class="">
                         <h3>Courses in this Network 
-                        	<?php if($networkRole == 'owner'){ ?>
+                        	<?php if($networkRole == 'owner' || $networkRole == 'member'){ ?>
                         	<a href="addcourse.php?n=<?php echo $nID; ?>"  class="btn btn-small" ><i class="icon-plus"></i> Add</a>
                         	<?php }?> 
                         </h3>
