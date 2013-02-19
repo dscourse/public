@@ -4,7 +4,7 @@
 
 // Search for "TODO" in page for items that need attention
 
-function Dscourse() {
+function Dscourse(lti) {
 
     // Set global variables
     var top = this;
@@ -42,6 +42,8 @@ function Dscourse() {
         timeline : true
     };
     this.charCount = true;
+    //lti
+    this.lti = lti;
 
     // Run initializing functions
     this.GetData(discID);
@@ -1793,8 +1795,15 @@ Dscourse.prototype.DiscResize = function() {
     var main = this;
     var h, wHeight, nbHeight, jHeight, cHeight, height;
     // Get total height of the window with the helper function
-    wHeight = $(window).height();
-    wWidth = $(window).width();
+    //if lti use viewport instead
+    if(lti){
+        wWidth = window.innerWidtht;
+        wHeight = window.innerHeight;
+    }
+    else{
+        wHeight = $(window).height();
+        wWidth = $(window).width();
+    }
     // Get height of #navbar
     nbHeight = $('.navbar').height();
     // Get height of jumbutron

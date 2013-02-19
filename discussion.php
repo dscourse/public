@@ -21,6 +21,9 @@ ini_set('display_errors',1);
 		$scheme = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_SCHEME);
 		$origin = $scheme.'://'.$ref;
 	}
+	else{
+		$origin = array(0);
+	}
 	if(count($origin)>0){
 		$LTI_allowed = array('https://collab.itc.virginia.edu'=>'UVa Collab', 'http://dev.canlead.net'=>'CANLEAD');
   		if(array_key_exists($origin, $LTI_allowed)){
@@ -188,7 +191,9 @@ ini_set('display_errors',1);
         <script type="text/javascript" src="js/dscourse.js"></script>
 
     <script type="text/javascript">
-
+    
+    		//LTI?
+			<?php echo "var lti = ".(($LTI) ? 'true':'false').";"; ?>
             // Add some global variables about current user if we need them:
             <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
             
@@ -444,12 +449,13 @@ Your comment...
 
     $(document).ready(function() {
 
-
         if (window.addEventListener) 
-                window.addEventListener("message",shivaMessageHandler,false);
-            else
-                window.attachEvent("message",shivaMessageHandler);
-            });
+            window.addEventListener("message",shivaMessageHandler,false);
+        else
+            window.attachEvent("message",shivaMessageHandler);
+    
+    var dscourse = new Dscourse(lti);              // Fasten seat belts, dscourse is starting...
+   	});
         
     function shivaMessageHandler(e)
     {
@@ -469,9 +475,6 @@ Your comment...
             cmd+="="+dscourse.currentDrawData;
         document.getElementById(iFrameName).contentWindow.postMessage(cmd,"*");
     }
-    
-                var dscourse = new Dscourse();              // Fasten seat belts, dscourse is starting...
-
     </script>   
 </body>
 </html>
