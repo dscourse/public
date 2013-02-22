@@ -1281,8 +1281,10 @@ Dscourse.prototype.EditSynthesis = function() {// Revise for synthesis posts
     var postFromId = $('#sPostIDhidden').val();
     // Done
 
-    // author ID -- postAuthorId -- this is the session user
-    var postAuthorId = $('#userIDhidden').val();
+    // author ID -- postAuthorId -- this is the original poster
+    var postAuthorId = main.data.posts.filter(function(item){
+        return item.postID ==  editPostID;  
+    }).pop().postAuthorId;
     // Done
     var postMessage = $('#synthesisText').val();
     // Done
@@ -1984,7 +1986,6 @@ Dscourse.prototype.VerticalHeatmap = function(mapType, mapInfo) {
                 // get the location of this div from the top
                 //console.log(divPosition);
                 var mainDivTop = $('#dMain').scrollTop();
-
                 var ribbonMargin = (divPosition.top + mainDivTop) * boxHeight / totalHeight;
                 // calculate a yellow ribbon top for the vertical heatmap
                 $('#vHeatmap').append('<div class="vHeatmapPoint" style="margin-top:' + ribbonMargin + 'px" divPostID="' + postID + '" ></div>');
@@ -1992,7 +1993,7 @@ Dscourse.prototype.VerticalHeatmap = function(mapType, mapInfo) {
                 var replaceText = $(this).children('.postTextWrap').children('.postMessageView').html();
                 // Find out if there is alreadt a span for highlighting here
                 var newSelected = '<search class="highlightblue">' + mapInfo + '</search>';
-                var n = replaceText.replace(RegExp(mapInfo, 'g'), newSelected);
+                var n = replaceText.replace(RegExp(mapInfo.replace(/[#-}]/g, '\\$&'), 'g'), newSelected);
                 $(this).children('.postTextWrap').children('.postMessageView').html(n);
             }
         });

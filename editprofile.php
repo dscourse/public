@@ -5,6 +5,7 @@ ini_set('display_errors',1);
   define('MyConst', TRUE);                                // Avoids direct access to config.php
 
     include "../config/config.php"; 
+	date_default_timezone_set('America/New_York');
     
     if(empty($_SESSION['Username']))                        // Checks to see if user is logged in, if not sends the user to login.php
     {  
