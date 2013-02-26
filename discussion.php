@@ -5,7 +5,7 @@ ini_set('display_errors',1);
   define('MyConst', TRUE);                                // Avoids direct access to config.php
 
     include "../config/config.php"; 
-	date_default_timezone_set('America/New_York');
+	date_default_timezone_set('UTC');
     
    	//CHECK IF LTI
 	$LTI = FALSE;
@@ -14,6 +14,7 @@ ini_set('display_errors',1);
 	$discId;
 	$uId;
 	$origin; 
+	if($_SERVER['REQUEST_METHOD'] == "POST"){
 	if(array_key_exists('HTTP_ORIGIN', $_SERVER)){
 		$origin = $_SERVER['HTTP_ORIGIN'];
 	}
@@ -111,7 +112,7 @@ ini_set('display_errors',1);
 			//At this point we can be sure the network, course, discussion, and user exist in the DB
   		}
 	}
-    
+	}
 	
     if(!$LTI && empty($_SESSION['Username']))                        // Checks to see if user is logged in, if not sends the user to login.php
     {  
@@ -188,23 +189,16 @@ ini_set('display_errors',1);
 <html lang="en">
 <head>
     <title> dscourse | <?php echo $discussionInfo['dTitle']; ?></title>
-        <?php include('php/header_includes.php');  ?>
+        <?php
+		include ('php/header_includes.php');
+  ?>
         <script type="text/javascript" src="js/dscourse.js"></script>
 
     <script type="text/javascript">
-    
-    		//LTI?
-			<?php echo "var lti = ".(($LTI) ? 'true':'false').";"; ?>
-            // Add some global variables about current user if we need them:
-            <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
-            
-            <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
-            
-            <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
-            <?php echo "var discID = " .  $discID . ";"; ?>
-             <?php echo "var currentSession = '" .  $currentSession . "';"; ?>
- 
-    </script>
+        //LTI?
+			<?php echo "var lti = " . (($LTI) ? 'true' : 'false') . ";"; ?>
+                // Add some global variables about current user if we need them:
+            <?php echo "var currentUserStatus = '" . $_SESSION['status'] . "';"; ?><?php echo "var currentUserID = '" . $_SESSION['UserID'] . "';"; ?><?php echo "var dUserAgent = '" . $_SERVER['HTTP_USER_AGENT'] . "';"; ?><?php echo "var discID = " . $discID . ";"; ?><?php echo "var currentSession = '" . $currentSession . "';"; ?></script>
 </head>
 
 <body>
@@ -216,17 +210,15 @@ ini_set('display_errors',1);
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo 
-                    $dscourse->myTruncate($networkInfo['networkName'], 15, ' ', '...'); ?></a></li>
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID.'&n='.$nID; ?>" id="coursesNav"><?php echo 
-                    $dscourse->myTruncate($courseInfo['courseName'], 15, ' ', '...'); ?></a></li>
-                    <li class="navLevel"><a href="discussion.php?d=<?php echo $discID . '&c='. $cID. '&n='.$nID; ?>" id="discussionNav"><?php echo $dscourse->myTruncate($discussionInfo['dTitle'], 15, ' ', '...'); ?></a></li>
+                    <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $dscourse -> myTruncate($networkInfo['networkName'], 15, ' ', '...'); ?></a></li>
+                    <li class="navLevel"><a href="course.php?c=<?php echo $cID . '&n=' . $nID; ?>" id="coursesNav"><?php echo $dscourse -> myTruncate($courseInfo['courseName'], 15, ' ', '...'); ?></a></li>
+                    <li class="navLevel"><a href="discussion.php?d=<?php echo $discID . '&c=' . $cID . '&n=' . $nID; ?>" id="discussionNav"><?php echo $dscourse -> myTruncate($discussionInfo['dTitle'], 15, ' ', '...'); ?></a></li>
 
                 </ul>
 
                 <ul class="nav pull-right">
                     <li class="dropdown">
-                        <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a>
+                        <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " . $_SESSION['lastName']; ?> <b class="caret"></b> </a>
 
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                             <li><a id="profileNav" href="profile.php?u=<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
@@ -240,9 +232,10 @@ ini_set('display_errors',1);
             </div>
         </div>
     </div><!-- End of header content-->
-    <?php 
-	}
-	else{ ?>
+    <?php
+		}
+		else{
+ ?>
 		<div class="navbar navbar-fixed-top">
         	<div class="navbar-inner">
         	<div class="container-fluid">
@@ -250,8 +243,7 @@ ini_set('display_errors',1);
         	</div>
         	</div>
     	</div><!-- End of header content-->	
-	<?php }
-    ?>
+	<?php } ?>
     <div id="discussionWrap" class=" page" >
         <header class="jumbotron subhead">
             <div class="container-fluid">
@@ -326,7 +318,7 @@ ini_set('display_errors',1);
                             <div class="dCollapse hide" id="dSynthesis">
                                 <div class="content">
                                     <div class="hide" id="addSynthesis">
-                                        <input id="sPostIDhidden" type="hidden" name="sPostIDhidden" value=""> <input id="userIDhidden" type="hidden" name="userIDhidden" value="<?php echo $_SESSION['UserID'];?>"> 
+                                        <input id="sPostIDhidden" type="hidden" name="sPostIDhidden" value=""> <input id="userIDhidden" type="hidden" name="userIDhidden" value="<?php echo $_SESSION['UserID']; ?>"> 
                                         <textarea id="synthesisText">
 Your synthesis comment...
 </textarea>
@@ -369,7 +361,7 @@ Your synthesis comment...
             </div><!-- close row -->
 
             <div id="commentWrap">
-                <input id="postIDhidden" type="hidden" name="postIDhidden" value=""> <input id="userIDhidden" type="hidden" name="userIDhidden" value="<?php echo $_SESSION['UserID'];?>">
+                <input id="postIDhidden" type="hidden" name="postIDhidden" value=""> <input id="userIDhidden" type="hidden" name="userIDhidden" value="<?php echo $_SESSION['UserID']; ?>">
 
                 <div id="top">
                     <div id="quick">
@@ -432,49 +424,45 @@ Your comment...
 
 <div id="checkNewPost"></div>
     <?php
-	 		
- 		} else {
+
+	} else {
 	 		?>
 	 		<div class="alert alert-danger"> You are not authorized to view this discussion. If this is an error please contact your site administrator. </div>
-	 		<?php 
- 		}       
-       
-       
+	 		<?php
+				}
 
-   }  
-            
+				}
     ?>  
  <script type="text/javascript">
-// Latest itiration of 22the shiva elements through iframe
-    var sampleData="{\"chartType\": \"BarChart\",\"areaOpacity\": \".3\",\"backgroundColor\": \"\",\"chartArea\": \"\",\"colors\": \"\",\"fontName\": \"Arial\",\"fontSize\": \"automatic\",\"hAxis\": \"\",\"legend\": \"right\",\"legendTextStyle\": \"\",\"height\": \"400\",\"isStacked\": \"true\",\"lineWidth\": \"2\",\"pointSize\": \"7\",\"series\": \"\",\"title\": \"\",\"titleTextStyle\": \"\",\"tooltipTextStyle\": \"\", \"vAxis\": \"\",\"width\": \"600\", \"dataSourceUrl\": \"https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AsMQEd_YoBWldHZNbGU2czNfa004UmpzeC13MkZZb0E&output=html\",\"query\": \"\",\"shivaGroup\": \"Visualization\"}";
-
+    // Latest itiration of 22the shiva elements through iframe
+    var sampleData = "{\"chartType\": \"BarChart\",\"areaOpacity\": \".3\",\"backgroundColor\": \"\",\"chartArea\": \"\",\"colors\": \"\",\"fontName\": \"Arial\",\"fontSize\": \"automatic\",\"hAxis\": \"\",\"legend\": \"right\",\"legendTextStyle\": \"\",\"height\": \"400\",\"isStacked\": \"true\",\"lineWidth\": \"2\",\"pointSize\": \"7\",\"series\": \"\",\"title\": \"\",\"titleTextStyle\": \"\",\"tooltipTextStyle\": \"\", \"vAxis\": \"\",\"width\": \"600\", \"dataSourceUrl\": \"https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AsMQEd_YoBWldHZNbGU2czNfa004UmpzeC13MkZZb0E&output=html\",\"query\": \"\",\"shivaGroup\": \"Visualization\"}";
+    var dscourse;
     $(document).ready(function() {
 
-        if (window.addEventListener) 
-            window.addEventListener("message",shivaMessageHandler,false);
+        if (window.addEventListener)
+            window.addEventListener("message", shivaMessageHandler, false);
         else
-            window.attachEvent("message",shivaMessageHandler);
-    
-    var dscourse = new Dscourse(lti);              // Fasten seat belts, dscourse is starting...
-   	});
-        
-    function shivaMessageHandler(e)
-    {
-        var msg="Unrecognized";
-        if (e.data.indexOf("GetJSON=") == 0) 
-            msg=e.data.substr(8);
-        else if (e.data.indexOf("GetType=") == 0) 
-            msg=e.data.substr(8);
+            window.attachEvent("message", shivaMessageHandler);
+
+        dscourse = new Dscourse(lti);
+        // Fasten seat belts, dscourse is starting...
+    });
+
+    function shivaMessageHandler(e) {
+        var msg = "Unrecognized";
+        if (e.data.indexOf("GetJSON=") == 0)
+            msg = e.data.substr(8);
+        else if (e.data.indexOf("GetType=") == 0)
+            msg = e.data.substr(8);
         dscourse.currentDrawing = msg;
-        console.log(dscourse.currentDrawing); 
+        console.log(dscourse.currentDrawing);
     }
 
-    function ShivaMessage(iFrameName,cmd) 
-    {
+    function ShivaMessage(iFrameName, cmd) {
         if (cmd.indexOf("PutJSON") == 0)
             console.log(dscourse.currentDrawData);
-            cmd+="="+dscourse.currentDrawData;
-        document.getElementById(iFrameName).contentWindow.postMessage(cmd,"*");
+        cmd += "=" + dscourse.currentDrawData;
+        document.getElementById(iFrameName).contentWindow.postMessage(cmd, "*");
     }
     </script>   
 </body>

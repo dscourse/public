@@ -1000,7 +1000,9 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
                 //console.log(n);
                 var range = main.data.posts.length - 8;
                 // How many of the most recent we show + 1
-                var prettyTime = jQuery.timeago(d.postTime);
+                var t = new Date(0);
+                t.setUTCMilliseconds(main.GetUniformDate(d.postTime));
+                var prettyTime = jQuery.timeago(t);
                 var shortMessage = main.truncateText(message, 60);
                 if (j > range) {// person + type + truncated comment + date
                     var activityContent = '<li postid="' + d.postID + '">' + main.getAuthorThumb(d.postAuthorId, 'tiny') + ' ' + authorID + ' ' + typeText + ' <b>' + shortMessage + '</b> ' + '<em class="timeLog">' + prettyTime + '<em></li> ';
@@ -1086,6 +1088,9 @@ Dscourse.prototype.AddPost = function() {
     if (!main.data.posts) {
         main.data.posts = new Array();
     }
+    
+   
+    
     // Get post values from the form.
     // postID -- postFromId
     var postFromId = $('#postIDhidden').val();
@@ -1117,7 +1122,7 @@ Dscourse.prototype.AddPost = function() {
     // this is used for the synthesis posts but needs a value here.
 
     // Create post object and append it to allPosts
-
+    
     post = {
         'postFromId' : postFromId,
         'postAuthorId' : postAuthorId,
@@ -1283,7 +1288,7 @@ Dscourse.prototype.EditSynthesis = function() {// Revise for synthesis posts
 
     // author ID -- postAuthorId -- this is the original poster
     var postAuthorId = main.data.posts.filter(function(item){
-        return item.postID ==  editPostID;  
+        return item.postID == editPostID;  
     }).pop().postAuthorId;
     // Done
     var postMessage = $('#synthesisText').val();
@@ -1693,10 +1698,10 @@ Dscourse.prototype.DiscDateStatus = function(dID) {
     o = main.data.discussion;
     if (o.dID === dID) {
         // Compare dates of the discussion to todays date.
-        var beginDate = ($.browser.webkit)?new Date(o.dStartDate):new Date(o.dStartDate.split(' ').join('T'));
-        var openDate = ($.browser.webkit)?new Date(o.dOpenDate):new Date(o.dOpenDate.split(' ').join('T'));
-        var endDate = ($.browser.webkit)?new Date(o.dEndDate):new Date(o.dEndDate.split(' ').join('T'));
-        var currentDate = new Date();
+        var beginDate = main.GetUniformDate(o.dStartDate);
+        var openDate = main.GetUniformDate(o.dOpenDate);
+        var endDate = main.GetUniformDate(o.dEndDate);
+        var currentDate = new Date().getTime();
         if (currentDate >= beginDate && currentDate <= endDate) {// IF today's date bigger than start date and smaller than end date?
             if (currentDate <= openDate) {// If today's date smaller than Open Date
                 dStatus = 'student';
@@ -2006,7 +2011,7 @@ Dscourse.prototype.VerticalHeatmap = function(mapType, mapInfo) {
 }
 
 
- Dscourse.prototype.CheckNewPosts=function(discID, userRole, dStatus)					// Highlights the relevant sections of host post when hovered over
+ Dscourse.prototype.CheckNewPosts = function(discID, userRole, dStatus)					// Highlights the relevant sections of host post when hovered over
  {
  var main = this;
  
@@ -2030,7 +2035,7 @@ Dscourse.prototype.VerticalHeatmap = function(mapType, mapInfo) {
 			  success: function(data) {						// If connection is successful . 
 					if(data.result > 0){
 						$('#checkNewPost').addClass('animated flipInY');
-						$('#checkNewPost').html('<div class="alert alert-success refreshBox" discID="' + discID + '">    <button id="hideRefreshMsg"type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><span class="typicn refresh refreshIcon"></span> There are <b>' + data.result + '</b> new posts. Click to refresh!</span>'); 
+						$('#checkNewPost').html('<div class="alert alert-success refreshBox" discID="' + discID + '">    <button id="hideRefreshMsg" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><span class="typicn refresh refreshIcon"></span> There are <b>' + data.result + '</b> new posts. Click to refresh!</span>'); 
 					// Reload needs to happen when a button is clicked in the page. 
 					} else {
 						console.log('No new posts...');
@@ -2157,9 +2162,10 @@ Dscourse.prototype.truncateText = function(text, length) {
 
 Dscourse.prototype.FormattedDate = function(date) {
     var d, m, curr_hour, dateString;
-    d = ($.browser.webkit) ? new Date(date): new Date(date.split(' ').join('T'));
+    d = new Date(0);
+    var sec = this.GetUniformDate(date, false);
+    d.setUTCMilliseconds(sec);
     // Write out the date in readable form.
-    console.log(d);
     m = d.toDateString();
     curr_hour = d.getHours();
     dateString = m + '  ' + curr_hour + ':00';
@@ -2172,12 +2178,11 @@ Dscourse.prototype.FunctionTemplate = function() {
 
 }
 // SOMETHINGS BORROWED
-
 Dscourse.prototype.GetCurrentDate = function() {
     var x = new Date();
-    var monthReplace = (x.getMonth() < 10) ? '0' + (x.getMonth() + 1) : x.getMonth();
-    var dayReplace = (x.getDate() < 10) ? '0' + x.getDate() : x.getDate();
-    var dateNow = x.getFullYear() + '-' + monthReplace + '-' + dayReplace + ' ' + x.getHours() + ':' + x.getMinutes() + ':' + x.getSeconds();
+    var monthReplace = (x.getUTCMonth() < 10) ? '0' + (x.getUTCMonth() + 1) : x.getUTCMonth();
+    var dayReplace = (x.getUTCDate() < 10) ? '0' + x.getUTCDate() : x.getUTCDate();
+    var dateNow = x.getUTCFullYear() + '-' + monthReplace + '-' + dayReplace + ' ' + x.getUTCHours() + ':' + x.getUTCMinutes() + ':' + x.getUTCSeconds();
     return dateNow;
 }
 
@@ -2192,4 +2197,31 @@ Dscourse.prototype.ParseDate = function(input, format) {
     });
 
     return new Date(parts[fmt['yyyy']], parts[fmt['mm']] - 1, parts[fmt['dd']]);
+}
+
+Dscourse.prototype.GetUniformDate = function(date, off){
+    if(typeof off == "undefined")
+        off = true;
+    var d = false;
+    if(typeof date == "object"){
+        d = date.getTime();
+    }
+    else if(typeof date == "number"){
+        d = new Date(date).getTime();
+    }
+    else if(typeof date == "string"){
+        var chrome = /chrome/.test(navigator.userAgent.toLowerCase());
+        if(($.browser.safari || $.browser.msie) && !chrome)
+           d = new Date(date.split('-').join('/')).getTime();
+        else if($.browser.webkit)
+            d = new Date(date).getTime();
+        else
+            d = new Date(date.split(' ').join('T')).getTime();   
+    }
+    if(off){
+        //convert to user's timezone
+        var diff = new Date().getTimezoneOffset();
+        d-=diff*60000;
+    }
+    return d;
 }

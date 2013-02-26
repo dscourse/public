@@ -1,5 +1,5 @@
 <?php 
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('UTC');
     define('MyConst', TRUE);    // Avoids direct access to config.php
     include "../config/config.php";   
 

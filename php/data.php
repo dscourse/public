@@ -4,7 +4,8 @@
  *  The new and improved script for getting and saving data to the database. 
  *
  */
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('UTC');
+
 ini_set('display_errors',1); 
  error_reporting(E_ALL);
  
@@ -13,6 +14,8 @@ ini_set('display_errors',1);
 	include "../../config/config.php"; 
 	include "dscourse.class.php"; 
 	include "simpleImage.class.php"; 
+	
+	mysql_query("SET SESSION time_zone = '+00:00'"); 
 
  	$action	= $_POST['action'];									// What the ajax call asks the php to do. 
 	$username = $_SESSION['Username'];
