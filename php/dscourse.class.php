@@ -4,8 +4,7 @@
  * Dscourse php functions 
  *
  */
-      
- date_default_timezone_set('UTC');
+date_default_timezone_set('UTC');
 
 class Dscourse {
 

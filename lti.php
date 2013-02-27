@@ -1,5 +1,4 @@
 <?php
-date_default_timezone_set('America/New_York');
 
 function hmacsha1($key, $data) {//snippet written by Kellan Elliott-McCrea; http://laughingmeme.org/
 	$blocksize = 64;
