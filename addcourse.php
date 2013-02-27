@@ -183,13 +183,13 @@ $(function(){
 	         		courseName: 'A course name is required.',
 	         		courseDescription: 'A course description is required.'
 	         	},
-	         	highlight: function(label){
-	         		$(label).closest('.control-group').removeClass('success');
-					$(label).closest('.control-group').addClass('error');
+	         	highlight: function(item, label){
+	         		$(item).closest('.control-group').removeClass('success');
+					$(item).closest('.control-group').addClass('error');
 				},
-				success: function(label){
-					$(label).closest('.control-group').removeClass('error');
-					$(label).closest('.control-group').addClass('success');
+				success: function(label, item){
+					$(item).closest('.control-group').removeClass('error');
+					$(item).closest('.control-group').addClass('success');
 				},
 				errorPlacement: function(error, element){
 					$(element).next('.help-inline').html(error);
@@ -210,6 +210,8 @@ $(function(){
 					alert('Every course must have at least one instructor or teaching assistant.');
 				}
 		   });
+		   
+		   
 	        
 	      <?php 
 			if(isset($_GET['m'])){
