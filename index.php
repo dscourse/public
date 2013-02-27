@@ -59,9 +59,23 @@ ini_set('display_errors',1);
 					$nName 	= $networkData[$i]['networkName'];
 					$nID	= $networkData[$i]['networkID'];
 					$nDesc	= $networkData[$i]['networkDesc'];
+					$nStatus =  $networkData[$i]['networkStatus'];
+					$status = $dscourse->CheckNetworkAccess($userID, $nID); 
+					$statusText = ''; $statusClass = ''; 
+					if($status == 'owner'){
+						$statusText = "Owner";
+						$statusClass = 'success'; 
+					} else if ($status == 'member'){
+						$statusText = "Member";
+						$statusClass = 'warning'; 					
 					
-					$networkPrint .='<div class="alert" networkID="'.$nID.'"><a href="network.php?n='.$nID.'">'.$nName.'</a></div>'; 
-					}		    
+					} else {
+						$statusText = "Not Member";
+						$statusClass = 'info'; 					
+					}
+										
+					$networkPrint .='<tr class="'.$statusClass.'" networkID="'.$nID.'"><td><a href="network.php?n='.$nID.'">'.$nName.'</a></td><td> <i>'.$statusText.' </i> </td><td><span class="greyText">'.$nStatus.'<span></td></tr>'; 
+					}		     
 	    }	else {
 		    $networkPrint .='<div class="alert alert-info">You are not part of any networks. Create a network or join one with the buttons below.</div>';  
 	    }
@@ -85,20 +99,21 @@ ini_set('display_errors',1);
 						$courseImage= 'img/course_default.jpg';					
 					}
 					
-					$courseNetworks = $dscourse->CourseNetworks($cID); 				
-					$coursePrint .='<li courseID="'.$cID.'"><a href="course.php?c='.$cID.'&n='.$courseNetworks[0]['networkID'].'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a>  <i>'.$cRole.'</i></li>'; 
-					
-					// Get discussions for each course
-					$discussionData = $dscourse->GetCourseDiscussions($cID);
-					$totalDiscussions = count($discussionData);
-					if($totalDiscussions > 0){ 
-						$discussionCount = 'some'; 
-						for($j = 0; $j < $totalDiscussions; $j++)
-							{
-								$discID = $discussionData[$j]['dID']; 
-								$discussionName = $discussionData[$j]['dTitle'];  // Name
-								$discussionPrint .='<li discID="'.$cID.'"><a href="discussion.php?d='.$discID.'&c='.$cID.'&n='.$courseNetworks[0]['networkID'].'">'.$discussionName.'</a></li>'; 
-							}						
+					$courseNetworks = $dscourse->CourseNetworks($cID);
+					if($courseNetworks){
+						$coursePrint .='<li courseID="'.$cID.'"><a href="course.php?c='.$cID.'&n='.$courseNetworks[0]['networkID'].'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a>  <i>'.$cRole.'</i></li>'; 						
+						// Get discussions for each course
+						$discussionData = $dscourse->GetCourseDiscussions($cID);
+						$totalDiscussions = count($discussionData);
+						if($totalDiscussions > 0){ 
+							$discussionCount = 'some'; 
+							for($j = 0; $j < $totalDiscussions; $j++)
+								{
+									$discID = $discussionData[$j]['dID']; 
+									$discussionName = $discussionData[$j]['dTitle'];  // Name
+									$discussionPrint .='<li discID="'.$cID.'"><a href="discussion.php?d='.$discID.'&c='.$cID.'&n='.$courseNetworks[0]['networkID'].'">'.$discussionName.'</a></li>'; 
+								}						
+						}
 					}
 				}
 				if($discussionCount == 'none'){
@@ -186,6 +201,7 @@ ini_set('display_errors',1);
 				var networkID 	= 0; // This is a new network, there is no ID yet
 				var networkName = $('#networkName').val(); // get network Name
 				var networkDesc = $('#networkDesc').val(); // get Network description
+				var networkType = $('#networkType').val(); // get Networktype
 				var userID		= currentUserID; // get user ID
 				var userRole	= 'owner'; 
 
@@ -194,6 +210,7 @@ ini_set('display_errors',1);
 				 	networkID : networkID,
 				 	networkName : networkName, 
 				 	networkDesc : networkDesc,
+				 	networkType: networkType,
 				 	networkUser : userID,
 				 	networkRole : userRole	 	
 			 	};
@@ -258,7 +275,19 @@ ini_set('display_errors',1);
 				<?php 				
 			}
 			?>	
-		
+
+			// popovers for help
+			$('#nRoleHelp').popover({
+				trigger: 'hover',
+				title : 'What\'s this?',
+				content : 'Your role in this network defines what you can do. Owners can edit network settings and manage all components of the network. Members can create courses and use discussions. If network if public non-members can also view the network contents.' 
+				}); 
+			$('#nStatusHelp').popover({
+				trigger: 'hover',
+				title : 'What\'s this?',
+				content : 'The status of the network defines who can view the network. Private networks can be viewed by members only. Public networks can be viewed by anyone' 							
+			}); 
+				
 		
 		}); 
 	</script>
@@ -317,7 +346,18 @@ ini_set('display_errors',1);
                         <h4> My Networks</h4>
                         <hr class="soften">
 
-                        <p><?php echo $networkPrint; ?></p>
+                        <table class="table table-bordered table-hover">
+                        <thead> 
+                        	<tr>
+                        		<td> Network Name </td>
+                        		<td> Your Role <span id="nRoleHelp"> <i class="icon-question-sign"></i> </span></td>
+                        		<td> Network Status <span id="nStatusHelp"> <i  class="icon-question-sign"></i></span></td>
+                        	</tr> 
+                        </thead>
+                        <tbody> 
+                        	<?php echo $networkPrint; ?>
+                        </tbody>
+                        </table>
 
                         <p>
                         	<a href="#addNetworkModal" role="button" class="btn btn-small btn-success addNetworkOpen" data-toggle="modal"> <i class="icon-plus icon-white"></i> Create Network</a> <a href="#joinNetworkModal" role="button" class="btn btn-small btn-primary joinNetworkOpen" data-toggle="modal"><i class="icon-user icon-white"></i> Join Network</a> 
@@ -378,6 +418,16 @@ ini_set('display_errors',1);
 		      <textarea rows="6" class="span4" id="networkDesc"></textarea>
 		      <span class="wordCount"></span>
 		      <p class="help-inline"></p>
+		    </div>
+		  </div>
+		  <div class="control-group">
+		    <label class="control-label" for="networkType">Network Access Type</label>
+		    <div class="controls">
+			    <select id="networkType" name="networkType">
+				  <option value="private" selected>Private - Only members can view and create courses.</option>
+				  <option value="public">Public  - Everyone can view, but only members can create courses .</option>
+				</select>
+				<p class="help-inline">Participation in discussions is set through course settings. </p>
 		    </div>
 		  </div>
 		</div>	  

@@ -291,7 +291,7 @@ $(function(){
     <div id="addDiscussionPage" class=" wrap page">
         <header class="jumbotron subhead">
             <div class="container-fluid">
-                <h1>Edit Discussion <a href="course.php?c=<?php echo $cID.'&n='.$nID; ?>"  id="editDiscussionCancel" class="btn pull-right">Cancel</a></h1>
+                <h1>Edit Discussion </h1>
             </div>
         </header>
 
@@ -682,7 +682,7 @@ $(function(){
                             <hr class="soften">
 
                             <div id="discussionButtondiv">
-                                <button class="btn btn-primary" id="discussionFormSubmit">Submit</button> <button type="button" class="btn btn-info" id="discussionFormCanel">Cancel</button>
+                                <button class="btn btn-primary" id="discussionFormSubmit">Submit</button> <a href="course.php?c=<?php echo $cID.'&n='.$nID; ?>"  id="editDiscussionCancel" class="btn">Cancel</a>
                             </div>
                         </form>
                     </div>

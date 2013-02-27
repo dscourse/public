@@ -253,7 +253,7 @@ Jquery validate success message
     <div id="addDiscussionPage" class=" wrap page">
         <header class="jumbotron subhead">
             <div class="container-fluid">
-                <h1>Add discussions <a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>"" id="addDiscussionCancel" class="btn pull-right">Cancel</a></h1>
+                <h1>Add discussions</h1>
             </div>
         </header>
 
@@ -640,7 +640,8 @@ Jquery validate success message
                             <hr class="soften">
 
                             <div id="discussionButtondiv">
-                                <button class="btn btn-primary" id="discussionFormSubmit">Submit</button> <button type="button" class="btn btn-info" id="discussionFormCanel">Cancel</button>
+                                <button class="btn btn-primary" id="discussionFormSubmit">Submit</button>
+                                <a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>" id="addDiscussionCancel" class="btn">Cancel</a>
                             </div>
                         </form>
                     </div>

@@ -195,10 +195,27 @@ ini_set('display_errors',1);
         <script type="text/javascript" src="js/dscourse.js"></script>
 
     <script type="text/javascript">
+<<<<<<< HEAD
         //LTI?
 			<?php echo "var lti = " . (($LTI) ? 'true' : 'false') . ";"; ?>
                 // Add some global variables about current user if we need them:
             <?php echo "var currentUserStatus = '" . $_SESSION['status'] . "';"; ?><?php echo "var currentUserID = '" . $_SESSION['UserID'] . "';"; ?><?php echo "var dUserAgent = '" . $_SERVER['HTTP_USER_AGENT'] . "';"; ?><?php echo "var discID = " . $discID . ";"; ?><?php echo "var currentSession = '" . $currentSession . "';"; ?></script>
+=======
+
+            // Add some global variables about current user if we need them:
+            <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
+            
+            <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
+            
+            <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
+            <?php echo "var discID = " .  $discID . ";"; ?>
+             <?php echo "var currentSession = '" .  $currentSession . "';"; ?>
+             <?php echo "var courseView = '" . $courseInfo['courseView'] . "'; "; ?>
+             <?php echo "var courseParticipate = '" . $courseInfo['courseParticipate'] . "'; "; ?>
+             <?php echo "var userNetworkRole = '" . $dscourse->CheckNetworkAccess($userID, $nID) . "'; "; ?>
+ 
+    </script>
+>>>>>>> c3be92ec9ccc7b9148c319534def57f7edb71e65
 </head>
 
 <body>
@@ -427,9 +444,17 @@ Your comment...
 
 	} else {
 	 		?>
+<<<<<<< HEAD
 	 		<div class="alert alert-danger"> You are not authorized to view this discussion. If this is an error please contact your site administrator. </div>
 	 		<?php
 				}
+=======
+	 		<div class="alert alert-danger"> You are not authorized to view this discussion. You may have been misdirected or entered a wrong link. Also even if a network is private the course creator may have limited access to course members. If this is an error please contact your site administrator. <a href="index.php"> Go back to dscourse </a> </div>
+	 		<?php 
+ 		}       
+       
+       
+>>>>>>> c3be92ec9ccc7b9148c319534def57f7edb71e65
 
 				}
     ?>  

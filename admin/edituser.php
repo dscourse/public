@@ -17,7 +17,14 @@ if (isset($_GET['UserID']) ) {
 $UserID = (int) $_GET['UserID']; 
 if (isset($_POST['submitted'])) { 
 foreach($_POST AS $key => $value) { $_POST[$key] = mysql_real_escape_string($value); } 
-$sql = "UPDATE `users` SET  `username` =  '{$_POST['username']}' ,  `password` =  '{$_POST['password']}' ,  `firstName` =  '{$_POST['firstName']}' ,  `lastName` =  '{$_POST['lastName']}' ,  `sysRole` =  '{$_POST['sysRole']}' ,  `userFacebook` =  '{$_POST['userFacebook']}' ,  `userTwitter` =  '{$_POST['userTwitter']}' ,  `userPhone` =  '{$_POST['userPhone']}' ,  `userWebsite` =  '{$_POST['userWebsite']}' ,  `userPictureURL` =  '{$_POST['userPictureURL']}' ,  `userStatus` =  '{$_POST['userStatus']}' ,  `userProfile` =  '{$_POST['userProfile']}' ,  `userAbout` =  '{$_POST['userAbout']}' ,  `userRecovery` =  '{$_POST['userRecovery']}' ,  `userRecoveryTime` =  '{$_POST['userRecoveryTime']}'   WHERE `UserID` = '$UserID' "; 
+if($_POST['password'] != ''){
+	$password = md5($_POST['password']);
+$sql = "UPDATE `users` SET  `username` =  '{$_POST['username']}' ,  `password` =  '{$password}' ,  `firstName` =  '{$_POST['firstName']}' ,  `lastName` =  '{$_POST['lastName']}' ,  `sysRole` =  '{$_POST['sysRole']}' ,  `userFacebook` =  '{$_POST['userFacebook']}' ,  `userTwitter` =  '{$_POST['userTwitter']}' ,  `userPhone` =  '{$_POST['userPhone']}' ,  `userWebsite` =  '{$_POST['userWebsite']}' ,  `userPictureURL` =  '{$_POST['userPictureURL']}' ,  `userStatus` =  '{$_POST['userStatus']}' ,  `userProfile` =  '{$_POST['userProfile']}' ,  `userAbout` =  '{$_POST['userAbout']}' ,  `userRecovery` =  '{$_POST['userRecovery']}' ,  `userRecoveryTime` =  '{$_POST['userRecoveryTime']}'   WHERE `UserID` = '$UserID' "; 
+} else {
+$sql = "UPDATE `users` SET  `username` =  '{$_POST['username']}' ,  `firstName` =  '{$_POST['firstName']}' ,  `lastName` =  '{$_POST['lastName']}' ,  `sysRole` =  '{$_POST['sysRole']}' ,  `userFacebook` =  '{$_POST['userFacebook']}' ,  `userTwitter` =  '{$_POST['userTwitter']}' ,  `userPhone` =  '{$_POST['userPhone']}' ,  `userWebsite` =  '{$_POST['userWebsite']}' ,  `userPictureURL` =  '{$_POST['userPictureURL']}' ,  `userStatus` =  '{$_POST['userStatus']}' ,  `userProfile` =  '{$_POST['userProfile']}' ,  `userAbout` =  '{$_POST['userAbout']}' ,  `userRecovery` =  '{$_POST['userRecovery']}' ,  `userRecoveryTime` =  '{$_POST['userRecoveryTime']}'   WHERE `UserID` = '$UserID' "; 	
+}
+
+
 mysql_query($sql) or die(mysql_error()); 
 echo (mysql_affected_rows()) ? "Edited row.<br />" : "Nothing changed. <br />"; 
 echo "<a href='users.php'>Back To Listing</a>"; 
@@ -27,7 +34,7 @@ $row = mysql_fetch_array ( mysql_query("SELECT * FROM `users` WHERE `UserID` = '
 
 <form action='' method='POST'> 
 <p><b>Username:</b><br /><input type='text' name='username' value='<?= stripslashes($row['username']) ?>' /> 
-<p><b>Password:</b><br /><input type='text' name='password' value='<?= md5(stripslashes($row['password'])) ?>' /> 
+<p><b>Password:</b><br /><input type='text' name='password' value='' /> 
 <p><b>FirstName:</b><br /><input type='text' name='firstName' value='<?= stripslashes($row['firstName']) ?>' /> 
 <p><b>LastName:</b><br /><input type='text' name='lastName' value='<?= stripslashes($row['lastName']) ?>' /> 
 <p><b>SysRole:</b><br /><input type='text' name='sysRole' value='<?= stripslashes($row['sysRole']) ?>' /> 
