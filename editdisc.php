@@ -153,6 +153,12 @@ $(function(){
 				console.log(1);
 				$('.hasDatepicker').trigger('blur');
 			});
+			
+			$.each([$('#sDateTime'),$('oDateTime'),$('eDateTime')], function(i,val){
+				val.on('change', function(){
+					$('.hasDatepicker').trigger('blur');
+				});
+			});
 				
 			$('#discussionPrompt').counter({max:500});
                 
@@ -198,7 +204,7 @@ $(function(){
 					break;
 				  }
 				return valid;
-		   }, "Please make sure your dates make sense.");
+		   }, "Please check the chronological order of your dates.");
 		   //general form validation rules/messages         
            $('form[name="editDiscussionForm"]').validate({
 				rules: {
@@ -224,13 +230,13 @@ $(function(){
 					discussionQuestion: "A discussion question is required.",
 					discussionPrompt: "A discussion prompt is required."
 				},
-				highlight: function(label){
-					$(label).closest('.control-group').removeClass('success');
-					$(label).closest('.control-group').addClass('error');
+				highlight: function(item, label){
+	         		$(item).closest('.control-group').removeClass('success');
+					$(item).closest('.control-group').addClass('error');
 				},
-				success: function(label){
-					$(label).closest('.control-group').removeClass('error');
-					$(label).closest('.control-group').addClass('success');
+				success: function(label, item){
+					$(item).closest('.control-group').removeClass('error');
+					$(item).closest('.control-group').addClass('success');
 				},
 				errorPlacement: function(error, element){
 					$(element).siblings('.help-inline').html(error);

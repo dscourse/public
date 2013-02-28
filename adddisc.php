@@ -112,6 +112,12 @@ $(function(){
             $("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd", onSelect: function(){
 				$('.hasDatepicker').trigger('blur');
 			}}).datepicker('setDate',d);
+			
+			$.each([$('#sDateTime'),$('oDateTime'),$('eDateTime')], function(i,val){
+				val.on('change', function(){
+					$('.hasDatepicker').trigger('blur');
+				});
+			});
             
             $('#sDateTime').children('option[value='+d.getHours()+']').attr('selected', 'selected');
             $('#oDateTime').children('option[value='+d.getHours()+']').attr('selected', 'selected');
@@ -142,28 +148,26 @@ $(function(){
            //validation for Jquery Datepickers         
            $.validator.addMethod("logicalDate", function(value, el){
 				var ind = $(el).index('.hasDatepicker');
-		        var one = false;
-		        var two = false;
-		        var three = false;
+		        var valid = false;
+		        var start = $('#discussionStartDate').datepicker('getDate');
+		        start.setHours($('#discussionStartDate').next('select').val());
+		        var open = $("#discussionOpenDate").datepicker('getDate');
+		        open.setHours($("#discussionOpenDate").next('select').val());
+		        var close = $("#discussionEndDate").datepicker('getDate');
+		        close.setHours($("#discussionEndDate").next('select').val());
 				switch(ind){ 
 					case 0:
-						one = ($(el).datepicker('getDate')!=null);
-						two = ($("#discussionOpenDate").datepicker('getDate')==null || $(el).datepicker('getDate')<= $("#discussionOpenDate").datepicker('getDate')); 
-						three =  ($("#discussionEndDate").datepicker('getDate')==null || $(el).datepicker('getDate') <= $("#discussionEndDate").datepicker('getDate'));
+						valid = start <= open && start < close;
 					break;
 				    case 1:
-						one = ($(el).datepicker('getDate')!=null);
-						two = ($(el).datepicker('getDate') >= $("#discussionStartDate").datepicker('getDate') || $("#discussionStartDate").datepicker('getDate')==null);
-						three = ($(el).datepicker('getDate') <= $("#discussionEndDate").datepicker('getDate')|| $("#discussionEndDate").datepicker('getDate')==null);
+				    	valid = open >= start && open <= close;
 					break
 					case 2:
-						one = ($(el).datepicker('getDate')!=null);
-						two = ($(el).datepicker('getDate') >= $("#discussionStartDate").datepicker('getDate')||$("#discussionStartDate").datepicker('getDate')==null);
-						three = ($(el).datepicker('getDate') >= $("#discussionOpenDate").datepicker('getDate') || $("#discussionOpenDate").datepicker('getDate')==null);
+						valid = close >= open && close > start;
 					break;
 				  }
-				return one&&two&&three;
-		   }, "Please make sure your dates make sense");
+				return valid;
+		   }, "Please check the chronological order of your dates.");
 		   //general form validation rules/messages         
            $('form[name="addDiscussionForm"]').validate({
 				rules: {
@@ -189,13 +193,13 @@ $(function(){
 					discussionQuestion: "A discussion question is required.",
 					discussionPrompt: "A discussion prompt is required."
 				},
-				highlight: function(label){
-					$(label).closest('.control-group').removeClass('success');
-					$(label).closest('.control-group').addClass('error');
+				highlight: function(item, label){
+	         		$(item).closest('.control-group').removeClass('success');
+					$(item).closest('.control-group').addClass('error');
 				},
-				success: function(label){
-					$(label).closest('.control-group').removeClass('error');
-					$(label).closest('.control-group').addClass('success');
+				success: function(label, item){
+					$(item).closest('.control-group').removeClass('error');
+					$(item).closest('.control-group').addClass('success');
 				},
 				errorPlacement: function(error, element){
 					$(element).siblings('.help-inline').html(error);
@@ -225,7 +229,7 @@ $(function(){
         <div class="navbar-inner">
             <div class="container-fluid">
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
-Jquery validate success message
+                
                 <ul class="nav">
                     <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
                     <li class="navLevel"><a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li>
