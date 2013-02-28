@@ -2163,7 +2163,7 @@ Dscourse.prototype.truncateText = function(text, length) {
 Dscourse.prototype.FormattedDate = function(date) {
     var d, m, curr_hour, dateString;
     d = new Date(0);
-    var sec = this.GetUniformDate(date, false);
+    var sec = this.GetUniformDate(date);
     d.setUTCMilliseconds(sec);
     // Write out the date in readable form.
     m = d.toDateString();
