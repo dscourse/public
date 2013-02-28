@@ -255,11 +255,99 @@ $(function(){
 			   		alert("Every discussion must be associated with at least one course.");
 			   		e.preventDefault();	
 			   }
+			   else{
+			   //fix dates
+							var data = {
+								'discussionStartDate': $('#discussionStartDate').val(),
+								'sDateTime' : $('#sDateTime').val(),
+								'discussionOpenDate': $('#discussionOpenDate').val(),
+								'oDateTime' : $('#oDateTime').val(),
+								'discussionEndDate' : $('#discussionEndDate').val(),
+								'eDateTime' : $('#eDateTime').val()
+							}
+                            var s = data['discussionStartDate'].split('-');
+                            var start = new Date();
+                            start.setFullYear(s[0]);
+                            start.setMonth(s[1] - 1);
+                            start.setDate(s[2]);
+                            start.setHours(data['sDateTime']);
+                            start.setMinutes(0);
+                            var o = data['discussionOpenDate'].split('-');
+                            var open = new Date();
+                            open.setFullYear(o[0]);
+                            open.setMonth(o[1] - 1);
+                            open.setDate(o[2]);
+                            open.setHours(data['oDateTime']);
+                            open.setMinutes(0);
+                            var e = data['discussionEndDate'].split('-');
+                            var end = new Date();
+                            end.setFullYear(e[0]);
+                            end.setMonth(e[1] - 1);
+                            end.setDate(e[2]);
+                            end.setHours(data['eDateTime']);
+                            end.setMinutes(0);
+
+                            var off = new Date().getTimezoneOffset();
+                            start.setMinutes(start.getMinutes() + off);
+                            open.setMinutes(open.getMinutes() + off);
+                            end.setMinutes(end.getMinutes() + off);
+                            
+                            $('#discussionEndDate').val(end.getFullYear()+'-'+(end.getMonth()+1)+'-'+end.getDate());
+                            $('#eDateTime').val(end.getHours());
+                             $('#discussionStartDate').val(start.getFullYear()+'-'+(start.getMonth()+1)+'-'+start.getDate());
+                            $('#sDateTime').val(start.getHours());
+                             $('#discussionOpenDate').val(open.getFullYear()+'-'+(open.getMonth()+1)+'-'+open.getDate());
+                            $('#oDateTime').val(open.getHours());
+                        }
 		   });
-            
-            $('#sDateTime > option[value="<?php echo $dStartHour[0]; ?>"]').attr('selected', 'selected');     
-            $('#oDateTime > option[value="<?php echo $dOpenHour[0]; ?>"]').attr('selected', 'selected');     
-            $('#eDateTime > option[value="<?php echo $dEndHour[0]; ?>"]').attr('selected', 'selected');     
+		   
+		    $('#sDateTime > option[value="<?php echo $dStartHour[0]; ?>"]').attr('selected', 'selected');     
+           $('#oDateTime > option[value="<?php echo $dOpenHour[0]; ?>"]').attr('selected', 'selected');     
+           $('#eDateTime > option[value="<?php echo $dEndHour[0]; ?>"]').attr('selected', 'selected');   
+		   
+		   //fix dates
+			var data = {
+				'discussionStartDate': $('#discussionStartDate').val(),
+				'sDateTime' : $('#sDateTime').val(),
+				'discussionOpenDate': $('#discussionOpenDate').val(),
+				'oDateTime' : $('#oDateTime').val(),
+				'discussionEndDate' : $('#discussionEndDate').val(),
+				'eDateTime' : $('#eDateTime').val()
+				}
+                            var s = data['discussionStartDate'].split('-');
+                            var start = new Date();
+                            start.setFullYear(s[0]);
+                            start.setMonth(s[1] - 1);
+                            start.setDate(s[2]);
+                            start.setHours(data['sDateTime']);
+                            start.setMinutes(0);
+                            var o = data['discussionOpenDate'].split('-');
+                            var open = new Date();
+                            open.setFullYear(o[0]);
+                            open.setMonth(o[1] - 1);
+                            open.setDate(o[2]);
+                            open.setHours(data['oDateTime']);
+                            open.setMinutes(0);
+                            var e = data['discussionEndDate'].split('-');
+                            var end = new Date();
+                            end.setFullYear(e[0]);
+                            end.setMonth(e[1] - 1);
+                            end.setDate(e[2]);
+                            end.setHours(data['eDateTime']);
+                            end.setMinutes(0);
+
+                            var off = new Date().getTimezoneOffset();
+                            start.setMinutes(start.getMinutes() - off);
+                            open.setMinutes(open.getMinutes() - off);
+                            end.setMinutes(end.getMinutes() - off);
+                            
+                            $('#discussionEndDate').val(end.getFullYear()+'-'+(end.getMonth()+1)+'-'+end.getDate());
+                            $('#eDateTime').val(end.getHours());
+                             $('#discussionStartDate').val(start.getFullYear()+'-'+(start.getMonth()+1)+'-'+start.getDate());
+                            $('#sDateTime').val(start.getHours());
+                             $('#discussionOpenDate').val(open.getFullYear()+'-'+(open.getMonth()+1)+'-'+open.getDate());
+                            $('#oDateTime').val(open.getHours());
+		  
 });                        
     </script>
 </head>
@@ -696,10 +784,6 @@ $(function(){
             </div>
         </div><!-- close container -->
     </div><!-- end discussions -->
-    <?php
-
-                               }  
-                                    
-                            ?>
+    <?php } ?>
 </body>
 </html>
