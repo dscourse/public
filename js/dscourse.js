@@ -44,6 +44,9 @@ function Dscourse(lti) {
     this.charCount = true;
     //lti
     this.lti = lti;
+    //This is used to handle redrawing of the vertical heatmap when media displays get closed
+    //Maybe it will be useful down the road as we start adding views? 
+    this.activeFilter = "";
 
     // Run initializing functions
     this.GetData(discID);
@@ -569,7 +572,13 @@ function Dscourse(lti) {
     });
 
     $('#closeMediaDisplay').live('click', function() {
-        $('#mediaDisplay').hide();
+        if(top.activeFilter=="keyword"){
+            if($("#keywordSearchText").val()!="")
+                $("#keywordSearchText").blur();
+        }
+        else
+             $('.uList').filter(function(){return $(this).attr('active')=="true";}).click(); 
+      
         $('#commentWrap').hide();
         $('#displayFrame').hide();
         top.AddLog('discussion',discID,'CloseMediaDisplay',postID,' '); // id is for which post it is clicked. 
@@ -1932,6 +1941,7 @@ Dscourse.prototype.VerticalHeatmap = function(mapType, mapInfo) {
      */
 
     var main = this;
+    main.activeFilter = (typeof mapType !="undefined")?mapType: main.activeFilter;
     // View box calculations
     var boxHeight = $('#vHeatmap').height();
     // Get height of the heatmap object
