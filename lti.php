@@ -12,7 +12,7 @@ function hmacsha1($key, $data) {//snippet written by Kellan Elliott-McCrea; http
 	return $hmac;
 }
 class User{
-	public $attrs = array('firstName'=>'lis_person_name_given','lastName'=>'lis_person_name_family','username'=>'lis_person_contact_email_primary');
+	public $attrs = array('firstName'=>'lis_person_name_given','lastName'=>'lis_person_name_family','username'=>'lis_person_contact_email_primary', 'role'=>'roles');
 }
 class LTILaunch{
 	public $params = array('discID'=>'resource_link_id','courseName'=>'context_title','courseId'=>'context_id');	

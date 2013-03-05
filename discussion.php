@@ -27,7 +27,7 @@ ini_set('display_errors',1);
 		$origin = array(0);
 	}
 	if(count($origin)>0){
-		$LTI_allowed = array('https://collab.itc.virginia.edu'=>'UVa Collab', 'http://dev.canlead.net'=>'CANLEAD');
+		$LTI_allowed = array('https://collab.itc.virginia.edu'=>'UVa Collab', 'http://dev.canlead.net'=>'CANLEAD', 'http://www.imsglobal.org'=>'IMS Test Harness');
   		if(array_key_exists($origin, $LTI_allowed)){
   			$LTI = TRUE;
 			include "lti.php";
@@ -90,10 +90,11 @@ ini_set('display_errors',1);
 			$user = mysql_query("SELECT * FROM users WHERE username = '$q'");
 			$u = mysql_fetch_assoc($user);
 			if($user!=FALSE && empty($u)){
+				//Create user if necessary
 				$username = strtolower($launch->user->attrs['username']);
 				$first = $launch->user->attrs['firstName'];
 				$last = $launch->user->attrs['lastName'];
-				mysql_query("INSERT INTO users (username, firstName, lastName, sysRole) VALUES ('$username', '$first', '$last', 'pariticipant')");
+				mysql_query("INSERT INTO users (username, firstName, lastName, sysRole) VALUES ('$username', '$first', '$last', 'Pariticipant')");
 				$uId = mysql_insert_id(); 
 			}
 			else{
@@ -104,10 +105,23 @@ ini_set('display_errors',1);
 			if($netUser!=FALSE && empty($nu)){
 				mysql_query("INSERT INTO networkUsers (userID, networkID, networkUserRole) VALUES ('$uId', '$netId', 'member')");
 			}
+			$role = $launch->user->attrs['role'];
 			$courseRole = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uId' AND courseID = '$courseId'");
 			$cr = mysql_fetch_assoc($courseRole);
 			if($courseRole!=FALSE && empty($cr)){
 				mysql_query("INSERT INTO courseRoles (userID, courseID, userRole) VALUES ('$uId', '$courseId', 'Student')");
+			}
+			//in either case update the user's courseRole to the incoming role
+			$role = $launch->user->attrs['role'];
+			if($role=="Instructor"){
+				$role = "Instructor";
+			}
+			else{
+				$role = "Student";
+			}
+			$t= mysql_query("UPDATE courseRoles SET userRole = '$role' WHERE userID = $uId AND courseId = '$courseId'");
+			if($t == FALSE){
+				exit ("FAIL");
 			}
 			//At this point we can be sure the network, course, discussion, and user exist in the DB
   		}
@@ -198,7 +212,11 @@ ini_set('display_errors',1);
         //LTI?
 			<?php echo "var lti = " . (($LTI) ? 'true' : 'false') . ";"; ?>
                 // Add some global variables about current user if we need them:
-            <?php echo "var currentUserStatus = '" . $_SESSION['status'] . "';"; ?><?php echo "var currentUserID = '" . $_SESSION['UserID'] . "';"; ?><?php echo "var dUserAgent = '" . $_SERVER['HTTP_USER_AGENT'] . "';"; ?><?php echo "var discID = " . $discID . ";"; ?><?php echo "var currentSession = '" . $currentSession . "';"; ?></script>
+            <?php echo "var currentUserStatus = '" . $_SESSION['status'] . "';"; ?>
+            <?php echo "var currentUserID = '" . $_SESSION['UserID'] . "';"; ?>
+            <?php echo "var dUserAgent = '" . $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
+            <?php echo "var discID = " . $discID . ";"; ?>
+            <?php echo "var currentSession = '" . $currentSession . "';"; ?></script>
 </head>
 
 <body>
