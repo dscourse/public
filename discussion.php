@@ -120,9 +120,6 @@ ini_set('display_errors',1);
 				$role = "Student";
 			}
 			$t= mysql_query("UPDATE courseRoles SET userRole = '$role' WHERE userID = $uId AND courseId = '$courseId'");
-			if($t == FALSE){
-				exit ("FAIL");
-			}
 			//At this point we can be sure the network, course, discussion, and user exist in the DB
   		}
 	}
@@ -137,9 +134,9 @@ ini_set('display_errors',1);
   
             if(mysql_num_rows($getUserInfo) == 1)  
             {  
-                $row = mysql_fetch_array($checklogin);   
+                $row = mysql_fetch_array($getUserInfo);   
           
-                $_SESSION['Username'] = $username; 
+                $_SESSION['Username'] = $row[1];
                 $_SESSION['firstName'] = $row[3]; 
                 $_SESSION['lastName'] = $row[4];   
                 $_SESSION['LoggedIn'] = 1;  

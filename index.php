@@ -137,7 +137,7 @@ ini_set('display_errors',1);
 			}); 
 	
 			$('#networkName').on('keyup',function(){
-				if(!/^\s*$/.test($(this).val())){
+				if(!/^\s*$/.test($(this).val()) && $(this).val().length > 255){
 					$(this).closest('.control-group').removeClass('error');
 					$(this).closest('.control-group').addClass('success');
 				}
@@ -170,12 +170,12 @@ ini_set('display_errors',1);
 			// Add Network when #addNetwork is clicked 
 			$('#addNetwork').on('click', function () {
 				var valid = true; 
-				if($('#networkName').val()==' ' || $('#networkName').val()==''){ 
+				if($('#networkName').val()==' ' || $('#networkName').val()=='' || $('#networkName').val().length > 255){ 
 					$('#networkName').closest('.control-group').addClass('error');
 					$('#networkName').siblings('.help-inline').html('*required');
 					valid = false;
 				}
-				if($("#networkDesc").val() == '' || $("#networkDesc").val() == ' '){
+				if($("#networkDesc").val() == '' || $("#networkDesc").val() == ' ' || $('#networkDesc').val().length > 500){
 					$("#networkDesc").closest('.control-group').addClass('error');
 					$("#networkDesc").siblings('.help-inline').html('*required');
 					valid = false;

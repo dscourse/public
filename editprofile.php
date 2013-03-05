@@ -55,14 +55,55 @@ ini_set('display_errors',1);
     <title>dscourse | <?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></title>
     
     <?php include('php/header_includes.php');  ?>
-    
+	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
     <script type="text/javascript">
+    
 $(function(){
             // Add some global variables about current user if we need them:
             <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
 
+			$('form[name="editProfileForm"]').validate({
+				rules: {
+					firstName: {
+						required: true,
+						maxlength: 255
+					}, 
+					lastName: {
+						required: true,
+						maxlength: 255
+					},
+					email: {
+						required: true,
+						email: true
+					}
+				},
+				messages : {
+					firstName: "Please provide your first name",
+					lastName: "Please provide your last name",
+					email: "Please provide a valid email address"
+				},
+				highlight : function(item, label) {
+					$(item).closest('.control-group').removeClass('success');
+					$(item).closest('.control-group').addClass('error');
+				},
+				success : function(label, item) {
+					$(item).closest('.control-group').removeClass('error');
+					$(item).closest('.control-group').addClass('success');
+				},
+				errorPlacement : function(error, element) {
+					$(element).siblings('.help-inline').html(error);
+				}
+			});
+
+			$('#submitEditButton').on('click', function(){
+				if(!$('form[name="editProfileForm"]').valid()){
+					e.preventDefault();				
+				}
+			})
+			
+			
         
         }); 
     </script>
