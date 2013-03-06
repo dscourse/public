@@ -225,13 +225,17 @@ $(function(){
                     });
                     $('#discussionFormSubmit').on('click', function(e, data) {
                         if (!$('form[name="addDiscussionForm"]').valid()) {
-                            $('body').scrollTop(0);
+                            $('html, body').animate({
+	         					scrollTop: 0
+	         				});
                             if ($('.dCourseList').length == 0)
                                 $('#discAddCourseLabel').html('A discussion must be linked to at least one course.').css('color', 'red');
                             else
                                 $('#discAddCourseLabel').html('').css('color', '#333');
+                           	e.preventDefault();	
                         } else if ($('#addCoursesBody').children().length == 0) {
                             alert("Every discussion must be associated with at least one course.");
+                            e.preventDefault();	
                         } else {
                             //fix dates
 							var data = {

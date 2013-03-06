@@ -212,7 +212,9 @@ $(function(){
 	         $('#submitEditCourse').on('click', function(e){
 	         	if(!$('form[name="addCourseForm"]').valid()){
 				   	e.preventDefault();	
-				   	$('body').scrollTop(0);
+				   	$('html, body').animate({
+	         			scrollTop: 0
+	         		});
 				}
 				var admin = $('#addPeopleBody').find('.btn').filter('.active').filter(function(){
 					return $(this).html() != "Student";

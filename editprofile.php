@@ -99,6 +99,9 @@ $(function(){
 
 			$('#submitEditButton').on('click', function(){
 				if(!$('form[name="editProfileForm"]').valid()){
+					$('html, body').animate({
+	         			scrollTop: 0
+	         		});
 					e.preventDefault();				
 				}
 			})
