@@ -226,10 +226,16 @@ $(function(){
 						logicalDate: true
 					}
 				},
-				messages: {
-					discussionQuestion: "A discussion question is required.",
-					discussionPrompt: "A discussion prompt is required."
-				},
+				 messages : {
+                            discussionQuestion : {
+                            	required: "A discussion question is required.",
+                            	maxlength: "Please limit the length of your discussion question to 255 characters."
+                            }, 
+                            discussionPrompt : {
+                            	required: "A discussion prompt is required.",
+                            	maxlength: "Please limit the length of your discussion prompt to 500 characters."
+                            }
+                        },
 				highlight: function(item, label){
 	         		$(item).closest('.control-group').removeClass('success');
 					$(item).closest('.control-group').addClass('error');
@@ -244,7 +250,9 @@ $(function(){
 		   });
 		   $('#discussionFormSubmit').on('click', function(e){
 			   if(!$('form[name="editDiscussionForm"]').valid()){
-			   	$('body').scrollTop(0);
+			  		 $('html, body').animate({
+	         			scrollTop: 0
+	         		});
 					if($('.dCourseList').length == 0)
 						$('#discAddCourseLabel').html('A discussion must be linked to at least one course.').css('color', 'red');
 					else
