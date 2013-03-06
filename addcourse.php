@@ -180,7 +180,10 @@ $(function(){
 	         		}
 	         	},
 	         	messages: {
-	         		courseName: 'A course name is required.',
+	         		courseName: {
+	         			required: 'A course name is required.',
+	         			maxlength: 'Please limit the length of your course name to 255 characters.'
+	         		},
 	         		courseDescription: 'A course description is required.'
 	         	},
 	         	highlight: function(item, label){
