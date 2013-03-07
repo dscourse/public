@@ -92,9 +92,18 @@ ini_set('display_errors',1);
     
      <?php include('php/header_includes.php');  ?>
    
-    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.0/jquery.validate.min.js" type="text/javascript"></script>
     <script src="js/counter.js" type="text/javascript"></script>
     <script type="text/javascript">
+    Array.prototype.transform = function(func){
+    	var res = [];
+    	for(var i=0; i<this.length; i++){
+    		res.push(func(this[i]));
+    	}
+    	return res;
+    }
+    
+    
 $(function(){
             // Add some global variables about current user if we need them:
             <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
@@ -125,32 +134,38 @@ $(function(){
                 ?>
             ];
             
+            var associatedCourses = $.makeArray($('.dCourseList')).transform(function(a){
+            	return $(a).attr('id');
+            })
+            
             $('.removeCourses').live('click', function(event) {
                 event.preventDefault();
-                currentVal = $(this).siblings('.deleteToggle').val(); // get the delete toggle value
-                console.log(currentVal); 
+                var func = (associatedCourses.indexOf($(this).attr('id'))==-1)?"no":"yes";
+                $(this).siblings('.deleteToggle').val(func);
+                $(this).closest('tr').hide();
+				/*                
+                var currentVal = $(this).siblings('.deleteToggle').val(); // get the delete toggle value
                 if(currentVal == 'no'){ // if no 
                 	 $(this).siblings('.deleteToggle').val('yes');// toggle value to yes
                 	 $(this).addClass('btn-warning');// add class btn-warning
+                	 alert("Every discussion must be associated with at least one course.")
                } else if(currentVal == 'yes'){ // if yes 
                		$(this).siblings('.deleteToggle').val('yes'); // toggle value to no
                		$(this).removeClass('btn-warning');// remove class btn warning
                } else if(currentVal == 'add'){
 	               	$(this).closest('tr').remove(); // remove this row 
                }
+               */
             });
 
-            $("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd", onSelect: function(){
+            $("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd"});          
+            $("#discussionOpenDate").datepicker({ dateFormat: "yy-mm-dd"});
+            $("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd"});
+			
+			$('.hasDatepicker').datepicker("option", "onSelect", function(a, datepicker){
 				$('.hasDatepicker').trigger('blur');
-			}});          
-            $("#discussionOpenDate").datepicker({ dateFormat: "yy-mm-dd" ,onSelect: function(){
-				$('.hasDatepicker').trigger('blur');
-			}});
-            $("#discussionEndDate").datepicker({ dateFormat: "yy-mm-dd" ,onSelect: function(){
-				$('.hasDatepicker').trigger('blur');
-			}});
+			});
 			$('.hasDatepicker').next('select').on('change', function(){
-				console.log(1);
 				$('.hasDatepicker').trigger('blur');
 			});
 			
@@ -170,15 +185,29 @@ $(function(){
                             return false;
                         },
                         select: function( event, ui ) {
-                        	if($('#addCoursesBody').children().filter(function(i){
-                        		return $('#addCoursesBody').children().eq(i).attr('id') == ui.item.value
-                        	}).length > 0){
-                        		alert("This course has already been added.");
-                        		return false;
+                        	var old =$('#addCoursesBody').children().filter(function(i){
+                        		return $('#addCoursesBody').children().eq(i).attr('id') == ui.item.value;
+                        	});
+                        	if(old.length > 0){
+                        		if(old.filter(':hidden').length>0){
+                        			var func = (associatedCourses.indexOf(ui.item.value)>0)?"no":"add";
+                        			var cur = old.filter(':hidden').filter(function(){
+                        				return $(this).attr('id') == ui.item.value;
+                        			});
+                        			cur.show();
+                        			cur.find('.deleteToggle').val(func);
+                        		}
+                        		else{
+                        			alert("This course has already been added.");
+                        			return false;
+								}		
                         	}
-                            $('#addCoursesBody').append('<tr id="' + ui.item.value +'" class="dCourseList"><td>'+ ui.item.label + ' </td><td><button class="btn removeCourses" courseID="' + ui.item.value + '">Remove</button> <input type="hidden" name="course[]" value="' + ui.item.value + '"> <input class="deleteToggle" courseID="' + ui.item.value + '" type="hidden" name="course[]" value="add"></td></tr>');               		     
-                            $('.discussionCourses').val(' ').focus();
-                            return false;
+                        	else{
+                        		var func = (associatedCourses.indexOf(ui.item.value)>0)?"no":"add";
+                           		$('#addCoursesBody').append('<tr id="' + ui.item.value +'" class="dCourseList"><td>'+ ui.item.label + ' </td><td><button class="btn removeCourses" courseID="' + ui.item.value + '">Remove</button> <input type="hidden" name="course[]" value="' + ui.item.value + '"> <input class="deleteToggle" courseID="' + ui.item.value + '" type="hidden" name="course[]" value='+func+'></td></tr>');               		     
+                            	$('.discussionCourses').val(' ').focus();
+                            	return false;
+                           }
                         }
                     }); 
                     
@@ -204,7 +233,12 @@ $(function(){
 					break;
 				  }
 				return valid;
-		   }, "Please check the chronological order of your dates.");
+		   }, function(a,b){
+		   	//Insert conditional message logic here
+		   	console.log(a);
+		   	console.log(b);
+		   	return "Please check the chronological order of your dates.";
+		   });
 		   //general form validation rules/messages         
            $('form[name="editDiscussionForm"]').validate({
 				rules: {
@@ -253,13 +287,13 @@ $(function(){
 			  		 $('html, body').animate({
 	         			scrollTop: 0
 	         		});
-					if($('.dCourseList').length == 0)
+					if($('.dCourseList:visible').length == 0)
 						$('#discAddCourseLabel').html('A discussion must be linked to at least one course.').css('color', 'red');
 					else
 						$('#discAddCourseLabel').html('').css('color', '#333');
 			   	e.preventDefault();	
 			   }
-			   else if($('#addCoursesBody').children().length == 0){
+			   else if($('.dCourseList:visible').length == 0){
 			   		alert("Every discussion must be associated with at least one course.");
 			   		e.preventDefault();	
 			   }

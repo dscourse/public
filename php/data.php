@@ -466,7 +466,6 @@ function EditDiscussion(){
 		$totalCourses = count($courses); 
 		$i = 0; 
 
-		//print_r($courses);
 		while($i < $totalCourses) {
 			if($i%2 == 0){
 				$b = $i+1; 

@@ -65,7 +65,7 @@ ini_set('display_errors',1);
 	include ('php/header_includes.php');
   ?>
      <script src="js/counter.js" type="text/javascript"></script>
-     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
+     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.0/jquery.validate.min.js" type="text/javascript"></script>
     <script type="text/javascript">
     
 $(function(){

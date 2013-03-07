@@ -8,3 +8,4 @@
 ## project specific files
 scripts/php/config.php
 db_timezone_patch.php
+tst.php
