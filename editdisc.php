@@ -136,7 +136,7 @@ $(function(){
             
             var associatedCourses = $.makeArray($('.dCourseList')).transform(function(a){
             	return $(a).attr('id');
-            })
+            });
             
             $('.removeCourses').live('click', function(event) {
                 event.preventDefault();
@@ -190,7 +190,7 @@ $(function(){
                         	});
                         	if(old.length > 0){
                         		if(old.filter(':hidden').length>0){
-                        			var func = (associatedCourses.indexOf(ui.item.value)>0)?"no":"add";
+                        			var func = (associatedCourses.indexOf(ui.item.value)>=0)?"no":"add";
                         			var cur = old.filter(':hidden').filter(function(){
                         				return $(this).attr('id') == ui.item.value;
                         			});
@@ -199,15 +199,15 @@ $(function(){
                         		}
                         		else{
                         			alert("This course has already been added.");
-                        			return false;
 								}		
                         	}
                         	else{
-                        		var func = (associatedCourses.indexOf(ui.item.value)>0)?"no":"add";
+                        		var func = (associatedCourses.indexOf(ui.item.value)>=0)?"no":"add";
                            		$('#addCoursesBody').append('<tr id="' + ui.item.value +'" class="dCourseList"><td>'+ ui.item.label + ' </td><td><button class="btn removeCourses" courseID="' + ui.item.value + '">Remove</button> <input type="hidden" name="course[]" value="' + ui.item.value + '"> <input class="deleteToggle" courseID="' + ui.item.value + '" type="hidden" name="course[]" value='+func+'></td></tr>');               		     
-                            	$('.discussionCourses').val(' ').focus();
-                            	return false;
+                            	
                            }
+                           $('.discussionCourses').val(' ').focus();
+                           return false;
                         }
                     }); 
                     
