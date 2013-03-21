@@ -23,10 +23,14 @@ ini_set('display_errors',1);
 		$scheme = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_SCHEME);
 		$origin = $scheme.'://'.$ref;
 	}
-	else{
-		$origin = array(0);
+	else if(array_key_exists('ext_sakai_server', $_POST)){
+		$origin = $_POST['ext_sakai_server'];
 	}
-	if(count($origin)>0){
+	else{
+		exit(print_r($_POST, TRUE));
+	}
+	
+	if(strlen($origin)>0){
 		$LTI_allowed = array('https://collab.itc.virginia.edu'=>'UVa Collab', 'http://dev.canlead.net'=>'CANLEAD', 'http://www.imsglobal.org'=>'IMS Test Harness');
   		if(array_key_exists($origin, $LTI_allowed)){
   			$LTI = TRUE;
@@ -34,6 +38,7 @@ ini_set('display_errors',1);
 			$postData =file_get_contents("php://input");
 			$launch = parseLTIrequest($postData); 
 			if(!$launch){
+				exit("Bad Launch");
 				header('Location: info.php'); 
 			}
 			//Step 1: CHECK if Network Exists=>networkId

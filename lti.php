@@ -28,12 +28,6 @@ foreach ($_SERVER as $h => $v)
 		fwrite($fh, "$h = $v\n");
 fwrite($fh, "\r\n");
 fwrite($fh, file_get_contents('php://input'));
-//
-//	This script performs two tasks:
-//  	- validates the OAuth request (make sure the signature is valid)
-//		- if valid it appends the POST args to the specified endpoint and redirects there
-//		 	ELSE it redircts with a query "null", e.g. http://your_web_page.com?null
-//---------------------------------------
 //YOU MUST manually configure the following 2 variables
 // endpoint is the location of your JS
 // secret is the OAuth secret established between the LTI provider and consumer
@@ -57,7 +51,7 @@ for ($i = 0; $i < count($postArgs); $i++) {
 $baseString = $baseString . rawurlencode(join("&", $postArgs));
 $sig = base64_encode(hmacsha1($secret, $baseString));
 $msg = "";
-if ($sentSig == $sig) {
+if (strcmp($sentSig, $sig)==0) {
 	$msg .= "Validation success";
 	$launch = new LTILaunch();
 	$opts = array_keys($launch->params);
@@ -74,8 +68,8 @@ if ($sentSig == $sig) {
 	$launch->user=$user;
 	return $launch;
 } else {
-	//$response = "null";
 	$msg .= "Validation fail <br /> Expected signature base string: ".$baseString . "<br />";
+	exit($msg);
 	return FALSE;
 }
 fclose($fh);
