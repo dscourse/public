@@ -106,7 +106,23 @@ class Dscourse {
 		return $results; 
 	}
 
+	public function AllUsers(){
+		/*  
+		 *  Gets all users in the system
+		 */
+		$query = mysql_query("SELECT * FROM users ");
+		$results = array(); 
 
+		$i = 0;
+		while($row = mysql_fetch_array($query)) :
+			array_push($results, $row);
+			$i++;
+		endwhile;
+
+		return $results; 
+	}
+	
+	
 	public function NetworkCourses($nID){
 		/*  
 		 *  Gets users in the network with their user information
@@ -114,6 +130,23 @@ class Dscourse {
 
 
 		$query = mysql_query("SELECT * FROM networkCourses INNER JOIN courses ON networkCourses.courseID = courses.courseID WHERE networkCourses.networkID = '".$nID."'");
+		$results = array(); 
+
+		$i = 0;
+		while($row = mysql_fetch_array($query)) :
+			array_push($results, $row);
+			$i++;
+		endwhile;
+
+		return $results; 
+	}
+
+	public function AllCourses(){
+		/*  
+		 *  Gets all courses
+		 */
+
+		$query = mysql_query("SELECT * FROM courses ");
 		$results = array(); 
 
 		$i = 0;
@@ -214,7 +247,7 @@ class Dscourse {
 		/*  
 		 *  Gets the networks this course belongs to. 
 		 */
-		$query = mysql_query("SELECT * FROM networkCourses WHERE courseID = '".$cID."'");
+		$query = mysql_query("SELECT * FROM networkCourses INNER JOIN networks ON networkCourses.networkID = networks.networkID WHERE networkCourses.courseID = '".$cID."'");
 		$results = array(); 
 
 		$i = 0;
@@ -233,6 +266,41 @@ class Dscourse {
 		$query = mysql_query("SELECT userRole FROM courseRoles WHERE courseID = '".$cID."' AND userID = '".$userID."' ");
 		$results = mysql_fetch_array($query); 
 		return $results; 
+	}
+	
+	public function LoadCourse($cID, $userID){
+		/*  
+		 *  Checks to see if this course should be shown to the current user in different parts of the site (i.e. as listing in network.php or individual course page) 
+		 */	
+		 
+		 $load = false; 	// default is to not show it
+
+			$courseStatus = $this->UserCourseRole($cID, $userID);								// See if this user is in the course
+			$courseInfo   = $this->CourseInfo($cID); 											// Who does this course allow for viewing? 
+			$courseNetworks = $this->CourseNetworks($cID); 										// Which networks does this course belong to? 
+			$totalNetworks = count($courseNetworks); 														// Count networks for a loop later
+			switch ($courseInfo['courseView']) {															// Depending on who this course allows to be viewed by 
+			    case "members":																				// If the course should be viewed only by members
+			        if($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor'){  // check if this user is a member
+						$load = true; 
+					} 
+			        break;
+			    case "network":																				// If the course should only be viewed by network members
+			        for($j = 0; $j < $totalNetworks; $j++){
+				        if($this->IsUserInNetwork($courseNetworks[$j]['networkID'], $userID)) {				// Check if this user is in any of the networks the course belongs to
+					        $load = true; 						        
+				        }
+				        if($courseNetworks[$j]['networkStatus'] == "public" ){
+					        $load = true;
+				        }
+			        }
+			        break;
+			    case "everyone":																			// If this course can be viewed by everyone
+			        $load = true; 																			// Just load everything
+			        break;
+			} 
+			
+			return $load; 
 	}
 
 	public function GetUserCourses($userID){
@@ -292,32 +360,37 @@ class Dscourse {
 
 		$query = mysql_query("SELECT * FROM courseDiscussions  WHERE discussionID = '".$discID."'");		// Get courses this discussion belongs to
 
-		$i = 0;
-		while($row = mysql_fetch_array($query)) :															// For each of these courses... 
-			$courseStatus = $this->UserCourseRole($row['courseID'], $userID);								// See if this user is in the course
-			$courseInfo   = $this->CourseInfo($row['courseID']); 											// Who does this course allow for viewing? 
-			$courseNetworks = $this->CourseNetworks($row['courseID']); 										// Which networks does this course belong to? 
-			$totalNetworks = count($courseNetworks); 														// Count networks for a loop later
-			switch ($courseInfo['courseView']) {															// Depending on who this course allows to be viewed by 
-			    case "members":																				// If the course should be viewed only by members
-			        if($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor'){  // check if this user is a member
-						$load = true; 
+				
+				$i = 0;
+				while($row = mysql_fetch_array($query)) :															// For each of these courses... 
+					$courseStatus = $this->UserCourseRole($row['courseID'], $userID);								// See if this user is in the course
+					$courseInfo   = $this->CourseInfo($row['courseID']); 											// Who does this course allow for viewing? 
+					$courseNetworks = $this->CourseNetworks($row['courseID']); 										// Which networks does this course belong to? 
+					$totalNetworks = count($courseNetworks); 														// Count networks for a loop later
+					switch ($courseInfo['courseView']) {															// Depending on who this course allows to be viewed by 
+					    case "members":																				// If the course should be viewed only by members
+					        if($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor'){  // check if this user is a member
+								$load = true; 
+							} 
+					        break;
+					    case "network":																				// If the course should only be viewed by network members
+					        for($j = 0; $j < $totalNetworks; $j++){
+						        if($this->IsUserInNetwork($courseNetworks[$j]['networkID'], $userID)) {				// Check if this user is in any of the networks the course belongs to
+							        $load = true; 						        
+						        }
+						        if($courseNetworks[$j]['networkStatus'] == "public" ){
+							        $load = true;
+						        }
+					        }
+					        break;
+					    case "everyone":																			// If this course can be viewed by everyone
+					        $load = true; 																			// Just load everything
+					        break;
 					} 
-			        break;
-			    case "network":																				// If the course should only be viewed by network members
-			        for($j = 0; $j < $totalNetworks; $j++){
-				        if($this->IsUserInNetwork($courseNetworks[$j]['networkID'], $userID)) {				// Check if this user is in any of the networks the course belongs to
-					        $load = true; 
-				        }
-			        }
-			        break;
-			    case "everyone":																			// If this course can be viewed by everyone
-			        $load = true; 																			// Just load everything
-			        break;
-			} 
-			$i++;
-		endwhile;
+					$i++;
+				endwhile;
 		
+				
 		return $load;  	
 	}	
 	
@@ -387,7 +460,9 @@ class Dscourse {
 		    case 'd':
 		        $message['content'] = "Your discussion was added to this course.";
 		        break;
-
+		    case 11:
+		        $message['content'] = "Changes to the network were saved. ";
+		        break;
 		 }
 		
 		 return $message; 

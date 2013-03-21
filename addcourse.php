@@ -49,9 +49,11 @@ ini_set('display_errors',1);
         
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
         
+/* ------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
         $nID = $_GET['n']; 
         $networkInfo = $dscourse->NetWorkInfo($nID);
-                
+           
+*/     
 ?>
 <!DOCTYPE html>
 
@@ -82,6 +84,23 @@ $(function(){
             
             var nameList = [
                 <?php 
+	                // Get all usersr
+                $allUsers = $dscourse->AllUsers();  // AllUsers is a function in dscourse.class.php
+                $totalUsers = count($allUsers);
+                for($i = 0; $i < $totalUsers; $i++) 
+                        {
+                        
+                            $uFirstName = $allUsers[$i]['firstName'];
+                            $uLastName  = $allUsers[$i]['lastName'];
+                            $uID        = $allUsers[$i]['UserID'];
+                            $uEmail     = $allUsers[$i]['username'];
+                        if($i == $totalUsers-1){ $comma = "";} else { $comma = ",";}
+                        echo '{ value: '.$uID.', label : "'.$uFirstName. ' ' .$uLastName.'", email : "'.$uEmail.'"}'.$comma; 
+                        } 
+                        
+/*
+THE FOLLOWING IS REPLACED WITH ABOVE CODE SINCE WE NO LONGER USE NETWORKS
+
                 // Get people in this network 
                 $networkUsers = $dscourse->NetworkUsers($nID); 
                 $totalUsers = count($networkUsers);
@@ -95,6 +114,7 @@ $(function(){
                         if($i == $totalUsers-1){ $comma = "";} else { $comma = ",";}
                         echo '{ value: '.$uID.', label : "'.$uFirstName. ' ' .$uLastName.'", email : "'.$uEmail.'"}'.$comma; 
                         } 
+*/
                 ?>  
             ];
             
@@ -253,9 +273,12 @@ $(function(){
             <div class="container-fluid">
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
+<!--
+------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
                 <ul class="nav">
                     <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
                 </ul>
+-->
 
                 <ul class="nav pull-right">
                     <li class="dropdown">
@@ -279,9 +302,6 @@ $(function(){
     <header class="jumbotron subhead">
         <div class="container-fluid">
             <h1>Add a new Course</h1>
-                 <div id="addCourseCancel" class="pull-right">
-                    <a href="network.php?n=<?php echo $nID; ?>" class="btn">Cancel</a>
-                </div>
         </div>
     </header>
 
@@ -294,9 +314,11 @@ $(function(){
                         <input type="hidden" name="action" value="addCourse">
                         <input type="hidden" name="networkID" value="<?php  echo $nID; ?>" >
                             
+<!--  ------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
                             <div class="alert alert-success">
                                 This course will be part of the <?php echo $networkInfo['networkName'];  ?> Network.
                             </div>
+-->
 
                             <div class="control-group">
                                 <label class="control-label" for="courseName">Course Name</label>
@@ -430,7 +452,9 @@ $(function(){
                                 </div>
                             </div>
                             <hr class="soften">
-                            <button type="submit" name="submitNewCourse" id="submitNewCourse" class="btn btn-primary pull-right">Add Course </button>
+                            <button type="submit" name="submitNewCourse" id="submitNewCourse" class="btn btn-primary">Add Course </button>
+                            	<a href="index.php" class="btn">Cancel</a>
+                            <!-- <a href="network.php?n=<?php echo $nID; ?>" class="btn">Cancel</a> -->
                         </form>
                     </div>
                 </div>

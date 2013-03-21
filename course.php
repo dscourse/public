@@ -58,6 +58,13 @@ ini_set('display_errors',1);
 	    	      
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
         
+        if($dscourse->LoadCourse($cID, $userID) == false ) {
+	           header('Location: index.php');                   // The course is set up that this user can't view it. 
+
+        }
+        
+        
+        
         // Get Course Roles
         $courseRoles = $dscourse->CourseRoles($cID);
  	    $totalRoles = count($courseRoles);
@@ -160,7 +167,7 @@ ini_set('display_errors',1);
 
                 <ul class="nav">
                     <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
+                    <li class="navLevel"><a href="course.php?c=<?php echo $cID . "&n=" .$nID  ; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
                 </ul>
 
                 <ul class="nav pull-right">
@@ -204,7 +211,8 @@ ini_set('display_errors',1);
 							<div id="editCourseButton" class="pull-right">
 							    <?php if($currentRole == 'Instructor' || $currentRole == 'TA'){ ?>
 							    	<a href="editcourse.php?c=<?php echo $cID.'&n='.$nID; ?>" id="editCourseButton" class="btn">Edit Course</a>
-								    
+									<a href="courseoptions.php?c=<?php echo $cID.'&n='.$nID; ?>" id="courseOptionsButton" class="btn">Course Settings</a>
+						    
 							    <?php } ?>
 							</div>                
 	                </div>

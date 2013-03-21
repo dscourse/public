@@ -23,7 +23,8 @@ ini_set('display_errors',1);
     $thisUser = $_SESSION['UserID'];
     header('Content-type: application/json');							// Set headers for transferring the data between php and ajax    
 
-
+    // We need to escape entries
+    
     if ($action == 'updateNetwork')
     {
     	UpdateNetwork();     
@@ -95,19 +96,21 @@ function UpdateNetwork(){
 	 	$networkID 	 = $network['networkID'];
 	 	$networkName = $network['networkName']; 
 	 	$networkDesc = $network['networkDesc'];
+	 	$networkType = $network['networkType']; 
 	 	$networkUser = $network['networkUser'];
 	 	$networkRole = $network['networkRole'];
 	 	$networkCode = rand(100000, 1000000000);
  	} else {
 	 	$networkName = $_POST['networkName']; 
 	 	$networkDesc = $_POST['networkDesc']; 
+	 	$networkType = $_POST['networkType']; 
 	 	$networkID	 = $_POST['networkID']; 
  	}
 
  	
  	if($networkID == 0 ) {		// New network 
 		// Add network
-		$networkInsert = mysql_query("INSERT INTO networks (networkName, networkDesc, networkCode) VALUES('".$networkName."', '".$networkDesc."', '".$networkCode."')"); 
+		$networkInsert = mysql_query("INSERT INTO networks (networkName, networkDesc, networkStatus, networkCode) VALUES('".$networkName."', '".$networkDesc."', '".$networkType."', '".$networkCode."')"); 
 		$networkNewID = mysql_insert_id(); // Get the ID of the newly created network. 
 
 	 	if($networkInsert){
@@ -128,8 +131,8 @@ function UpdateNetwork(){
 
 	 	
  	} else {					// Update network 
-		$networkUpdate = mysql_query("UPDATE networks SET networkName = '".$networkName."', networkDesc = '".$networkDesc."'  WHERE networkID = '".$networkID."' "); // UPDATE
-	  	$gotoPage = "../network.php?n=".$networkID."&m=2";  // All good
+		$networkUpdate = mysql_query("UPDATE networks SET networkName = '".$networkName."', networkDesc = '".$networkDesc."', networkStatus = '".$networkType."'  WHERE networkID = '".$networkID."' "); // UPDATE
+	  	$gotoPage = "../network.php?n=".$networkID."&m=11";  // All good
 	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
  	}
  } 
@@ -500,13 +503,27 @@ function GetData(){
 			$cID = $r['courseID']; 							// Get course ID for each course. We need this to get to all the other information about users, and networks. 
 		
 
-		// Get Users
-		$userData = mysql_query("SELECT * FROM courseRoles INNER JOIN users ON courseRoles.userID = users.UserID WHERE courseRoles.courseID = '".$cID."' ");
-		while($s = mysql_fetch_assoc($userData)) 
-				{					
-					$users[] = $s;
-				}		
 		
+		
+		// Get Users Who posted in the discussion whether they are in the course or not
+		$userData = mysql_query("SELECT DISTINCT postAuthorId FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$discID."'");
+		while($s = mysql_fetch_assoc($userData)) 
+				{			
+					$singleUser = mysql_query("SELECT * FROM users WHERE UserID = '".$s['postAuthorId']."'");
+					$oneuser = mysql_fetch_array($singleUser); 		
+					$users[] = $oneuser;
+				}
+		// Get all the users in the course but add them to data if they are not already there		
+
+		$userData2 = mysql_query("SELECT * FROM courseRoles INNER JOIN users ON courseRoles.userID = users.UserID WHERE courseRoles.courseID = '".$cID."' ");
+		while($t = mysql_fetch_assoc($userData2)) 
+				{					
+					$users[] = $t;
+				}
+
+		
+		
+
 
 		// Get Networks
 		$networksData = mysql_query("SELECT * FROM networkCourses INNER JOIN networks ON networkCourses.networkID = networks.networkID WHERE networkCourses.courseID = '".$cID."'");
@@ -517,14 +534,14 @@ function GetData(){
 
 		}
 		
-		// Get posts within this discussion
+		// Get posts within this discussion as well as a list of users who posted so far. 
 		$postData = mysql_query("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$discID."'");
 		$num_rows = mysql_num_rows($postData);
 		if($num_rows > 0){
 			$posts = array(); 	
 			$i = 0;
 			while($row = mysql_fetch_array($postData)) :
-				array_push($posts, $row);
+				array_push($posts, $row);  // Add to the array of posts
 				$i++;
 			endwhile;
 			$data['posts'] =  $posts;		 

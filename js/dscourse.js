@@ -231,41 +231,63 @@ function Dscourse(lti) {
     $('.sayBut2').live('click', function(e) {
         var discID = $('#dIDhidden').val();
         var dStatus = top.DiscDateStatus(discID);
-        var userRole = top.UserCourseRole(discID, currentUserID);
-        if (userRole == 'unrelated') {
-            alert('Sorry, you are not part of this course and therefore can\'t post on this discussion.');
-            return;
-        }
-        if (dStatus != 'closed') {
-            $('#highlightDirection').hide();
-            $('#highlightShow').hide();
-            var postQuote = $(this).parent().children('.postTextWrap').children('.postMessageView').html();
-            postQuote = $.trim(postQuote);
-            var xLoc = e.pageX - 80;
-            var yLoc = e.pageY + 10;
-            $('#commentWrap').css({
-                'top' : '20%',
-                'left' : '30%'
-            });
-            $('.threadText').removeClass('highlight');
-            var postID = $(this).attr("postID");
-            console.log(postID);
-            if (postQuote != '') {
-                $('#highlightDirection').show();
-                $('#highlightShow').show().html(postQuote);
-            }
-            $('#postIDhidden').val(postID);
-            $('#overlay').show();
-            $('#commentWrap').fadeIn('fast');
-            $(this).parent('.threadText').removeClass('agree disagree comment offTopic clarify').addClass('highlight');
-            $('#text').val('Your comment...');
-            $.scrollTo($('#commentWrap'), 400, {
-                offset : -100
-            });
-        } else {
-            alert('This discussion is closed.');
-        }
-        top.AddLog('discussion',discID,'SayButtonClicked',postID,' '); //postID is the parent post. 
+        var postID; 
+	        if (dStatus != 'closed') {
+		        	var participate = false; 
+			        // Check if participate value if anyone or network			        
+			        if(courseParticipate == 'network'){
+				        // If user is in network they can participate
+				         var networkRole = userNetworkRole;
+				         if(networkRole == 'member' || networkRole == 'owner' || networkRole == 'public' ){
+					         participate = true; 
+				         }
+			        } else if (courseParticipate == 'everyone'){
+				        // User can participate
+				        participate = true; 
+			        } else if (courseParticipate == 'member'){
+				        // if the user is part of this course
+				        var userRole = top.UserCourseRole(discID, currentUserID);
+				        if (userRole == 'unrelated') {
+				            alert('Sorry, you are not part of this course and therefore can\'t post on this discussion.');
+				            return;
+				        } else {
+					        participate = true; 
+				        }
+			        }		        
+			        if(participate == true){
+					    $('#highlightDirection').hide();
+			            $('#highlightShow').hide();
+			            var postQuote = $(this).parent().children('.postTextWrap').children('.postMessageView').html();
+			            postQuote = $.trim(postQuote);
+			            var xLoc = e.pageX - 80;
+			            var yLoc = e.pageY + 10;
+			            $('#commentWrap').css({
+			                'top' : '20%',
+			                'left' : '30%'
+			            });
+			            $('.threadText').removeClass('highlight');
+			            postID = $(this).attr("postID");
+			            console.log(postID);
+			            if (postQuote != '') {
+			                $('#highlightDirection').show();
+			                $('#highlightShow').show().html(postQuote);
+			            }
+			            $('#postIDhidden').val(postID);
+			            $('#overlay').show();
+			            $('#commentWrap').fadeIn('fast');
+			            $(this).parent('.threadText').removeClass('agree disagree comment offTopic clarify').addClass('highlight');
+			            $('#text').val('Your comment...');
+			            $.scrollTo($('#commentWrap'), 400, {
+			                offset : -100
+			            });
+			                    top.AddLog('discussion',discID,'SayButtonClicked',postID,' '); //postID is the parent post. 
+    
+			        }
+		            
+	        } else {
+	            alert('This discussion is closed.');
+	        }
+	        console.log(participate);
     });
 
     /* When users cancels new post addition  */
@@ -1706,11 +1728,32 @@ Dscourse.prototype.DiscDateStatus = function(dID) {
     var o;
     o = main.data.discussion;
     if (o.dID === dID) {
+<<<<<<< HEAD
         // Compare dates of the discussion to todays date.
         var beginDate = main.GetUniformDate(o.dStartDate);
         var openDate = main.GetUniformDate(o.dOpenDate);
         var endDate = main.GetUniformDate(o.dEndDate);
         var currentDate = new Date().getTime();
+=======
+        // Compare dates of the discussion to todays date. But first convert mysql dates into js
+        
+        // Split timestamp into [ Y, M, D, h, m, s ]
+		var b = o.dStartDate.split(/[- :]/);
+		var beginDate = new Date(b[0], b[1]-1, b[2], b[3], b[4], b[5]);
+		
+		var oD = o.dOpenDate.split(/[- :]/);
+		var openDate = new Date(oD[0], oD[1]-1, oD[2], oD[3], oD[4], oD[5]);
+		
+		var e = o.dEndDate.split(/[- :]/);
+		var endDate = new Date(e[0], e[1]-1, e[2], e[3], e[4], e[5]);
+
+ /*
+       var beginDate = o.dStartDate; // ($.browser.webkit)?new Date(o.dStartDate):new Date(o.dStartDate.split(' ').join('T'));
+        var openDate = o.dOpenDate; // ($.browser.webkit)?new Date(o.dOpenDate):new Date(o.dOpenDate.split(' ').join('T'));
+        var endDate = o.dEndDate; // ($.browser.webkit)?new Date(o.dEndDate):new Date(o.dEndDate.split(' ').join('T'));
+*/
+        var currentDate = new Date();
+>>>>>>> c3be92ec9ccc7b9148c319534def57f7edb71e65
         if (currentDate >= beginDate && currentDate <= endDate) {// IF today's date bigger than start date and smaller than end date?
             if (currentDate <= openDate) {// If today's date smaller than Open Date
                 dStatus = 'student';
@@ -2028,7 +2071,9 @@ Dscourse.prototype.VerticalHeatmap = function(mapType, mapInfo) {
  var j;
  var posts = new Array(); 
   
+	if(main.data.posts){ 
 	
+<<<<<<< HEAD
     for ( j = 0; j < main.data.posts.length; j++) {// Go through all the posts
         d = main.data.posts[j];
         	posts.push(d.postID); 
@@ -2056,6 +2101,38 @@ Dscourse.prototype.VerticalHeatmap = function(mapType, mapInfo) {
 					console.log(data); 
 			  }
 		});	
+=======
+	    for ( j = 0; j < main.data.posts.length; j++) {// Go through all the posts
+	        d = main.data.posts[j];
+	        	posts.push(d.postID); 
+	        }
+	    }     			 	
+			$.ajax({																							
+				type: "POST",
+				url: "php/data.php",
+				data: {
+					currentDiscussion: discID,
+					currentPosts: 	posts,						
+					action: 'checkNewPosts'							
+				},
+				  success: function(data) {						// If connection is successful . 
+						if(data.result > 0){
+							$('#checkNewPost').addClass('animated flipInY');
+							$('#checkNewPost').html('<div class="alert alert-success refreshBox" discID="' + discID + '">    <button id="hideRefreshMsg"type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><span class="typicn refresh refreshIcon"></span> There are <b>' + data.result + '</b> new posts. Click to refresh!</span>'); 
+						// Reload needs to happen when a button is clicked in the page. 
+						} else {
+							console.log('No new posts...');
+						}
+				    }, 
+				  error: function(data) {					// If connection is not successful.  
+						console.log("Dscourse Log: the connection to data.php failed for Checking new posts."); 
+						console.log(data); 
+				  }
+			});	
+		
+	
+ 
+>>>>>>> c3be92ec9ccc7b9148c319534def57f7edb71e65
  }
  
 
@@ -2171,11 +2248,21 @@ Dscourse.prototype.truncateText = function(text, length) {
 }
 
 Dscourse.prototype.FormattedDate = function(date) {
+
+        // Split timestamp into [ Y, M, D, h, m, s ]
+		var b = date.split(/[- :]/);
+		var date = new Date(b[0], b[1]-1, b[2], b[3], b[4], b[5]);
+		
+
     var d, m, curr_hour, dateString;
     d = new Date(0);
     var sec = this.GetUniformDate(date);
     d.setUTCMilliseconds(sec);
     // Write out the date in readable form.
+<<<<<<< HEAD
+=======
+    console.log(date);
+>>>>>>> c3be92ec9ccc7b9148c319534def57f7edb71e65
     m = d.toDateString();
     curr_hour = d.getHours();
     dateString = m + '  ' + curr_hour + ':00';
@@ -2187,6 +2274,9 @@ Dscourse.prototype.FunctionTemplate = function() {
     var main = this;
 
 }
+
+
+
 // SOMETHINGS BORROWED
 Dscourse.prototype.GetCurrentDate = function() {
     var x = new Date();
