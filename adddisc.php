@@ -48,11 +48,13 @@ ini_set('display_errors',1);
 	        $setCoursePrint = '<tr id="' .$setCourseInfo['courseID'].'" class="dCourseList"><input type="hidden" name="course[]" value="' .$setCourseInfo['courseID'].'"><td>' .$setCourseInfo['courseName'].' </td><td><button class="btn removeCourses" >Remove</button> </td></tr>';               
         }
         
+/* ------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
        if(isset($_GET['n'])){                      // The network ID from link 
 	        $nID = $_GET['n'];        
       	    // GET Info About This Network
       	    $networkInfo = $dscourse->NetWorkInfo($nID);
 	      }
+*/
         
                 
 ?>
@@ -74,7 +76,26 @@ $(function(){
             
             var courseList = [
                 <?php 
-                // Get people in this network 
+        // Get all courses        
+
+                    $allCourses = $dscourse->AllCourses();
+                    $courseCount = 0; 
+                    
+                    $courseTotal = count($allCourses);
+                        for($j = 0; $j < $courseTotal; $j++) 
+                            {   
+                                $roleCheck = $dscourse->UserCourseRole($allCourses[$j]['courseID'], $userID);
+                                if($roleCheck[0] == 'Instructor' || $roleCheck[0] == 'TA'){
+                                    if($courseCount == 0){ $comma = "";} else { $comma = ",";}
+                                    echo $comma . "{ 'value' : '".$allCourses[$j]['courseID']."', 'label' : '".addslashes($allCourses[$j]['courseName'])."'}"; 
+                                    $courseCount++;                                                                                                     
+                                } 
+
+                            }
+                
+                
+/* ------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS, REPLACED WITH ABOVE   -------
+                // Get courses in this network 
         $userNetworks = $dscourse->GetUserNetworks($userID);
         $totalNetworks = count($userNetworks); 
         $courseCount = 0; 
@@ -94,6 +115,7 @@ $(function(){
 
                             }
                 }
+*/
                 ?>
             ];
             
@@ -227,8 +249,9 @@ $(function(){
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 Jquery validate success message
                 <ul class="nav">
-                    <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
-                    <li class="navLevel"><a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li>
+<!--                     <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li> -->
+<!--                     <li class="navLevel"><a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li> -->
+                        <li class="navLevel"><a href="course.php?c=<?php echo $cID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li> 
                 </ul>
 
                 <ul class="nav pull-right">
@@ -264,7 +287,7 @@ Jquery validate success message
                         <form class="form-horizontal well" name="addDiscussionForm" action="php/data.php" method="post" >
                         <input type="hidden" name="action" value="addDiscussion">
                         <input type="hidden" name="courseID" value="<?php echo $cID; ?>"> 
-                        <input type="hidden" name="networkID" value="<?php echo $nID; ?>"> 
+<!--                         <input type="hidden" name="networkID" value="<?php echo $nID; ?>">  -->
                         
                             <div class="control-group" id="discussionQuestionControl">
                                 <label class="control-label" for="discussionQuestion">Discussion Question</label>
@@ -641,7 +664,9 @@ Jquery validate success message
 
                             <div id="discussionButtondiv">
                                 <button class="btn btn-primary" id="discussionFormSubmit">Submit</button>
-                                <a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>" id="addDiscussionCancel" class="btn">Cancel</a>
+<!--                                 <a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>" id="addDiscussionCancel" class="btn">Cancel</a> -->
+                                <a href="course.php?c=<?php echo $cID; ?>" id="addDiscussionCancel" class="btn">Cancel</a>
+ 
                             </div>
                         </form>
                     </div>

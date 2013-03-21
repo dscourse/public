@@ -343,42 +343,6 @@ $(function(){
                                 </div>
                             </div>
                              
-                            <div class="control-group">
-                                <label class="control-label" for="viewOptions">Who can see the course contents?</label>
-                                <div class="controls">
-									<label class="radio">
-									<input type="radio" name="viewOptions" id="viewOptions1" value="members" <?php if($courseInfo['courseView'] == 'members'){ echo 'checked';}  ?>>
-									  Instructors, TA's and Students
-									</label>
-									<label class="radio">
-									  <input type="radio" name="viewOptions" id="viewOptions2" value="network" <?php if($courseInfo['courseView'] == 'network'){ echo 'checked';}  ?>>
-									  Anyone in this network
-									</label>
-									<label class="radio">
-									  <input type="radio" name="viewOptions" id="viewOptions3" value="everyone" <?php if($courseInfo['courseView'] == 'everyone'){ echo 'checked';}  ?>>
-									  Anyone with an account on dscourse
-									</label>                                    
-                                </div>
-                            </div>                           
- 
-                             <div class="control-group">
-                                <label class="control-label" for="participateOptions">Who can Participate in the discussions?</label>
-                                <div class="controls">
-									<label class="radio">
-									<input type="radio" name="participateOptions" id="participateOptions1" value="members" <?php if($courseInfo['courseParticipate'] == 'members'){ echo 'checked';}  ?>>
-									  Instructors, TA's and Students
-									</label>
-									<label class="radio">
-									  <input type="radio" name="participateOptions" id="participateOptions2" value="network" <?php if($courseInfo['courseParticipate'] == 'network'){ echo 'checked';}  ?>>
-									  Anyone in this network
-									</label>
-									<label class="radio">
-									  <input type="radio" name="participateOptions" id="participateOptions3" value="everyone" <?php if($courseInfo['courseParticipate'] == 'everyone'){ echo 'checked';}  ?>>
-									  Anyone with an account on dscourse
-									</label>                                    
-                                </div>
-                            </div>                            
-                            
 
 
                             <hr class="soften">

@@ -211,7 +211,8 @@ ini_set('display_errors',1);
 							<div id="editCourseButton" class="pull-right">
 							    <?php if($currentRole == 'Instructor' || $currentRole == 'TA'){ ?>
 							    	<a href="editcourse.php?c=<?php echo $cID.'&n='.$nID; ?>" id="editCourseButton" class="btn">Edit Course</a>
-								    
+									<a href="courseoptions.php?c=<?php echo $cID.'&n='.$nID; ?>" id="courseOptionsButton" class="btn">Course Settings</a>
+						    
 							    <?php } ?>
 							</div>                
 	                </div>

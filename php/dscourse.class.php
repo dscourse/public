@@ -106,7 +106,23 @@ class Dscourse {
 		return $results; 
 	}
 
+	public function AllUsers(){
+		/*  
+		 *  Gets all users in the system
+		 */
+		$query = mysql_query("SELECT * FROM users ");
+		$results = array(); 
 
+		$i = 0;
+		while($row = mysql_fetch_array($query)) :
+			array_push($results, $row);
+			$i++;
+		endwhile;
+
+		return $results; 
+	}
+	
+	
 	public function NetworkCourses($nID){
 		/*  
 		 *  Gets users in the network with their user information
@@ -114,6 +130,23 @@ class Dscourse {
 
 
 		$query = mysql_query("SELECT * FROM networkCourses INNER JOIN courses ON networkCourses.courseID = courses.courseID WHERE networkCourses.networkID = '".$nID."'");
+		$results = array(); 
+
+		$i = 0;
+		while($row = mysql_fetch_array($query)) :
+			array_push($results, $row);
+			$i++;
+		endwhile;
+
+		return $results; 
+	}
+
+	public function AllCourses(){
+		/*  
+		 *  Gets all courses
+		 */
+
+		$query = mysql_query("SELECT * FROM courses ");
 		$results = array(); 
 
 		$i = 0;

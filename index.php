@@ -47,6 +47,7 @@ ini_set('display_errors',1);
 	    }
 	    
 	    
+/*  ------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
 	    
 	    // GET User Network List 
 	    
@@ -79,6 +80,7 @@ ini_set('display_errors',1);
 	    }	else {
 		    $networkPrint .='<div class="alert alert-info">You are not part of any networks. Create a network or join one with the buttons below.</div>';  
 	    }
+*/
 
 	    
 	    $courseData = $dscourse->GetUserCourses($userID);
@@ -141,6 +143,9 @@ ini_set('display_errors',1);
 		    <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
 
 			
+/* ------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
+
+
 			$('.addNetworkOpen').on('click', function () {
 				$('#networkName').val(' '); // clear network Name
 				$('#networkDesc').val(' '); // clear Network description
@@ -258,7 +263,21 @@ ini_set('display_errors',1);
 					  }
 				});
 
+			});
+			
+			// popovers for help
+			$('#nRoleHelp').popover({
+				trigger: 'hover',
+				title : 'What\'s this?',
+				content : 'Your role in this network defines what you can do. Owners can edit network settings and manage all components of the network. Members can create courses and use discussions. If network if public non-members can also view the network contents.' 
+				}); 
+			$('#nStatusHelp').popover({
+				trigger: 'hover',
+				title : 'What\'s this?',
+				content : 'The status of the network defines who can view the network. Private networks can be viewed by members only. Public networks can be viewed by anyone' 							
 			}); 
+						 
+*/
 
 			
 			<?php 
@@ -276,17 +295,7 @@ ini_set('display_errors',1);
 			}
 			?>	
 
-			// popovers for help
-			$('#nRoleHelp').popover({
-				trigger: 'hover',
-				title : 'What\'s this?',
-				content : 'Your role in this network defines what you can do. Owners can edit network settings and manage all components of the network. Members can create courses and use discussions. If network if public non-members can also view the network contents.' 
-				}); 
-			$('#nStatusHelp').popover({
-				trigger: 'hover',
-				title : 'What\'s this?',
-				content : 'The status of the network defines who can view the network. Private networks can be viewed by members only. Public networks can be viewed by anyone' 							
-			}); 
+
 				
 		
 		}); 
@@ -339,8 +348,9 @@ ini_set('display_errors',1);
             <div class="row-fluid">
 
                 <div class="span4">
-                
+                <h4> Placeholder </h4>
 
+<!--  ------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
  
                      <div class="">
                         <h4> My Networks</h4>
@@ -364,6 +374,7 @@ ini_set('display_errors',1);
                         </p>
 
                     </div>
+-->
                 </div>
                 <div class="span4">
                 
@@ -395,7 +406,10 @@ ini_set('display_errors',1);
         </div><!-- close container -->
     </div><!-- end home-->
 
-	<!-- Create Network Modal -->
+	<!-- 
+	------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
+	<!-- Create Network Modal 
+	
 	<div id="addNetworkModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-header">
 	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
@@ -440,7 +454,7 @@ ini_set('display_errors',1);
 
 
 
-	<!-- Join Network Modal -->
+	<!-- Join Network Modal 
 	<div id="joinNetworkModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modal2Label" aria-hidden="true">
 	  <div class="modal-header">
 	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
@@ -463,7 +477,7 @@ ini_set('display_errors',1);
 	    <button class="btn btn-primary" id="joinNetwork">Join Network</button>
 	  </div>
 	</div>
-
+-->
 
 
 
