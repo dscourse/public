@@ -7,47 +7,18 @@ ini_set('display_errors',1);
     include "../config/config.php"; 
 	date_default_timezone_set('UTC');
     
-    if(empty($_SESSION['Username']))                        // Checks to see if user is logged in, if not sends the user to login.php
-    {  
-        // is cookie set? 
-        if (array_key_exists('userCookieDscourse', $_COOKIE)){
-             
-             $getUserInfo = mysql_query("SELECT * FROM users WHERE UserID = '".$_COOKIE["userCookieDscourse"]."' ");  
-  
-            if(mysql_num_rows($getUserInfo) == 1)  
-            {  
-                $row = mysql_fetch_array($getUserInfo);   
-          
-                $_SESSION['Username'] = $row[1]; 
-                $_SESSION['firstName'] = $row[3]; 
-                $_SESSION['lastName'] = $row[4];   
-                $_SESSION['LoggedIn'] = 1;  
-                $_SESSION['status'] = $row[5];
-                $_SESSION['UserID'] = $row[0]; 
-                header('Location: index.php'); 
-                
-            } else {
-                echo "Error: Could not load user info from cookie.";
-            }
-            
-        } else {
-
-            header('Location: info.php');                   // Not logged and and does not have cookie
-        
-        }
-        
-    }  else {    
-
         include_once('php/dscourse.class.php');
+		$query = $_SERVER["REQUEST_URI"];
+		$preProcess = $dscourse->PreProcess($query);
         
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
         
         $cID = $_GET['c']; 
         $courseInfo = $dscourse->CourseInfo($cID);
 
-         $nID = $_GET["n"];                      // The course ID from link
+         //$nID = $_GET["n"];                      // The course ID from link
 
-	    $networkInfo = $dscourse->NetWorkInfo($courseInfo['networkID']);
+	    //$networkInfo = $dscourse->NetWorkInfo($courseInfo['networkID']);
 
 	    $userCourseRole = $dscourse->UserCourseRole($cID, $userID); 
 	    
@@ -237,8 +208,7 @@ $(function(){
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID; ?>&n=<?php echo $nID; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
+                    <li class="navLevel"><a href="course.php?c=<?php echo $cID; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
                 </ul>
 
                 <ul class="nav pull-right">
@@ -264,7 +234,7 @@ $(function(){
         <div class="container-fluid">
             <h1>Edit Course</h1>
                  <div id="addCourseCancel" class="pull-right">
-                    <a href="course.php?c=<?php echo $cID.'&n='.$nID; ?>" class="btn">Cancel</a>
+                    <a href="course.php?c=<?php echo $cID; ?>" class="btn">Cancel</a>
                 </div>
         </div>
     </header>
@@ -276,7 +246,6 @@ $(function(){
                     <div id="courseForm">
                         <form class="form-horizontal well" name="addCourseForm" action="php/data.php" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="editCourse">
-                        <input type="hidden" name="networkID" value="<?php  echo $nID; ?>" >
                         <input type="hidden" name="courseID" value="<?php  echo $cID; ?>" >
                             
                             <div class="alert alert-success">
@@ -385,11 +354,7 @@ $(function(){
                         </form>
                     </div>
                 </div>
-            </div><?php
-
-                           }  
-                                
-                        ?>
+            </div>
         </div>
     </div>
 </body>

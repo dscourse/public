@@ -7,38 +7,10 @@ ini_set('display_errors',1);
     include "../config/config.php"; 
 	date_default_timezone_set('UTC');
     
-    if(empty($_SESSION['Username']))                        // Checks to see if user is logged in, if not sends the user to login.php
-    {  
-        // is cookie set? 
-        if (array_key_exists('userCookieDscourse', $_COOKIE)){
-             
-             $getUserInfo = mysql_query("SELECT * FROM users WHERE UserID = '".$_COOKIE["userCookieDscourse"]."' ");  
-  
-            if(mysql_num_rows($getUserInfo) == 1)  
-            {  
-                $row = mysql_fetch_array($getUserInfo);   
-          
-                $_SESSION['Username'] = $row[1]; 
-                $_SESSION['firstName'] = $row[3]; 
-                $_SESSION['lastName'] = $row[4];   
-                $_SESSION['LoggedIn'] = 1;  
-                $_SESSION['status'] = $row[5];
-                $_SESSION['UserID'] = $row[0]; 
-                header('Location: index.php'); 
-                
-            } else {
-                echo "Error: Could not load user info from cookie.";
-            }
-            
-        } else {
-
-            header('Location: info.php');                   // Not logged and and does not have cookie
-        
-        }
-        
-    }  else {  
         include_once('php/dscourse.class.php');
-        
+		$query = $_SERVER["REQUEST_URI"];
+		$preProcess = $dscourse->PreProcess($query);
+		
         $uID = $_GET["u"];                      // The user ID from link
         
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
@@ -263,9 +235,6 @@ $(function(){
     </div><!-- close container -->
    </div> <!-- end edit profile -->
     <?php
-
-               }  
-                    
             ?>
 </body>
 </html>

@@ -7,45 +7,16 @@ ini_set('display_errors',1);
     include "../config/config.php"; 
 	date_default_timezone_set('UTC');
     
-    if(empty($_SESSION['Username']))                        // Checks to see if user is logged in, if not sends the user to login.php
-    {  
-        // is cookie set? 
-        if (array_key_exists('userCookieDscourse', $_COOKIE)){
-             
-             $getUserInfo = mysql_query("SELECT * FROM users WHERE UserID = '".$_COOKIE["userCookieDscourse"]."' ");  
-  
-            if(mysql_num_rows($getUserInfo) == 1)  
-            {  
-                $row = mysql_fetch_array($getUserInfo);   
-          
-                $_SESSION['Username'] = $row[1]; 
-                $_SESSION['firstName'] = $row[3]; 
-                $_SESSION['lastName'] = $row[4];   
-                $_SESSION['LoggedIn'] = 1;  
-                $_SESSION['status'] = $row[5];
-                $_SESSION['UserID'] = $row[0]; 
-                header('Location: index.php'); 
-                
-            } else {
-                echo "Error: Could not load user info from cookie.";
-            }
-            
-        } else {
-
-            header('Location: info.php');                   // Not logged and and does not have cookie
-        
-        }
-        
-    }  else {    
-
-        include_once('php/dscourse.class.php');
-        
+		include_once('php/dscourse.class.php');
+		$query = $_SERVER["REQUEST_URI"];
+		$preProcess = $dscourse->PreProcess($query);
+		
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
         
         $cID = $_GET['c']; 
         $courseInfo = $dscourse->CourseInfo($cID);
 
-        $nID = $_GET["n"];                      // The course ID from link
+        //$nID = $_GET["n"];                      // The course ID from link
 
 	    $networkInfo = $dscourse->NetWorkInfo($courseInfo['networkID']);
 
@@ -112,7 +83,7 @@ $(function(){
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID; ?>&n=<?php echo $nID; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
+                    <li class="navLevel"><a href="course.php?c=<?php echo $cID; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
                 </ul>
 
                 <ul class="nav pull-right">
@@ -139,7 +110,7 @@ $(function(){
             <h1>Course Settings</h1>
             <p> Customize your course and general discussion settings. </p>
                  <div id="addCourseCancel" class="pull-right">
-                    <a href="course.php?c=<?php echo $cID.'&n='.$nID; ?>" class="btn">Cancel</a>
+                    <a href="course.php?c=<?php echo $cID?>" class="btn">Cancel</a>
                 </div>
         </div>
     </header>
@@ -151,7 +122,6 @@ $(function(){
                     <div id="settingsForm">
                         <form class="form-vertical well" name="addCourseForm" action="php/data.php" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="editCourse">
-                        <input type="hidden" name="networkID" value="<?php  echo $nID; ?>" >
                         <input type="hidden" name="courseID" value="<?php  echo $cID; ?>" >
  
                         <h3>Permissions<h3>
@@ -195,7 +165,7 @@ $(function(){
                             
                             <hr class="soften" />                           
                         <div class="control-group">
-                                <label class="control-label" for="charLimit">Discussion Character Limit</label>
+                                <label class="control-label" for="charLimit">Discussion Post Character Limit</label>
                                 <div class="controls">
                                     <input type="text" class="input-small" id="charLimit" name="charLimit" value="500">
                                     <p class="help-inline">Enter a maximum character limit for the discussion. Users won't be able to post beyond this limit. To allow unlimited characters please enter 0. </p>
@@ -210,14 +180,6 @@ $(function(){
                                 </div>
                             </div>  
 
-                            <div class="control-group">
-                                <label class="control-label" for="usevHeatmap">Use Vertical Heatmap</label>
-                                <div class="controls">
-									<label class="radio"> <input type="radio" name="usevHeatmap" id="usevHeatmapYes" value="Yes" checked> Yes </label>
-									<label class="radio"> <input type="radio" name="usevHeatmap" id="usevHeatmapNo" value="No" >No</label>                                   
-                                </div>
-                            </div>  
-                            
                             <div class="control-group">
                                 <label class="control-label" for="useSynthesis">Use Connected Posts</label>
                                 <div class="controls">
@@ -242,18 +204,13 @@ $(function(){
 									<label class="radio"> <input type="radio" name="studentCreateDisc" id="studentCreateDiscNo" value="No" checked>No</label>                                   
                                 </div>
                             </div> 
-                                                        
-                                                                                    
+                            
                             <hr class="soften">
                             <button type="submit" name="submitCourseOptions" id="submitCourseOptions" class="btn btn-primary pull-right">Submit Changes </button>
                         </form>
                     </div>
                 </div>
-            </div><?php
-
-                           }  
-                                
-                        ?>
+            </div>
         </div>
     </div>
 </body>

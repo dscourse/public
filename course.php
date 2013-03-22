@@ -7,49 +7,22 @@ ini_set('display_errors',1);
     include "../config/config.php"; 
     date_default_timezone_set('UTC');
 	
-    if(empty($_SESSION['Username']))                        // Checks to see if user is logged in, if not sends the user to login.php
-    {  
-        // is cookie set? 
-        if (array_key_exists('userCookieDscourse', $_COOKIE)){
-             
-             $getUserInfo = mysql_query("SELECT * FROM users WHERE UserID = '".$_COOKIE["userCookieDscourse"]."' ");  
-  
-            if(mysql_num_rows($getUserInfo) == 1)  
-            {  
-                $row = mysql_fetch_array($getUserInfo);   
-          
-                $_SESSION['Username'] = $row[1]; 
-                $_SESSION['firstName'] = $row[3]; 
-                $_SESSION['lastName'] = $row[4];   
-                $_SESSION['LoggedIn'] = 1;  
-                $_SESSION['status'] = $row[5];
-                $_SESSION['UserID'] = $row[0]; 
-                header('Location: index.php'); 
-                
-            } else {
-                echo "Error: Could not load user info from cookie.";
-            }
-            
-        } else {
-
-            header('Location: info.php');                   // Not logged and and does not have cookie
-        
-        }
-        
-    }  else {                                                // User is logged in, show page. 
-        
-
+                                                  // User is logged in, show page. 
         include_once('php/dscourse.class.php');
+		$query = $_SERVER["REQUEST_URI"];
+		$preProcess = $dscourse->PreProcess($query);
         
         $cID = $_GET["c"];                      // The course ID from link
         $courseInfo = $dscourse->CourseInfo($cID);
 
+		/* MARKED for deletion
         if(isset($_GET['n'])){                      // The network ID from link 
 	        $nID = $_GET['n'];        
       	    // GET Info About This Network
       	    $networkInfo = $dscourse->NetWorkInfo($nID);
 	      }
-
+		*/
+		
 	    if(isset($_GET['m'])){
 		  $m = $_GET['m'];
 		  $message = $dscourse->Messages($m);    
@@ -120,9 +93,9 @@ ini_set('display_errors',1);
 					  
 					$numberofPosts= $dscourse->CountPosts($discID); 
 					if($currentRole == 'Instructor' || $currentRole == 'TA'){
-						$discEdit = '<a href="editdisc.php?d='.$discID.'&c='.$cID.'&n='.$nID.'" class="btn btn-info btn-small">Edit</a> ';  
+						$discEdit = '<a href="editdisc.php?d='.$discID.'&c='.$cID.'" class="btn btn-info btn-small">Edit</a> ';  
 					} else { $discEdit = ''; }
-					$discPrint .= '<tr><td><a href="discussion.php?d='.$discID.'&c='.$cID.'&n='.$nID.'"> '.$discName.'</a></td><td>'.$status.'</td><td>'.$numberofPosts.'</td><td>'.$discEdit.' </td></tr>'; 
+					$discPrint .= '<tr><td><a href="discussion.php?d='.$discID.'&c='.$cID.'"> '.$discName.'</a></td><td>'.$status.'</td><td>'.$numberofPosts.'</td><td>'.$discEdit.' </td></tr>'; 
 		}
 ?>
 <!DOCTYPE html>
@@ -166,7 +139,6 @@ ini_set('display_errors',1);
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
                     <li class="navLevel"><a href="course.php?c=<?php echo $cID . "&n=" .$nID  ; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
                 </ul>
 
@@ -314,7 +286,6 @@ ini_set('display_errors',1);
 
         <?php
 
-       }  
             
     ?>
 </body>

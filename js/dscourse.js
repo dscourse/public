@@ -231,9 +231,9 @@ function Dscourse(lti) {
     $('.sayBut2').live('click', function(e) {
         var discID = $('#dIDhidden').val();
         var dStatus = top.DiscDateStatus(discID);
-        var postID; 
+        var postID, participate; 
 	        if (dStatus != 'closed') {
-		        	var participate = false; 
+		        	participate = false; 
 			        // Check if participate value if anyone or network			        
 			        if(courseParticipate == 'network'){
 				        // If user is in network they can participate
@@ -244,7 +244,7 @@ function Dscourse(lti) {
 			        } else if (courseParticipate == 'everyone'){
 				        // User can participate
 				        participate = true; 
-			        } else if (courseParticipate == 'member'){
+			        } else if (courseParticipate == 'members'){
 				        // if the user is part of this course
 				        var userRole = top.UserCourseRole(discID, currentUserID);
 				        if (userRole == 'unrelated') {
@@ -898,14 +898,14 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
         var time = Date.parse(n);
         // Parse for browser.
         if (main.timelineMin == 0) {// Check and set minimum value for time
-            main.timelineMin = time;
-        } else if (time < main.timelineMin) {
-            main.timelineMin = time;
+            main.timelineMin = n;
+        } else if (time < ((typeof main.timelineMin =="string")?new Date(main.timelineMin).getTime():main.timelineMin)) {
+            main.timelineMin = n;
         }
         if (main.timelineMax == 0) {// Check and set maximum value for time
-            main.timelineMax = time;
-        } else if (time > main.timelineMax) {
-            main.timelineMax = time;
+            main.timelineMax = n;
+        } else if (time > ((typeof main.timelineMax =="string")?new Date(main.timelineMax).getTime():main.timelineMax)) {
+            main.timelineMax = n;
         }
         // END TIMELINE
         
@@ -1119,8 +1119,6 @@ Dscourse.prototype.AddPost = function() {
     if (!main.data.posts) {
         main.data.posts = new Array();
     }
-    
-   
     
     // Get post values from the form.
     // postID -- postFromId
@@ -1399,17 +1397,20 @@ Dscourse.prototype.DrawTimeline = function()// Draw the timeline.
     var main = this;
 
     // Let's make the step a division between the max and min numbers.
-    var step = (main.timelineMax - main.timelineMin) / 100;
+    var min = new Date(main.timelineMin).getTime();
+    var max = new Date(main.timelineMax).getTime();
+     var step = (max - min) / 100;
 
     // Create the Slider
     $("#slider-range").slider({// Create the slider
         range : "min",
         //step: step,
-        value : main.timelineMax,
-        min : main.timelineMin,
-        max : main.timelineMax,
+        value : max,
+        min : min,
+        max : max,
         slide : function(event, ui) {
-            var date = main.FormattedDate(ui.value);
+            var date = main.GetUniformDate(ui.value);
+            date = main.ToTimestamp(date);
             $("#amount").val(date);
             $('.threadText').each(function(index) {
                 var threadID = $(this).attr('time');
@@ -1428,7 +1429,7 @@ Dscourse.prototype.DrawTimeline = function()// Draw the timeline.
     });
 
     // Show the value on the top div for reference.
-    var initialDate = main.FormattedDate(main.timelineMax);
+    var initialDate = (main.ToTimestamp(main.GetUniformDate(main.timelineMax)));
     $("#amount").val(initialDate);
 
     var j, d;
@@ -1728,32 +1729,12 @@ Dscourse.prototype.DiscDateStatus = function(dID) {
     var o;
     o = main.data.discussion;
     if (o.dID === dID) {
-<<<<<<< HEAD
         // Compare dates of the discussion to todays date.
         var beginDate = main.GetUniformDate(o.dStartDate);
         var openDate = main.GetUniformDate(o.dOpenDate);
         var endDate = main.GetUniformDate(o.dEndDate);
         var currentDate = new Date().getTime();
-=======
         // Compare dates of the discussion to todays date. But first convert mysql dates into js
-        
-        // Split timestamp into [ Y, M, D, h, m, s ]
-		var b = o.dStartDate.split(/[- :]/);
-		var beginDate = new Date(b[0], b[1]-1, b[2], b[3], b[4], b[5]);
-		
-		var oD = o.dOpenDate.split(/[- :]/);
-		var openDate = new Date(oD[0], oD[1]-1, oD[2], oD[3], oD[4], oD[5]);
-		
-		var e = o.dEndDate.split(/[- :]/);
-		var endDate = new Date(e[0], e[1]-1, e[2], e[3], e[4], e[5]);
-
- /*
-       var beginDate = o.dStartDate; // ($.browser.webkit)?new Date(o.dStartDate):new Date(o.dStartDate.split(' ').join('T'));
-        var openDate = o.dOpenDate; // ($.browser.webkit)?new Date(o.dOpenDate):new Date(o.dOpenDate.split(' ').join('T'));
-        var endDate = o.dEndDate; // ($.browser.webkit)?new Date(o.dEndDate):new Date(o.dEndDate.split(' ').join('T'));
-*/
-        var currentDate = new Date();
->>>>>>> c3be92ec9ccc7b9148c319534def57f7edb71e65
         if (currentDate >= beginDate && currentDate <= endDate) {// IF today's date bigger than start date and smaller than end date?
             if (currentDate <= openDate) {// If today's date smaller than Open Date
                 dStatus = 'student';
@@ -2073,7 +2054,6 @@ Dscourse.prototype.VerticalHeatmap = function(mapType, mapInfo) {
   
 	if(main.data.posts){ 
 	
-<<<<<<< HEAD
     for ( j = 0; j < main.data.posts.length; j++) {// Go through all the posts
         d = main.data.posts[j];
         	posts.push(d.postID); 
@@ -2101,7 +2081,6 @@ Dscourse.prototype.VerticalHeatmap = function(mapType, mapInfo) {
 					console.log(data); 
 			  }
 		});	
-=======
 	    for ( j = 0; j < main.data.posts.length; j++) {// Go through all the posts
 	        d = main.data.posts[j];
 	        	posts.push(d.postID); 
@@ -2129,10 +2108,6 @@ Dscourse.prototype.VerticalHeatmap = function(mapType, mapInfo) {
 						console.log(data); 
 				  }
 			});	
-		
-	
- 
->>>>>>> c3be92ec9ccc7b9148c319534def57f7edb71e65
  }
  
 
@@ -2248,21 +2223,18 @@ Dscourse.prototype.truncateText = function(text, length) {
 }
 
 Dscourse.prototype.FormattedDate = function(date) {
-
-        // Split timestamp into [ Y, M, D, h, m, s ]
-		var b = date.split(/[- :]/);
-		var date = new Date(b[0], b[1]-1, b[2], b[3], b[4], b[5]);
-		
+    
+    date = date.replace(/\//g,'-');
+    // Split timestamp into [ Y, M, D, h, m, s ]
+	var b = date.split(/[- :]/);
+	var date = new Date(b[0], b[1]-1, b[2], b[3], b[4], b[5]);
 
     var d, m, curr_hour, dateString;
     d = new Date(0);
     var sec = this.GetUniformDate(date);
     d.setUTCMilliseconds(sec);
     // Write out the date in readable form.
-<<<<<<< HEAD
-=======
     console.log(date);
->>>>>>> c3be92ec9ccc7b9148c319534def57f7edb71e65
     m = d.toDateString();
     curr_hour = d.getHours();
     dateString = m + '  ' + curr_hour + ':00';
@@ -2272,10 +2244,7 @@ Dscourse.prototype.FormattedDate = function(date) {
 
 Dscourse.prototype.FunctionTemplate = function() {
     var main = this;
-
 }
-
-
 
 // SOMETHINGS BORROWED
 Dscourse.prototype.GetCurrentDate = function() {
@@ -2310,10 +2279,11 @@ Dscourse.prototype.GetUniformDate = function(date, off){
         d = new Date(date).getTime();
     }
     else if(typeof date == "string"){
+        date = date.replace(/-/g, '/');
         var chrome = /chrome/.test(navigator.userAgent.toLowerCase());
         if(($.browser.safari || $.browser.msie) && !chrome)
            d = new Date(date.split('-').join('/')).getTime();
-        else if($.browser.webkit)
+        else if($.browser.webkit || $.browser.mozilla)
             d = new Date(date).getTime();
         else
             d = new Date(date.split(' ').join('T')).getTime();   
@@ -2324,4 +2294,16 @@ Dscourse.prototype.GetUniformDate = function(date, off){
         d-=diff*60000;
     }
     return d;
+}
+
+Dscourse.prototype.ToTimestamp = function(epoch){
+    var d = new Date(epoch);
+    var y = d.getFullYear();
+    var m = ("00"+(d.getMonth()+1).toString()).slice(-2);
+    var da = ("00"+d.getDate().toString()).slice(-2);
+    var h = ("00"+d.getHours().toString()).slice(-2);
+    var mi = ("00"+d.getMinutes().toString()).slice(-2);
+    var s = ("00"+d.getSeconds().toString()).slice(-2);
+    
+    return y+"-"+m+"-"+da+" "+h+":"+mi+":"+s;
 }

@@ -15,7 +15,7 @@ ini_set('display_errors',1);
 	include "dscourse.class.php"; 
 	include "simpleImage.class.php"; 
 	
-	mysql_query("SET SESSION time_zone = '+00:00'"); 
+	mysql_query("SET time_zone = '+00:00'"); 
 
  	$action	= $_POST['action'];									// What the ajax call asks the php to do. 
 	$username = $_SESSION['Username'];
@@ -240,7 +240,6 @@ function UpdateNetwork(){
 
 
 function AddCourse() { 
-
 	$courseName  	=  $_POST['courseName'];
 	$courseDesc  	=  $_POST['courseDescription'];
 	$courseStart  	=  $_POST['courseStartDate'];
@@ -323,13 +322,28 @@ function AddCourse() {
 		}		
 	}
 
-
-  		$message =  3;
-	  	$gotoPage = "../course.php?c=".$courseID."&n=".$networkID."&m=".$message;  // All good
-	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
+	//generate view and register links
+	$view = "";
+	$reg = "";
+	for($i=0;$i<8;$i++){
+		$view.=mt_rand(0,9);
+		$reg.=mt_rand(0,9);
+	}
+	$a=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'viewCode', '$view', '{\"active\"=\"false\"}')");
+	if($a==FALSE){
+		exit("SQL syntax error 1");
+	}
+	
+	$b=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'registerCode', '$reg', '{\"active\"=\"false\"}')");
+ 	if($b==FALSE){
+ 		exit("SQL syntax error 2");
+ 	}
+	
+	$message =  3;
+	$gotoPage = "../course.php?c=".$courseID."&m=".$message;  // All good
+	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 	 
- 
- }
+}
  
 function EditCourse() { 
 	$courseID		=  $_POST['courseID'];
@@ -483,7 +497,7 @@ function EditDiscussion(){
 
 		
  		$message = '2' ;
-	  	$gotoPage = "../course.php?c=".$courseID."&n=".$networkID;  // All good
+	  	$gotoPage = "../course.php?c=".$courseID;  // All good
 	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 
 }
@@ -520,11 +534,6 @@ function GetData(){
 				{					
 					$users[] = $t;
 				}
-
-		
-		
-
-
 		// Get Networks
 		$networksData = mysql_query("SELECT * FROM networkCourses INNER JOIN networks ON networkCourses.networkID = networks.networkID WHERE networkCourses.courseID = '".$cID."'");
 		while($u = mysql_fetch_assoc($networksData)) 

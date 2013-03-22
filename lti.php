@@ -12,7 +12,7 @@ function hmacsha1($key, $data) {//snippet written by Kellan Elliott-McCrea; http
 	return $hmac;
 }
 class User{
-	public $attrs = array('firstName'=>'lis_person_name_given','lastName'=>'lis_person_name_family','username'=>'lis_person_contact_email_primary', 'role'=>'roles');
+	public $attrs = array('firstName'=>'lis_person_name_given','lastName'=>'lis_person_name_family','username'=>'lis_person_contact_email_primary', 'role'=>'roles', 'uID'=>NULL);
 }
 class LTILaunch{
 	public $params = array('discID'=>'resource_link_id','courseName'=>'context_title','courseId'=>'context_id');	
@@ -62,6 +62,9 @@ if (strcmp($sentSig, $sig)==0) {
 	$user = new User();
 	$opts = array_keys($user->attrs);
 	for($i=0;$i<count($opts);$i++){
+		if($user->attrs[$opts[$i]] == NULL){
+			break;
+		}
 		$arg = $user->attrs[$opts[$i]]; 
 		$user->attrs[$opts[$i]] = $_POST[$arg];
 	}
