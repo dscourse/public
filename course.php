@@ -112,6 +112,7 @@ ini_set('display_errors',1);
             <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
+             <?php echo "var accessStatus = '".json_encode($preProcess) . "';";?>
  
 			<?php 
 			if(isset($_GET['m'])){

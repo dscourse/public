@@ -529,20 +529,20 @@ class Dscourse {
 		$location = $parts[0];
 		$location = explode('/', $location); 
 		$location = array_pop($location);
-		$args = array();
-		foreach(explode("&", $parts[1]) as $part){
-			$sides = explode("=",$part);
-			$args[$sides[0]]= $sides[1];
+		if(isset($parts[1])){
+			$args = array();
+			foreach(explode("&", $parts[1]) as $part){
+				$sides = explode("=",$part);
+				$args[$sides[0]]= $sides[1];
+			}
 		}
-		
 		$member = FALSE;
 		$viewer = FALSE;
 		$regRequired = FALSE;
-		$uID = $_SESSION['UserID'];
-		$cID = $args['c'];
-		
 		//we only need to protect courses and discussions
 		if($location=="course.php"||$location=="discussion.php"){
+			$uID = $_SESSION['UserID'];
+			$cID = $args['c'];
 		//2. Check User Status Relevant to Resource	
 			$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
 			if(count(mysql_fetch_array($a))==0){
@@ -582,7 +582,7 @@ class Dscourse {
 			}
 		}
 		
-		return array("status" => $status);
+		return array("status" => $status,"viewer"=>$viewer, "register"=> $regRequired);
 	}
 
 	public function LTI() {
