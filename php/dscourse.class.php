@@ -280,30 +280,9 @@ class Dscourse {
 		// Which networks does this course belong to?
 		$totalNetworks = count($courseNetworks);
 		// Count networks for a loop later
-		switch ($courseInfo['courseView']) {// Depending on who this course allows to be viewed by
-			case "members" :
-				// If the course should be viewed only by members
-				if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor') {// check if this user is a member
-					$load = true;
-				}
-				break;
-			case "network" :
-				// If the course should only be viewed by network members
-				for ($j = 0; $j < $totalNetworks; $j++) {
-					if ($this -> IsUserInNetwork($courseNetworks[$j]['networkID'], $userID)) {// Check if this user is in any of the networks the course belongs to
-						$load = true;
-					}
-					if ($courseNetworks[$j]['networkStatus'] == "public") {
-						$load = true;
-					}
-				}
-				break;
-			case "everyone" :
-				// If this course can be viewed by everyone
+			if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor') {// check if this user is a member
 				$load = true;
-				// Just load everything
-				break;
-		}
+			}
 
 		return $load;
 	}
@@ -375,13 +354,9 @@ class Dscourse {
 			// Who does this course allow for viewing?
 			//$courseNetworks = $this->CourseNetworks($row['courseID']); 										// Which networks does this course belong to?
 			//$totalNetworks = count($courseNetworks); 														// Count networks for a loop later
-			switch ($courseInfo['courseView']) {// Depending on who this course allows to be viewed by
-				case "members" :
-					// If the course should be viewed only by members
-					if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor') {// check if this user is a member
-						$load = true;
-					}
-					break;
+			if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor') {// check if this user is a member
+				$load = true;
+			}
 				/*case "network":																				// If the course should only be viewed by network members
 				 for($j = 0; $j < $totalNetworks; $j++){
 				 if($this->IsUserInNetwork($courseNetworks[$j]['networkID'], $userID)) {				// Check if this user is in any of the networks the course belongs to
@@ -392,12 +367,12 @@ class Dscourse {
 				 }
 				 }
 				 break;*/
-				case "everyone" :
+			/*	case "everyone" :
 					// If this course can be viewed by everyone
 					$load = true;
 					// Just load everything
 					break;
-			}
+			 }*/
 			$i++;
 		endwhile;
 
@@ -576,10 +551,22 @@ class Dscourse {
 				else{
 					$res = mysql_fetch_assoc($a);
 					if($res['optionsName']=="viewCode"){
-						$viewer = TRUE;
+						$attrs = json_decode($res['optionAttr']);
+						if($attrs['active']=='true'){
+							$viewer = TRUE;
+						}
+						else{
+							$viewer = "inactive";
+						}
 					}
 					else if($res['optionsName']=="registerCode"){
-						$regRequired = TRUE;
+						$attrs = json_decode($res['optionAttr']);
+						if($attrs['active']=='true'){
+							$regRequired = TRUE;
+						}
+						else{
+							$regRequired = "inactive";
+						}
 					}
 				}
 			}

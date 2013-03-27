@@ -33,7 +33,6 @@ ini_set('display_errors',1);
         
         if($dscourse->LoadCourse($cID, $userID) == false ) {
 	           header('Location: index.php');                   // The course is set up that this user can't view it. 
-
         }
         
         

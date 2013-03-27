@@ -245,8 +245,8 @@ function AddCourse() {
 	$courseStart  	=  $_POST['courseStartDate'];
 	$courseEnd  	=  $_POST['courseEndDate'];
 	$courseURL  	=  $_POST['courseURL'];
-	$courseView	=  $_POST['viewOptions'];
-	$courseParticipate = $_POST['participateOptions'];
+	//$courseView	=  $_POST['viewOptions'];
+	//$courseParticipate = $_POST['participateOptions'];
 	
 	$message = "";
 	// But if there is a new picture
@@ -300,12 +300,12 @@ function AddCourse() {
 	}
 	
 	// Add course to database
-	$insertCourse = mysql_query("INSERT INTO courses (courseName, courseStartDate, courseEndDate, courseDescription, courseImage, courseURL, courseView, courseParticipate) VALUES('".$courseName."', '".$courseStart."', '".$courseEnd."', '".$courseDesc."', '".$courseImage."', '".$courseURL."', '".$courseView."', '".$courseParticipate."')"); 
+	$insertCourse = mysql_query("INSERT INTO courses (courseName, courseStartDate, courseEndDate, courseDescription, courseImage, courseURL) VALUES('".$courseName."', '".$courseStart."', '".$courseEnd."', '".$courseDesc."', '".$courseImage."', '".$courseURL."')"); 
 	$courseID = mysql_insert_id(); 
 
 	// Add Users to courses		
 	if(isset($_POST['user'])){
-		$user  	=  $_POST['user'];
+		$user = $_POST['user'];
 		$totalUser = count($user); 
 		$i = 0; 
 		while($i < $totalUser) {
@@ -342,11 +342,11 @@ function AddCourse() {
 		}
 	}
 	
-	$a=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'viewCode', '$view', '{\"active\"=\"false\"}')");
+	$a=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'viewCode', '$view', '{\\\"active\\\":\\\"false\\\"}')");
 	if($a==FALSE){
 		exit("SQL syntax error 1");
 	}
-	$b=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'registerCode', '$reg', '{\"active\"=\"false\"}')");
+	$b=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'registerCode', '$reg', '{\\\"active\\\":\\\"false\\\"}')");
  	if($b==FALSE){
  		exit("SQL syntax error 2");
  	}
