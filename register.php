@@ -55,7 +55,7 @@ date_default_timezone_set('UTC');
                                 $('#registerNotify').html(data);                        
                         }, 
                       error: function(data) {                                   // If php did not run 
-                            console.log("dscourse Log: There was a problem connecting to the login script. ");  
+                            console.log("dscourse Log: There was a problem connecting to the login script.");  
                             console.log(data); 
                       }
                 });      

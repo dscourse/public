@@ -497,6 +497,19 @@ class Dscourse {
 	}
 
 	public function PreProcess($query) {
+		$query = ltrim($query, '/');
+		$parts = explode('?',$query);
+		$q;
+		$args = array();
+		if(isset($parts[1])){
+			$q="?".$parts[1];
+			foreach(explode("&", $parts[1]) as $part){
+				$sides = explode("=",$part);
+				$args[$sides[0]]= $sides[1];
+			}
+		}
+		
+		
 		//1. CHECK STATUS
 		$status = "OK";
 		if (empty($_SESSION['Username']))// Checks to see if user is logged in, if not sends the user to login.php
@@ -512,36 +525,37 @@ class Dscourse {
 					$_SESSION['LoggedIn'] = 1;
 					$_SESSION['status'] = $row[5];
 					$_SESSION['UserID'] = $row[0];
-					header('Location: index.php');
+					header('Location: index.php'.$q);
 
 				} else {
 					echo "Error: Could not load user info from cookie.";
 				}
 			} else {
-				header('Location: info.php');
+				header('Location: info.php'.$q);
 				// Not logged and and does not have cookie
 			}
 		}
-
-		//
-		$query = ltrim($query, '/');
-		$parts = explode('?',$query);
+		
+		$uID = $_SESSION['UserID'];
+		$dMember = FALSE;
+		$m = mysql_query("SELECT * FROM users WHERE UserID = '$uID'");			
+		$res = mysql_fetch_assoc($m);
+		if(count($res)>0){
+			$dMember = TRUE;
+		}
+		//$active = FALSE;
+		//WE NEED CODE HERE TO TEST IF AN ACCOUNT IS ACTIVE
+		
+		
 		$location = $parts[0];
 		$location = explode('/', $location); 
 		$location = array_pop($location);
-		if(isset($parts[1])){
-			$args = array();
-			foreach(explode("&", $parts[1]) as $part){
-				$sides = explode("=",$part);
-				$args[$sides[0]]= $sides[1];
-			}
-		}
+	
 		$member = FALSE;
 		$viewer = FALSE;
 		$regRequired = FALSE;
 		//we only need to protect courses and discussions
 		if($location=="course.php"||$location=="discussion.php"){
-			$uID = $_SESSION['UserID'];
 			$cID = $args['c'];
 		//2. Check User Status Relevant to Resource	
 			$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
@@ -582,7 +596,7 @@ class Dscourse {
 			}
 		}
 		
-		return array("status" => $status,"viewer"=>$viewer, "register"=> $regRequired);
+		return array("status" => $status,"member"=> $dMember,"courseMember"=>$member,"viewer"=>$viewer, "register"=> $regRequired);
 	}
 
 	public function LTI() {

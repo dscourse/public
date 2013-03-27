@@ -59,7 +59,23 @@ ini_set('display_errors',1);
 		$courseInfo = $dscourse->CourseInfo($courseId);
 	}
 	
-	//Try loadings
+	//Check if user needs to register
+	if((!$preProcess['member']) && $preProcess['register']){
+		if($preProcess['dMember']){
+			//already on dscourse
+			$q = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES ('$cID', '$uId', 'Student')");
+			if($q == FALSE){
+				//handle the error?
+				exit("Error");
+			}
+			$preProcess['courseMember'] = TRUE;
+		}
+		else{
+			//needs to register
+			header('Location: register.php');
+		}
+	}
+	//Try loading
 	$load = $dscourse->LoadDiscussion($discId, $uId);
     if($load){
 		$currentSession = session_id(); 

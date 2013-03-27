@@ -58,7 +58,6 @@ $(function(){
                 $totalUsers = count($allUsers);
                 for($i = 0; $i < $totalUsers; $i++) 
                         {
-                        
                             $uFirstName = $allUsers[$i]['firstName'];
                             $uLastName  = $allUsers[$i]['lastName'];
                             $uID        = $allUsers[$i]['UserID'];
@@ -351,44 +350,6 @@ THE FOLLOWING IS REPLACED WITH ABOVE CODE SINCE WE NO LONGER USE NETWORKS
                                     <p class="help-inline">If you have an external website for this course please enter it here.</p>
                                 </div>
                             </div>
-                             
-                            <div class="control-group">
-                                <label class="control-label" for="viewOptions">Who can see the course contents?</label>
-                                <div class="controls">
-									<label class="radio">
-									<input type="radio" name="viewOptions" id="viewOptions1" value="members" checked>
-									  Instructors, TA's and Students
-									</label>
-									<label class="radio">
-									  <input type="radio" name="viewOptions" id="viewOptions2" value="network">
-									  Anyone in this network
-									</label>
-									<label class="radio">
-									  <input type="radio" name="viewOptions" id="viewOptions3" value="everyone">
-									  Anyone with an account on dscourse
-									</label>                                    
-                                </div>
-                            </div>                           
- 
-                             <div class="control-group">
-                                <label class="control-label" for="participateOptions">Who can Participate in the discussions?</label>
-                                <div class="controls">
-									<label class="radio">
-									<input type="radio" name="participateOptions" id="participateOptions1" value="members" checked>
-									  Instructors, TA's and Students
-									</label>
-									<label class="radio">
-									  <input type="radio" name="participateOptions" id="participateOptions2" value="network">
-									  Anyone in this network
-									</label>
-									<label class="radio">
-									  <input type="radio" name="participateOptions" id="participateOptions3" value="everyone">
-									  Anyone with an account on dscourse
-									</label>                                    
-                                </div>
-                            </div>                            
-                            
-
 
                             <hr class="soften">
 
