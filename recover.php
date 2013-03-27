@@ -13,7 +13,7 @@ date_default_timezone_set('UTC');
 <head>
 	<title>Recover forgotten password</title>
 	
-	    <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.js"></script>
     <link href="css/bootstrap.css" media="screen" rel="stylesheet" type="text/css">
 	<link href="css/style.css" media="screen" rel="stylesheet" type="text/css" />	
@@ -49,44 +49,56 @@ if (isset($_POST['emailRecover']))
   
     if(mysql_num_rows($checkEmailRecover) == 1)  
     { 
-		    // Generate recovery code 
-		    $code = mt_rand(10000, 100000000);    
-		    
-		    // Write the code and the current timestamp to database (timestamp is for expiring the link 
-		    $recoverquery = mysql_query("UPDATE `users` SET  `userRecovery` =  \"".$code."\", userRecoveryTime = '".time()."' WHERE  `username` =\"".$_POST['emailRecover']."\"");  
-		    
-		    if($recoverquery)  			// Check if database value was changed
-	        {  
-	             
-			    //send email
-			      $headers .= "Content-type: text/html\r\n"; 
-				  $email = $_POST['emailRecover'] ;
-				  $subject = "Reset your Dscourse password" ;
-				  $message = " You requested your password to be changed. If you forgot your password click on the link below to set a new password. If this email was not sent by you, you don't need to take any action, your password is not reset until you click the link: <a href=\"http://dscourse.caneruguz.com/recover.php?code=".$code."&user=".$email."\" > Reset Password </a>. Mbr /> This link will expire in 24 hours.   ";
-				  mail($email, "Subject: $subject",
-				  $message, "From: admin@dscourse.com", $headers);
-				  
-				 	echo '	  	  <div class="span4 offset4 authForms"> 		';
+		    $row = mysql_fetch_array($checkEmailRecover);   	  	       
+	        if($row[11] == 'inactive'){
+		        	echo '	  	  <div class="span4 offset4 authForms"> 		';
 					echo '		  	<div class="page-header"> 		';
 					echo '			    <h1>Recover Password </h1> 	';
 					echo '			  </div>			  			';
-					echo '				<div class=" form-vertical">';
-					echo '					<div class=\"alert alert-success animated flash \"><p><strong> Success! </strong></p> Please check your email for further action. </div>';
-					echo '				<p><a href="index.php"><i class="icon-arrow-left"></i> Back to the home page </a></p></div>';
-				  
-	        }  
-	        else  
-	        {  
-					echo '	  	  <div class="span4 offset4 authForms"> 		';
-					echo '		  	<div class="page-header"> 		';
-					echo '			    <h1>Recover Password </h1> 	';
-					echo '			  </div>			  			';
-					echo '				<div class=" form-vertical">';
-					echo '					<p><h2> Error! </h2> There was a problem with changing the value. Please try again later, or contact an administrator.</p>';
-					echo '				<p><a href="index.php"><i class="icon-arrow-left"></i> Back to the home page </a></p></div>';	        
-			} 
-
-				 	
+					echo '				<div class=" ">';
+					echo '					<div class="alert alert-error animated flash"><p><h2> Error! </h2> This user is registered to the website but the email is not yet verified. Please check your email for the verification link. If you can\'t find the email we can <a href="#">send it again</a>. <p></div><a href="index.php"><i class="icon-arrow-left"></i> Back to the home page </a></p>';
+					echo '				</div>';
+	        
+	        } else {
+			    // Generate recovery code 
+			    $code = mt_rand(10000, 100000000);    
+			    
+			    // Write the code and the current timestamp to database (timestamp is for expiring the link 
+			    $recoverquery = mysql_query("UPDATE `users` SET  `userRecovery` =  \"".$code."\", userRecoveryTime = '".time()."' WHERE  `username` =\"".$_POST['emailRecover']."\"");  
+			    
+			    if($recoverquery)  			// Check if database value was changed
+		        {  
+		             
+				    //send email
+				      $headers .= "Content-type: text/html\r\n"; 
+					  $email = $_POST['emailRecover'] ;
+					  $subject = "Reset your Dscourse password" ;
+					  $message = " You requested your password to be changed. If you forgot your password click on the link below to set a new password. If this email was not sent by you, you don't need to take any action, your password is not reset until you click the link: <a href=\"http://dscourse.caneruguz.com/recover.php?code=".$code."&user=".$email."\" > Reset Password </a>. Mbr /> This link will expire in 24 hours.   ";
+					  mail($email, "Subject: $subject",
+					  $message, "From: admin@dscourse.com", $headers);
+					  
+					 	echo '	  	  <div class="span4 offset4 authForms"> 		';
+						echo '		  	<div class="page-header"> 		';
+						echo '			    <h1>Recover Password </h1> 	';
+						echo '			  </div>			  			';
+						echo '				<div class=" form-vertical">';
+						echo '					<div class=\"alert alert-success animated flash \"><p><strong> Success! </strong></p> Please check your email for further action. </div>';
+						echo '				<p><a href="index.php"><i class="icon-arrow-left"></i> Back to the home page </a></p></div>';
+					  
+		        }  
+		        else  
+		        {  
+						echo '	  	  <div class="span4 offset4 authForms"> 		';
+						echo '		  	<div class="page-header"> 		';
+						echo '			    <h1>Recover Password </h1> 	';
+						echo '			  </div>			  			';
+						echo '				<div class=" form-vertical">';
+						echo '					<p><h2> Error! </h2> There was a problem with changing the value. Please try again later, or contact an administrator.</p>';
+						echo '				<p><a href="index.php"><i class="icon-arrow-left"></i> Back to the home page </a></p></div>';	        
+				} 
+			        
+		        
+	        }
 
 	    }
 	  else
