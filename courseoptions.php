@@ -175,7 +175,7 @@ $(function(){
                             </div>                           
  
                              <div class="control-group">
-                                <label class="control-label" for="participateOptions">Who can Participate in the discussions?</label>
+                                <label class="control-label" for="participateOp	tions">Who can Participate in the discussions?</label>
                                 <div class="controls">
 									<label class="radio">
 									<input type="radio" name="participateOptions" id="participateOptions1" value="members" <?php if($courseInfo['courseParticipate'] == 'members'){ echo 'checked';}  ?>>
