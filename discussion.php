@@ -16,13 +16,14 @@ ini_set('display_errors',1);
 		$LTI = TRUE;
 	}
 	
-	$courseId;
+	$cID;
 	$discId;
 	$uId;
 	$origin; 
 	$courseInfo; 
 	$discussionInfo;
 	$discId;
+	$preProcess;
 	
     if(!$LTI)                        // Checks to see if user is logged in, if not sends the user to login.php
     {  
@@ -38,8 +39,8 @@ ini_set('display_errors',1);
             exit(); 
        }
        
-       $courseId = $_GET['c']; 
-       $courseInfo = $dscourse->CourseInfo($courseId);
+       $cID = $_GET['c']; 
+       $courseInfo = $dscourse->CourseInfo($cID);
 	}
 	else{
 		//CREATE A SESSION
@@ -90,6 +91,7 @@ ini_set('display_errors',1);
             <?php echo "var currentSession = '" . $currentSession . "';"; ?>
             <?php echo "var courseView = '" . $courseInfo['courseView'] . "'; "; ?>
             <?php echo "var courseParticipate = '" . $courseInfo['courseParticipate'] . "'; "; ?>
+            <?php echo "var accessStatus = '".json_encode($preProcess) . "';";?>
     </script>
 </head>
 
@@ -102,8 +104,8 @@ ini_set('display_errors',1);
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID . '&n=' . $nID; ?>" id="coursesNav"><?php echo $dscourse -> myTruncate($courseInfo['courseName'], 15, ' ', '...'); ?></a></li>
-                    <li class="navLevel"><a href="discussion.php?d=<?php echo $discID . '&c=' . $cID . '&n=' . $nID; ?>" id="discussionNav"><?php echo $dscourse -> myTruncate($discussionInfo['dTitle'], 15, ' ', '...'); ?></a></li>
+                    <li class="navLevel"><a href="course.php?c=<?php echo $cID ?>" id="coursesNav"><?php echo $dscourse -> myTruncate($courseInfo['courseName'], 15, ' ', '...'); ?></a></li>
+                    <li class="navLevel"><a href="discussion.php?d=<?php echo $discId . '&c=' . $cID ?>" id="discussionNav"><?php echo $dscourse -> myTruncate($discussionInfo['dTitle'], 15, ' ', '...'); ?></a></li>
 
                 </ul>
 

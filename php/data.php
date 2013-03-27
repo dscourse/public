@@ -248,9 +248,6 @@ function AddCourse() {
 	$courseView	=  $_POST['viewOptions'];
 	$courseParticipate = $_POST['participateOptions'];
 	
-	$networkID  	=  $_POST['networkID'];
-
-	
 	$message = "";
 	// But if there is a new picture
 	if($_FILES["courseImage"]["size"] > 0 ) {
@@ -306,9 +303,6 @@ function AddCourse() {
 	$insertCourse = mysql_query("INSERT INTO courses (courseName, courseStartDate, courseEndDate, courseDescription, courseImage, courseURL, courseView, courseParticipate) VALUES('".$courseName."', '".$courseStart."', '".$courseEnd."', '".$courseDesc."', '".$courseImage."', '".$courseURL."', '".$courseView."', '".$courseParticipate."')"); 
 	$courseID = mysql_insert_id(); 
 
-	// Add course to network													
-	$networkCourseInsert = mysql_query("INSERT INTO networkCourses (networkID, courseID) VALUES('".$networkID."', '".$courseID."')"); 
-
 	// Add Users to courses		
 	if(isset($_POST['user'])){
 		$user  	=  $_POST['user'];
@@ -325,15 +319,33 @@ function AddCourse() {
 	//generate view and register links
 	$view = "";
 	$reg = "";
-	for($i=0;$i<8;$i++){
-		$view.=mt_rand(0,9);
-		$reg.=mt_rand(0,9);
+	while($view==$reg){
+		for($i=0;$i<8;$i++){
+			$view.=mt_rand(0,9);
+			$reg.=mt_rand(0,9);
+		}
+		$a = mysql_query("SELECT * FROM options WHERE optionsValue='$view'");
+		if(count(mysql_fetch_array($a))!=0){
+			$view = "";
+			for($i=0;$i<8;$i++){
+				$view.=mt_rand(0,9);
+			}
+			$a = mysql_query("SELECT * FROM options WHERE optionsValue='$view'");
+		}
+		$b = mysql_query("SELECT * FROM options WHERE optionsValue='$reg'");
+		if(count(mysql_fetch_array($b))!=0){
+			$reg = "";
+			for($i=0;$i<8;$i++){
+				$reg.=mt_rand(0,9);
+			}
+			$b = mysql_query("SELECT * FROM options WHERE optionsValue='$reg'");
+		}
 	}
+	
 	$a=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'viewCode', '$view', '{\"active\"=\"false\"}')");
 	if($a==FALSE){
 		exit("SQL syntax error 1");
 	}
-	
 	$b=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'registerCode', '$reg', '{\"active\"=\"false\"}')");
  	if($b==FALSE){
  		exit("SQL syntax error 2");
@@ -714,4 +726,4 @@ function AddLog()
  
  
  
- 
+
