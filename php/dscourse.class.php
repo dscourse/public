@@ -391,6 +391,84 @@ class Dscourse {
 
 	}
 
+	public function LoadCourseOptions($cID) {
+		/*
+		 *  Gets all course options
+		 */
+		$query = mysql_query("SELECT * FROM options WHERE optionsType = 'course' AND optionsTypeID = '" . $cID . "'");
+		if(!$query){
+			return 'empty';
+		} else {
+			$results = array();
+			$i = 0;
+			while ($row = mysql_fetch_array($query)) :
+				array_push($results, $row);
+				$i++;
+			endwhile;
+			return $results;			
+		}
+	}
+
+	public function OptionValue($array, $optionName, $attr = '') {
+		/*
+		 *  Prints out the value of options. Needs array to include the option name as given
+		 */
+		 //if(!isset($attr)){ $attr = ''; };  // If attr is not set
+		 $value = ''; 
+		 $default = TRUE; 
+		 if(!empty($array)){
+			$total = count($array); 
+			for($i = 0; $i < $total; $i++) {
+				if($array[$i]['optionsName'] == $optionName){
+					$value = $array[$i]['optionsValue'];
+					$default = FALSE; 
+					if($attr == 'viewAttr' || $attr == 'registerAttr'){
+						$attrs = json_decode($array[$i]['optionAttr']);
+						//return $attrs;
+						if($attrs->{'active'}=='true'){
+							$value = 'On';
+						}
+						else{
+							$value = 'Off';
+						}
+					} 
+				}				
+			}		 
+		 }
+		 
+		 if($default) {   // If we need to load defaults
+			switch ($optionName) {
+				case 'useTimeline' :
+					$value = 'Yes'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					break;
+				case 'charLimit' :
+					$value = '500'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					break;
+				case 'useSynthesis' :
+					$value = 'Yes'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					break;
+				case 'showInfo' :
+					$value = 'Yes'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					break;
+				case 'studentCreateDisc' :
+					$value = 'No'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					break;
+			}
+			switch ($attr){
+				case 'viewAttr' :
+					$value = 'Off'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					break;
+				case 'registerAttr' :
+					$value = 'Off'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					break;	 
+			}
+		  }
+		 
+		 return $value; 
+
+	}	
+	
+
 	public function Messages($m) {
 		/*
 		 *  Returns message content

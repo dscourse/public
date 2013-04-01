@@ -247,6 +247,19 @@ padding: 10px 0px;
 	width:240px;
 }
 
+
+ /********** courseoptions.php  Settings ************/
+
+.settingBox {
+border: 1px solid #eee;
+padding: 6px;
+background: white; 
+}
+.settingBox:hover {
+box-shadow: 0 0 9px 0px #eee;
+}
+
+
  /********** Profile.php  ************/
  #editProfileButtons {
 	 margin-top: -20px; 

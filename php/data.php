@@ -80,7 +80,12 @@ ini_set('display_errors',1);
     {
     	AddLog(); 
     }
-        
+	if ($action == 'saveOptions')
+    {
+    	SaveOptions(); 
+    }
+    
+            
 function UpdateNetwork(){
  	/**
  	 * network
@@ -701,7 +706,41 @@ function AddLog()
 				
 }
 			
+function SaveOptions()
+{
+			// Get option data
+			$optionsType = $_POST['optionsType'];
+			$optionsTypeID = $_POST['optionsTypeID'];
+			$options =  $_POST['optionsData'] ;			
+			$totalOptions = count($options); 
 
+			for($i = 0; $i < $totalOptions; $i++) {   // Loop through individual options
+				if(empty($options[$i]['optionsAttr'])){
+					$optionsAttr = ' '; 
+				} else {
+					if($options[$i]['optionsName'] == 'viewCode' || $options[$i]['optionsName'] == 'registerCode'){
+						if($options[$i]['optionsAttr'] == 'On'){
+							$optionsAttr = '{ "active" : "true"}'; 
+						} else {
+							$optionsAttr = '{ "active" : "false"}'; 
+						}
+					} else {
+						$optionsAttr = $options[$i]['optionsAttr']; 
+					}
+				}
+				
+				// Check if that option exists in the database									
+				$checkoption = mysql_query("SELECT * FROM options WHERE optionsType = '".$optionsType."' AND optionsTypeID = '".$optionsTypeID."' AND optionsName = '".$options[$i]['optionsName']."' "); 
+
+				$num_rows = mysql_num_rows($checkoption);
+				if($num_rows == 1){     // if options does not exist create the option row
+					$update = mysql_query("UPDATE options SET  optionsValue  = '".$options[$i]['optionsValue']."', optionAttr  = '".$optionsAttr."'  WHERE optionsType = '".$optionsType."' AND optionsTypeID = '".$optionsTypeID."' AND optionsName = '".$options[$i]['optionsName']."' "); 				
+				} else if ($num_rows == 0){  // if option exists edit the option
+					$add = mysql_query("INSERT INTO options (optionsType, optionsTypeID,optionsName, optionsValue, optionAttr) VALUES('".$optionsType."', '".$optionsTypeID."', '".$options[$i]['optionsName']."','".$options[$i]['optionsValue']."','".$optionsAttr."')"); 
+				}
+
+			}
+}
 
 
 

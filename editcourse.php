@@ -244,27 +244,20 @@ $(function(){
             <div class="row-fluid">
                 <div class="span10 offset1">
                     <div id="courseForm">
-                        <form class="form-horizontal well" name="addCourseForm" action="php/data.php" method="post" enctype="multipart/form-data">
+                        <form class="form-horizontal " name="addCourseForm" action="php/data.php" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="editCourse">
                         <input type="hidden" name="courseID" value="<?php  echo $cID; ?>" >
                             
-                            <div class="alert alert-success">
-                                This course is part of the <?php echo $networkInfo['networkName'];  ?> Network.
-                            </div>
-
                             <div class="control-group">
                                 <label class="control-label" for="courseName">Course Name</label>
-
                                 <div class="controls">
                                     <input type="text" class="input-large" id="courseName" name="courseName" value="<?php echo $courseInfo['courseName'];  ?>">
-
                                     <p class="help-inline">Enter a name for the course</p>
                                 </div>
                             </div>
 
                             <div class="control-group">
                                 <label class="control-label" for="courseDescription">Course Description</label>
-
                                 <div class="controls">
                                     <textarea class="span6 textareaFixed" id="courseDescription" name="courseDescription"><?php echo $courseInfo['courseDescription'];  ?></textarea>
 									<span class="wordCount"></span>
@@ -274,53 +267,42 @@ $(function(){
 
                             <div class="control-group">
                                 <label class="control-label" for="courseStartDate">Course Start Date</label>
-
                                 <div class="controls">
                                     <input type="text" class="input-small" id="courseStartDate" name="courseStartDate" value="<?php echo $courseInfo['courseStartDate'];  ?>">
-
                                     <p class="help-inline">Format: YYYY-MM-DD</p>
                                 </div>
                             </div>
 
                             <div class="control-group">
                                 <label class="control-label" for="courseEndDate">Course End Date</label>
-
                                 <div class="controls">
                                     <input type="text" class="input-small" id="courseEndDate" name="courseEndDate" value="<?php echo $courseInfo['courseEndDate'];  ?>">
-
                                     <p class="help-inline">Format: YYYY-MM-DD</p>
                                 </div>
                             </div>
 
                             <div class="control-group">
-                                <label class="control-label" for="editCourseImage">Course Image</label>
-                                
+                                <label class="control-label" for="editCourseImage">Course Image</label>                                
                                 <div class="controls">
                                     <div id="imgPath"> <img src="<?php echo $courseInfo['courseImage'];  ?>" /></div>
                                     <div class="controls">
                                         <input type="hidden" name="courseImageURL" id="courseImageURL" value="<?php echo $courseInfo['courseImage'];  ?>"> <input type="file" name="editCourseImage" id="editCourseImage">
                                     </div>
-
                                     <p class="help-inline">Please select a file below 5MB and in gif, png or  jpeg formats. </p>
                                 </div>
                             </div>
 
                             <div class="control-group">
                                 <label class="control-label" for="courseURL">Course Website</label>
-
                                 <div class="controls">
                                     <div class="input-prepend">
                                         <span class="add-on">url</span><input class="span2" id="courseURL" name="courseURL" size="500" type="text" value="<?php echo $courseInfo['courseURL'];  ?>">
                                     </div>
-
                                     <p class="help-inline">If you have an external website for this course please enter it here.</p>
                                 </div>
                             </div>
-                             
 
-
-                            <hr class="soften">
-
+                            <hr class="soften" />
                             <div class="row-fluid">
                                 <div class="span3">
                                     <h3>Add People</h3>
@@ -351,6 +333,8 @@ $(function(){
                             </div>
                             <hr class="soften">
                             <button type="submit" name="submitEditCourse" id="submitEditCourse" class="btn btn-primary pull-right">Edit Course </button>
+          
+                        
                         </form>
                     </div>
                 </div>
