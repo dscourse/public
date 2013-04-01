@@ -272,8 +272,6 @@ ini_set('display_errors',1);
 		
 		}); 
 	</script>
-
-
 	<style>
 		.jumbotron {
 			height: 170px;
