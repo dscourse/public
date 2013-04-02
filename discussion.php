@@ -75,16 +75,6 @@ ini_set('display_errors',1);
 			header('Location: register.php');
 		}
 	}
-	//Fetch course options
-	$op = mysql_query("SELECT * FROM options WHERE optionsTypeID = '$cID' AND optionsType='course'");
-	$size = 0;
-	$options = array();
-	while($row=mysql_fetch_array($op)){
-		if($row['optionsName']!='viewCode' && $row['optionsName']!='registerCode'){
-			$options[$size] = array('option'=>$row['optionsName'], 'value'=>$row['optionsValue'], 'attrs' => json_decode($row['optionAttr']));
-			$size++;
-		}
-	}
 	//Try loading
 	$load = $dscourse->LoadDiscussion($discId, $uId);
     if($load){
@@ -115,10 +105,7 @@ ini_set('display_errors',1);
             <?php echo "var dUserAgent = '" . $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
             <?php echo "var discID = " . $discId . ";"; ?>
             <?php echo "var currentSession = '" . $currentSession . "';"; ?>
-            <?php echo "var courseView = '" . $courseInfo['courseView'] . "'; "; ?>
-            <?php echo "var courseParticipate = '" . $courseInfo['courseParticipate'] . "'; "; ?>
-            <?php echo "var accessStatus = '".json_encode($preProcess) . "';";?>
-            <?php echo "var discOptions = '".json_encode($options). "';";?>
+            <?php echo "var settings = '".json_encode($preProcess) . "';";?>
     </script>
 </head>
 

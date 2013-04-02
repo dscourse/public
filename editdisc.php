@@ -372,7 +372,6 @@ $(function(){
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
                     <li class="navLevel"><a href="course.php?c=<?php echo $cID.'&n='.$nID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li>
                 </ul>
 

@@ -34,12 +34,20 @@ function Dscourse(lti) {
     // Used while saving the media type data.
     this.newPosts = '';
     // A string of the posts for a discussion that are new when refreshed. This variable is used to transfer post ids between functions.
+    var discSettings = $.parseJSON(settings)
+    this.userStatus; 
+    if(discSettings.courseMember)
+        this.userSettings = "member";
+    else if(discSettings.viewer)
+        this.userSettings = "viewer";
+    
+    var options = discSettings.options;
     this.options = {
-        charLimit : 500,
-        synthesis : true,
-        infoPanel : true,
+        charLimit : parseInt(options.charLimit),
+        synthesis : (options.useSynthesis=="Yes")?true:false,
+        infoPanel : (options.showInfo=="Yes")?true:false,
         media : true,
-        timeline : true
+        timeline : (options.useTimeline=="Yes")?true:false
     };
     this.charCount = true;
     //lti
@@ -235,25 +243,12 @@ function Dscourse(lti) {
 	        if (dStatus != 'closed') {
 		        	participate = false; 
 			        // Check if participate value if anyone or network			        
-			        if(courseParticipate == 'network'){
-				        // If user is in network they can participate
-				         var networkRole = userNetworkRole;
-				         if(networkRole == 'member' || networkRole == 'owner' || networkRole == 'public' ){
-					         participate = true; 
-				         }
-			        } else if (courseParticipate == 'everyone'){
-				        // User can participate
-				        participate = true; 
-			        } else if (courseParticipate == 'members'){
-				        // if the user is part of this course
-				        var userRole = top.UserCourseRole(discID, currentUserID);
-				        if (userRole == 'unrelated') {
-				            alert('Sorry, you are not part of this course and therefore can\'t post on this discussion.');
-				            return;
-				        } else {
-					        participate = true; 
-				        }
-			        }		        
+			        if(top.userSettings=="member"){
+			            participate = true;
+			        }
+			        else if(top.userSettings=="viewer"){
+			            alert("Sorry, but your access to this course is read-only. Please contact the course instructor if you wish to gain full access.");
+			        }
 			        if(participate == true){
 					    $('#highlightDirection').hide();
 			            $('#highlightShow').hide();
@@ -783,7 +778,7 @@ Dscourse.prototype.GetData = function(discID) {
             main.AddLog('discussion',discID,'getData',0,' ') // Add Log
         },
         error : function() {// If there was an error
-            //console.log('There was an error talking to data.php');
+            console.log('There was an error talking to data.php');
         }
     });
 

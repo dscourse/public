@@ -575,7 +575,6 @@ function GetData(){
 		$data['discussion'] = $discussion;	
 		$data['courses'] = $courses; 
 		$data['users'] = $users; 		 
-		$data['networks'] = $networks; 
 		echo json_encode($data);			// Covert data into a json file.
 }
 

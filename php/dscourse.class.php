@@ -183,11 +183,10 @@ class Dscourse {
 		/*
 		 *  Gets all the information about the course
 		 */
-		$query = mysql_query("SELECT * FROM courses INNER JOIN networkCourses ON courses.courseID = networkCourses.courseID WHERE courses.courseID = '" . $cID . "'");
+		$query = mysql_query("SELECT * FROM courses WHERE courseID = '" . $cID . "'");
 		$results = mysql_fetch_array($query);
 		return $results;
 	}
-
 	public function DiscussionInfo($discID) {
 		/*
 		 *  Gets all the information about the course
@@ -607,6 +606,7 @@ class Dscourse {
 		$member = FALSE;
 		$viewer = FALSE;
 		$regRequired = FALSE;
+		$courseOptions = NULL;
 		//we only need to protect courses and discussions
 		if($location=="course.php"||$location=="discussion.php"){
 			$cID = $args['c'];
@@ -621,7 +621,7 @@ class Dscourse {
 		//3. Check User Permission (based on qs)
 			if(isset($args['a'])){
 				$accessCode = $args['a'];
-				$a = mysql_query("SELECT * FROM options WHERE optionsName = 'viewCode' OR optionsName = 'registerCode' AND optionsTypeID = '$accessCode' ");
+				$a = mysql_query("SELECT * FROM options WHERE optionsName = 'viewCode' OR optionsName = 'registerCode' AND optionsValue = '$accessCode' ");
 				if(count(mysql_fetch_array($a))==0){
 					$viewer = FALSE;
 					$regRequired = FALSE;
@@ -648,6 +648,19 @@ class Dscourse {
 					}
 				}
 			}
+			//also get options
+			$a = mysql_query("SELECT * from options WHERE NOT (optionsName = 'viewCode' OR optionsName = 'registerCode')  AND optionsTypeID = '$cID'"); 
+			if($a==FALSE){
+				exit("Sql Error");
+			}
+			else{
+				$courseOptions = array();
+				while($res = mysql_fetch_assoc($a)){
+					$courseOptions[$res['optionsName']] = $res['optionsValue'];
+				}
+			}
+			
+						
 		}
 		if(!$member){
 			if($viewer){
@@ -661,7 +674,7 @@ class Dscourse {
 			}
 		}
 		
-		return array("status" => $status,"member"=> $dMember,"courseMember"=>$member,"viewer"=>$viewer, "register"=> $regRequired);
+		return array("status" => $status,"member"=> $dMember,"courseMember"=>$member,"viewer"=>$viewer, "register"=> $regRequired, "options" => $courseOptions);
 	}
 
 	public function LTI() {
