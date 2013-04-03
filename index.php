@@ -60,6 +60,24 @@ ini_set('display_errors',1);
 	    $coursePrint = ''; 
 	    $discussionPrint = ''; 
 	    $discussionCount = 'none'; 
+		$courseQuery = mysql_query("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID=courses.courseID WHERE userID = $userID");
+		$courses = array();
+		while($res = mysql_fetch_assoc($courseQuery)){
+			array_push($courses, $res);
+		}
+		//function($e){return strpos($e['courseName'],"a")!==FALSE;}
+		$filtered = $dscourse->SuperSort($courses,FALSE, 
+			function($a,$b){
+				$d1=new DateTime($a['courseTime']);
+				$d2=new DateTime($b['courseTime']);
+				$inter= $d1->diff($d2);
+				return $inter->invert == 0;
+			},
+		10);
+		
+		$totalCourses =10;
+		$courseData = $filtered;
+		
 	    if($totalCourses > 0){	
 		    for($i = 0; $i < $totalCourses; $i++) 
 					{
@@ -73,9 +91,7 @@ ini_set('display_errors',1);
 						$courseImage= 'img/course_default.jpg';					
 					}
 					
-					$courseNetworks = $dscourse->CourseNetworks($cID);
-					if($courseNetworks){
-						$coursePrint .='<li courseID="'.$cID.'"><a href="course.php?c='.$cID.'&n='.$courseNetworks[0]['networkID'].'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a>  <i>'.$cRole.'</i></li>'; 						
+						$coursePrint .='<li courseID="'.$cID.'"><a href="course.php?c='.$cID.'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a>  <i>'.$cRole.'</i></li>'; 						
 						// Get discussions for each course
 						$discussionData = $dscourse->GetCourseDiscussions($cID);
 						$totalDiscussions = count($discussionData);
@@ -85,10 +101,9 @@ ini_set('display_errors',1);
 								{
 									$discID = $discussionData[$j]['dID']; 
 									$discussionName = $discussionData[$j]['dTitle'];  // Name
-									$discussionPrint .='<li discID="'.$cID.'"><a href="discussion.php?d='.$discID.'&c='.$cID.'&n='.$courseNetworks[0]['networkID'].'">'.$discussionName.'</a></li>'; 
+									$discussionPrint .='<li discID="'.$cID.'"><a href="discussion.php?d='.$discID.'&c='.$cID.'">'.$discussionName.'</a></li>'; 
 								}						
 						}
-					}
 				}
 				if($discussionCount == 'none'){
 						$discussionPrint .= '<div class="alert alert-info">You are not part of any discussions yet.</div>'; 	

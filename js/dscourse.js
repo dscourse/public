@@ -1140,17 +1140,17 @@ Dscourse.prototype.AddPost = function() {
 
     // Get drawing value
     var postMedia;
-    postMedia = main.currentDrawing;
+    postMedia = (main.currentDrawing!="Unrecognized")?main.currentDrawing:"";
 
-    postContext = '';
+    var postContext = '';
     // this is used for the synthesis posts but needs a value here.
 
     // Create post object and append it to allPosts
     
-    post = {
+    var post = {
         'postFromId' : postFromId,
         'postAuthorId' : postAuthorId,
-        'postMessage' : postMessage,
+        'postMessage' : postMessage.replace('\'', '\\\''),
         'postType' : postType,
         'postSelection' : postSelection,
         'postMedia' : postMedia,
@@ -1169,6 +1169,8 @@ Dscourse.prototype.AddPost = function() {
             currentDiscussion : currentDisc
         },
         success : function(data) {// If connection is successful .
+            post.postMessage = post.postMessage.replace(/\W/g,function(match){return match.replace('\\','');});
+            console.log(post);
             post.postTime = main.GetCurrentDate();
             post.postID = data;
             main.data.posts.push(post);

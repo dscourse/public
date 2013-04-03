@@ -614,7 +614,7 @@ function AddPost()
 			$postMedia		= 	$post['postMedia'];
 			$postMediaType  = 	$post['postMediaType'];
 			$postContext	= 	$post['postContext'];
-																		
+			
 			$addPostQuery = mysql_query("INSERT INTO posts (postFromId, postAuthorId, postMessage, postType, postSelection, postMedia, postMediaType, postContext) VALUES('".$postFromId."', '".$postAuthorId."', '".$postMessage."','".$postType."','".$postSelection."','".$postMedia."','".$postMediaType."','".$postContext."')"); 
 			
 			$postID = mysql_insert_id();

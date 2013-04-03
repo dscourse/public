@@ -788,6 +788,19 @@ class Dscourse {
 		}
 	}
 
+	public function SuperSort($source,$filter=FALSE,$comparator, $limit=FALSE){
+		$result = array();
+		foreach($source as $entry){
+			if($filter===FALSE || $filter($entry)){
+				array_push($result,$entry);
+			}
+		}
+		usort($result, $comparator);
+		if($limit!==FALSE)
+			$result = array_slice($result, 0, $limit);
+		return $result;
+	}
+
 }// Closing class
 
 $dscourse = new Dscourse();
