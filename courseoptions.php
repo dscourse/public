@@ -185,7 +185,7 @@ ini_set('display_errors',1);
             <p>Customize your course and general discussion settings.</p>
 
             <div id="addCourseCancel" class="pull-right">
-                <a href="course.php?c=<?php echo $cID;?>" class="btn">Cancel</a>
+                <a href="course.php?c=<?php echo $cID;?>" class="btn">Back</a>
                 <button type="submit" name="submitCourseOptions" id="submitCourseOptions" class="btn btn-primary">Save Changes</button>
             </div>
         </div>
@@ -254,7 +254,7 @@ ini_set('display_errors',1);
                         <div class="control-group settingBox saveOption">
                                 <label class="control-label" for="viewCode"><b>URL to View Course</b></label>
                                 <div class="controls" id="viewCode">
-                                    <input type="text" class="span10 disabled" id="viewCodeInput" name="viewCode" value="http://www.baseURL.com/router.php?a=<?php  echo $dscourse->OptionValue($courseOptions, 'viewCode');?>" disabled>
+                                    <input type="text" class="span10 disabled" id="viewCodeInput" name="viewCode" value="http://www.baseURL.com/router.php?a=<?php  echo $dscourse->OptionValue($courseOptions, 'viewCode');?>" readonly>
 									<div class="btn-group" data-toggle="buttons-radio" >
 									  <button type="button" class="btn <?php  if($dscourse->OptionValue($courseOptions, 'viewCode', 'viewAttr') == 'On'){echo 'active'; };?>" id="viewCodeOn">On</button>
 									  <button type="button" class="btn <?php  if($dscourse->OptionValue($courseOptions, 'viewCode', 'viewAttr') == 'Off' ){echo 'active'; };?>" id="viewCodeOff">Off</button>

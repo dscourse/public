@@ -1,7 +1,5 @@
-<?php  
-	
-	        $userNav = $dscourse->UserInfo($_SESSION['UserID']);
-
+<?php
+	//$userNav = $dscourse->UserInfo($_SESSION['UserID']);
 ?>
 
  <script type="text/javascript" src="js/jquery-1.7.1.min.js"> </script>

@@ -549,6 +549,8 @@ class Dscourse {
 	}
 
 	public function PreProcess($query) {
+		$redirect = FALSE;
+		
 		$query = ltrim($query, '/');
 		$parts = explode('?',$query);
 		$q;
@@ -560,8 +562,6 @@ class Dscourse {
 				$args[$sides[0]]= $sides[1];
 			}
 		}
-		
-		
 		//1. CHECK STATUS
 		$status = "OK";
 		if (empty($_SESSION['Username']))// Checks to see if user is logged in, if not sends the user to login.php
@@ -577,27 +577,30 @@ class Dscourse {
 					$_SESSION['LoggedIn'] = 1;
 					$_SESSION['status'] = $row[5];
 					$_SESSION['UserID'] = $row[0];
-					header('Location: index.php'.$q);
+					//header('Location: index.php'.$q);
+					$redirect = TRUE;
 
 				} else {
 					echo "Error: Could not load user info from cookie.";
 				}
 			} else {
-				header('Location: info.php'.$q);
+				//header('Location: info.php'.$q);
+				$redirect = TRUE;
 				// Not logged and and does not have cookie
 			}
 		}
-		
-		$uID = $_SESSION['UserID'];
+		$uID;
 		$dMember = FALSE;
-		$m = mysql_query("SELECT * FROM users WHERE UserID = '$uID'");			
-		$res = mysql_fetch_assoc($m);
-		if(count($res)>0){
-			$dMember = TRUE;
+		if(isset($_SESSION['UserID'])){
+			$uID = $_SESSION['UserID'];
+			$m = mysql_query("SELECT * FROM users WHERE UserID = '$uID'");			
+			$res = mysql_fetch_assoc($m);
+			if(count($res)>0){
+				$dMember = TRUE;
+			}
 		}
 		//$active = FALSE;
 		//WE NEED CODE HERE TO TEST IF AN ACCOUNT IS ACTIVE
-		
 		
 		$location = $parts[0];
 		$location = explode('/', $location); 
@@ -610,15 +613,7 @@ class Dscourse {
 		//we only need to protect courses and discussions
 		if($location=="course.php"||$location=="discussion.php"){
 			$cID = $args['c'];
-		//2. Check User Status Relevant to Resource	
-			$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
-			if(count(mysql_fetch_array($a))==0){
-				$member = FALSE;
-			}
-			else{
-				$member = TRUE;
-			}
-		//3. Check User Permission (based on qs)
+		//2. Check User Permission (based on qs)
 			if(isset($args['a'])){
 				$accessCode = $args['a'];
 				$a = mysql_query("SELECT * FROM options WHERE optionsName = 'viewCode' OR optionsName = 'registerCode' AND optionsValue = '$accessCode' ");
@@ -648,6 +643,16 @@ class Dscourse {
 					}
 				}
 			}
+			if(!$viewer && isset($_SESSION['UserID'])){
+				//3. Check User Status Relevant to Resource	
+				$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
+				if(count(mysql_fetch_array($a))==0){
+					$member = FALSE;
+				}
+				else{
+					$member = TRUE;
+				}
+			}
 			//also get options
 			$a = mysql_query("SELECT * from options WHERE NOT (optionsName = 'viewCode' OR optionsName = 'registerCode')  AND optionsTypeID = '$cID'"); 
 			if($a==FALSE){
@@ -658,22 +663,22 @@ class Dscourse {
 				while($res = mysql_fetch_assoc($a)){
 					$courseOptions[$res['optionsName']] = $res['optionsValue'];
 				}
-			}
-			
 						
 		}
+		//if not a course member
 		if(!$member){
 			if($viewer){
 				$status = "view";
 			}
-			if($regRequired){
+			else if($regRequired){
 				$status = "register";
 			}
 			else{
 				$status = "error";
+				header('Location: info.php'.$q);
 			}
 		}
-		
+		}
 		return array("status" => $status,"member"=> $dMember,"courseMember"=>$member,"viewer"=>$viewer, "register"=> $regRequired, "options" => $courseOptions);
 	}
 

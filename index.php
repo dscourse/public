@@ -75,7 +75,7 @@ ini_set('display_errors',1);
 			},
 		10);
 		
-		$totalCourses =10;
+		$totalCourses =count($filtered);
 		$courseData = $filtered;
 		
 	    if($totalCourses > 0){	

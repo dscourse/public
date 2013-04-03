@@ -155,8 +155,11 @@ ini_set('display_errors',1);
         <header class="jumbotron subhead">
             <div class="container-fluid">
                 <div class="btn-toolbar" id="toolbox">
-                    <button id="showTimeline" class="btn btn-small btn-info">Timeline</button> <button id="showSynthesis" class="btn btn-small btn-warning">Connected Posts</button> <button id="" class="btn btn-small btn-success sayBut2" postid="0"><i class="icon-comment icon-white"></i> Say</button> <input id="dIDhidden" type="hidden" name="discID" value="">
-
+                	<?php if($preProcess['options']['useTimeline'] == "Yes"){ ?>
+                    <button id="showTimeline" class="btn btn-small btn-info">Timeline</button> <?php } ?>
+                    <?php if($preProcess['options']['useSynthesis'] == "Yes"){ ?>
+                    <button id="showSynthesis" class="btn btn-small btn-warning">Connected Posts</button> <?php } ?>
+                    <button id="" class="btn btn-small btn-success sayBut2" postid="0"><i class="icon-comment icon-white"></i> Say</button> <input id="dIDhidden" type="hidden" name="discID" value="">
                     <div class="btn-group" id="participantList">
                         <button class="btn disabled ">Participants:</button>
                     </div>
@@ -172,11 +175,13 @@ ini_set('display_errors',1);
             <div class="row-fluid" id="controlsRow">
                 <div class="span12" id="dFooter">
                     <div id="controlsWrap">
+                    	<?php if($preProcess['options']['useTimeline'] == "Yes"){ ?>
                         <div id="timeline" class="">
                             <div id="slider-range">
                                 <div id="dots"></div>
                             </div><input type="text" id="amount">
                         </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -184,6 +189,7 @@ ini_set('display_errors',1);
             <div class="row-fluid" id="dRowMiddle">
                 <div class="span4 ">
                     <div id="row-fluid">
+                    	<?php if($preProcess['options']['showInfo']=="Yes"){ ?>
                         <div class="span11" id="dSidebar">
                             <div class="dCollapse" id="dInfo">
                                 <span class="boxHeaders"><span id="dTitleView"></span></span><br /> <!--
@@ -221,7 +227,7 @@ ini_set('display_errors',1);
                                     <ul class="discussionFeed" id="recentContent"></ul>
                                 </div>
                             </div>
-
+						
                             <div class="dCollapse hide" id="dSynthesis">
                                 <div class="content">
                                     <div class="hide" id="addSynthesis">
@@ -246,7 +252,7 @@ Your synthesis comment...
                                 </div>
                             </div>
                         </div><!-- close span11 -->
-
+						<?php } ?>
                         <div class="span1" id="vHeatmap">
                             <div id="scrollBox"></div>
                         </div>
@@ -254,6 +260,7 @@ Your synthesis comment...
                         <div id="lines">
                             <canvas id="cLines"></canvas>
                         </div>
+                        
                     </div><!-- close row-fluid -->
                 </div><!-- close span4 -->
 

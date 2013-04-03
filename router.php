@@ -23,17 +23,17 @@ ini_set('display_errors',1);
 			$code;
 			if($type == "course"){
 				$location.="course.php?";
-				$code = 'c';
+				$label = 'c';
 			}
 			else if($type=="discussion"){
 				$location.="discussion.php";
-				$code = 'd';
+				$label = 'd';
 			}
-			$location.=$code."=".$id;
+			$location.=$label."=".$id."&a=".$code;
 		}
 	}
 	else{
-		header('Location: index.php');
+		header('Location: info.php');
 	}
 	
 	header("Location: $location");

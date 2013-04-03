@@ -11,7 +11,7 @@ ini_set('display_errors',1);
         include_once('php/dscourse.class.php');
 		$query = $_SERVER["REQUEST_URI"];
 		$preProcess = $dscourse->PreProcess($query);
-        
+		        
         $cID = $_GET["c"];                      // The course ID from link
         $courseInfo = $dscourse->CourseInfo($cID);
 
@@ -23,18 +23,22 @@ ini_set('display_errors',1);
 	      }
 		*/
 		
+		$viewer = FALSE;
+		if($preProcess['status'] == "view"){
+			$viewer = TRUE;
+		}
+		
 	    if(isset($_GET['m'])){
 		  $m = $_GET['m'];
 		  $message = $dscourse->Messages($m);    
 	    }
 	    
-	    	      
-        $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
-        
-        if($dscourse->LoadCourse($cID, $userID) == false ) {
+	    if(!$viewer){   
+       		$userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
+		}
+		if(!$viewer && $dscourse->LoadCourse($cID, $userID) == false ) {
 	           header('Location: index.php');                   // The course is set up that this user can't view it. 
         }
-        
         
         
         // Get Course Roles
@@ -62,7 +66,7 @@ ini_set('display_errors',1);
 			        $Students .= '<tr><td><a href="profile.php?u='.$cUserID.'" ><img class="thumbSmall" src="'.$userImg.'" />  '.$userName.'</a> </td><td>'.$userEmail.'</td></tr>'; // do something
 			        break;			 
 			 }
-			if($cUserID == $userID){
+			if(!$viewer && $cUserID == $userID){
 				 $currentRole = $userRole;
 			}
 		}
@@ -103,7 +107,7 @@ ini_set('display_errors',1);
 <head>
     <title>dscourse | <?php  echo $courseInfo['courseName'];  ?></title>
     
-    <?php include('php/header_includes.php');  ?>
+    <?php include("php/header_includes.php");  ?>
     
     <script type="text/javascript">
     $(function(){
@@ -144,6 +148,7 @@ ini_set('display_errors',1);
 
                 <ul class="nav pull-right">
                     <li class="dropdown">
+                    	<?php if(!$viewer){ ?>
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a>
 
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -153,6 +158,7 @@ ini_set('display_errors',1);
 
                             <li><a href="php/logout.php">Logout</a></li>
                         </ul>
+                        <?php } ?>
                     </li>
                 </ul>
             </div>
