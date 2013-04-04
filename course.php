@@ -33,10 +33,9 @@ ini_set('display_errors',1);
 		  $message = $dscourse->Messages($m);    
 	    }
 	    
-	    if(!$viewer){   
-       		$userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
-		}
-		if(!$viewer && $dscourse->LoadCourse($cID, $userID) == false ) {
+       	$userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
+		
+		if($dscourse->LoadCourse($cID, $userID) == false ) {
 	           header('Location: index.php');                   // The course is set up that this user can't view it. 
         }
         
@@ -66,7 +65,7 @@ ini_set('display_errors',1);
 			        $Students .= '<tr><td><a href="profile.php?u='.$cUserID.'" ><img class="thumbSmall" src="'.$userImg.'" />  '.$userName.'</a> </td><td>'.$userEmail.'</td></tr>'; // do something
 			        break;			 
 			 }
-			if(!$viewer && $cUserID == $userID){
+			if($cUserID == $userID){
 				 $currentRole = $userRole;
 			}
 		}
