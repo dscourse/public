@@ -9,7 +9,7 @@ ini_set('display_errors',1);
 	date_default_timezone_set('UTC');
 	
 	$location = "";
-
+	
 	if(isset($_GET['a'])){
 		$code = $_GET['a'];
 		$a = mysql_query("SELECT * FROM options where optionsValue = '$code'");

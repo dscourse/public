@@ -27,8 +27,7 @@ ini_set('display_errors',1);
 				$cID	= $courseData[$i]['courseID'];
 				$cRole	= $courseData[$i]['userRole'];
 				$courseImage = $courseData[$i]['courseImage'];
-				$courseNetworks = $dscourse->CourseNetworks($cID); 				
-				$coursePrint .='<tr><td courseID="'.$cID.'"><a href="course.php?c='.$cID.'&n='.$courseNetworks[0]['networkID'].'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a> </td><td>'.$cRole.'</td></tr>'; 
+				$coursePrint .='<tr><td courseID="'.$cID.'"><a href="course.php?c='.$cID.'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a> </td><td>'.$cRole.'</td></tr>'; 
 				}
 		
         

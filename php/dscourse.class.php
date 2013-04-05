@@ -90,11 +90,11 @@ class Dscourse {
 		return $results;
 	}
 
-	public function NetworkUsers($nID) {
+	public function GetUsers() {
 		/*
 		 *  Gets users in the network with their user information
 		 */
-		$query = mysql_query("SELECT * FROM networkUsers INNER JOIN users ON networkUsers.userID = users.UserID WHERE networkUsers.networkID = '" . $nID . "'");
+		$query = mysql_query("SELECT * FROM users");
 		$results = array();
 
 		$i = 0;
@@ -187,6 +187,7 @@ class Dscourse {
 		$results = mysql_fetch_array($query);
 		return $results;
 	}
+
 	public function DiscussionInfo($discID) {
 		/*
 		 *  Gets all the information about the course
@@ -279,9 +280,9 @@ class Dscourse {
 		// Which networks does this course belong to?
 		$totalNetworks = count($courseNetworks);
 		// Count networks for a loop later
-			if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor') {// check if this user is a member
-				$load = true;
-			}
+		if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor') {// check if this user is a member
+			$load = true;
+		}
 
 		return $load;
 	}
@@ -356,21 +357,21 @@ class Dscourse {
 			if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor') {// check if this user is a member
 				$load = true;
 			}
-				/*case "network":																				// If the course should only be viewed by network members
-				 for($j = 0; $j < $totalNetworks; $j++){
-				 if($this->IsUserInNetwork($courseNetworks[$j]['networkID'], $userID)) {				// Check if this user is in any of the networks the course belongs to
-				 $load = true;
-				 }
-				 if($courseNetworks[$j]['networkStatus'] == "public" ){
-				 $load = true;
-				 }
-				 }
-				 break;*/
+			/*case "network":																				// If the course should only be viewed by network members
+			 for($j = 0; $j < $totalNetworks; $j++){
+			 if($this->IsUserInNetwork($courseNetworks[$j]['networkID'], $userID)) {				// Check if this user is in any of the networks the course belongs to
+			 $load = true;
+			 }
+			 if($courseNetworks[$j]['networkStatus'] == "public" ){
+			 $load = true;
+			 }
+			 }
+			 break;*/
 			/*	case "everyone" :
-					// If this course can be viewed by everyone
-					$load = true;
-					// Just load everything
-					break;
+			 // If this course can be viewed by everyone
+			 $load = true;
+			 // Just load everything
+			 break;
 			 }*/
 			$i++;
 		endwhile;
@@ -395,7 +396,7 @@ class Dscourse {
 		 *  Gets all course options
 		 */
 		$query = mysql_query("SELECT * FROM options WHERE optionsType = 'course' AND optionsTypeID = '" . $cID . "'");
-		if(!$query){
+		if (!$query) {
 			return 'empty';
 		} else {
 			$results = array();
@@ -404,7 +405,7 @@ class Dscourse {
 				array_push($results, $row);
 				$i++;
 			endwhile;
-			return $results;			
+			return $results;
 		}
 	}
 
@@ -412,61 +413,66 @@ class Dscourse {
 		/*
 		 *  Prints out the value of options. Needs array to include the option name as given
 		 */
-		 //if(!isset($attr)){ $attr = ''; };  // If attr is not set
-		 $value = ''; 
-		 $default = TRUE; 
-		 if(!empty($array)){
-			$total = count($array); 
-			for($i = 0; $i < $total; $i++) {
-				if($array[$i]['optionsName'] == $optionName){
+		//if(!isset($attr)){ $attr = ''; };  // If attr is not set
+		$value = '';
+		$default = TRUE;
+		if (!empty($array)) {
+			$total = count($array);
+			for ($i = 0; $i < $total; $i++) {
+				if ($array[$i]['optionsName'] == $optionName) {
 					$value = $array[$i]['optionsValue'];
-					$default = FALSE; 
-					if($attr == 'viewAttr' || $attr == 'registerAttr'){
+					$default = FALSE;
+					if ($attr == 'viewAttr' || $attr == 'registerAttr') {
 						$attrs = json_decode($array[$i]['optionAttr']);
 						//return $attrs;
-						if($attrs->{'active'}=='true'){
+						if ($attrs -> {'active'} == 'true') {
 							$value = 'On';
-						}
-						else{
+						} else {
 							$value = 'Off';
 						}
-					} 
-				}				
-			}		 
-		 }
-		 
-		 if($default) {   // If we need to load defaults
+					}
+				}
+			}
+		}
+
+		if ($default) {// If we need to load defaults
 			switch ($optionName) {
 				case 'useTimeline' :
-					$value = 'Yes'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					$value = 'Yes';
+					//Defaults for each value. We need to hardcode and it needs to fit what the options page prints.
 					break;
 				case 'charLimit' :
-					$value = '500'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					$value = '500';
+					//Defaults for each value. We need to hardcode and it needs to fit what the options page prints.
 					break;
 				case 'useSynthesis' :
-					$value = 'Yes'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					$value = 'Yes';
+					//Defaults for each value. We need to hardcode and it needs to fit what the options page prints.
 					break;
 				case 'showInfo' :
-					$value = 'Yes'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					$value = 'Yes';
+					//Defaults for each value. We need to hardcode and it needs to fit what the options page prints.
 					break;
 				case 'studentCreateDisc' :
-					$value = 'No'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					$value = 'No';
+					//Defaults for each value. We need to hardcode and it needs to fit what the options page prints.
 					break;
 			}
-			switch ($attr){
+			switch ($attr) {
 				case 'viewAttr' :
-					$value = 'Off'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
+					$value = 'Off';
+					//Defaults for each value. We need to hardcode and it needs to fit what the options page prints.
 					break;
 				case 'registerAttr' :
-					$value = 'Off'; //Defaults for each value. We need to hardcode and it needs to fit what the options page prints. 
-					break;	 
+					$value = 'Off';
+					//Defaults for each value. We need to hardcode and it needs to fit what the options page prints.
+					break;
 			}
-		  }
-		 
-		 return $value; 
+		}
 
-	}	
-	
+		return $value;
+
+	}
 
 	public function Messages($m) {
 		/*
@@ -549,21 +555,18 @@ class Dscourse {
 	}
 
 	public function PreProcess($query) {
-		$redirect = FALSE;
-		
 		$query = ltrim($query, '/');
-		$parts = explode('?',$query);
+		$parts = explode('?', $query);
 		$q;
 		$args = array();
-		if(isset($parts[1])){
-			$q="?".$parts[1];
-			foreach(explode("&", $parts[1]) as $part){
-				$sides = explode("=",$part);
-				$args[$sides[0]]= $sides[1];
+		if (isset($parts[1])) {
+			$q = "?" . $parts[1];
+			foreach (explode("&", $parts[1]) as $part) {
+				$sides = explode("=", $part);
+				$args[$sides[0]] = $sides[1];
 			}
 		}
 		//1. CHECK STATUS
-		$status = "OK";
 		if (empty($_SESSION['Username']))// Checks to see if user is logged in, if not sends the user to login.php
 		{
 			// is cookie set?
@@ -577,109 +580,119 @@ class Dscourse {
 					$_SESSION['LoggedIn'] = 1;
 					$_SESSION['status'] = $row[5];
 					$_SESSION['UserID'] = $row[0];
-					//header('Location: index.php'.$q);
-					$redirect = TRUE;
-
+					header('Location: index.php'.$q);
 				} else {
 					echo "Error: Could not load user info from cookie.";
 				}
 			} else {
-				//header('Location: info.php'.$q);
-				$redirect = TRUE;
+				header('Location: login.php' . $q);
 				// Not logged and and does not have cookie
 			}
 		}
-		$uID;
-		$dMember = FALSE;
-		if(isset($_SESSION['UserID'])){
-			$uID = $_SESSION['UserID'];
-			$m = mysql_query("SELECT * FROM users WHERE UserID = '$uID'");			
-			$res = mysql_fetch_assoc($m);
-			if(count($res)>0){
-				$dMember = TRUE;
-			}
-		}
-		//$active = FALSE;
-		//WE NEED CODE HERE TO TEST IF AN ACCOUNT IS ACTIVE
+		//___________________________________________________
+		//At this point we can assume the user is logged in, that they are a dscourse member, and that the account is active
 		
-		$location = $parts[0];
-		$location = explode('/', $location); 
-		$location = array_pop($location);
-	
-		$member = FALSE;
+		$dsMember = TRUE;
+		$cMember = FALSE;
+		$uID = $_SESSION['UserID'];
+		$role = "";
 		$viewer = FALSE;
-		$regRequired = FALSE;
-		$courseOptions = NULL;
+		$register = FALSE;
+		$courseOptions = array();
+		
+		$roles = array("Instructor", "TA", "Student", "Viewer", "Blocked");
+	
+		//Check what the user is trying to access
+		$location = $parts[0];
+		$location = explode('/', $location);
+		$location = array_pop($location);
+
 		//we only need to protect courses and discussions
-		if($location=="course.php"||$location=="discussion.php"){
+		if ($location == "course.php" || $location == "discussion.php") {
 			$cID = $args['c'];
-		//2. Check User Permission (based on qs)
-			if(isset($args['a'])){
+			// Check courseRole 
+			$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
+			$res = mysql_fetch_assoc($a);
+			if (count($res) == 0) {
+				$cMember = FALSE;
+				$role = $res['userRole'];
+				if($role == "blocked"){
+					header('Location: info.php');
+				}
+			} else {
+				$cMember = TRUE;
+			}
+			
+			//2. Check User Permission (based on qs)
+			if (isset($args['a'])) {
 				$accessCode = $args['a'];
-				$a = mysql_query("SELECT * FROM options WHERE optionsName = 'viewCode' OR optionsName = 'registerCode' AND optionsValue = '$accessCode' ");
-				if(count(mysql_fetch_array($a))==0){
-					$viewer = FALSE;
-					$regRequired = FALSE;
-				}
-				else{
+				//Check if a code exists
+				//if yes then check courseRole, and see if it matches the code type
+				//if a courseRole doesn't already exist, add it
+				//promotion is allowed for all but blocked users
+	
+				$a = mysql_query("SELECT * FROM options WHERE optionsValue = '$accessCode' ");
+				if (count(mysql_fetch_array($a)) != 0) {
 					$res = mysql_fetch_assoc($a);
-					if($res['optionsName']=="viewCode"){
-						$attrs = json_decode($res['optionAttr']);
-						if($attrs['active']=='true'){
+					$attrs = json_decode($res['optionAttr']);
+					if ($res['optionsName'] == "viewCode") {
+						if ($attrs['active'] == 'true') {
 							$viewer = TRUE;
+						} else {
+							$viewer = FALSE;
 						}
-						else{
-							$viewer = "inactive";
+						if($viewer){
+							if(!$cMember){
+								$q = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES ($cID, $uID, 'Viewer')");
+								$cMember = TRUE;
+							}
 						}
-					}
-					else if($res['optionsName']=="registerCode"){
-						$attrs = json_decode($res['optionAttr']);
-						if($attrs['active']=='true'){
-							$regRequired = TRUE;
+					} else if ($res['optionsName'] == "registerCode") {
+						if ($attrs['active'] == 'true') {
+							$register = TRUE;
+						} else {
+							$register = FALSE;
 						}
-						else{
-							$regRequired = "inactive";
+						if($register){
+							if(!$cMember){
+								$q = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES ($cID, $uID, 'Student')");
+								$cMember = TRUE;
+							}
+							else{
+								if(array_search($role, $roles) < 2){
+									$q = mysql_query("UPDATE courseRoles SET userRole='Student' WHERE (courseID=$cID AND userID=$uID)");
+									if($q ==FALSE){
+										exit("Check query syntax for courseRole update in preProcessor");
+									}
+								}
+							}
 						}
 					}
 				}
 			}
-			if(!$viewer && isset($_SESSION['UserID'])){
-				//3. Check User Status Relevant to Resource	
-				$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
-				if(count(mysql_fetch_array($a))==0){
-					$member = FALSE;
-				}
-				else{
-					$member = TRUE;
-				}
-			}
+			
 			//also get options
-			$a = mysql_query("SELECT * from options WHERE NOT (optionsName = 'viewCode' OR optionsName = 'registerCode')  AND optionsTypeID = '$cID'"); 
-			if($a==FALSE){
-				exit("Sql Error");
+			$a = mysql_query("SELECT * from options WHERE NOT (optionsName = 'viewCode' OR optionsName = 'registerCode')  AND optionsTypeID = '$cID'");
+			while ($res = mysql_fetch_assoc($a)) {
+				$courseOptions[$res['optionsName']] = $res['optionsValue'];
 			}
-			else{
-				$courseOptions = array();
-				while($res = mysql_fetch_assoc($a)){
-					$courseOptions[$res['optionsName']] = $res['optionsValue'];
-				}
-						
 		}
+		//Resolve these variables into a single, meaningful status (and options)
+		$status = "";
 		//if not a course member
-		if(!$member){
+		if(!$cMember){
+			$status = "DENIED";
+		}
+		else{
 			if($viewer){
-				$status = "view";
+				$status = "VIEW";
 			}
-			else if($regRequired){
-				$status = "register";
-			}
-			else{
-				$status = "error";
-				header('Location: info.php'.$q);
+			else {
+				$status = "OK";
 			}
 		}
-		}
-		return array("status" => $status,"member"=> $dMember,"courseMember"=>$member,"viewer"=>$viewer, "register"=> $regRequired, "options" => $courseOptions);
+	
+		return array("status"=>$status, "options"=>$courseOptions);
 	}
 
 	public function LTI() {
@@ -692,7 +705,7 @@ class Dscourse {
 				$origin = $scheme . '://' . $ref;
 			} else if (array_key_exists('ext_sakai_server', $_POST)) {
 				$origin = $_POST['ext_sakai_server'];
-			} 
+			}
 
 			if (strlen($origin) > 0) {
 				$LTI_allowed = array('https://collab.itc.virginia.edu' => 'UVa Collab', 'http://dev.canlead.net' => 'CANLEAD', 'http://www.imsglobal.org' => 'IMS Test Harness');
@@ -705,16 +718,16 @@ class Dscourse {
 						return FALSE;
 					}
 					/*//Step 1: CHECK if Network Exists=>networkId
-					$n = $LTI_allowed[$origin];
-					$net = mysql_query("SELECT * FROM networks WHERE networkName = '" . $n . "'");
-					$a = mysql_fetch_assoc($net);
-					if ($net != FALSE && empty($a)) {//Create the new network
-						$networkCode = rand(100000, 1000000000);
-						mysql_query("INSERT INTO networks (networkName, networkDesc, networkCode) VALUES('" . $n . "', 'The " . $n . " network on dscourse', '" . $networkCode . "')");
-						$netId = mysql_insert_id();
-					} else {
-						$netId = $a['networkID'];
-					}*/
+					 $n = $LTI_allowed[$origin];
+					 $net = mysql_query("SELECT * FROM networks WHERE networkName = '" . $n . "'");
+					 $a = mysql_fetch_assoc($net);
+					 if ($net != FALSE && empty($a)) {//Create the new network
+					 $networkCode = rand(100000, 1000000000);
+					 mysql_query("INSERT INTO networks (networkName, networkDesc, networkCode) VALUES('" . $n . "', 'The " . $n . " network on dscourse', '" . $networkCode . "')");
+					 $netId = mysql_insert_id();
+					 } else {
+					 $netId = $a['networkID'];
+					 }*/
 					//Step 2: CHECK if Course Exists=>networkId
 					$c = $launch -> params['courseName'];
 					$course = mysql_query("SELECT * FROM courses WHERE courseName = '" . $c . "'");
@@ -765,10 +778,10 @@ class Dscourse {
 						$uId = $u['UserID'];
 					}
 					/*$netUser = mysql_query("SELECT * FROM networkUsers WHERE userID = '$uId' AND networkID = '$netId'");
-					$nu = mysql_fetch_assoc($netUser);
-					if ($netUser != FALSE && empty($nu)) {
-						mysql_query("INSERT INTO networkUsers (userID, networkID, networkUserRole) VALUES ('$uId', '$netId', 'member')");
-					}*/
+					 $nu = mysql_fetch_assoc($netUser);
+					 if ($netUser != FALSE && empty($nu)) {
+					 mysql_query("INSERT INTO networkUsers (userID, networkID, networkUserRole) VALUES ('$uId', '$netId', 'member')");
+					 }*/
 					$role = $launch -> user -> attrs['role'];
 					$courseRole = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uId' AND courseID = '$courseId'");
 					$cr = mysql_fetch_assoc($courseRole);
@@ -784,24 +797,24 @@ class Dscourse {
 					}
 					$t = mysql_query("UPDATE courseRoles SET userRole = '$role' WHERE userID = $uId AND courseId = '$courseId'");
 					//At this point we can be sure the network, course, discussion, and user exist in the DB
-					$launch->user->attrs['uID'] = $uId;
-					$launch->props['discID']  = $discId;
-					$launch->props['courseId'] = $courseId; 
+					$launch -> user -> attrs['uID'] = $uId;
+					$launch -> props['discID'] = $discId;
+					$launch -> props['courseId'] = $courseId;
 					return $launch;
 				}
 			}
 		}
 	}
 
-	public function SuperSort($source,$filter=FALSE,$comparator, $limit=FALSE){
+	public function SuperSort($source, $filter = FALSE, $comparator, $limit = FALSE) {
 		$result = array();
-		foreach($source as $entry){
-			if($filter===FALSE || $filter($entry)){
-				array_push($result,$entry);
+		foreach ($source as $entry) {
+			if ($filter === FALSE || $filter($entry)) {
+				array_push($result, $entry);
 			}
 		}
 		usort($result, $comparator);
-		if($limit!==FALSE)
+		if ($limit !== FALSE)
 			$result = array_slice($result, 0, $limit);
 		return $result;
 	}

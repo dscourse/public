@@ -33,6 +33,8 @@ ini_set('display_errors',1);
 	    $InstructorRows = '';
 	    $TARows = ''; 
 	    $StudentRows = '';  
+		$ViewRows = '';
+		$BlockedRows= '';
 	    for($i = 0; $i < $totalRoles; $i++) 
 				{
 					$userID 	= $courseRoles[$i]['userID'];
@@ -41,14 +43,20 @@ ini_set('display_errors',1);
 					$userEmail	= $courseRoles[$i]['username'];
 					switch ($userRole) {
 					    case "Instructor":
-					        $InstructorRows .= '<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.' </td><td>'.$userEmail.' </td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB active" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB" userid="'.$userID.'">Student</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="Instructor"></div></td></tr>'; 
-					        break;
+					        $InstructorRows .= '<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.'</td><td>'.$userEmail.'</td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB active" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB" userid="'.$userID.'">Student</button><button type="button" class="btn roleB" userid="'.$userID.'">Viewer</button><button type="button" class="btn roleB" userid="'.$userID.'">Blocked</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="Instructor"></div></td></tr>'; 
+							break;
 					    case "TA":
-					        $TARows .= '<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.' </td><td>'.$userEmail.' </td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB active" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB" userid="'.$userID.'">Student</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="TA"></div></td></tr>'; 
+					        $TARows .='<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.'</td><td>'.$userEmail.'</td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB active" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB" userid="'.$userID.'">Student</button><button type="button" class="btn roleB" userid="'.$userID.'">Viewer</button><button type="button" class="btn roleB" userid="'.$userID.'">Blocked</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="TA"></div></td></tr>'; 
 					        break;
 					    case "Student":
-					        $StudentRows .= '<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.' </td><td>'.$userEmail.' </td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB active" userid="'.$userID.'">Student</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="Student"></div></td></tr>'; 
-					        break;
+					        $StudentRows .= '<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.'</td><td>'.$userEmail.'</td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB active" userid="'.$userID.'">Student</button><button type="button" class="btn roleB" userid="'.$userID.'">Viewer</button><button type="button" class="btn roleB" userid="'.$userID.'">Blocked</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="Student"></div></td></tr>'; 
+							break;
+						case "Viewer":
+							$ViewRows .='<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.'</td><td>'.$userEmail.'</td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB" userid="'.$userID.'">Student</button><button type="button" class="btn roleB active" userid="'.$userID.'">Viewer</button><button type="button" class="btn roleB" userid="'.$userID.'">Blocked</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="Viewer"></div></td></tr>'; 
+						break;
+						case "Blocked":
+							$BlockedRows .= '<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.'</td><td>'.$userEmail.'</td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB" userid="'.$userID.'">Student</button><button type="button" class="btn roleB" userid="'.$userID.'">Viewer</button><button type="button" class="btn roleB active" userid="'.$userID.'">Blocked</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="Blocked"></div></td></tr>'; 
+						break;
 					}
 		} 
                 
@@ -81,14 +89,14 @@ $(function(){
             var nameList = [
                 <?php 
                 // Get people in this network 
-                $networkUsers = $dscourse->NetworkUsers($courseInfo['networkID']); 
-                $totalUsers = count($networkUsers);
+                $users = $dscourse->GetUsers(); 
+                $totalUsers = count($users);
                 for($i = 0; $i < $totalUsers; $i++) 
                         {                        
-                            $uFirstName = $networkUsers[$i]['firstName'];
-                            $uLastName  = $networkUsers[$i]['lastName'];
-                            $uID        = $networkUsers[$i]['UserID'];
-                            $uEmail     = $networkUsers[$i]['username'];
+                            $uFirstName = $users[$i]['firstName'];
+                            $uLastName  = $users[$i]['lastName'];
+                            $uID        = $users[$i]['UserID'];
+                            $uEmail     = $users[$i]['username'];
                         if($i == $totalUsers-1){ $comma = "";} else { $comma = ",";}
                         echo '{ value: '.$uID.', label : "'.$uFirstName. ' ' .$uLastName.'", email : "'.$uEmail.'"}'.$comma; 
                         } 
@@ -121,7 +129,7 @@ $(function(){
 	                return false;
 	            },
 	            select: function( event, ui ) {
-	                $('#addPeopleBody').append('<tr><td><input type="hidden" name="user[]" value="' + ui.item.value + '">' + ui.item.label + ' <\/td><td>' + ui.item.email  + ' <\/td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'+ ui.item.value + '">Instructor<\/button><button class="btn roleB" type="button" userid="'+ ui.item.value + '">TA<\/button><button type="button" class="btn active roleB" userid="'+ ui.item.value + '">Student</button><button class="btn roleB btn-warning" type="button" userid="'+ ui.item.value + '">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="Student"></div></td></tr>'); // Build the row of users. 
+	                $('#addPeopleBody').append('<tr><td><input type="hidden" name="user[]" value="' + ui.item.value + '">' + ui.item.label + ' <\/td><td>' + ui.item.email  + ' <\/td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'+ ui.item.value + '">Instructor<\/button><button class="btn roleB" type="button" userid="'+ ui.item.value + '">TA<\/button><button type="button" class="btn active roleB" userid="'+ ui.item.value + '">Student</button> <button class=\"btn roleB\" type=\"button\" userid=\"'+ ui.item.value + '\">Viewer<\/button><button class=\"btn roleB\" type=\"button\" userid=\"'+ ui.item.value + '\">Blocked<\/button><button class="btn roleB btn-warning" type="button" userid="'+ ui.item.value + '">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="Student"></div></td></tr>'); // Build the row of users. 
 	                console.log('did this. ')
 	                $( "#coursePeople" ).val('');
 	                return false;
@@ -161,7 +169,7 @@ $(function(){
 	         			logicalDate: true,
 	         		}
 	         	},
-	         	messages: {
+	         	meheadessages: {
 	         		courseName: {
 	         			required: 'A course name is required.',
 	         			maxlength: 'Please limit the length of your course name to 255 characters.'
@@ -185,7 +193,7 @@ $(function(){
 				   	e.preventDefault();	
 				   	$('html, body').animate({
 	         			scrollTop: 0
-	         		});
+	        		});
 				}
 				var admin = $('#addPeopleBody').find('.btn').filter('.active').filter(function(){
 					return $(this).html() != "Student";
@@ -326,7 +334,7 @@ $(function(){
                                         </thead>
 
                                         <tbody id="addPeopleBody">
-                                        	<?php echo $InstructorRows . $TARows . $StudentRows; ?>
+                                        	<?php echo $InstructorRows . $TARows . $StudentRows.$ViewRows.$BlockedRows; ?>
                                         	</tbody>
                                     </table>
                                 </div>

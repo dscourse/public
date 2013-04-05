@@ -1,4 +1,5 @@
 <?php 
+
 ini_set('display_errors',1); 
  error_reporting(E_ALL);   
  
@@ -7,7 +8,7 @@ ini_set('display_errors',1);
     include "../config/config.php"; 
     date_default_timezone_set('UTC');
 	
-                                                  // User is logged in, show page. 
+        // User is logged in, show page. 
         include_once('php/dscourse.class.php');
 		$query = $_SERVER["REQUEST_URI"];
 		$preProcess = $dscourse->PreProcess($query);

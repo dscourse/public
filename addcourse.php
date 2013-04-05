@@ -126,7 +126,7 @@ THE FOLLOWING IS REPLACED WITH ABOVE CODE SINCE WE NO LONGER USE NETWORKS
 					}
 					else{
 	            		console.log(ui)
-	                	$('#addPeopleBody').append('<tr><td><input type="hidden" name="user[]" value="' + ui.item.value + '">' + ui.item.label + ' <\/td><td>' + ui.item.email  + ' <\/td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'+ ui.item.value + '">Instructor<\/button><button class="btn roleB" type="button" userid="'+ ui.item.value + '">TA<\/button><button type="button" class="btn active roleB" userid="'+ ui.item.value + '">Student</button><input type="hidden" name="user[]" class="userRoleInput" value="Student"></div></td><td><button class="btn removePeople" type="button">Remove</button> </td></tr>'); // Build the row of users. 
+	                	$('#addPeopleBody').append('<tr><td><input type="hidden" name="user[]" value="' + ui.item.value + '">' + ui.item.label + ' <\/td><td>' + ui.item.email  + ' <\/td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'+ ui.item.value + '">Instructor<\/button><button class="btn roleB" type="button" userid="'+ ui.item.value + '">TA<\/button><button type="button" class="btn active roleB" userid="'+ ui.item.value + '">Student</button><button class=\"btn roleB\" type=\"button\" userid=\"'+ ui.item.value + '\">Viewer<\/button><input type="hidden" name="user[]" class="userRoleInput" value="Student"></div></td><td><button class="btn removePeople" type="button">Remove</button> </td></tr>'); // Build the row of users. 
 	                	console.log('did this. ')
 	                	$( "#coursePeople" ).val('');
 	                	return false;
@@ -226,10 +226,9 @@ THE FOLLOWING IS REPLACED WITH ABOVE CODE SINCE WE NO LONGER USE NETWORKS
 						return true;
 					return false;
 		   });
-		   var user = '<tr><td><input type=\"hidden\" name=\"user[]\" value=\"' + cur.value + '\">' + cur.label + ' <\/td><td>' + cur.email  + ' <\/td><td><div class=\"btn-group\"  data-toggle=\"buttons-radio\" id=\"roleButtons\"><button class=\"btn roleB\" type=\"button\" userid=\"'+ cur.value + '\">Instructor<\/button><button class=\"btn roleB\" type=\"button\" userid=\"'+ cur.value + '\">TA<\/button><button type=\"button\" class=\"btn active roleB\" userid=\"'+ cur.value + '\">Student</button><input type=\"hidden\" name=\"user[]\" class=\"userRoleInput\" value=\"Student\"></div></td><td><button class=\"btn removePeople\" type=\"button\">Remove</button> </td></tr>'
+		   var user = '<tr><td><input type=\"hidden\" name=\"user[]\" value=\"' + cur.value + '\">' + cur.label + ' <\/td><td>' + cur.email  + ' <\/td><td><div class=\"btn-group\"  data-toggle=\"buttons-radio\" id=\"roleButtons\"><button class=\"btn roleB\" type=\"button\" userid=\"'+ cur.value + '\">Instructor<\/button><button class=\"btn roleB\" type=\"button\" userid=\"'+ cur.value + '\">TA<\/button><button type=\"button\" class=\"btn active roleB\" userid=\"'+ cur.value + '\">Student</button><button class=\"btn roleB\" type=\"button\" userid=\"'+ cur.value + '\">Viewer<\/button><input type=\"hidden\" name=\"user[]\" class=\"userRoleInput\" value=\"Student\"></div></td><td><button class=\"btn removePeople\" type=\"button\">Remove</button> </td></tr>'
 		   $('#addPeopleBody').append(user);	
-		   $('#addPeopleBody').children().find('.btn').eq(0).click()
-			
+		   $('#addPeopleBody').children().find('.btn').eq(0).click();
 });                        
     </script>
 </head>
