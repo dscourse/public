@@ -229,7 +229,7 @@ class Dscourse {
 		 */
 		$query = mysql_query("SELECT * FROM courseRoles INNER JOIN users ON courseRoles.userID = users.UserID WHERE courseRoles.courseID = '" . $cID . "'");
 		$results = array();
-
+			
 		$i = 0;
 		while ($row = mysql_fetch_array($query)) :
 			array_push($results, $row);
@@ -259,7 +259,7 @@ class Dscourse {
 		/*
 		 *  Gets the course role of the user for specific course
 		 */
-		$query = mysql_query("SELECT userRole FROM courseRoles WHERE courseID = '" . $cID . "' AND userID = '" . $userID . "' ");
+		$query = mysql_query("SELECT userRole FROM courseRoles WHERE courseID = '$cID' AND userID = '$userID'");
 		$results = mysql_fetch_array($query);
 		return $results;
 	}
@@ -275,12 +275,7 @@ class Dscourse {
 		$courseStatus = $this -> UserCourseRole($cID, $userID);
 		// See if this user is in the course
 		$courseInfo = $this -> CourseInfo($cID);
-		// Who does this course allow for viewing?
-		$courseNetworks = $this -> CourseNetworks($cID);
-		// Which networks does this course belong to?
-		$totalNetworks = count($courseNetworks);
-		// Count networks for a loop later
-		if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor') {// check if this user is a member
+		if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor' || $courseStatus[0] =='Viewer') {// check if this user is a member
 			$load = true;
 		}
 
@@ -613,7 +608,7 @@ class Dscourse {
 			// Check courseRole 
 			$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
 			$res = mysql_fetch_assoc($a);
-			if (count($res) == 0) {
+			if (mysql_num_rows($a) == 0) {
 				$cMember = FALSE;
 				$role = $res['userRole'];
 				if($role == "blocked"){
@@ -632,9 +627,9 @@ class Dscourse {
 				//promotion is allowed for all but blocked users
 	
 				$a = mysql_query("SELECT * FROM options WHERE optionsValue = '$accessCode' ");
-				if (count(mysql_fetch_array($a)) != 0) {
-					$res = mysql_fetch_assoc($a);
-					$attrs = json_decode($res['optionAttr']);
+				$res = mysql_fetch_assoc($a);
+				if (count($res) > 0) {
+					$attrs = json_decode($res['optionAttr'], TRUE);
 					if ($res['optionsName'] == "viewCode") {
 						if ($attrs['active'] == 'true') {
 							$viewer = TRUE;
@@ -644,6 +639,9 @@ class Dscourse {
 						if($viewer){
 							if(!$cMember){
 								$q = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES ($cID, $uID, 'Viewer')");
+								if($q===FALSE){
+									exit("Bad");
+								}
 								$cMember = TRUE;
 							}
 						}

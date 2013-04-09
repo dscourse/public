@@ -58,7 +58,8 @@ ini_set('display_errors',1);
 							$BlockedRows .= '<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.'</td><td>'.$userEmail.'</td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB" userid="'.$userID.'">Student</button><button type="button" class="btn roleB" userid="'.$userID.'">Viewer</button><button type="button" class="btn roleB active" userid="'.$userID.'">Blocked</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="Blocked"></div></td></tr>'; 
 						break;
 					}
-		} 
+		}
+	
                 
 ?>
 <!DOCTYPE html>

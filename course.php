@@ -12,22 +12,9 @@ ini_set('display_errors',1);
         include_once('php/dscourse.class.php');
 		$query = $_SERVER["REQUEST_URI"];
 		$preProcess = $dscourse->PreProcess($query);
-		        
+				
         $cID = $_GET["c"];                      // The course ID from link
         $courseInfo = $dscourse->CourseInfo($cID);
-
-		/* MARKED for deletion
-        if(isset($_GET['n'])){                      // The network ID from link 
-	        $nID = $_GET['n'];        
-      	    // GET Info About This Network
-      	    $networkInfo = $dscourse->NetWorkInfo($nID);
-	      }
-		*/
-		
-		$viewer = FALSE;
-		if($preProcess['status'] == "view"){
-			$viewer = TRUE;
-		}
 		
 	    if(isset($_GET['m'])){
 		  $m = $_GET['m'];
@@ -39,7 +26,6 @@ ini_set('display_errors',1);
 		if($dscourse->LoadCourse($cID, $userID) == false ) {
 	           header('Location: index.php');                   // The course is set up that this user can't view it. 
         }
-        
         
         // Get Course Roles
         $courseRoles = $dscourse->CourseRoles($cID);
@@ -148,7 +134,6 @@ ini_set('display_errors',1);
 
                 <ul class="nav pull-right">
                     <li class="dropdown">
-                    	<?php if(!$viewer){ ?>
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a>
 
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -158,7 +143,6 @@ ini_set('display_errors',1);
 
                             <li><a href="php/logout.php">Logout</a></li>
                         </ul>
-                        <?php } ?>
                     </li>
                 </ul>
             </div>

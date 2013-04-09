@@ -65,8 +65,10 @@ ini_set('display_errors',1);
 		while($res = mysql_fetch_assoc($courseQuery)){
 			array_push($courses, $res);
 		}
-		//function($e){return strpos($e['courseName'],"a")!==FALSE;}
-		$filtered = $dscourse->SuperSort($courses,FALSE, 
+		$filtered = $dscourse->SuperSort($courses, 
+			function($entry){
+				return !($entry['userRole']=="blocked" || $entry['userRole']=="Blocked");
+			}, 
 			function($a,$b){
 				$d1=new DateTime($a['courseTime']);
 				$d2=new DateTime($b['courseTime']);

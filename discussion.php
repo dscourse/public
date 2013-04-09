@@ -59,6 +59,7 @@ ini_set('display_errors',1);
 		$courseInfo = $dscourse->CourseInfo($courseId);
 	}
 	
+	/*
 	//Check if user needs to register
 	if((!$preProcess['member']) && $preProcess['register']){
 		if($preProcess['dMember']){
@@ -74,7 +75,7 @@ ini_set('display_errors',1);
 			//needs to register
 			header('Location: register.php');
 		}
-	}
+	}*/
 	//Try loading
 	$load = $dscourse->LoadDiscussion($discId, $uId);
     if($load){
