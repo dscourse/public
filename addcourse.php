@@ -17,12 +17,7 @@ ini_set('display_errors',1);
 	    }
         
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
-        
-/* ------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
-        $nID = $_GET['n']; 
-        $networkInfo = $dscourse->NetWorkInfo($nID);
-           
-*/     
+   
 ?>
 <!DOCTYPE html>
 

@@ -366,7 +366,8 @@ ini_set('display_errors',1);
                 <div class="span4">
                 
                     <div class="">
-                        <h4>My Courses</h4>
+                        <h4>My Courses</h4>                         <a class="btn btn-info pull-right" href="addcourse.php"> Add Course </a>
+
                         <hr class="soften">
                         
                         <ul class="unstyled dashboardList" id="courseList">

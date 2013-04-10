@@ -369,9 +369,6 @@ function EditCourse() {
 	$courseStart  	=  $_POST['courseStartDate'];
 	$courseEnd  	=  $_POST['courseEndDate'];
 	$courseURL  	=  $_POST['courseURL'];
-	$courseView		=  $_POST['viewOptions'];
-	$courseParticipate = $_POST['participateOptions'];
-	$networkID		= 	$_POST['networkID'];
 	
 	$message = "";
 	$courseImage = $_POST['courseImageURL'];
@@ -410,14 +407,14 @@ function EditCourse() {
 			    }
 		  } else {
 		  		$message =  "You uploaded an invalid file please try again. ";
-		  	  	$gotoPage = "../editcourse.php?c=".$courseID."&n=".$networkID."&m=".$message;  // All good
+		  	  	$gotoPage = "../editcourse.php?c=".$courseID."&m=".$message;  // All good
 		  	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 		  	  	exit(); 
 		  }	  
 	} 
 	
 	// Add course to database
-	$updateCourse = mysql_query("UPDATE courses SET courseName = '".$courseName."', courseStartDate = '".$courseStart."', courseEndDate = '".$courseEnd."', courseDescription = '".$courseDesc."', courseImage = '".$courseImage."', courseURL = '".$courseURL."', courseView = '".$courseView."', courseParticipate = '".$courseParticipate."' WHERE courseID = '".$courseID."' "); // UPDATE
+	$updateCourse = mysql_query("UPDATE courses SET courseName = '".$courseName."', courseStartDate = '".$courseStart."', courseEndDate = '".$courseEnd."', courseDescription = '".$courseDesc."', courseImage = '".$courseImage."', courseURL = '".$courseURL."'  WHERE courseID = '".$courseID."' "); // UPDATE
 
 
 	// Change User Information		
@@ -445,7 +442,7 @@ function EditCourse() {
 	}
 	
   		$message =  10;
-	  	$gotoPage = "../course.php?c=".$courseID."&n=".$networkID."&m=".$message;  // All good
+	  	$gotoPage = "../course.php?c=".$courseID."&m=".$message;  // All good
 	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 
  
