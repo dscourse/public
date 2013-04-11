@@ -27,7 +27,7 @@ ini_set('display_errors',1);
 	
     if(!$LTI)                        // Checks to see if user is logged in, if not sends the user to login.php
     {  
-     	$query = $_SERVER["REQUEST_URI"];
+    	$query = $_SERVER["REQUEST_URI"];
 		$preProcess = $dscourse->PreProcess($query);
 		
        $uId = $_SESSION['UserID'];           // Allocate userID to use throughout the page
@@ -101,11 +101,6 @@ ini_set('display_errors',1);
             <?php echo "var dUserAgent = '" . $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
             <?php echo "var discID = " . $discId . ";"; ?>
             <?php echo "var currentSession = '" . $currentSession . "';"; ?>
-            <?php echo "var currentUserStatus = '" . $_SESSION['status'] . "';"; ?>
-            <?php echo "var currentUserID = '" . $_SESSION['UserID'] . "';"; ?>
-            <?php echo "var dUserAgent = '" . $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
-            <?php echo "var discID = " . $discId . ";"; ?>
-            <?php echo "var currentSession = '" . $currentSession . "';"; ?>
             <?php echo "var settings = '".json_encode($preProcess) . "';";?>
     </script>
 </head>
@@ -160,7 +155,9 @@ ini_set('display_errors',1);
                     <button id="showTimeline" class="btn btn-small btn-info">Timeline</button> <?php } ?>
                     <?php if($preProcess['options']['useSynthesis'] == "Yes"){ ?>
                     <button id="showSynthesis" class="btn btn-small btn-warning">Connected Posts</button> <?php } ?>
+                    <?php if($preProcess['status']=="OK"){ ?>
                     <button id="" class="btn btn-small btn-success sayBut2" postid="0"><i class="icon-comment icon-white"></i> Say</button> <input id="dIDhidden" type="hidden" name="discID" value="">
+                    <?php } ?>
                     <div class="btn-group" id="participantList">
                         <button class="btn disabled ">Participants:</button>
                     </div>
@@ -347,6 +344,8 @@ Your comment...
     var sampleData = "{\"chartType\": \"BarChart\",\"areaOpacity\": \".3\",\"backgroundColor\": \"\",\"chartArea\": \"\",\"colors\": \"\",\"fontName\": \"Arial\",\"fontSize\": \"automatic\",\"hAxis\": \"\",\"legend\": \"right\",\"legendTextStyle\": \"\",\"height\": \"400\",\"isStacked\": \"true\",\"lineWidth\": \"2\",\"pointSize\": \"7\",\"series\": \"\",\"title\": \"\",\"titleTextStyle\": \"\",\"tooltipTextStyle\": \"\", \"vAxis\": \"\",\"width\": \"600\", \"dataSourceUrl\": \"https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AsMQEd_YoBWldHZNbGU2czNfa004UmpzeC13MkZZb0E&output=html\",\"query\": \"\",\"shivaGroup\": \"Visualization\"}";
     var dscourse;
     $(document).ready(function() {
+	//set up settings
+	settings = $.parseJSON(settings);
 
         if (window.addEventListener)
             window.addEventListener("message", shivaMessageHandler, false);

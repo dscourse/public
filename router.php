@@ -20,7 +20,6 @@ ini_set('display_errors',1);
 		else{
 			$type = $res['optionsType'];
 			$id = $res['optionsTypeID'];
-			$code;
 			if($type == "course"){
 				$location.="course.php?";
 				$label = 'c';

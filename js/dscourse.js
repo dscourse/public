@@ -36,12 +36,8 @@ function Dscourse(lti) {
     // A string of the posts for a discussion that are new when refreshed. This variable is used to transfer post ids between functions.
     var discSettings = $.parseJSON(settings)
     this.userStatus; 
-    if(discSettings.courseMember)
-        this.userSettings = "member";
-    else if(discSettings.viewer)
-        this.userSettings = "viewer";
-    
-    var options = discSettings.options;
+
+    var options = settings.options;
     this.options = {
         charLimit : parseInt(options.charLimit),
         synthesis : (options.useSynthesis=="Yes")?true:false,
@@ -124,11 +120,12 @@ function Dscourse(lti) {
         event.stopImmediatePropagation();
         var postClickId = $(this).closest('div').attr('level');
         top.HighlightRelevant(postClickId);
-        $(this).children('.sayBut2').show();
-        if (!$(this).hasClass('lightHighlight')) {
-            $(this).addClass('lightHighlight');
+        if(settings.status=="OK"){
+            $(this).children('.sayBut2').show();
+            if (!$(this).hasClass('lightHighlight')) {
+                $(this).addClass('lightHighlight');
+            }
         }
-
     });
 
     /* When mouse hovers out of the post */
@@ -241,14 +238,8 @@ function Dscourse(lti) {
         var dStatus = top.DiscDateStatus(discID);
         var postID, participate; 
 	        if (dStatus != 'closed') {
-		        	participate = false; 
-			        // Check if participate value if anyone or network			        
-			        if(top.userSettings=="member"){
-			            participate = true;
-			        }
-			        else if(top.userSettings=="viewer"){
-			            alert("Sorry, but your access to this course is read-only. Please contact the course instructor if you wish to gain full access.");
-			        }
+		        	participate = (settings.status=="OK")?true:false; 
+			        // Check if participate value if anyone or network			
 			        if(participate == true){
 					    $('#highlightDirection').hide();
 			            $('#highlightShow').hide();
@@ -276,9 +267,7 @@ function Dscourse(lti) {
 			                offset : -100
 			            });
 			                    top.AddLog('discussion',discID,'SayButtonClicked',postID,' '); //postID is the parent post. 
-    
 			        }
-		            
 	        } else {
 	            alert('This discussion is closed.');
 	        }
@@ -395,6 +384,8 @@ function Dscourse(lti) {
     /* Editing a new synthesis post */
     $('.editSynthesis').live('click', function(event) {
         event.preventDefault();
+        if(settings.status!="OK")
+            return false;
         $('#dSidebar').animate({
             scrollTop : 0
         });
@@ -976,7 +967,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
         }
 
         var showPost = 'yes';
-        var userRoleAuthor = main.UserCourseRole(discID, d.postAuthorId);
+        var userRoleAuthor = main.UserCourseRole(discID, currentUserID);
         if (dStatus == 'student' && currentUserID != d.postAuthorId && userRoleAuthor == 'Student') {
             if (userRole == 'Student' || userRole == 'unrelated') {
                 showPost = 'no';
