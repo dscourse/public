@@ -30,7 +30,7 @@ ini_set('display_errors',1);
         // Get Course Roles
         $courseRoles = $dscourse->CourseRoles($cID);
  	    $totalRoles = count($courseRoles);
-	    $currentRole = '';  // The role of the current user with the course
+	    $currentRole = $preProcess['role'];  // The role of the current user with the course
 	    $Instructors = '';
 	    $TAs = ''; 
 	    $Students = '';  
@@ -52,9 +52,6 @@ ini_set('display_errors',1);
 			        $Students .= '<tr><td><a href="profile.php?u='.$cUserID.'" ><img class="thumbSmall" src="'.$userImg.'" />  '.$userName.'</a> </td><td>'.$userEmail.'</td></tr>'; // do something
 			        break;			 
 			 }
-			if($cUserID == $userID){
-				 $currentRole = $userRole;
-			}
 		}
 		
 		// Get Course Discussions
@@ -101,7 +98,7 @@ ini_set('display_errors',1);
             <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
-             <?php echo "var accessStatus = '".json_encode($preProcess) . "';";?>
+             <?php echo "var settings = '".json_encode($preProcess) . "';";?>
  
 			<?php 
 			if(isset($_GET['m'])){
@@ -226,7 +223,7 @@ ini_set('display_errors',1);
                 <div class="span8">
                     <div id="courseDiscussions">
                         <h3>Course Discussions
-                        <?php if(!$currentRole == "Viewer" && ($currentRole == 'Instructor' || $currentRole == 'TA' || $preProcess['options']['studentCreateDisc']=="Yes")){ ?>
+                        <?php if(($currentRole != "Viewer") && ($currentRole == 'Instructor' || $currentRole == 'TA' || $preProcess['options']['studentCreateDisc']=="Yes")){ ?>
 
                          <a href="adddisc.php?c=<?php echo $courseInfo['courseID']?>" id="addDiscussionView" class="btn btn-small"> Add Discussion</a>
                          <?php }?>

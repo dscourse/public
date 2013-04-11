@@ -81,7 +81,11 @@ ini_set('display_errors',1);
     if($load){
 		$currentSession = session_id(); 
 	   // Show content
-
+		//get last view log time
+		$query ="SELECT logTime FROM logs WHERE logUserID = $uId && logPageID = $discId ORDER BY logTime DESC LIMIT 1";
+		$q = mysql_query($query);
+		$res = mysql_fetch_assoc($q);
+		$lastView = $res['logTime'];
 ?>
 <!DOCTYPE html>
 
@@ -102,6 +106,7 @@ ini_set('display_errors',1);
             <?php echo "var discID = " . $discId . ";"; ?>
             <?php echo "var currentSession = '" . $currentSession . "';"; ?>
             <?php echo "var settings = '".json_encode($preProcess) . "';";?>
+            <?php echo "var lastView = '$lastView';";?> 
     </script>
 </head>
 
@@ -219,7 +224,7 @@ ini_set('display_errors',1);
 
                                 </div>
 								<?php } ?>
-                                <h4>Recent Posts</h4>
+                                <h4 id="recentPostsHeader"></h4>
 
                                 <div class="content">
                                     <ul class="discussionFeed" id="recentContent"></ul>

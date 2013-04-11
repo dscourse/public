@@ -35,8 +35,6 @@ function Dscourse(lti) {
     this.newPosts = '';
     // A string of the posts for a discussion that are new when refreshed. This variable is used to transfer post ids between functions.
     var discSettings = $.parseJSON(settings)
-    this.userStatus; 
-
     var options = settings.options;
     this.options = {
         charLimit : parseInt(options.charLimit),
@@ -48,6 +46,7 @@ function Dscourse(lti) {
     this.charCount = true;
     //lti
     this.lti = lti;
+    this.init = true;
     //This is used to handle redrawing of the vertical heatmap when media displays get closed
     //Maybe it will be useful down the road as we start adding views? 
     this.activeFilter = "";
@@ -64,7 +63,7 @@ function Dscourse(lti) {
 
     jQuery("abbr.timeago").timeago();
     // binds all abbr. tags with the timeago script.
-
+    
     /************************ DISCUSSION EVENTS  ************************/
     /* Make the commenting box draggable */
     $('#commentWrap').prepend($('<div>', {
@@ -873,6 +872,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
 
     //clear recent posts
     $('#recentContent').html('');
+    var timeSince = main.GetUniformDate(lastView, false);
     
     for ( j = 0; j < main.data.posts.length; j++) {// Go through all the posts
         d = main.data.posts[j];
@@ -1013,7 +1013,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
 
             /********** RECENT ACTIVITY SECTION ***********/
            //$('#recentContent').html('')
-            if ($(selector).length > 0) {
+            /*if ($(selector).length > 0) {
                 //console.log(n);
                 var range = main.data.posts.length - 8;
                 // How many of the most recent we show + 1
@@ -1025,6 +1025,16 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
                     var activityContent = '<li postid="' + d.postID + '">' + main.getAuthorThumb(d.postAuthorId, 'tiny') + ' ' + authorID + ' ' + typeText + ' <b>' + shortMessage + '</b> ' + '<em class="timeLog">' + prettyTime + '<em></li> ';
                     $('#recentContent').prepend(activityContent);
                 }
+            }*/
+            var pTime = main.GetUniformDate(d.postTime);
+            //if this was posted since the user last viewed the discussion
+            if(pTime > timeSince){
+                var t = new Date(0);
+                t.setUTCMilliseconds(main.GetUniformDate(d.postTime));
+                var prettyTime = jQuery.timeago(t);
+                var shortMessage = main.truncateText(message, 60);
+                var activityContent = '<li postid="' + d.postID + '">' + main.getAuthorThumb(d.postAuthorId, 'tiny') + ' ' + authorID + ' ' + typeText + ' <b>' + shortMessage + '</b> ' + '<em class="timeLog">' + prettyTime + '<em></li> ';
+                $('#recentContent').prepend(activityContent);
             }
 
             /********** UNIQUE PARTICIPANTS SECTION ***********/
@@ -1037,6 +1047,18 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
 
         } // end if showpost.
     }// End looping through posts
+    
+    if($("#recentContent").children().length==0){
+        $("#recentPostsHeader").html("Recent posts");
+        $("#recentContent").append('<span>There are no new posts since you last visited</span>');
+    }
+    else if(!main.init){
+        $("#recentPostsHeader").html("Recent posts");
+    }
+    else{
+        //Build the recentPosts header
+        $('#recentPostsHeader').html("Posts since you visited "+jQuery.timeago(lastView));
+    }
 
     if (synthesisCount == 'some') {
         $('#synthesisHelpText').hide();
@@ -1184,7 +1206,7 @@ Dscourse.prototype.AddPost = function() {
             //console.log("Dscourse Log: the connection to data.php failed.");
         }
     });
-
+    main.init = false;
 }
 
 Dscourse.prototype.ClearPostForm = function() {

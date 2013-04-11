@@ -683,7 +683,6 @@ function CheckNewPosts()
 function AddLog()
 {
 			$log = $_POST['log'];
-
 				$logUserID	= $log['logUserID'];
 				$logPageType= $log['logPageType'];
 				$logPageID	= $log['logPageID'];
@@ -693,7 +692,7 @@ function AddLog()
 				$logUserAgent	= $log['logUserAgent'];
 				$logSessionID   = $log['logSessionID']; 
 																
-			$addLogQuery = mysql_query("INSERT INTO logs (logUserID, logPageType,logPageID, logAction, logActionID, logMessage, logUserAgent, logSessionID) VALUES('".$logUserID."', '".$logPageType."', '".$logPageID."','".$logAction."','".$logActionID."','".$logMessage."','".$logUserAgent."','".$logSessionID."')"); 
+			$addLogQuery = mysql_query("INSERT INTO logs (logUserID, logPageType,logPageID, logAction, logActionID, logMessage, logUserAgent, logSessionID) VALUES('$logUserID', '$logPageType', '$logPageID', '$logAction', '$logActionID', '$logMessage', '$logUserAgent', '$logSessionID')"); 
 			if($addLogQuery){
 				echo 1; 
 			} else {
