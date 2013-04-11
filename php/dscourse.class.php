@@ -349,7 +349,7 @@ class Dscourse {
 			// Who does this course allow for viewing?
 			//$courseNetworks = $this->CourseNetworks($row['courseID']); 										// Which networks does this course belong to?
 			//$totalNetworks = count($courseNetworks); 														// Count networks for a loop later
-			if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor') {// check if this user is a member
+			if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor' || $courseStatus[0] == 'Viewer' || $courseStatus[0] == 'Member') {// check if this user is a member
 				$load = true;
 			}
 			/*case "network":																				// If the course should only be viewed by network members
@@ -610,12 +610,12 @@ class Dscourse {
 			$res = mysql_fetch_assoc($a);
 			if (mysql_num_rows($a) == 0) {
 				$cMember = FALSE;
+			} else {
+				$cMember = TRUE;
 				$role = $res['userRole'];
 				if($role == "blocked"){
 					header('Location: info.php');
 				}
-			} else {
-				$cMember = TRUE;
 			}
 			
 			//2. Check User Permission (based on qs)
@@ -643,6 +643,7 @@ class Dscourse {
 									exit("Bad");
 								}
 								$cMember = TRUE;
+								$role = "Viewer";
 							}
 						}
 					} else if ($res['optionsName'] == "registerCode") {
@@ -662,6 +663,7 @@ class Dscourse {
 									if($q ==FALSE){
 										exit("Check query syntax for courseRole update in preProcessor");
 									}
+									$role = "Student";
 								}
 							}
 						}
@@ -674,23 +676,28 @@ class Dscourse {
 			while ($res = mysql_fetch_assoc($a)) {
 				$courseOptions[$res['optionsName']] = $res['optionsValue'];
 			}
+			
+			if(!$cMember){
+				//User lacks valid access code and is not a course member
+				header("Location: info.php");
+			}
+			else{
+				//user is a course member
+				if($role=="Viewer")
+					$viewer=TRUE;
+			}
 		}
 		//Resolve these variables into a single, meaningful status (and options)
 		$status = "";
 		//if not a course member
-		if(!$cMember){
-			$status = "DENIED";
+		if(!$viewer){
+			$status = "OK";
 		}
-		else{
-			if($viewer){
-				$status = "VIEW";
-			}
-			else {
-				$status = "OK";
-			}
+		else {
+			$status = "VIEW";
 		}
 	
-		return array("status"=>$status, "options"=>$courseOptions);
+		return array("status"=>$status, "role"=>$role, "options"=>$courseOptions);
 	}
 
 	public function LTI() {
