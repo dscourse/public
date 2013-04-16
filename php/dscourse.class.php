@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Dscourse php functions
  *
@@ -334,7 +333,6 @@ class Dscourse {
 		/*
 		 *  Checks to see whether discussion should be loaded based on user status and discussion status
 		 */
-
 		$load = false;
 		// Default status is to not load the discussion
 
@@ -552,7 +550,7 @@ class Dscourse {
 	public function PreProcess($query) {
 		$query = ltrim($query, '/');
 		$parts = explode('?', $query);
-		$q;
+		$q = "";
 		$args = array();
 		if (isset($parts[1])) {
 			$q = "?" . $parts[1];
@@ -581,6 +579,7 @@ class Dscourse {
 				}
 			} else {
 				header('Location: login.php' . $q);
+				exit;
 				// Not logged and and does not have cookie
 			}
 		}
@@ -701,39 +700,16 @@ class Dscourse {
 	}
 
 	public function LTI() {
-		if ($_SERVER['REQUEST_METHOD'] == "POST") {
-			if (array_key_exists('HTTP_ORIGIN', $_SERVER)) {
-				$origin = $_SERVER['HTTP_ORIGIN'];
-			} else if (array_key_exists('HTTP_REFERER', $_SERVER)) {
-				$ref = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-				$scheme = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_SCHEME);
-				$origin = $scheme . '://' . $ref;
-			} else if (array_key_exists('ext_sakai_server', $_POST)) {
-				$origin = $_POST['ext_sakai_server'];
-			}
-
-			if (strlen($origin) > 0) {
-				$LTI_allowed = array('https://collab.itc.virginia.edu' => 'UVa Collab', 'http://dev.canlead.net' => 'CANLEAD', 'http://www.imsglobal.org' => 'IMS Test Harness');
-				if (array_key_exists($origin, $LTI_allowed)) {
+		if($_SERVER['REQUEST_METHOD'] == "POST"){
+					$courseId;
 					$LTI = TRUE;
 					include "lti.php";
-					$postData = file_get_contents("php://input");
-					$launch = parseLTIrequest($postData);
+					$launch = parseLTIrequest(http_build_query($_REQUEST));
 					if (!$launch) {
 						return FALSE;
 					}
-					/*//Step 1: CHECK if Network Exists=>networkId
-					 $n = $LTI_allowed[$origin];
-					 $net = mysql_query("SELECT * FROM networks WHERE networkName = '" . $n . "'");
-					 $a = mysql_fetch_assoc($net);
-					 if ($net != FALSE && empty($a)) {//Create the new network
-					 $networkCode = rand(100000, 1000000000);
-					 mysql_query("INSERT INTO networks (networkName, networkDesc, networkCode) VALUES('" . $n . "', 'The " . $n . " network on dscourse', '" . $networkCode . "')");
-					 $netId = mysql_insert_id();
-					 } else {
-					 $netId = $a['networkID'];
-					 }*/
-					//Step 2: CHECK if Course Exists=>networkId
+					include_once "data.php";
+					//CHECK if Course Exists
 					$c = $launch -> params['courseName'];
 					$course = mysql_query("SELECT * FROM courses WHERE courseName = '" . $c . "'");
 					$a = mysql_fetch_assoc($course);
@@ -745,12 +721,21 @@ class Dscourse {
 						$closeDate = "20" . ($year + 1) . "-" . $month . "-" . $day;
 						mysql_query("INSERT INTO courses (courseName, courseStatus, courseStartDate, courseEndDate, courseDescription, courseView, courseParticipate) VALUES('" . $c . "', 'active', '" . $startDate . "', '" . $closeDate . "', '" . $c . " on dscourse', 'members', 'members')");
 						$courseId = mysql_insert_id();
+						GenerateCodes($courseId);
 						//And add it to the network
 						//mysql_query("INSERT INTO networkCourses (courseID, networkID) VALUES ('" . $courseId . "', '" . $netId . "')");
-					} else {
+						//Intialize default options 
+						$ops = array("charLimit"=>500,"useTimeline"=>"Yes","useSynthesis"=>"Yes","showInfo"=>"Yes",	"studentCreateDisc"=>"Yes");	
+						foreach($ops as $op=>$val){
+							$q = mysql_query("INSERT INTO options (optionsType, optionsTypeID ,optionsName ,optionsValue, optionAttr) VALUES('course', $courseId, '$op', '$val', '')");
+							if($q===FALSE){
+								exit("Bad");
+							}
+						}
+					 } else {
 						$courseId = $a['courseID'];
 					}
-					//Step 3: CHECK if Discussion Exits=>courseId
+					//CHECK if Discussion Exits
 					$d = $launch -> params['discID'];
 					$disc = mysql_query("SELECT * FROM discussions WHERE dTitle = '" . $c . "' AND dPrompt = '" . $d . "'");
 					$a = mysql_fetch_assoc($disc);
@@ -768,30 +753,41 @@ class Dscourse {
 					} else {
 						$discId = $a['dID'];
 					}
-					//Step 4: CHECK if User exists=>username
+					// CHECK if User exists
 					$q = strtolower($launch -> user -> attrs['username']);
 					$user = mysql_query("SELECT * FROM users WHERE username = '$q'");
 					$u = mysql_fetch_assoc($user);
 					if ($user != FALSE && empty($u)) {
 						//Create user if necessary
+						$chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+						$dummy = "";
+						/*for($i=0;$i<6;$i++){
+							$dummy.=$chars[rand(0,count($chars)-1)];
+						}*/
+						$dummy = "test";
+						
 						$username = strtolower($launch -> user -> attrs['username']);
 						$first = $launch -> user -> attrs['firstName'];
 						$last = $launch -> user -> attrs['lastName'];
-						mysql_query("INSERT INTO users (username, firstName, lastName, sysRole) VALUES ('$username', '$first', '$last', 'Pariticipant')");
+						$pass = md5(mysql_real_escape_string($dummy));
+						mysql_query("INSERT INTO users (username, password, firstName, lastName, sysRole, userStatus) VALUES ('$username', '$pass', '$first', '$last', 'Member', 'active')");
 						$uId = mysql_insert_id();
+						
+						$to = $username;
+			 			$subject = "Welcome to dscourse";
+						$body = "Hi $first,\n\nAn account on the dscourse discussion platform has been automatically created for you. A temporary password has been set up with your account. Your temporary password is: $dummy. \n\n Please change this password next time you log on to dscourse. Thank you!";
+						$headers = "From: admin@dscourse.org";
+			 			if(!mail($to, $subject, $body, $headers)){
+			 			}
+						
 					} else {
 						$uId = $u['UserID'];
 					}
-					/*$netUser = mysql_query("SELECT * FROM networkUsers WHERE userID = '$uId' AND networkID = '$netId'");
-					 $nu = mysql_fetch_assoc($netUser);
-					 if ($netUser != FALSE && empty($nu)) {
-					 mysql_query("INSERT INTO networkUsers (userID, networkID, networkUserRole) VALUES ('$uId', '$netId', 'member')");
-					 }*/
 					$role = $launch -> user -> attrs['role'];
 					$courseRole = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uId' AND courseID = '$courseId'");
 					$cr = mysql_fetch_assoc($courseRole);
 					if ($courseRole != FALSE && empty($cr)) {
-						mysql_query("INSERT INTO courseRoles (userID, courseID, userRole) VALUES ('$uId', '$courseId', 'Student')");
+						$q= mysql_query("INSERT INTO courseRoles (userID, courseID, userRole) VALUES ($uId, $courseId, 'Student')");
 					}
 					//in either case update the user's courseRole to the incoming role
 					$role = $launch -> user -> attrs['role'];
@@ -801,15 +797,15 @@ class Dscourse {
 						$role = "Student";
 					}
 					$t = mysql_query("UPDATE courseRoles SET userRole = '$role' WHERE userID = $uId AND courseId = '$courseId'");
+					
 					//At this point we can be sure the network, course, discussion, and user exist in the DB
 					$launch -> user -> attrs['uID'] = $uId;
 					$launch -> props['discID'] = $discId;
 					$launch -> props['courseId'] = $courseId;
 					return $launch;
 				}
-			}
+			return FALSE;
 		}
-	}
 
 	public function SuperSort($source, $filter = FALSE, $comparator, $limit = FALSE) {
 		$result = array();

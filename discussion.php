@@ -24,26 +24,11 @@ ini_set('display_errors',1);
 	$discussionInfo;
 	$discId;
 	$preProcess;
+	$query;
 	
-    if(!$LTI)                        // Checks to see if user is logged in, if not sends the user to login.php
-    {  
-    	$query = $_SERVER["REQUEST_URI"];
-		$preProcess = $dscourse->PreProcess($query);
-		
-       $uId = $_SESSION['UserID'];           // Allocate userID to use throughout the page
-       if(isset($_GET['d'])){                   // Check if discussion id is set. If not send them back to index
-           $discId = $_GET['d']; 
-           $discussionInfo = $dscourse->DiscussionInfo($discId); 
-       } else {
-            header("Location: index.php");  
-            exit(); 
-       }
-       
-       $cID = $_GET['c']; 
-       $courseInfo = $dscourse->CourseInfo($cID);
-	}
-	else{
-		//CREATE A SESSION
+    if($LTI)                        // Checks to see if user is logged in, if not sends the user to login.php
+    {
+    	//CREATE A SESSION
 		$uId = $launch->user->attrs['uID'];
 		
 		$_SESSION['Username'] = strtolower($launch->user->attrs['username']); 
@@ -57,7 +42,28 @@ ini_set('display_errors',1);
 		$discussionInfo = $dscourse->DiscussionInfo($discId);
 		$courseId = $launch->props['courseId']; 
 		$courseInfo = $dscourse->CourseInfo($courseId);
+		
+		//FAKE THE REQUEST
+		$_GET['d'] = $discId;
+		$_GET['c'] = $courseId;
+		$query = "/discussion.php?d=$discId&c=$courseId";
 	}
+	else{	
+		$query = $_SERVER["REQUEST_URI"];
+	}
+	$preProcess = $dscourse->PreProcess($query);	
+       $uId = $_SESSION['UserID'];           // Allocate userID to use throughout the page
+       if(isset($_GET['d'])){                   // Check if discussion id is set. If not send them back to index
+           $discId = $_GET['d']; 
+           $discussionInfo = $dscourse->DiscussionInfo($discId); 
+       } else {
+            header("Location: index.php");  
+            exit(); 
+       }
+       
+       $cID = $_GET['c']; 
+       $courseInfo = $dscourse->CourseInfo($cID);
+		
 	
 	/*
 	//Check if user needs to register

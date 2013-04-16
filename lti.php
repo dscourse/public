@@ -1,5 +1,4 @@
 <?php
-
 function hmacsha1($key, $data) {//snippet written by Kellan Elliott-McCrea; http://laughingmeme.org/
 	$blocksize = 64;
 	$hashfunc = 'sha1';
@@ -71,7 +70,7 @@ if (strcmp($sentSig, $sig)==0) {
 	$launch->user=$user;
 	return $launch;
 } else {
-	$msg .= "Validation fail <br /> Expected signature base string: ".$baseString . "<br />";
+	$msg .= "Validation fail <br /> Expected signature base string: ".$baseString . "<br /> Sent signature: $sentSig<br />Computed sig: $sig";
 	exit($msg);
 	return FALSE;
 }

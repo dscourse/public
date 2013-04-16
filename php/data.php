@@ -1,5 +1,4 @@
 <?php 
-
 /**
  *  The new and improved script for getting and saving data to the database. 
  *
@@ -8,15 +7,19 @@ date_default_timezone_set('UTC');
 
 ini_set('display_errors',1); 
  error_reporting(E_ALL);
- 
+	if (!defined('MyConst')) define('MyConst', TRUE);								// Avoids direct access to config.php
  	/*** Connect to Database ***/
-	define('MyConst', TRUE);									// Avoids direct access to config.php
-	include "../../config/config.php"; 
-	include "dscourse.class.php"; 
+	include $_SERVER['DOCUMENT_ROOT']."/config/config.php"; 
+	include_once "dscourse.class.php"; 
 	include "simpleImage.class.php"; 
 	
 	mysql_query("SET time_zone = '+00:00'"); 
-
+	
+	$user_context = '';
+	if(array_key_exists('lis_person_contact_email_primary', $_REQUEST)||!isset($_POST['action'])){
+		$user_context = "LTI";
+	}
+if($user_context == ''){
  	$action	= $_POST['action'];									// What the ajax call asks the php to do. 
 	$username = $_SESSION['Username'];
 	$admin = $_SESSION['status'];								// Takes the user id so we know which user information to show
@@ -84,7 +87,7 @@ ini_set('display_errors',1);
     {
     	SaveOptions(); 
     }
-    
+}
             
 function UpdateNetwork(){
  	/**
@@ -320,7 +323,15 @@ function AddCourse() {
 			$i = $i+1; 
 		}		
 	}
-
+	
+	GenerateCodes($courseID);
+	$message =  3;
+	$gotoPage = "../course.php?c=".$courseID."&m=".$message;  // All good
+	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
+	 
+}
+ 
+function GenerateCodes($courseID){
 	//generate view and register links
 	$view = "";
 	$reg = "";
@@ -355,12 +366,7 @@ function AddCourse() {
  	if($b==FALSE){
  		exit("SQL syntax error 2");
  	}
-	
-	$message =  3;
-	$gotoPage = "../course.php?c=".$courseID."&m=".$message;  // All good
-	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
-	 
-}
+} 
  
 function EditCourse() { 
 	$courseID		=  $_POST['courseID'];
@@ -518,7 +524,9 @@ function EditDiscussion(){
 
 function GetData(){
 		$discID	=  $_POST['discID'];
-
+		$courses = array();
+		$users = array();
+		
 		// Get Discussion information
  		$discussionData = mysql_query("SELECT * FROM `discussions` WHERE dID = '".$discID."' ");  // Get everything 		   				
 		$discussion =  mysql_fetch_assoc($discussionData);
@@ -558,6 +566,7 @@ function GetData(){
 		}
 		
 		// Get posts within this discussion as well as a list of users who posted so far. 
+		$data = array();
 		$postData = mysql_query("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$discID."'");
 		$num_rows = mysql_num_rows($postData);
 		if($num_rows > 0){
@@ -648,12 +657,9 @@ function EditPost()
 
 function CheckNewPosts()
 {
-
 	// Checks to see if there are new posts in this discussion, returns number
 			$currentDiscussion =   $_POST['currentDiscussion'];
 			$currentPosts =   $_POST['currentPosts'];
-			 
-			 
 	// Get posts within this discussion
 			$postData = mysql_query("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$currentDiscussion."'");
 			$num_rows = mysql_num_rows($postData);
@@ -665,7 +671,6 @@ function CheckNewPosts()
 					$i++;
 				endwhile;
 			} 
-
 			$numNew = count($posts);
 			$numOld = count($currentPosts);
 			
@@ -675,7 +680,6 @@ function CheckNewPosts()
 			} else {
 				$newposts['result'] = 0;
 			}
-			
     	echo json_encode($newposts);
 }
 

@@ -10,7 +10,6 @@ ini_set('display_errors',1);
 	    include_once('php/dscourse.class.php');
 		$query = $_SERVER["REQUEST_URI"];
 		$preProcess = $dscourse->PreProcess($query); 
-		 
 	    $userID = $_SESSION['UserID'];			// Allocate userID to use throughout the page
 	     
 	    if(isset($_GET['m'])){

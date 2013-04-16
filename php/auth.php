@@ -18,7 +18,7 @@ if($action == 'login'){
     $checklogin = mysql_query("SELECT * FROM users WHERE Username = '".$username."' AND Password = '".$password."'");  
     $something = ''; 
     if(mysql_num_rows($checklogin) == 1)  
-    {  
+    {
  	   $row = mysql_fetch_array($checklogin);   	  
        
         if($row[11] == 'inactive'){
