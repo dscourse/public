@@ -96,16 +96,6 @@ $(function(){
                             $uLastName  = $users[$i]['lastName'];
                             $uID        = $users[$i]['UserID'];
                             $uEmail     = $users[$i]['username'];
-						}
-	                // Get all users
-                $allUsers = $dscourse->AllUsers();  // AllUsers is a function in dscourse.class.php
-                $totalUsers = count($allUsers);
-                for($i = 0; $i < $totalUsers; $i++) 
-                        {
-                            $uFirstName = $allUsers[$i]['firstName'];
-                            $uLastName  = $allUsers[$i]['lastName'];
-                            $uID        = $allUsers[$i]['UserID'];
-                            $uEmail     = $allUsers[$i]['username'];
                         if($i == $totalUsers-1){ $comma = "";} else { $comma = ",";}
                         echo "{ value: '$uID', label : '$uFirstName $uLastName', email : '$uEmail'}".$comma; 
                         } 
