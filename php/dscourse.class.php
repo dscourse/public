@@ -585,7 +585,6 @@ class Dscourse {
 		}
 		//___________________________________________________
 		//At this point we can assume the user is logged in, that they are a dscourse member, and that the account is active
-		
 		$dsMember = TRUE;
 		$cMember = FALSE;
 		$uID = $_SESSION['UserID'];
