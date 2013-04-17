@@ -300,7 +300,7 @@ function AddCourse() {
 			    }
 		  } else {
 		  		$message =  4;
-		  	  	$gotoPage = "../addcourse.php?n=".$networkID."&m=".$message;  
+		  	  	$gotoPage = "../addcourse.php?m=".$message;  
 		  	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 		  }	  
 	} else {

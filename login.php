@@ -3,6 +3,12 @@
     include "php/config.php";   
 	date_default_timezone_set('UTC');
 
+	if(isset($_GET['r'])){
+		$redirect = $_GET['r']; 
+	} else {
+		$redirect = 'index.php'; 
+	}
+
     if(!empty($_SESSION['LoggedIn']) && !empty($_SESSION['Username']))  
     {  
          header('Location: index.php');   // If the user is actually logged in sends the user to home page
@@ -86,7 +92,7 @@
                       success: function(data) { 
                             
                             if (data == "redirect"){
-                                window.location.href = "index.php"; 
+                                window.location.href = '<?php echo $redirect ?>'; 
                             }else {                     // If script ran successfully 
                                 $('#loginNotify').html(data);                       // The error alerts will be printed here  
                             }

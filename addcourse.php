@@ -60,25 +60,8 @@ $(function(){
                         if($i == $totalUsers-1){ $comma = "";} else { $comma = ",";}
                         echo '{ value: '.$uID.', label : "'.$uFirstName. ' ' .$uLastName.'", email : "'.$uEmail.'"}'.$comma; 
                         } 
-                        
-/*
-THE FOLLOWING IS REPLACED WITH ABOVE CODE SINCE WE NO LONGER USE NETWORKS
-
-                // Get people in this network 
-                $networkUsers = $dscourse->NetworkUsers($nID); 
-                $totalUsers = count($networkUsers);
-                for($i = 0; $i < $totalUsers; $i++) 
-                        {
-                        
-                            $uFirstName = $networkUsers[$i]['firstName'];
-                            $uLastName  = $networkUsers[$i]['lastName'];
-                            $uID        = $networkUsers[$i]['UserID'];
-                            $uEmail     = $networkUsers[$i]['username'];
-                        if($i == $totalUsers-1){ $comma = "";} else { $comma = ",";}
-                        echo '{ value: '.$uID.', label : "'.$uFirstName. ' ' .$uLastName.'", email : "'.$uEmail.'"}'.$comma; 
-                        } 
-*/
-                ?>  
+ 
+                        ?>
             ];
             
            $('.removePeople').live('click', function() {
@@ -274,12 +257,7 @@ THE FOLLOWING IS REPLACED WITH ABOVE CODE SINCE WE NO LONGER USE NETWORKS
                     <div id="courseForm">
                         <form class="form-horizontal well" name="addCourseForm" action="php/data.php" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="addCourse">
-                            
-<!--  ------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
-                            <div class="alert alert-success">
-                                This course will be part of the <?php echo $networkInfo['networkName'];  ?> Network.
-                            </div>
--->
+
 
                             <div class="control-group">
                                 <label class="control-label" for="courseName">Course Name</label>

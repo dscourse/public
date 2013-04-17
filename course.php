@@ -15,6 +15,7 @@ ini_set('display_errors',1);
 				
         $cID = $_GET["c"];                      // The course ID from link
         $courseInfo = $dscourse->CourseInfo($cID);
+
 		
 	    if(isset($_GET['m'])){
 		  $m = $_GET['m'];
@@ -22,6 +23,9 @@ ini_set('display_errors',1);
 	    }
 	    
        	$userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
+
+        $userNav = $dscourse->UserInfo($userID); 
+
 		
 		if($dscourse->LoadCourse($cID, $userID) == false ) {
 	           header('Location: index.php');                   // The course is set up that this user can't view it. 
@@ -124,10 +128,6 @@ ini_set('display_errors',1);
         <div class="navbar-inner">
             <div class="container-fluid">
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
-
-                <ul class="nav">
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID . "&n=" .$nID  ; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
-                </ul>
 
                 <ul class="nav pull-right">
                     <li class="dropdown">
