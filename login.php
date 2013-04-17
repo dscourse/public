@@ -1,6 +1,6 @@
 <?php 
     define('MyConst', TRUE);    // Avoids direct access to config.php
-    include "../config/config.php";   
+    include "php/config.php";   
 	date_default_timezone_set('UTC');
 
     if(!empty($_SESSION['LoggedIn']) && !empty($_SESSION['Username']))  

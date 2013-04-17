@@ -5,7 +5,7 @@ ini_set('display_errors',1);
  
   define('MyConst', TRUE);                                // Avoids direct access to config.php
 
-    include "../config/config.php"; 
+    include "php/config.php"; 
     date_default_timezone_set('UTC');
 	
         // User is logged in, show page. 

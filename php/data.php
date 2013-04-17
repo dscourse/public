@@ -9,7 +9,7 @@ ini_set('display_errors',1);
  error_reporting(E_ALL);
 	if (!defined('MyConst')) define('MyConst', TRUE);								// Avoids direct access to config.php
  	/*** Connect to Database ***/
-	include $_SERVER['DOCUMENT_ROOT']."/config/config.php"; 
+	include "config.php"; 
 	include_once "dscourse.class.php"; 
 	include "simpleImage.class.php"; 
 	

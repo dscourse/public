@@ -6,6 +6,6 @@
 *.out
 
 ## project specific files
-scripts/php/config.php
+php/config.php
 db_timezone_patch.php
 tst.php
