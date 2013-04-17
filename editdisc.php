@@ -796,6 +796,5 @@ $(function(){
             </div>
         </div><!-- close container -->
     </div><!-- end discussions -->
-    <?php  ?>
 </body>
 </html>

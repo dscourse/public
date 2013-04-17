@@ -872,7 +872,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
 
     //clear recent posts
     $('#recentContent').html('');
-    var timeSince = main.GetUniformDate(lastView, false);
+    var timeSince = main.GetUniformDate(lastView);
     
     for ( j = 0; j < main.data.posts.length; j++) {// Go through all the posts
         d = main.data.posts[j];
@@ -896,7 +896,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
         // END TIMELINE
         
         /********** DISCUSSION SECTION ***********/
-        authorID = main.getName(d.postAuthorId, 'first');
+        var authorID = main.getName(d.postAuthorId, 'first');
         // Get Authors name
         authorIDfull = main.getName(d.postAuthorId);
         authorThumb = main.getAuthorThumb(d.postAuthorId, 'small');
@@ -1057,7 +1057,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
     }
     else{
         //Build the recentPosts header
-        $('#recentPostsHeader').html("Posts since you visited "+jQuery.timeago(lastView));
+        $('#recentPostsHeader').html("Posts since you visited "+jQuery.timeago(new Date(main.GetUniformDate(lastView))));
     }
 
     if (synthesisCount == 'some') {

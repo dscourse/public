@@ -59,8 +59,6 @@ ini_set('display_errors',1);
 						break;
 					}
 		}
-	
-                
 ?>
 <!DOCTYPE html>
 
@@ -89,7 +87,6 @@ $(function(){
             
             var nameList = [
                 <?php 
-<<<<<<< HEAD
                 // Get people in this network 
                 $users = $dscourse->GetUsers(); 
                 $totalUsers = count($users);
@@ -99,8 +96,8 @@ $(function(){
                             $uLastName  = $users[$i]['lastName'];
                             $uID        = $users[$i]['UserID'];
                             $uEmail     = $users[$i]['username'];
-=======
-	                // Get all usersr
+						}
+	                // Get all users
                 $allUsers = $dscourse->AllUsers();  // AllUsers is a function in dscourse.class.php
                 $totalUsers = count($allUsers);
                 for($i = 0; $i < $totalUsers; $i++) 
@@ -109,9 +106,8 @@ $(function(){
                             $uLastName  = $allUsers[$i]['lastName'];
                             $uID        = $allUsers[$i]['UserID'];
                             $uEmail     = $allUsers[$i]['username'];
->>>>>>> network removal changes
                         if($i == $totalUsers-1){ $comma = "";} else { $comma = ",";}
-                        echo '{ value: '.$uID.', label : "'.$uFirstName. ' ' .$uLastName.'", email : "'.$uEmail.'"}'.$comma; 
+                        echo "{ value: '$uID', label : '$uFirstName $uLastName', email : '$uEmail'}".$comma; 
                         } 
                 ?>  
             ];
@@ -220,7 +216,6 @@ $(function(){
 });                        
     </script>
 </head>
-
 <body>
     
     <div class="navbar navbar-fixed-top">
@@ -248,9 +243,7 @@ $(function(){
             </div>
         </div>
     </div><!-- End of header content-->
-
     <!-- Begin addcourse.php-->
-
     <header class="jumbotron subhead">
         <div class="container-fluid">
             <h1>Edit Course</h1>
@@ -268,7 +261,6 @@ $(function(){
                         <form class="form-horizontal " name="addCourseForm" action="php/data.php" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="editCourse">
                         <input type="hidden" name="courseID" value="<?php  echo $cID; ?>" >
-                            
                             <div class="control-group">
                                 <label class="control-label" for="courseName">Course Name</label>
                                 <div class="controls">
@@ -276,7 +268,6 @@ $(function(){
                                     <p class="help-inline">Enter a name for the course</p>
                                 </div>
                             </div>
-
                             <div class="control-group">
                                 <label class="control-label" for="courseDescription">Course Description</label>
                                 <div class="controls">
@@ -285,7 +276,6 @@ $(function(){
                                     <p class="help-inline">Provide a summary for the course.</p>
                                 </div>
                             </div>
-
                             <div class="control-group">
                                 <label class="control-label" for="courseStartDate">Course Start Date</label>
                                 <div class="controls">
@@ -293,7 +283,6 @@ $(function(){
                                     <p class="help-inline">Format: YYYY-MM-DD</p>
                                 </div>
                             </div>
-
                             <div class="control-group">
                                 <label class="control-label" for="courseEndDate">Course End Date</label>
                                 <div class="controls">
@@ -301,7 +290,6 @@ $(function(){
                                     <p class="help-inline">Format: YYYY-MM-DD</p>
                                 </div>
                             </div>
-
                             <div class="control-group">
                                 <label class="control-label" for="editCourseImage">Course Image</label>                                
                                 <div class="controls">
@@ -312,7 +300,6 @@ $(function(){
                                     <p class="help-inline">Please select a file below 5MB and in gif, png or  jpeg formats. </p>
                                 </div>
                             </div>
-
                             <div class="control-group">
                                 <label class="control-label" for="courseURL">Course Website</label>
                                 <div class="controls">
@@ -322,14 +309,11 @@ $(function(){
                                     <p class="help-inline">If you have an external website for this course please enter it here.</p>
                                 </div>
                             </div>
-
                             <hr class="soften" />
                             <div class="row-fluid">
                                 <div class="span3">
                                     <h3>Add People</h3>
-
                                     <p>Start typing names. You will be able to change their role as Instructor, TA or Student.</p>
-
                                     <p><input type="text" class="input-large coursePeople" id="coursePeople" name="coursePeople"></p>
                                 </div>
 
@@ -347,15 +331,13 @@ $(function(){
                                         </thead>
 
                                         <tbody id="addPeopleBody">
-                                        	<?php echo $InstructorRows . $TARows . $StudentRows.$ViewRows.$BlockedRows; ?>
+                                        	<?php echo $InstructorRows . $TARows . $StudentRows . $ViewRows . $BlockedRows; ?>
                                         	</tbody>
                                     </table>
                                 </div>
                             </div>
                             <hr class="soften">
                             <button type="submit" name="submitEditCourse" id="submitEditCourse" class="btn btn-primary pull-right">Edit Course </button>
-          
-                        
                         </form>
                     </div>
                 </div>

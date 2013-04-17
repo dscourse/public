@@ -526,6 +526,7 @@ function GetData(){
 		$discID	=  $_POST['discID'];
 		$courses = array();
 		$users = array();
+		$cID;
 		
 		// Get Discussion information
  		$discussionData = mysql_query("SELECT * FROM `discussions` WHERE dID = '".$discID."' ");  // Get everything 		   				
@@ -537,10 +538,7 @@ function GetData(){
 		{					
 			$courses[] = $r; 								// Put mysql results into an array 
 			$cID = $r['courseID']; 							// Get course ID for each course. We need this to get to all the other information about users, and networks. 
-		
-
-		
-		
+		}
 		// Get Users Who posted in the discussion whether they are in the course or not
 		$userData = mysql_query("SELECT DISTINCT postAuthorId FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$discID."'");
 		while($s = mysql_fetch_assoc($userData)) 
@@ -557,13 +555,12 @@ function GetData(){
 					$users[] = $t;
 				}
 		// Get Networks
-		$networksData = mysql_query("SELECT * FROM networkCourses INNER JOIN networks ON networkCourses.networkID = networks.networkID WHERE networkCourses.courseID = '".$cID."'");
+		/*$networksData = mysql_query("SELECT * FROM networkCourses INNER JOIN networks ON networkCourses.networkID = networks.networkID WHERE networkCourses.courseID = '".$cID."'");
 		while($u = mysql_fetch_assoc($networksData)) 
 				{					
 					$networks[] = $u;
 				}	 
-
-		}
+		}*/
 		
 		// Get posts within this discussion as well as a list of users who posted so far. 
 		$data = array();
@@ -740,28 +737,3 @@ function SaveOptions()
 
 			}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
