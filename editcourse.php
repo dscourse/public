@@ -16,9 +16,7 @@ ini_set('display_errors',1);
         $cID = $_GET['c']; 
         $courseInfo = $dscourse->CourseInfo($cID);
 
-         //$nID = $_GET["n"];                      // The course ID from link
-
-	    //$networkInfo = $dscourse->NetWorkInfo($courseInfo['networkID']);
+        $userNav = $dscourse->UserInfo($userID); 
 
 	    $userCourseRole = $dscourse->UserCourseRole($cID, $userID); 
 	    

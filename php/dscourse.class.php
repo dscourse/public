@@ -15,7 +15,7 @@ class Dscourse {
 		/*
 		 *  Gets only user ID and names
 		 */
-		$userData = mysql_query("SELECT UserID, firstName, lastName, username FROM users ORDER BY firstName ASC");
+		$userData = mysql_query("SELECT UserID, firstName, lastName, username, userPictureURL FROM users ORDER BY firstName ASC");
 		// Get all the data from the users table
 
 		while ($r = mysql_fetch_assoc($userData)) {// Populate the rows for individual users
@@ -482,6 +482,11 @@ class Dscourse {
 			case 2 :
 				$message['content'] = "Changes to the discussion were saved. ";
 				break;
+			case 3 : 
+				$message['content'] = "Course is created.";
+				$message['icon'] = "A";
+				$message['color'] = "#999";
+				$message['error'] = "true";
 			case 4 :
 				$message['content'] = "You uploaded an invalid file please try again. ";
 				$message['color'] = "#999";
@@ -547,7 +552,7 @@ class Dscourse {
 		return $string;
 	}
 
-	public function PreProcess($query) {
+	public function PreProcess($query, $isIndex = FALSE) {
 		$query = ltrim($query, '/');
 		$parts = explode('?', $query);
 		$q = "";
@@ -578,7 +583,13 @@ class Dscourse {
 					echo "Error: Could not load user info from cookie.";
 				}
 			} else {
-				header('Location: login.php' . $q);
+					
+				if($isIndex){
+					header('Location: info.php' . $q);
+					
+				} else {
+					header('Location: login.php?r="' . $query . '"');					
+				}						
 				exit;
 				// Not logged and and does not have cookie
 			}
