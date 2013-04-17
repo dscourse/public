@@ -1,5 +1,4 @@
 <?php 
-
 /*
 /*  This file authenticates the user
 /*  
@@ -9,7 +8,7 @@
 	include "../../config/config.php"; 
 
 	$action = $_POST['action']; 	
-	
+
 if($action == 'login'){
 	$username = mysql_real_escape_string($_POST['username']);  
     $password = md5(mysql_real_escape_string($_POST['password']));  
@@ -78,8 +77,7 @@ if($action == 'register'){
 		}	    
 	    
     }
-	
-
+}	
 if($action == 'reVerify'){
 	$username = mysql_real_escape_string($_POST['username']);  
     $checklogin = mysql_query("SELECT * FROM users WHERE Username = '".$username."' ");  
@@ -109,10 +107,4 @@ if($action == 'reVerify'){
         echo "<div class=\"alert alert-error animated flash \">The password/username does not match our records. Please try again</div>"; 
     } 
 }	
-
-
-
-}
-  	
-    
 /* End of file auth.php */
