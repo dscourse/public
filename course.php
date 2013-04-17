@@ -7,12 +7,57 @@ ini_set('display_errors',1);
 
     include "../config/config.php"; 
     date_default_timezone_set('UTC');
+		
+		//CHECK IF LTI
+		$LTI = FALSE;
+	
+	include_once('php/dscourse.class.php');
+	$launch = $dscourse->LTI();
+	if($launch != FALSE){
+		$LTI = TRUE;
+	}
+		
+	$cID;
+	$discId;
+	$uId;
+	$origin; 
+	$courseInfo; 
+	$discussionInfo;
+	$discId;
+	$preProcess;
+	$query;
+	
+    if($LTI)                        // Checks to see if user is logged in, if not sends the user to login.php
+    {
+    	//CREATE A SESSION
+		$uId = $launch->user->attrs['uID'];
+		
+		$_SESSION['Username'] = strtolower($launch->user->attrs['username']); 
+        $_SESSION['firstName'] = $launch->user->attrs['firstName'];
+        $_SESSION['lastName'] = $launch->user->attrs['lastName'];   
+        $_SESSION['LoggedIn'] = 1;  
+        $_SESSION['status'] = 'Student';
+        $_SESSION['UserID'] = $uId;
+		
+		$discId = $launch->props['discID'];
+		$discussionInfo = $dscourse->DiscussionInfo($discId);
+		$courseId = $launch->props['courseId']; 
+		$courseInfo = $dscourse->CourseInfo($courseId);
+		
+		//FAKE THE REQUEST
+		$_GET['d'] = $discId;
+		$_GET['c'] = $courseId;
+		$query = "/course.php?c=$courseId";
+	}
+	else{	
+		$query = $_SERVER["REQUEST_URI"];
+	}
+	$preProcess = $dscourse->PreProcess($query);	
+	if(isset($_REQUEST['lti'])){
+		$LTI = TRUE;
+	}
 	
         // User is logged in, show page. 
-        include_once('php/dscourse.class.php');
-		$query = $_SERVER["REQUEST_URI"];
-		$preProcess = $dscourse->PreProcess($query);
-				
         $cID = $_GET["c"];                      // The course ID from link
         $courseInfo = $dscourse->CourseInfo($cID);
 		
@@ -81,7 +126,7 @@ ini_set('display_errors',1);
 					if($currentRole == 'Instructor' || $currentRole == 'TA'){
 						$discEdit = '<a href="editdisc.php?d='.$discID.'&c='.$cID.'" class="btn btn-info btn-small">Edit</a> ';  
 					} else { $discEdit = ''; }
-					$discPrint .= '<tr><td><a href="discussion.php?d='.$discID.'&c='.$cID.'"> '.$discName.'</a></td><td>'.$status.'</td><td>'.$numberofPosts.'</td><td>'.$discEdit.' </td></tr>'; 
+					$discPrint .= '<tr><td><a href="discussion.php?d='.$discID.'&c='.$cID.'&lti=true"> '.$discName.'</a></td><td>'.$status.'</td><td>'.$numberofPosts.'</td><td>'.$discEdit.' </td></tr>'; 
 		}
 ?>
 <!DOCTYPE html>
@@ -123,15 +168,15 @@ ini_set('display_errors',1);
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container-fluid">
-                <a href="index.php" class="brand" id="homeNav">dscourse</a>
-
+                <a href="<?php echo ($LTI)?"javascript:void(0)":"index.php";?>" class="brand" id="homeNav">dscourse</a> 
+                
                 <ul class="nav">
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID . "&n=" .$nID  ; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
+                    <li class="navLevel"><a href="course.php?c=<?php echo $cID; echo ($LTI)?"&lti=true":""; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
                 </ul>
 
                 <ul class="nav pull-right">
                     <li class="dropdown">
-                        <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a>
+                     <?php if(!$LTI){ ?>  <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a> <?php } ?>
 
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                             <li><a id="profileNav" href="profile.php?u=<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
@@ -223,7 +268,7 @@ ini_set('display_errors',1);
                 <div class="span8">
                     <div id="courseDiscussions">
                         <h3>Course Discussions
-                        <?php if(($currentRole != "Viewer") && ($currentRole == 'Instructor' || $currentRole == 'TA' || $preProcess['options']['studentCreateDisc']=="Yes")){ ?>
+                        <?php if(($currentRole != "Viewer") && ($currentRole == 'Instructor' || $currentRole == 'TA' || (isset($preProcess['options']['studentCreateDisc']) && $preProcess['options']['studentCreateDisc']=="Yes"))){ ?>
 
                          <a href="adddisc.php?c=<?php echo $courseInfo['courseID']?>" id="addDiscussionView" class="btn btn-small"> Add Discussion</a>
                          <?php }?>

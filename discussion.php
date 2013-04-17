@@ -51,18 +51,23 @@ ini_set('display_errors',1);
 	else{	
 		$query = $_SERVER["REQUEST_URI"];
 	}
-	$preProcess = $dscourse->PreProcess($query);	
-       $uId = $_SESSION['UserID'];           // Allocate userID to use throughout the page
-       if(isset($_GET['d'])){                   // Check if discussion id is set. If not send them back to index
-           $discId = $_GET['d']; 
-           $discussionInfo = $dscourse->DiscussionInfo($discId); 
-       } else {
+	$preProcess = $dscourse->PreProcess($query);
+	$crumbs = FALSE;
+	if(isset($_REQUEST['lti'])){
+		$LTI = TRUE;	
+		$crumbs = TRUE;
+	}
+        $uId = $_SESSION['UserID'];           // Allocate userID to use throughout the page
+        if(isset($_GET['d'])){                   // Check if discussion id is set. If not send them back to index
+            $discId = $_GET['d']; 
+            $discussionInfo = $dscourse->DiscussionInfo($discId); 
+        } else {
             header("Location: index.php");  
             exit(); 
-       }
+        }
        
-       $cID = $_GET['c']; 
-       $courseInfo = $dscourse->CourseInfo($cID);
+        $cID = $_GET['c']; 
+        $courseInfo = $dscourse->CourseInfo($cID);
 		
 	
 	/*
@@ -118,19 +123,20 @@ ini_set('display_errors',1);
 
 <body>
 	<?php 
-	if(!$LTI){ ?>
+	if(!$LTI || ($LTI && $crumbs)){ ?>
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container-fluid">
-                <a href="index.php" class="brand" id="homeNav">dscourse</a>
+                <a href="<?php echo ($LTI)?"javascript:void(0)":"index.php";?>" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID ?>" id="coursesNav"><?php echo $dscourse -> myTruncate($courseInfo['courseName'], 15, ' ', '...'); ?></a></li>
-                    <li class="navLevel"><a href="discussion.php?d=<?php echo $discId . '&c=' . $cID ?>" id="discussionNav"><?php echo $dscourse -> myTruncate($discussionInfo['dTitle'], 15, ' ', '...'); ?></a></li>
+                    <li class="navLevel"><a href="course.php?c=<?php echo $cID ?>&lti=true" id="coursesNav"><?php echo $dscourse -> myTruncate($courseInfo['courseName'], 15, ' ', '...'); ?></a></li>
+                    <?php if(!$LTI) { ?> <li class="navLevel"><a href="discussion.php?d=<?php echo $discId . '&c=' . $cID ?>" id="discussionNav"><?php echo $dscourse -> myTruncate($discussionInfo['dTitle'], 15, ' ', '...'); ?></a></li> <?php } ?>
 
                 </ul>
 
-                <ul class="nav pull-right">
+              <?php if(!$LTI){ ?>
+               <ul class="nav pull-right">
                     <li class="dropdown">
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " . $_SESSION['lastName']; ?> <b class="caret"></b> </a>
 
@@ -143,6 +149,7 @@ ini_set('display_errors',1);
                         </ul>
                     </li>
                 </ul>
+                <?php } ?>
             </div>
         </div>
     </div><!-- End of header content-->
