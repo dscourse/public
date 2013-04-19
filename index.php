@@ -12,6 +12,7 @@ ini_set('display_errors',1);
 		$isIndex = TRUE; 
 		$preProcess = $dscourse->PreProcess($query, $isIndex); 
 	    $userID = $_SESSION['UserID'];			// Allocate userID to use throughout the page
+        $userNav = $dscourse->UserInfo($userID); 
 	     
 	    if(isset($_GET['m'])){
 		  $m = $_GET['m'];

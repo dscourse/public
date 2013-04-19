@@ -17,6 +17,7 @@ ini_set('display_errors',1);
 	    }
         
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
+        $userNav = $dscourse->UserInfo($userID); 
    
 ?>
 <!DOCTYPE html>

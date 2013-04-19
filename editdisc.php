@@ -12,6 +12,9 @@ ini_set('display_errors',1);
 		$preProcess = $dscourse->PreProcess($query);
 		
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
+        $userNav = $dscourse->UserInfo($userID); 
+
+
        if(isset($_GET['d'])){                   // Check if discussion id is set. If not send them back to index
            $discID = $_GET['d']; 
            $discussionInfo = $dscourse->DiscussionInfo($discID);

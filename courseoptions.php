@@ -12,15 +12,10 @@ ini_set('display_errors',1);
         $preProcess = $dscourse->PreProcess($query);
         
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
+        $userNav = $dscourse->UserInfo($userID); 
         
         $cID = $_GET['c']; 
         $courseInfo = $dscourse->CourseInfo($cID);
-
-/* MARK FOR REMOVAL
-	    $nID = $_GET["n"];                      // The course ID from link
-
-        $networkInfo = $dscourse->NetWorkInfo($courseInfo['networkID']);
-*/
 
         $userCourseRole = $dscourse->UserCourseRole($cID, $userID);          // Get user role
         if($userCourseRole[0] != 'Instructor' && $userCourseRole[0] != 'TA' ){ // Check if user can edit this page. We need to put this into the preprocessor
@@ -28,36 +23,6 @@ ini_set('display_errors',1);
 	             exit(); 
 	        }
 
-
-
-
-/*  MARK FOR REMOVAL
-        // Get Course Roles
-        $courseRoles = $dscourse->CourseRoles($cID);
-        $totalRoles = count($courseRoles);
-        $InstructorRows = '';
-        $TARows = ''; 
-        $StudentRows = '';  
-        for($i = 0; $i < $totalRoles; $i++) 
-                {
-                    $userID     = $courseRoles[$i]['userID'];
-                    $userName   = $courseRoles[$i]['firstName'] . ' ' . $courseRoles[$i]['lastName'];
-                    $userRole   = $courseRoles[$i]['userRole'];
-                    $userEmail  = $courseRoles[$i]['username'];
-                    switch ($userRole) {
-                        case "Instructor":
-                            $InstructorRows .= '<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.' </td><td>'.$userEmail.' </td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB active" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB" userid="'.$userID.'">Student</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="Instructor"></div></td></tr>'; 
-                            break;
-                        case "TA":
-                            $TARows .= '<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.' </td><td>'.$userEmail.' </td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB active" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB" userid="'.$userID.'">Student</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="TA"></div></td></tr>'; 
-                            break;
-                        case "Student":
-                            $StudentRows .= '<tr><td><input type="hidden" name="user[]" value="'.$userID.'">'.$userName.' </td><td>'.$userEmail.' </td><td><div class="btn-group"  data-toggle="buttons-radio" id="roleButtons"><button class="btn roleB" type="button" userid="'.$userID.'">Instructor</button><button class="btn roleB" type="button" userid="'.$userID.'">TA</button><button type="button" class="btn roleB active" userid="'.$userID.'">Student</button><button class="btn roleB btn-warning" type="button" userid="'.$userID.'">Delete</button><input type="hidden" name="user[]" class="userRoleInput" value="Student"></div></td></tr>'; 
-                            break;
-                    }
-        } 
-*/
- 
  // Load Course Options and Place them in Required Sections
  $courseOptions = $dscourse->LoadCourseOptions($cID); // This is all we need. The printout of sections are done below. 
                 

@@ -12,20 +12,14 @@ ini_set('display_errors',1);
 		$preProcess = $dscourse->PreProcess($query);
 		
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
+        $userNav = $dscourse->UserInfo($userID); 
         
         if(isset($_GET['c'])){
 	        $cID = $_GET['c'];
 	        $setCourseInfo = $dscourse->CourseInfo($cID); 
 	        $setCoursePrint = '<tr id="' .$setCourseInfo['courseID'].'" class="dCourseList"><input type="hidden" name="course[]" value="' .$setCourseInfo['courseID'].'"><td>' .$setCourseInfo['courseName'].' </td><td><button class="btn removeCourses" >Remove</button> </td></tr>';               
         }
-        
-/* ------ MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
-       if(isset($_GET['n'])){                      // The network ID from link 
-	        $nID = $_GET['n'];        
-      	    // GET Info About This Network
-      	    $networkInfo = $dscourse->NetWorkInfo($nID);
-	      }
-*/
+       
         
                 
 ?>
