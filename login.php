@@ -164,7 +164,11 @@
                         <p><label>&nbsp;</label><input type="checkbox" id="autologin" name="autologin" value="Yes"> Remember Me on this computer</p>
 
                         <p><button type="submit" id="loginSubmit" class="btn btn-primary">Login</button> <a href="recover.php" id="recoverLink">Forgot Password?</a></p>
+                    
+                    
                     </div>
+                    <div id="registerLink"> Not a member yet?  <a href="register.php"> Register Here </a> </div>
+                    
                 </div>
 
                 <div class="link" > <i class="icon-arrow-left"></i> <a href="index.php">Back to the home page</a></div>

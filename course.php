@@ -271,7 +271,7 @@ ini_set('display_errors',1);
 
                 <div class="span8">
                     <div id="courseDiscussions">
-                        <h3>Course Discussions
+                        <h3 >Course Discussions
                         <?php if(($currentRole != "Viewer") && ($currentRole == 'Instructor' || $currentRole == 'TA' || (isset($preProcess['options']['studentCreateDisc']) && $preProcess['options']['studentCreateDisc']=="Yes"))){ ?>
 
                          <a href="adddisc.php?c=<?php echo $courseInfo['courseID']?>" id="addDiscussionView" class="btn btn-small"> Add Discussion</a>
