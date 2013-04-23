@@ -62,12 +62,22 @@ line-height: 25px;
 	width:31px;
 	height:28px;
 	margin-right:10px;
+font-size: 14px;
+text-shadow: none;
+color: white;
+font-weight: 200;
+line-height: 27px;
 }
 
 .userThumbTiny {
 	width:16px;
 	height:16px;
 	margin-right:5px;
+font-size: 14px;
+text-shadow: none;
+color: white;
+font-weight: 200;
+line-height: 27px;
 }
 
 .thumbNav {
@@ -75,7 +85,7 @@ width: 25px;
 height: 25px;
 padding: 1px;
 background: #DDD;
-border-radius: 7px;
+border-radius: 13px;
 margin-top: -10px;
 margin-right: 3px; 
 }
@@ -178,7 +188,26 @@ margin-right: 3px;
  
  /********** Index.php  ************/
   
+  .lightBox {
+	  background: #eee;
+padding: 20px;
+margin-bottom: -20px;
+  }
   
+  .lightBoxLink {
+	  padding: 10px;
+margin-top: -29px;
+  }
+  
+  .lightBoxListEnd {
+	  background: rgba(238, 238, 238, 0.35);
+padding: 20px !important;
+line-height: 0px;
+  }
+    .lightBoxListEnd .pull-right {
+    	margin-bottom: -20px; 
+    	}
+
   
  /********** Home.php  ************/
 
@@ -220,10 +249,9 @@ box-shadow: inset 0px 0px 14px 0px #CCC;
  /********** login.php  ************/
 
 .authForms{
-background: url(../img/linedpaper.png);
+background: rgba(226, 226, 226, 0.28);
 padding: 0px 30px;
-border: 1px solid #ccc;
-border-radius: 10px;	
+border: 1px dashed #ccc;	
 }
 .authForms h1 {
 text-align: center;
@@ -233,6 +261,31 @@ color: #222;
 .authForms .link {
 text-align: center;
 padding: 10px 0px;
+}
+
+#registerLink {
+	background: rgba(0, 128, 0, 0.12);
+padding: 20px 40px;
+margin-left: -30px;
+width: 280px;
+border-top: 1px solid rgba(0, 128, 0, 0.27);
+border-bottom: 1px solid rgba(0, 128, 0, 0.27);
+margin-top: 20px;
+margin-bottom: 10px;
+text-align: center;
+
+}
+
+#loginLink {
+	background: rgba(0, 128, 0, 0.12);
+padding: 20px 40px;
+margin-left: -30px;
+width: 280px;
+border-top: 1px solid rgba(0, 128, 0, 0.27);
+border-bottom: 1px solid rgba(0, 128, 0, 0.27);
+margin-top: 20px;
+margin-bottom: 10px;
+text-align: center;
 }
  /********** network.php  ************/
 
@@ -287,7 +340,12 @@ box-shadow: 0 0 9px 0px #eee;
 
 .navbar-inner {
 	height: 40px;
+	box-shadow: none; 
 //overflow: hidden;
+}
+
+.navbar-fixed-top .navbar-inner {
+	box-shadow: none;
 }
 /***********************************************************************************************/
 /*                					    DISCUSSIONS 		   							       */

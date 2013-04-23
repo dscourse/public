@@ -1,7 +1,7 @@
 <?php 
 date_default_timezone_set('UTC');
     define('MyConst', TRUE);    // Avoids direct access to config.php
-    include "../config/config.php";   
+    include "php/config.php";   
 
     if(!empty($_SESSION['LoggedIn']) && !empty($_SESSION['Username']))  
     {  
@@ -113,6 +113,8 @@ date_default_timezone_set('UTC');
 
                         <p><button type="submit" id="registerSubmit" class="btn btn-primary">Register</button></p>
                     </div>
+                    <div id="loginLink"> Already a member?  <a href="login.php"> Login Here </a> </div>
+
                 </div>
 
                 <p><i class="icon-arrow-left"></i> <a href="index.php">Back to the home page</a></p>

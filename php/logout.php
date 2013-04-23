@@ -1,4 +1,4 @@
-<?php define('MyConst', TRUE);	include "../../config/config.php"; 
+<?php define('MyConst', TRUE);	include "config.php"; 
 	$_SESSION = array(); 
 	session_destroy(); 
 	setcookie('userCookieDscourse', '', time()-3600, '/');

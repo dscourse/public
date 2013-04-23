@@ -1,7 +1,13 @@
 <?php 
     define('MyConst', TRUE);    // Avoids direct access to config.php
-    include "../config/config.php";   
+    include "php/config.php";   
 	date_default_timezone_set('UTC');
+
+	if(isset($_GET['r'])){
+		$redirect = $_GET['r']; 
+	} else {
+		$redirect = 'index.php'; 
+	}
 
     if(!empty($_SESSION['LoggedIn']) && !empty($_SESSION['Username']))  
     {  
@@ -86,7 +92,7 @@
                       success: function(data) { 
                             
                             if (data == "redirect"){
-                                window.location.href = "index.php"; 
+                                window.location.href = '<?php echo $redirect ?>'; 
                             }else {                     // If script ran successfully 
                                 $('#loginNotify').html(data);                       // The error alerts will be printed here  
                             }
@@ -158,7 +164,11 @@
                         <p><label>&nbsp;</label><input type="checkbox" id="autologin" name="autologin" value="Yes"> Remember Me on this computer</p>
 
                         <p><button type="submit" id="loginSubmit" class="btn btn-primary">Login</button> <a href="recover.php" id="recoverLink">Forgot Password?</a></p>
+                    
+                    
                     </div>
+                    <div id="registerLink"> Not a member yet?  <a href="register.php"> Register Here </a> </div>
+                    
                 </div>
 
                 <div class="link" > <i class="icon-arrow-left"></i> <a href="index.php">Back to the home page</a></div>

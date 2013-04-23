@@ -4,7 +4,7 @@ ini_set('display_errors',1);
  
   define('MyConst', TRUE);                                // Avoids direct access to config.php
 
-    include "../config/config.php"; 
+    include "php/config.php"; 
 	date_default_timezone_set('UTC');
     
         include_once('php/dscourse.class.php');
@@ -12,6 +12,9 @@ ini_set('display_errors',1);
 		$preProcess = $dscourse->PreProcess($query);
 		
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
+        $userNav = $dscourse->UserInfo($userID); 
+
+
        if(isset($_GET['d'])){                   // Check if discussion id is set. If not send them back to index
            $discID = $_GET['d']; 
            $discussionInfo = $dscourse->DiscussionInfo($discID);

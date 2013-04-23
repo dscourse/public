@@ -1823,10 +1823,23 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
     for (var n = 0; n < main.data.users.length; n++) {
         var userIDName = main.data.users[n].UserID;
         if (userIDName == id) {
+        	var name = main.data.users[n].firstName + " " + main.data.users[n].lastName; 
+            var initials = main.Initials(name); 
             if (size == 'small') {
-                return "<img class='userThumbSmall' src='" + main.data.users[n].userPictureURL + "' />";
+                if(main.data.users[n].userPictureURL){
+               		return "<img class='userThumbSmall' src='" + main.data.users[n].userPictureURL + "' />";	                
+                } else {
+                	var color1 = main.Rainbow();
+	                return "<div class='userThumbSmall' style='background:"+color1+"'> "+initials+" </div>"; 
+                }
             } else if (size == 'tiny') {
-                return "<img class='userThumbTiny' src='" + main.data.users[n].userPictureURL + "' />";
+                if(main.data.users[n].userPictureURL){
+	                return "<img class='userThumbTiny' src='" + main.data.users[n].userPictureURL + "' />";
+	            } else {
+                	var color2 = main.Rainbow();
+		            return "<div class='userThumbTiny' style='background:"+color2+"'> "+initials+" </div>"; 
+
+	            }
             }
         }
     }
@@ -2332,4 +2345,16 @@ Dscourse.prototype.ToTimestamp = function(epoch){
     var s = ("00"+d.getSeconds().toString()).slice(-2);
     
     return y+"-"+m+"-"+da+" "+h+":"+mi+":"+s;
+}
+
+
+Dscourse.prototype.Rainbow = function () {
+    var r = function () { return Math.floor(Math.random()*256) };
+    return "rgb(" + r() + "," + r() + "," + r() + ")";
+}
+
+Dscourse.prototype.Initials = function (fullname) {
+	var matches = fullname.match(/\b(\w)/g);              
+	var initials = matches.join('');                  
+	return initials; 
 }

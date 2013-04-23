@@ -5,7 +5,7 @@ ini_set('display_errors',1);
  
   define('MyConst', TRUE);                                // Avoids direct access to config.php
 
-    include "../config/config.php"; 
+    include "php/config.php"; 
     date_default_timezone_set('UTC');
 		
 		//CHECK IF LTI
@@ -60,6 +60,7 @@ ini_set('display_errors',1);
         // User is logged in, show page. 
         $cID = $_GET["c"];                      // The course ID from link
         $courseInfo = $dscourse->CourseInfo($cID);
+
 		
 	    if(isset($_GET['m'])){
 		  $m = $_GET['m'];
@@ -67,6 +68,9 @@ ini_set('display_errors',1);
 	    }
 	    
        	$userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
+
+        $userNav = $dscourse->UserInfo($userID); 
+
 		
 		if($dscourse->LoadCourse($cID, $userID) == false ) {
 	           header('Location: index.php');                   // The course is set up that this user can't view it. 
@@ -177,7 +181,7 @@ ini_set('display_errors',1);
                 <ul class="nav">
                     <li class="navLevel"><a href="course.php?c=<?php echo $cID; echo ($LTI)?"&lti=true":""; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
                 </ul>
-
+                <a href="index.php" class="brand" id="homeNav">dscourse</a>
                 <ul class="nav pull-right">
                     <li class="dropdown">
                      <?php if(!$LTI){ ?>  <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a> <?php } ?>
@@ -271,7 +275,7 @@ ini_set('display_errors',1);
 
                 <div class="span8">
                     <div id="courseDiscussions">
-                        <h3>Course Discussions
+                        <h3 >Course Discussions
                         <?php if(($currentRole != "Viewer") && ($currentRole == 'Instructor' || $currentRole == 'TA' || (isset($preProcess['options']['studentCreateDisc']) && $preProcess['options']['studentCreateDisc']=="Yes"))){ ?>
 
                          <a href="adddisc.php?c=<?php echo $courseInfo['courseID']?>" id="addDiscussionView" class="btn btn-small"> Add Discussion</a>

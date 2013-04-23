@@ -9,10 +9,9 @@ ini_set('display_errors',1);
     
 	    include_once('php/dscourse.class.php');
 		$query = $_SERVER["REQUEST_URI"];
-		$isIndex = TRUE; 
+		$isIndex = FALSE; 
 		$preProcess = $dscourse->PreProcess($query, $isIndex); 
 	    $userID = $_SESSION['UserID'];			// Allocate userID to use throughout the page
-        $userNav = $dscourse->UserInfo($userID); 
 	     
 	    if(isset($_GET['m'])){
 		  $m = $_GET['m'];
@@ -23,8 +22,6 @@ ini_set('display_errors',1);
 	    $courseData = $dscourse->GetUserCourses($userID);
 	    $totalCourses = count($courseData);
 	    $coursePrint = ''; 
-	    $discussionPrint = ''; 
-	    $discussionCount = 'none'; 
 		$courseQuery = mysql_query("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID=courses.courseID WHERE userID = $userID");
 		$courses = array();
 		while($res = mysql_fetch_assoc($courseQuery)){
@@ -60,32 +57,17 @@ ini_set('display_errors',1);
 					
 						$coursePrint .='<li courseID="'.$cID.'"><a href="course.php?c='.$cID.'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a>  <i>'.$cRole.'</i></li>'; 						
 						// Get discussions for each course
-						$discussionData = $dscourse->GetCourseDiscussions($cID);
-						$totalDiscussions = count($discussionData);
-						if($totalDiscussions > 0){ 
-							$discussionCount = 'some'; 
-							for($j = 0; $j < $totalDiscussions; $j++)
-								{
-									$discID = $discussionData[$j]['dID']; 
-									$discussionName = $discussionData[$j]['dTitle'];  // Name
-									$discussionPrint .='<li discID="'.$cID.'"><a href="discussion.php?d='.$discID.'&c='.$cID.'">'.$discussionName.'</a></li>'; 
-								}						
-						}
+					
 				}
-				if($discussionCount == 'none'){
-						$discussionPrint .= '<div class="alert alert-info">You are not part of any discussions yet.</div>'; 	
-
-				} 	
+	
 			} else {
 			    $coursePrint .= '<div class="alert alert-info">  You are not part of any courses yet. To start a course enter or create a network that you belong to and click Add Course.</div> '; 
-						$discussionPrint .= '<div class="alert alert-info">You are not part of any discussions yet because you don\'t have any courses.</div>'; 	
-
 			}				
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>dscourse</title>
+    <title>dscourse | My Courses</title>
     <?php include('php/header_includes.php');  ?>
     
 	<script type="text/javascript" src="js/counter.js"></script>
@@ -117,10 +99,7 @@ ini_set('display_errors',1);
 		}); 
 	</script>
 	<style>
-		.jumbotron {
-			height: 170px;
-			padding-top: 60px;
-		}
+
 	</style>
     
 </head>
@@ -137,8 +116,6 @@ ini_set('display_errors',1);
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                             <li><a id="profileNav" href="profile.php?u=<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
 
-                            <li><a id="mycourseNav" href="mycourses.php">My Courses</a></li>
-
                             <li><a id="helpNav" href="help.php">Help</a></li>
 
                             <li><a href="php/logout.php">Logout</a></li>
@@ -152,49 +129,32 @@ ini_set('display_errors',1);
     <!-- Begin home.php-->
         <header class="jumbotron subhead">
         <div class="container-fluid">
-            <h1> Welcome to Dscourse </h1>
-            <p>dscourse is a project that aims to provide the next generation platform-agnostic discussion tool for online learning. You are using stable version 1.2; which means you will not lose any data but functional errors may occur from time to time. In such instances please go to the support discussion for help. If you are new to dscourse please read our documentation. </p>
-            <p> <a href="help.php" class="btn btn-small"> Read Documentation </a> <a role="button" class="btn btn-small"> Support Discussion </a> </p>
+            <h1> My Courses </h1>
             
         </div>
     </header>
         
-    <div id="homePage" class=" wrap page" >
+    <div id="myCoursesPage" class=" wrap page" >
         <div class="container-fluid">
             <div class="row-fluid">
 
                 <div class="span4">
-                <h4 class="lightBox"> Placeholder </h4>
+                <h4> Placeholder </h4>
 
                 </div>
-                <div class="span4">
+                <div class="span8">
                 
                     <div class="">
-                        <h4 class="lightBox">My Courses</h4>     <a class="lightBoxLink pull-right" href="addcourse.php"><i class="icon-plus "></i>  Add Course </a>
+                        <h4>My Courses</h4>                         <a class="btn btn-info pull-right" href="addcourse.php"> Add Course </a>
 
                         <hr class="soften">
                         
                         <ul class="unstyled dashboardList" id="courseList">
                         <p><?php echo $coursePrint; ?></p>
-                        <li class="lightBoxListEnd"> <a href="mycourses.php" class="pull-right"> See all...</a> </li>
                         </ul>
 
                     </div>
                  </div>
-                <div class="span4">                                                          
-                    <div class="">
-                        <h4 class="lightBox">My Discussions</h4>
-                        <hr class="soften">
-
-                        <p></p>
-
-                        <ul class="unstyled dashboardList" id="discussionList">
-	                        <?php echo $discussionPrint; ?>
-                        </ul>
-                        <p>
-
-                    </div>
-                </div>
             </div>
         </div><!-- close container -->
     </div><!-- end home-->

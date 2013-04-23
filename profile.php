@@ -5,7 +5,7 @@ ini_set('display_errors',1);
  
   define('MyConst', TRUE);                                // Avoids direct access to config.php
 
-    include "../config/config.php"; 
+    include "php/config.php"; 
     
         include_once('php/dscourse.class.php');
 		$query = $_SERVER["REQUEST_URI"];
@@ -14,7 +14,8 @@ ini_set('display_errors',1);
         $uID = $_GET["u"];                      // The user ID from link
         
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
-        
+        $userNav = $dscourse->UserInfo($userID); 
+      
         // GET Info About This User
         $userInfo = $dscourse->UserInfo($uID);
 
