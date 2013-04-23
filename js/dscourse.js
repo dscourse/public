@@ -872,7 +872,11 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
 
     //clear recent posts
     $('#recentContent').html('');
-    var timeSince = main.GetUniformDate(lastView);
+    var timeSince;
+    if(lastView!="never")
+        timeSince = main.GetUniformDate(lastView, false);
+    else    
+        timeSince = "never";        
     
     for ( j = 0; j < main.data.posts.length; j++) {// Go through all the posts
         d = main.data.posts[j];
@@ -1028,7 +1032,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
             }*/
             var pTime = main.GetUniformDate(d.postTime);
             //if this was posted since the user last viewed the discussion
-            if(pTime > timeSince){
+            if(timeSince!="never" && pTime > timeSince){
                 var t = new Date(0);
                 t.setUTCMilliseconds(main.GetUniformDate(d.postTime));
                 var prettyTime = jQuery.timeago(t);
@@ -1036,7 +1040,14 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
                 var activityContent = '<li postid="' + d.postID + '">' + main.getAuthorThumb(d.postAuthorId, 'tiny') + ' ' + authorID + ' ' + typeText + ' <b>' + shortMessage + '</b> ' + '<em class="timeLog">' + prettyTime + '<em></li> ';
                 $('#recentContent').prepend(activityContent);
             }
-
+            else if(timeSince=="never" && $('#recentContent').children().length < 9){
+                var t = new Date(0);
+                t.setUTCMilliseconds(main.GetUniformDate(d.postTime));
+                var prettyTime = jQuery.timeago(t);
+                var shortMessage = main.truncateText(message, 60);
+                var activityContent = '<li postid="' + d.postID + '">' + main.getAuthorThumb(d.postAuthorId, 'tiny') + ' ' + authorID + ' ' + typeText + ' <b>' + shortMessage + '</b> ' + '<em class="timeLog">' + prettyTime + '<em></li> ';
+                $('#recentContent').prepend(activityContent);
+            }
             /********** UNIQUE PARTICIPANTS SECTION ***********/
             var arrayState = jQuery.inArray(d.postAuthorId, main.uParticipant);
             // Chech if author is in array
@@ -1057,7 +1068,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
     }
     else{
         //Build the recentPosts header
-        $('#recentPostsHeader').html("Posts since you visited "+jQuery.timeago(new Date(main.GetUniformDate(lastView))));
+        $('#recentPostsHeader').html("Posts since you visited "+jQuery.timeago(new Date(main.GetUniformDate(lastView, false))));
     }
 
     if (synthesisCount == 'some') {

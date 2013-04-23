@@ -656,7 +656,7 @@ class Dscourse {
 								$cMember = TRUE;
 							}
 							else{
-								if(array_search($role, $roles) < 2){
+								if(array_search($role, $roles) > 2){
 									$q = mysql_query("UPDATE courseRoles SET userRole='Student' WHERE (courseID=$cID AND userID=$uID)");
 									if($q ==FALSE){
 										exit("Check query syntax for courseRole update in preProcessor");
@@ -801,6 +801,7 @@ class Dscourse {
 					$launch -> user -> attrs['uID'] = $uId;
 					$launch -> props['discID'] = $discId;
 					$launch -> props['courseId'] = $courseId;
+					$_SESSION['LTI'] = TRUE;
 					return $launch;
 				}
 			return FALSE;
