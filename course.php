@@ -53,7 +53,7 @@ ini_set('display_errors',1);
 		$query = $_SERVER["REQUEST_URI"];
 	}
 	$preProcess = $dscourse->PreProcess($query);	
-	if(isset($_REQUEST['lti'])){
+	if(isset($_SESSION['LTI']) && $_SESSION['LTI']==TRUE){
 		$LTI = TRUE;
 	}
 	
@@ -129,8 +129,12 @@ ini_set('display_errors',1);
 					$numberofPosts= $dscourse->CountPosts($discID); 
 					if($currentRole == 'Instructor' || $currentRole == 'TA'){
 						$discEdit = '<a href="editdisc.php?d='.$discID.'&c='.$cID.'" class="btn btn-info btn-small">Edit</a> ';  
-					} else { $discEdit = ''; }
-					$discPrint .= '<tr><td><a href="discussion.php?d='.$discID.'&c='.$cID.'&lti=true"> '.$discName.'</a></td><td>'.$status.'</td><td>'.$numberofPosts.'</td><td>'.$discEdit.' </td></tr>'; 
+					} 
+					else {
+						 $discEdit = ''; 
+					}
+					$lti = ($LTI)?"&lti=true":"";
+					$discPrint .= '<tr><td><a href="discussion.php?d='.$discID.'&c='.$cID.$lti.'">'.$discName.'</a></td><td>'.$status.'</td><td>'.$numberofPosts.'</td><td>'.$discEdit.' </td></tr>'; 
 		}
 ?>
 <!DOCTYPE html>

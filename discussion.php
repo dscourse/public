@@ -53,7 +53,7 @@ ini_set('display_errors',1);
 	}
 	$preProcess = $dscourse->PreProcess($query);
 	$crumbs = FALSE;
-	if(isset($_REQUEST['lti'])){
+	if(isset($_SESSION['LTI']) && $_SESSION['LTI']==TRUE){
 		$LTI = TRUE;	
 		$crumbs = TRUE;
 	}
@@ -93,10 +93,14 @@ ini_set('display_errors',1);
 		$currentSession = session_id(); 
 	   // Show content
 		//get last view log time
-		$query ="SELECT logTime FROM logs WHERE logUserID = $uId && logPageID = $discId ORDER BY logTime DESC LIMIT 1";
+		$query ="SELECT logTime FROM logs WHERE logUserID = $uId AND logPageID = $discId AND logAction = 'view' ORDER BY logTime DESC LIMIT 1";
 		$q = mysql_query($query);
 		$res = mysql_fetch_assoc($q);
-		$lastView = $res['logTime'];
+		$lastView;
+		if(count($res) > 0)
+			$lastView = $res['logTime'];
+		else 
+			$lastView = "never";
 ?>
 <!DOCTYPE html>
 
@@ -169,9 +173,9 @@ ini_set('display_errors',1);
         <header class="jumbotron subhead">
             <div class="container-fluid">
                 <div class="btn-toolbar" id="toolbox">
-                	<?php if($preProcess['options']['useTimeline'] == "Yes"){ ?>
+                	<?php if(isset($preProcess['options']['useTimeline']) && $preProcess['options']['useTimeline'] == "Yes"){ ?>
                     <button id="showTimeline" class="btn btn-small btn-info">Timeline</button> <?php } ?>
-                    <?php if($preProcess['options']['useSynthesis'] == "Yes"){ ?>
+                    <?php if(isset($preProcess['options']['useSynthesis']) && $preProcess['options']['useSynthesis'] == "Yes"){ ?>
                     <button id="showSynthesis" class="btn btn-small btn-warning">Connected Posts</button> <?php } ?>
                     <?php if($preProcess['status']=="OK"){ ?>
                     <button id="" class="btn btn-small btn-success sayBut2" postid="0"><i class="icon-comment icon-white"></i> Say</button> <input id="dIDhidden" type="hidden" name="discID" value="">
@@ -191,7 +195,7 @@ ini_set('display_errors',1);
             <div class="row-fluid" id="controlsRow">
                 <div class="span12" id="dFooter">
                     <div id="controlsWrap">
-                    	<?php if($preProcess['options']['useTimeline'] == "Yes"){ ?>
+                    	<?php if(!isset($preProcess['options']['useTimeline']) || ($preProcess['options']['useTimeline'] == "Yes")){ ?>
                         <div id="timeline" class="">
                             <div id="slider-range">
                                 <div id="dots"></div>
@@ -205,7 +209,7 @@ ini_set('display_errors',1);
             <div class="row-fluid" id="dRowMiddle">
                 <div class="span4 ">
                     <div id="row-fluid">
-                    	<?php if($preProcess['options']['showInfo']=="Yes"){ ?>
+                    	<?php if(!isset($preProcess['options']['showInfo']) || ($preProcess['options']['showInfo']=="Yes")){ ?>
                         <div class="span11" id="dSidebar">
                             <div class="dCollapse" id="dInfo">
                                 <span class="boxHeaders"><span id="dTitleView"></span></span><br /> <!--
