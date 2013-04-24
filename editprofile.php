@@ -227,7 +227,7 @@ $(function(){
             </div>
 
             <div class="span2">
-                <a href="profile.php?u=<?php echo $userID; ?>" id="cancelEditButton" class="btn">Cancel</a> <button id="submitEditButton" type="submit" class="btn">Submit</button>
+                <a href="profile.php?u=<?php echo $userID; ?>" id="cancelEditButton" class="btn">Cancel</a> <button id="submitEditButton" type="submit" class="btn">Save</button>
             </div>
         </form>	
           
