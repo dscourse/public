@@ -202,18 +202,7 @@ ini_set('display_errors',1);
         <header class="jumbotron subhead">
             <div class="container-fluid">
 	            <div class="row-fluid">
-		            <div class="span3">
-		            	<div id="iCoursePicture"><img src="<?php 
-		            	
-					if($courseInfo['courseImage'] != ''){
-						$courseImage= $courseInfo['courseImage'];
-					} else {
-						$courseImage= 'img/course_default.jpg';					
-					}
-							            	
-		            	echo $courseImage ?>" /> </div>
-		            </div>
-	                <div class="span9">
+	                <div class="span12">
 							<h1><?php echo $courseInfo['courseName']; ?></h1>
 							<p><?php echo $courseInfo['courseDescription']; ?></p>
 							<div id="editCourseButton" class="pull-right">
@@ -232,7 +221,15 @@ ini_set('display_errors',1);
             <div class="row-fluid">
                 <div class="span4">
 
-                    
+                    	<div id="iCoursePicture"><img src="<?php 
+		            	
+					if($courseInfo['courseImage'] != ''){
+						$courseImage= $courseInfo['courseImage'];
+					} else {
+						$courseImage= 'img/course_default.jpg';					
+					}
+							            	
+		            	echo $courseImage ?>" /> </div>
 
                     <div id="iCourseInfo">
                         <table class="table">
