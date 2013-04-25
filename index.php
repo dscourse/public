@@ -19,7 +19,8 @@ ini_set('display_errors',1);
 		  $message = $dscourse->Messages($m);    
 	    }
 	    
-	    
+	    $actions = $dscourse->GetRecentActivity($userID, 8);
+		
 	    $courseData = $dscourse->GetUserCourses($userID);
 	    $totalCourses = count($courseData);
 	    $coursePrint = ''; 
@@ -95,6 +96,7 @@ ini_set('display_errors',1);
 		    <?php echo "var currentUserStatus = '" .  $_SESSION['status'] . "';"; ?>
 		    <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
 		    <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
+		    <?php echo "var actions = ".json_encode($actions).";"; ?>
 			
 			<?php 
 			if(isset($_GET['m'])){
