@@ -2,7 +2,7 @@
     define('MyConst', TRUE);    // Avoids direct access to config.php
     include "php/config.php";   
 	date_default_timezone_set('UTC');
-
+	
 	if(isset($_GET['r'])){
 		$redirect = $_GET['r']; 
 	} else {

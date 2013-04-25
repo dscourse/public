@@ -830,7 +830,53 @@ class Dscourse {
 			$result = array_slice($result, 0, $limit);
 		return $result;
 	}
-
+	
+	public function GetRecentActivity($user = null, $length = 10){
+		if($user==null)
+			$user = ((isset($_SESSION['UserID']))?$_SESSION['UserID']:FALSE);
+		if($user==FALSE)
+			return -1;
+		
+		$actions = array();
+		
+		$q = "SELECT `courses`.`courseID`, `courses`.`courseName` FROM `courses` INNER JOIN `courseRoles` on `courses`.`courseID` = `courseRoles`.`courseID` WHERE `courseRoles`.`userRole` != 'Blocked'";
+		$courses = mysql_query($q);
+		if($courses === FALSE)
+			return -1;
+		// now we have an array of [courseID, courseName]
+		while($row = mysql_fetch_assoc($courses)){
+			$cID = $row['courseID'];
+			$q = "SELECT dID, dTitle FROM discussions INNER JOIN courseDiscussions on discussions.dID = courseDiscussions.discussionID WHERE courseDiscussions.courseID = $cID";
+			$discs = mysql_query($q);
+			if($discs===FALSE)
+				return -1;
+			while($d_row = mysql_fetch_assoc($discs)){
+				$dID = $d_row['dID'];
+				//find out when the user last visited this disucssion
+				$lv = "SELECT logTime from logs WHERE logAction = 'view' AND logUserID = $user AND logPageID = $dID ORDER BY logTime DESC LIMIT 1";
+				$last = mysql_query($lv); 
+				$lastView = mysql_fetch_assoc($last);
+				if(empty($lastView)){
+					//do something
+				}
+				$q = "SELECT postAuthorID, postMessage, postTime FROM posts WHERE postID IN (SELECT logActionID FROM logs INNER JOIN discussionPosts ON discussionPosts.postID = logs.logActionID WHERE logs.logAction = 'addPost' AND logs.logTime > '$lastView' AND logs.logPageID = $dID)";
+				$posts = mysql_query($q);
+				if($posts === FALSE){
+					echo "error";
+					return -1;
+				}
+				while($p_row = mysql_fetch_assoc($posts)){
+					array_push($actions, array('action'=>'post','actionTime'=>$p_row['postTime'], 'context'=>'discussion', 'contextID'=>$dID, 'agentID'=>$p_row['postAuthorID'], 'content'=>substr($p_row['postMessage'],0,120)));
+				}
+			}
+		}
+		usort($actions, function($a,$b){
+			return strtotime($b['actionTime']) - strtotime($a['actionTime']);
+		});
+		$actions = array_slice($actions,0,$length);
+		
+		return $actions;
+	}
 }// Closing class
 
 $dscourse = new Dscourse();
