@@ -113,9 +113,9 @@ ini_set('display_errors',1);
 			}
 			?>	
 
-
+			$.each(actions, function(i, val){
 				
-		
+			});		
 		}); 
 	</script>
 	<style>
@@ -166,11 +166,15 @@ ini_set('display_errors',1);
             <div class="row-fluid">
 
                 <div class="span4">
-                <h4 class="lightBox"> Placeholder </h4>
-
+                	<div class="">
+                		<h4 class="lightBox"> News Feed </h4>
+                		<ul class="unstyled dashboardList" id="newsFeed">
+                        <p></p>
+                        <li class="lightBoxListEnd"> </li>
+                        </ul>
+					 </div>
                 </div>
                 <div class="span4">
-                
                     <div class="">
                         <h4 class="lightBox">My Courses</h4>     <a class="lightBoxLink pull-right" href="addcourse.php"><i class="icon-plus "></i>  Add Course </a>
 
@@ -182,7 +186,7 @@ ini_set('display_errors',1);
                         </ul>
 
                     </div>
-                 </div>
+                </div>
                 <div class="span4">                                                          
                     <div class="">
                         <h4 class="lightBox">My Discussions</h4>

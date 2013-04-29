@@ -181,7 +181,6 @@ ini_set('display_errors',1);
                 <ul class="nav">
                     <li class="navLevel"><a href="course.php?c=<?php echo $cID; echo ($LTI)?"&lti=true":""; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
                 </ul>
-                <a href="index.php" class="brand" id="homeNav">dscourse</a>
                 <ul class="nav pull-right">
                     <li class="dropdown">
                      <?php if(!$LTI){ ?>  <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a> <?php } ?>

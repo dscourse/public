@@ -831,7 +831,7 @@ class Dscourse {
 		return $result;
 	}
 	
-	public function GetRecentActivity($user = null, $length = 10){
+	public function GetRecentActivity($user = null, $length = 20){
 		if($user==null)
 			$user = ((isset($_SESSION['UserID']))?$_SESSION['UserID']:FALSE);
 		if($user==FALSE)
@@ -850,6 +850,8 @@ class Dscourse {
 			$discs = mysql_query($q);
 			if($discs===FALSE)
 				return -1;
+			//when course memberships are available in logs
+			
 			while($d_row = mysql_fetch_assoc($discs)){
 				$dID = $d_row['dID'];
 				//find out when the user last visited this disucssion
@@ -857,7 +859,8 @@ class Dscourse {
 				$last = mysql_query($lv); 
 				$lastView = mysql_fetch_assoc($last);
 				if(empty($lastView)){
-					//do something
+					//if this person has never seen the discussion, we should use the membership log to get all of the content since they were added as a member
+					break;
 				}
 				$q = "SELECT postAuthorID, postMessage, postTime FROM posts WHERE postID IN (SELECT logActionID FROM logs INNER JOIN discussionPosts ON discussionPosts.postID = logs.logActionID WHERE logs.logAction = 'addPost' AND logs.logTime > '$lastView' AND logs.logPageID = $dID)";
 				$posts = mysql_query($q);
