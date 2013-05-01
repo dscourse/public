@@ -318,11 +318,5 @@ ini_set('display_errors',1);
             </div><!-- close row -->
         </div><!-- close container -->
     </div><!-- close coursePage -->
-
-
-        <?php
-
-            
-    ?>
 </body>
 </html>

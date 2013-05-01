@@ -36,13 +36,24 @@ function Dscourse(lti) {
     // A string of the posts for a discussion that are new when refreshed. This variable is used to transfer post ids between functions.
     var discSettings = $.parseJSON(settings)
     var options = settings.options;
-    this.options = {
-        charLimit : parseInt(options.charLimit),
-        synthesis : (options.useSynthesis=="Yes")?true:false,
-        infoPanel : (options.showInfo=="Yes")?true:false,
-        media : true,
-        timeline : (options.useTimeline=="Yes")?true:false
-    };
+    if(options.length >0 ){
+        this.options = {
+            charLimit : parseInt(options.charLimit),
+            synthesis : (options.useSynthesis=="Yes")?true:false,
+            infoPanel : (options.showInfo=="Yes")?true:false,
+            media : true,
+            timeline : (options.useTimeline=="Yes")?true:false
+        };
+    }
+    else{
+        this.options = {
+            charLimit : 500,
+            synthesis : true,
+            infoPanel : true,
+            media : true,
+            timeline : true
+        }
+    }
     this.charCount = true;
     //lti
     this.lti = lti;
@@ -742,7 +753,6 @@ function Dscourse(lti) {
         top.VerticalHeatmap();
 
     });
-
 }// End function Dscourse()
 
 
@@ -1127,6 +1137,13 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
     });
     main.DiscResize();
     main.VerticalHeatmap();
+    if(typeof goTo != "undefined" && main.init){
+        var p = $('.threadText[level='+goTo+']');
+        p.click();
+        $('#dMain').scrollTo(p, 400, {
+            offset : -100
+        });   
+    }
 }
 
 Dscourse.prototype.AddPost = function() {

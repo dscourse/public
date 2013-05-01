@@ -26,23 +26,11 @@ ini_set('display_errors',1);
 	    $coursePrint = ''; 
 	    $discussionPrint = ''; 
 	    $discussionCount = 'none'; 
-		$courseQuery = mysql_query("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID=courses.courseID WHERE userID = $userID");
-		$courses = array();
-		while($res = mysql_fetch_assoc($courseQuery)){
-			array_push($courses, $res);
+		$courseQuery = mysql_query("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID=courses.courseID WHERE userID = $userID AND courseRoles.userRole != 'Blocked' ORDER BY courseRoles.courseRoleTime DESC LIMIT 8");
+		$filtered = array();
+		while($row = mysql_fetch_assoc($courseQuery)){
+			array_push($filtered, $row);
 		}
-		$filtered = $dscourse->SuperSort($courses, 
-			function($entry){
-				return !($entry['userRole']=="blocked" || $entry['userRole']=="Blocked");
-			}, 
-			function($a,$b){
-				$d1=new DateTime($a['courseTime']);
-				$d2=new DateTime($b['courseTime']);
-				$inter= $d1->diff($d2);
-				return $inter->invert == 0;
-			},
-		10);
-		
 		$totalCourses =count($filtered);
 		$courseData = $filtered;
 		
@@ -81,7 +69,7 @@ ini_set('display_errors',1);
 			    $coursePrint .= '<div class="alert alert-info">  You are not part of any courses yet. To start a course enter or create a network that you belong to and click Add Course.</div> '; 
 						$discussionPrint .= '<div class="alert alert-info">You are not part of any discussions yet because you don\'t have any courses.</div>'; 	
 
-			}				
+			}	
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -114,7 +102,8 @@ ini_set('display_errors',1);
 			?>	
 
 			$.each(actions, function(i, val){
-				
+				var msg = [val.agentLabel, val.action+"ed", "in your", val.context, val.contextLabel].join(" ");
+				$('#newsFeed').append("<li actionsIndex=\""+i+"\">"+msg+"<br /><a href=\"/"+val.actionPath+"\">Click to view</a></li>");	
 			});		
 		}); 
 	</script>

@@ -122,6 +122,10 @@ ini_set('display_errors',1);
             <?php echo "var currentSession = '" . $currentSession . "';"; ?>
             <?php echo "var settings = '".json_encode($preProcess) . "';";?>
             <?php echo "var lastView = '$lastView';";?> 
+            <?php if(isset($_REQUEST['p'])){
+            	$pID = $_REQUEST['p'];
+				echo "var goTo='$pID';";
+            }?>
     </script>
 </head>
 

@@ -614,6 +614,7 @@ class Dscourse {
 		//we only need to protect courses and discussions
 		if ($location == "course.php" || $location == "discussion.php") {
 			$cID = $args['c'];
+			
 			// Check courseRole 
 			$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
 			$res = mysql_fetch_assoc($a);
@@ -685,7 +686,6 @@ class Dscourse {
 			while ($res = mysql_fetch_assoc($a)) {
 				$courseOptions[$res['optionsName']] = $res['optionsValue'];
 			}
-			
 			if(!$cMember){
 				//User lacks valid access code and is not a course member
 				header("Location: info.php");
@@ -839,37 +839,40 @@ class Dscourse {
 		
 		$actions = array();
 		
-		$q = "SELECT `courses`.`courseID`, `courses`.`courseName` FROM `courses` INNER JOIN `courseRoles` on `courses`.`courseID` = `courseRoles`.`courseID` WHERE `courseRoles`.`userRole` != 'Blocked'";
+		$q = "SELECT courses.courseID, courses.courseName FROM courses INNER JOIN courseRoles on courses.courseID = courseRoles.courseID WHERE courseRoles.userRole != 'Blocked' AND courseRoles.userID = $user";
 		$courses = mysql_query($q);
 		if($courses === FALSE)
 			return -1;
 		// now we have an array of [courseID, courseName]
 		while($row = mysql_fetch_assoc($courses)){
 			$cID = $row['courseID'];
-			$q = "SELECT dID, dTitle FROM discussions INNER JOIN courseDiscussions on discussions.dID = courseDiscussions.discussionID WHERE courseDiscussions.courseID = $cID";
+			$q = "SELECT dID, dTitle, courseDiscussions.courseDiscussionTime FROM discussions INNER JOIN courseDiscussions on discussions.dID = courseDiscussions.discussionID WHERE courseDiscussions.courseID = $cID";
 			$discs = mysql_query($q);
 			if($discs===FALSE)
 				return -1;
 			//when course memberships are available in logs
-			
 			while($d_row = mysql_fetch_assoc($discs)){
 				$dID = $d_row['dID'];
 				//find out when the user last visited this disucssion
 				$lv = "SELECT logTime from logs WHERE logAction = 'view' AND logUserID = $user AND logPageID = $dID ORDER BY logTime DESC LIMIT 1";
 				$last = mysql_query($lv); 
 				$lastView = mysql_fetch_assoc($last);
+				$lastView = $lastView['logTime'];
 				if(empty($lastView)){
-					//if this person has never seen the discussion, we should use the membership log to get all of the content since they were added as a member
-					break;
+					$lastView = $d_row['courseDiscussionTime'];					
 				}
-				$q = "SELECT postAuthorID, postMessage, postTime FROM posts WHERE postID IN (SELECT logActionID FROM logs INNER JOIN discussionPosts ON discussionPosts.postID = logs.logActionID WHERE logs.logAction = 'addPost' AND logs.logTime > '$lastView' AND logs.logPageID = $dID)";
+				$q = "SELECT postAuthorID, postMessage, postTime, users.firstName, postID FROM posts INNER JOIN users ON posts.postAuthorID = users.userID WHERE postID IN (SELECT logActionID FROM logs INNER JOIN discussionPosts ON discussionPosts.postID = logs.logActionID WHERE logs.logAction = 'addPost' AND logs.logTime > '$lastView' AND logs.logPageID = $dID)";
 				$posts = mysql_query($q);
 				if($posts === FALSE){
 					echo "error";
 					return -1;
 				}
 				while($p_row = mysql_fetch_assoc($posts)){
-					array_push($actions, array('action'=>'post','actionTime'=>$p_row['postTime'], 'context'=>'discussion', 'contextID'=>$dID, 'agentID'=>$p_row['postAuthorID'], 'content'=>substr($p_row['postMessage'],0,120)));
+					$route = $_SERVER['REQUEST_URI'];
+					$route = preg_replace('/\/\w*?\.php$/', '', $route);
+					$route = substr($route, 1);
+					$path = $route."/discussion.php?c=".$cID."&d=".$dID."&p=".$p_row['postID'];
+					array_push($actions, array('action'=>'post','actionTime'=>$p_row['postTime'], 'context'=>'discussion', 'contextLabel'=>$d_row['dTitle'] ,'contextID'=>$dID, 'agentLabel'=> $p_row['firstName'],'agentID'=>$p_row['postAuthorID'], 'content'=>substr($p_row['postMessage'],0,120), 'actionPath'=>$path));
 				}
 			}
 		}
