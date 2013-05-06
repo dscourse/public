@@ -12,7 +12,7 @@ ini_set('display_errors',1);
 		$LTI = FALSE;
 	
 	include_once('php/dscourse.class.php');
-	$launch = $dscourse->LTI();
+	$launch = $dscourse->LTI("course");
 	if($launch != FALSE){
 		$LTI = TRUE;
 	}
@@ -53,7 +53,7 @@ ini_set('display_errors',1);
 		$query = $_SERVER["REQUEST_URI"];
 	}
 	$preProcess = $dscourse->PreProcess($query);	
-	if(isset($_SESSION['LTI']) && $_SESSION['LTI']==TRUE){
+	if(isset($_SESSION['LTI']) && $_SESSION['LTI']=="course"){
 		$LTI = TRUE;
 	}
 	
@@ -181,8 +181,8 @@ ini_set('display_errors',1);
                 <ul class="nav">
                     <li class="navLevel"><a href="course.php?c=<?php echo $cID; echo ($LTI)?"&lti=true":""; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
                 </ul>
-                <a href="index.php" class="brand" id="homeNav">dscourse</a>
-                <ul class="nav pull-right">
+               <!-- <a href="index.php" class="brand" id="homeNav">dscourse</a> --> 
+                               <ul class="nav pull-right">
                     <li class="dropdown">
                      <?php if(!$LTI){ ?>  <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a> <?php } ?>
 
