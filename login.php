@@ -139,6 +139,11 @@
 
         
     </script>
+    <style >
+    	body {
+	    	background: #f5f5f5;
+    	} 
+    </style>
 </head>
 
 <body class="login-page">

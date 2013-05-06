@@ -181,8 +181,12 @@ ini_set('display_errors',1);
                 <ul class="nav">
                     <li class="navLevel"><a href="course.php?c=<?php echo $cID; echo ($LTI)?"&lti=true":""; ?>" id="coursesNav"><?php echo $courseInfo['courseName']; ?></a></li>
                 </ul>
+<<<<<<< .merge_file_ejHN0u
                <!-- <a href="index.php" class="brand" id="homeNav">dscourse</a> --> 
                                <ul class="nav pull-right">
+=======
+                <ul class="nav pull-right">
+>>>>>>> .merge_file_FR8bEu
                     <li class="dropdown">
                      <?php if(!$LTI){ ?>  <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a> <?php } ?>
 
@@ -206,18 +210,7 @@ ini_set('display_errors',1);
         <header class="jumbotron subhead">
             <div class="container-fluid">
 	            <div class="row-fluid">
-		            <div class="span3">
-		            	<div id="iCoursePicture"><img src="<?php 
-		            	
-					if($courseInfo['courseImage'] != ''){
-						$courseImage= $courseInfo['courseImage'];
-					} else {
-						$courseImage= 'img/course_default.jpg';					
-					}
-							            	
-		            	echo $courseImage ?>" /> </div>
-		            </div>
-	                <div class="span9">
+	                <div class="span12">
 							<h1><?php echo $courseInfo['courseName']; ?></h1>
 							<p><?php echo $courseInfo['courseDescription']; ?></p>
 							<div id="editCourseButton" class="pull-right">
@@ -236,7 +229,15 @@ ini_set('display_errors',1);
             <div class="row-fluid">
                 <div class="span4">
 
-                    
+                    	<div id="iCoursePicture"><img src="<?php 
+		            	
+					if($courseInfo['courseImage'] != ''){
+						$courseImage= $courseInfo['courseImage'];
+					} else {
+						$courseImage= 'img/course_default.jpg';					
+					}
+							            	
+		            	echo $courseImage ?>" /> </div>
 
                     <div id="iCourseInfo">
                         <table class="table">
@@ -322,11 +323,5 @@ ini_set('display_errors',1);
             </div><!-- close row -->
         </div><!-- close container -->
     </div><!-- close coursePage -->
-
-
-        <?php
-
-            
-    ?>
 </body>
 </html>

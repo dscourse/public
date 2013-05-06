@@ -219,7 +219,7 @@ ini_set('display_errors',1);
                         <div class="control-group settingBox saveOption">
                                 <label class="control-label" for="viewCode"><b>URL to View Course</b></label>
                                 <div class="controls" id="viewCode">
-                                    <input type="text" class="span10 disabled" id="viewCodeInput" name="viewCode" value="<?php  echo "http://".$_SERVER['HTTP_HOST'].join("/",array_slice(explode('/',$_SERVER['REQUEST_URI']),0,-1))."/router.php?a=".$dscourse->OptionValue($courseOptions, 'viewCode');?>" readonly>
+                                    <input type="text" class="span10 disabled" id="viewCodeInput" name="viewCode" value="<?php  echo "http://".$_SERVER['HTTP_HOST'].join("/",array_slice(explode('/',$_SERVER['REQUEST_URI']),0,-1))."/go.php?a=".$dscourse->OptionValue($courseOptions, 'viewCode');?>" readonly>
 									<div class="btn-group" data-toggle="buttons-radio" >
 									  <button type="button" class="btn <?php  if($dscourse->OptionValue($courseOptions, 'viewCode', 'viewAttr') == 'On'){echo 'active'; };?>" id="viewCodeOn">On</button>
 									  <button type="button" class="btn <?php  if($dscourse->OptionValue($courseOptions, 'viewCode', 'viewAttr') == 'Off' ){echo 'active'; };?>" id="viewCodeOff">Off</button>
@@ -231,7 +231,7 @@ ini_set('display_errors',1);
                         <div class="control-group settingBox saveOption">
                                 <label class="control-label" for="registerCode"><b>URL to Register for Course</b></label>
                                 <div class="controls" id="registerCode">
-                                    <input type="text" class="span10 disabled" id="registerCodeInput" name="registerCode" value="<?php echo "http://".$_SERVER['HTTP_HOST'].join("/",array_slice(explode('/',$_SERVER['REQUEST_URI']),0,-1))."/router.php?a=".$dscourse->OptionValue($courseOptions, 'registerCode');  ?>" disabled>
+                                    <input type="text" class="span10 disabled" id="registerCodeInput" name="registerCode" value="<?php echo "http://".$_SERVER['HTTP_HOST'].join("/",array_slice(explode('/',$_SERVER['REQUEST_URI']),0,-1))."/go.php?a=".$dscourse->OptionValue($courseOptions, 'registerCode');  ?>" disabled>
 									<div class="btn-group" data-toggle="buttons-radio" >
 									  <button type="button" class="btn <?php  if($dscourse->OptionValue($courseOptions, 'registerCode', 'registerAttr') == 'On'){echo 'active'; };?>" id="registerCodeOn">On</button>
 									  <button type="button" class="btn <?php  if($dscourse->OptionValue($courseOptions, 'registerCode', 'registerAttr') == 'Off' ){echo 'active'; };?>" id="registerCodeOff">Off</button>

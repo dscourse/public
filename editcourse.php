@@ -325,8 +325,11 @@ $(function(){
                                 </div>
                             </div>
                             <hr class="soften">
-                            <button type="submit" name="submitEditCourse" id="submitEditCourse" class="btn btn-primary pull-right">Edit Course </button>
+                            <button type="submit" name="submitEditCourse" id="submitEditCourse" class="btn btn-primary pull-right">Save</button>
                         </form>
+                        <div>
+                        <hr class="soften" />
+                        </div>
                     </div>
                 </div>
             </div>

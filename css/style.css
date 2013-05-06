@@ -91,7 +91,8 @@ margin-right: 3px;
 }
 
 .navLevel {
-	background:url(../img/smallArrow.png) no-repeat left;
+background:url(../img/right_arr.png) no-repeat left;
+padding-left: 10px; 
 }
 
 .nav li a:hover {
@@ -190,7 +191,7 @@ margin-right: 3px;
   
   .lightBox {
 	  background: #eee;
-padding: 20px;
+padding: 15px;
 margin-bottom: -20px;
   }
   
@@ -249,13 +250,28 @@ box-shadow: inset 0px 0px 14px 0px #CCC;
  /********** login.php  ************/
 
 .authForms{
-background: rgba(226, 226, 226, 0.28);
-padding: 0px 30px;
-border: 1px dashed #ccc;	
+background: #fff;
+max-width: 300px;
+padding: 19px 29px 29px;
+background-color: #fff;
+border: 1px solid #e5e5e5;
+order: 1px solid #e5e5e5;
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+-moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+box-shadow: 0 1px 2px rgba(0,0,0,.05);
 }
 .authForms h1 {
 text-align: center;
 color: #222;	
+}
+
+.authForms input[type="text"], .authForms input[type="password"]{
+	padding: 10px;
+width: 260px;
+font-size: 18px;
 }
 
 .authForms .link {

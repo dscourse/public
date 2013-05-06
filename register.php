@@ -76,6 +76,11 @@ date_default_timezone_set('UTC');
 
         
     </script>
+        <style >
+    	body {
+	    	background: #f5f5f5;
+    	} 
+    </style>
 </head>
 
 <body class="login-page">
