@@ -11,7 +11,7 @@ ini_set('display_errors',1);
 	$LTI = FALSE;
 	
 	include_once('php/dscourse.class.php');
-	$launch = $dscourse->LTI();
+	$launch = $dscourse->LTI("discussion");
 	if($launch != FALSE){
 		$LTI = TRUE;
 	}
@@ -53,8 +53,8 @@ ini_set('display_errors',1);
 	}
 	$preProcess = $dscourse->PreProcess($query);
 	$crumbs = FALSE;
-	if(isset($_SESSION['LTI']) && $_SESSION['LTI']==TRUE){
-		$LTI = TRUE;	
+	if(isset($_SESSION['LTI']) && $_SESSION['LTI'] == "course"){
+		$LTI = TRUE;
 		$crumbs = TRUE;
 	}
         $uId = $_SESSION['UserID'];           // Allocate userID to use throughout the page

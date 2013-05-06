@@ -709,42 +709,90 @@ class Dscourse {
 		return array("status"=>$status, "role"=>$role, "options"=>$courseOptions);
 	}
 
-	public function LTI() {
+	public function LTI($from) {
+		//we serve two flavors of LTI
+		//1. Enter through disc, get one continuous discussion		
+		//2. Enter through course, get course-level access
+			
 		if($_SERVER['REQUEST_METHOD'] == "POST"){
-					$courseId;
-					$LTI = TRUE;
-					include "lti.php";
-					$launch = parseLTIrequest(http_build_query($_REQUEST));
-					if (!$launch) {
-						return FALSE;
+				$courseId;
+				$LTI = TRUE;
+				include "lti.php";
+				$launch = parseLTIrequest(http_build_query($_REQUEST));
+				if (!$launch) {
+					return FALSE;
+				}
+				include_once "data.php";
+				// CHECK if User exists
+				$q = strtolower($launch -> user -> attrs['username']);
+				$user = mysql_query("SELECT * FROM users WHERE username = '$q'");
+				$u = mysql_fetch_assoc($user);
+				if ($user != FALSE && empty($u)) {
+					//Create user if necessary
+					$chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+					$dummy = "";
+					for($i=0;$i<6;$i++){
+						$dummy.=$chars[rand(0,count($chars)-1)];
 					}
-					include_once "data.php";
-					//CHECK if Course Exists
-					$c = $launch -> params['courseName'];
-					$course = mysql_query("SELECT * FROM courses WHERE courseName = '" . $c . "'");
-					$a = mysql_fetch_assoc($course);
-					if ($course != FALSE && empty($a)) {//Create the new course
-						$year = date('y');
-						$month = date('m');
-						$day = date('d');
-						$startDate = "20" . $year . "-" . $month . "-" . $day;
-						$closeDate = "20" . ($year + 1) . "-" . $month . "-" . $day;
-						mysql_query("INSERT INTO courses (courseName, courseStatus, courseStartDate, courseEndDate, courseDescription, courseView, courseParticipate) VALUES('" . $c . "', 'active', '" . $startDate . "', '" . $closeDate . "', '" . $c . " on dscourse', 'members', 'members')");
-						$courseId = mysql_insert_id();
-						GenerateCodes($courseId);
-						//And add it to the network
-						//mysql_query("INSERT INTO networkCourses (courseID, networkID) VALUES ('" . $courseId . "', '" . $netId . "')");
-						//Intialize default options 
-						$ops = array("charLimit"=>500,"useTimeline"=>"Yes","useSynthesis"=>"Yes","showInfo"=>"Yes",	"studentCreateDisc"=>"Yes");	
-						foreach($ops as $op=>$val){
-							$q = mysql_query("INSERT INTO options (optionsType, optionsTypeID ,optionsName ,optionsValue, optionAttr) VALUES('course', $courseId, '$op', '$val', '')");
-							if($q===FALSE){
-								exit("Bad");
-							}
+					$username = strtolower($launch -> user -> attrs['username']);
+					$first = $launch -> user -> attrs['firstName'];
+					$last = $launch -> user -> attrs['lastName'];
+					$pass = md5(mysql_real_escape_string($dummy));
+					mysql_query("INSERT INTO users (username, password, firstName, lastName, sysRole, userStatus) VALUES ('$username', '$pass', '$first', '$last', 'Member', 'active')");
+					$uId = mysql_insert_id();
+					
+					$to = $username;
+			 		$subject = "Welcome to dscourse";
+					$body = "Hi $first,\n\nAn account on the dscourse discussion platform has been automatically created for you. A temporary password has been set up with your account. Your temporary password is: $dummy. \n\n Please change this password next time you log on to dscourse. Thank you!";
+					$headers = "From: admin@dscourse.org";
+		 			if(!mail($to, $subject, $body, $headers)){
+			 		}
+				} else {
+					$uId = $u['UserID'];
+				}
+				//CHECK if Course Exists
+				$c = $launch -> params['courseName'];
+				$hash = $launch->params['courseHash'];
+				$course = mysql_query("SELECT * FROM courses WHERE courseHash = '$hash'");
+				$a = mysql_fetch_assoc($course);
+				if ($course != FALSE && empty($a)) {//Create the new course
+					$year = date('y');
+					$month = date('m');
+					$day = date('d');
+					$startDate = "20" . $year . "-" . $month . "-" . $day;
+					$closeDate = "20" . ($year + 1) . "-" . $month . "-" . $day;
+					mysql_query("INSERT INTO courses (courseName, courseHash, courseStatus, courseStartDate, courseEndDate, courseDescription, courseView, courseParticipate) VALUES('$c', '$hash', 'active', '$startDate', '$closeDate', '$c on dscourse', 'members', 'members')");
+					$courseId = mysql_insert_id();
+					GenerateCodes($courseId);
+					//And add it to the network
+					//mysql_query("INSERT INTO networkCourses (courseID, networkID) VALUES ('" . $courseId . "', '" . $netId . "')");
+					//Intialize default options 
+					$ops = array("charLimit"=>500,"useTimeline"=>"Yes","useSynthesis"=>"Yes","showInfo"=>"Yes",	"studentCreateDisc"=>"Yes");	
+					foreach($ops as $op=>$val){
+						$q = mysql_query("INSERT INTO options (optionsType, optionsTypeID ,optionsName ,optionsValue, optionAttr) VALUES('course', $courseId, '$op', '$val', '')");
+						if($q===FALSE){
+							exit("Bad");
 						}
-					 } else {
-						$courseId = $a['courseID'];
 					}
+				} else {
+					$courseId = $a['courseID'];
+				}
+				//Make sure userRole is correct
+				$role = $launch -> user -> attrs['role'];
+				$courseRole = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uId' AND courseID = '$courseId'");
+				$cr = mysql_fetch_assoc($courseRole);
+				if ($courseRole != FALSE && empty($cr)) {
+					$q= mysql_query("INSERT INTO courseRoles (userID, courseID, userRole) VALUES ($uId, $courseId, 'Student')");					}
+				//in either case update the user's courseRole to the incoming role
+				$role = $launch -> user -> attrs['role'];
+				if ($role == "Instructor") {
+					$role = "Instructor";
+				} else {
+					$role = "Student";
+				}
+				$t = mysql_query("UPDATE courseRoles SET userRole = '$role' WHERE userID = $uId AND courseId = '$courseId'"); 
+				//Only if entering throught discussion.php; otherwise users should maunally create discussions
+				if($from == "discussion"){
 					//CHECK if Discussion Exits
 					$d = $launch -> params['discID'];
 					$disc = mysql_query("SELECT * FROM discussions WHERE dTitle = '" . $c . "' AND dPrompt = '" . $d . "'");
@@ -763,60 +811,19 @@ class Dscourse {
 					} else {
 						$discId = $a['dID'];
 					}
-					// CHECK if User exists
-					$q = strtolower($launch -> user -> attrs['username']);
-					$user = mysql_query("SELECT * FROM users WHERE username = '$q'");
-					$u = mysql_fetch_assoc($user);
-					if ($user != FALSE && empty($u)) {
-						//Create user if necessary
-						$chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-						$dummy = "";
-						/*for($i=0;$i<6;$i++){
-							$dummy.=$chars[rand(0,count($chars)-1)];
-						}*/
-						$dummy = "test";
-						
-						$username = strtolower($launch -> user -> attrs['username']);
-						$first = $launch -> user -> attrs['firstName'];
-						$last = $launch -> user -> attrs['lastName'];
-						$pass = md5(mysql_real_escape_string($dummy));
-						mysql_query("INSERT INTO users (username, password, firstName, lastName, sysRole, userStatus) VALUES ('$username', '$pass', '$first', '$last', 'Member', 'active')");
-						$uId = mysql_insert_id();
-						
-						$to = $username;
-			 			$subject = "Welcome to dscourse";
-						$body = "Hi $first,\n\nAn account on the dscourse discussion platform has been automatically created for you. A temporary password has been set up with your account. Your temporary password is: $dummy. \n\n Please change this password next time you log on to dscourse. Thank you!";
-						$headers = "From: admin@dscourse.org";
-			 			if(!mail($to, $subject, $body, $headers)){
-			 			}
-						
-					} else {
-						$uId = $u['UserID'];
-					}
-					$role = $launch -> user -> attrs['role'];
-					$courseRole = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uId' AND courseID = '$courseId'");
-					$cr = mysql_fetch_assoc($courseRole);
-					if ($courseRole != FALSE && empty($cr)) {
-						$q= mysql_query("INSERT INTO courseRoles (userID, courseID, userRole) VALUES ($uId, $courseId, 'Student')");
-					}
-					//in either case update the user's courseRole to the incoming role
-					$role = $launch -> user -> attrs['role'];
-					if ($role == "Instructor") {
-						$role = "Instructor";
-					} else {
-						$role = "Student";
-					}
-					$t = mysql_query("UPDATE courseRoles SET userRole = '$role' WHERE userID = $uId AND courseId = '$courseId'");
-					
-					//At this point we can be sure the network, course, discussion, and user exist in the DB
-					$launch -> user -> attrs['uID'] = $uId;
-					$launch -> props['discID'] = $discId;
-					$launch -> props['courseId'] = $courseId;
-					$_SESSION['LTI'] = TRUE;
-					return $launch;
 				}
-			return FALSE;
-		}
+				else{
+					$discId = -1;
+				}
+				//At this point we can be sure the network, course, discussion, and user exist in the DB
+				$launch -> user -> attrs['uID'] = $uId;
+				$launch -> props['discID'] = $discId;
+				$launch -> props['courseId'] = $courseId;
+				$_SESSION['LTI'] = $from;
+				return $launch;
+			}
+		return FALSE;
+	}
 
 	public function SuperSort($source, $filter = FALSE, $comparator, $limit = FALSE) {
 		$result = array();

@@ -12,7 +12,7 @@ ini_set('display_errors',1);
 		$LTI = FALSE;
 	
 	include_once('php/dscourse.class.php');
-	$launch = $dscourse->LTI();
+	$launch = $dscourse->LTI("course");
 	if($launch != FALSE){
 		$LTI = TRUE;
 	}
@@ -53,7 +53,7 @@ ini_set('display_errors',1);
 		$query = $_SERVER["REQUEST_URI"];
 	}
 	$preProcess = $dscourse->PreProcess($query);	
-	if(isset($_SESSION['LTI']) && $_SESSION['LTI']==TRUE){
+	if(isset($_SESSION['LTI']) && $_SESSION['LTI']=="course"){
 		$LTI = TRUE;
 	}
 	

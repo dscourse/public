@@ -27,9 +27,7 @@ foreach ($_SERVER as $h => $v)
 		fwrite($fh, "$h = $v\n");
 fwrite($fh, "\r\n");
 fwrite($fh, file_get_contents('php://input'));
-//YOU MUST manually configure the following 2 variables
-// endpoint is the location of your JS
-// secret is the OAuth secret established between the LTI provider and consumer
+
 $secret = "secret&";
 $sentSig = "";
 //BUILDING THE OAUTH BASE STRING
