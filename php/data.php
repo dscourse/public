@@ -200,7 +200,7 @@ function UpdateNetwork(){
 				    }
 			    }
 		  } else {
-		  		$message =  "You uploaded an invalid file please try again: Invalid file";
+		  		$message =  "10";
 		  	  	$gotoPage = "../profile.php?u=".$UserID."&m=".$message;  // All good
 		  	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 		  }	  
@@ -253,8 +253,6 @@ function AddCourse() {
 	$courseStart  	=  $_POST['courseStartDate'];
 	$courseEnd  	=  $_POST['courseEndDate'];
 	$courseURL  	=  $_POST['courseURL'];
-	//$courseView	=  $_POST['viewOptions'];
-	//$courseParticipate = $_POST['participateOptions'];
 	
 	$message = "";
 	// But if there is a new picture
@@ -447,9 +445,11 @@ function EditCourse() {
 		
 	}
 	
-  		$message =  10;
+  	
+	$message =  10;
 	  	$gotoPage = "../course.php?c=".$courseID."&m=".$message;  // All good
 	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
+
 
  
  }

@@ -487,6 +487,7 @@ class Dscourse {
 				$message['icon'] = "A";
 				$message['color'] = "#999";
 				$message['error'] = "true";
+				break;
 			case 4 :
 				$message['content'] = "You uploaded an invalid file please try again. ";
 				$message['color'] = "#999";
