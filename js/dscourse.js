@@ -17,7 +17,8 @@ function Dscourse(lti) {
     // Maximum value for the timeline
     this.sPostID// Synthesis post id global
     this.sPostContent// Synthesis post content global
-    this.uParticipant = new Array;
+    this.uParticipant = new Array();
+    this.uColors = new Array();
     // Unique list of participants.
     this.post = { };
     this.currentSelected = '';
@@ -276,7 +277,7 @@ function Dscourse(lti) {
 			            $.scrollTo($('#commentWrap'), 400, {
 			                offset : -100
 			            });
-			                    top.AddLog('discussion',discID,'SayButtonClicked',postID,' '); //postID is the parent post. 
+			              top.AddLog('discussion',discID,'SayButtonClicked',postID,' '); //postID is the parent post. 
 			        }
 	        } else {
 	            alert('This discussion is closed.');
@@ -888,6 +889,8 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
     else    
         timeSince = "never";        
     
+    var colors = 0;
+    
     for ( j = 0; j < main.data.posts.length; j++) {// Go through all the posts
         d = main.data.posts[j];
 
@@ -1080,15 +1083,12 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
         //Build the recentPosts header
         $('#recentPostsHeader').html("Posts since you visited "+jQuery.timeago(new Date(main.GetUniformDate(lastView, false))));
     }
-
     if (synthesisCount == 'some') {
         $('#synthesisHelpText').hide();
     }
 
     main.timelineValue = main.timelineMax;
     // Set the timeline value to the max.
-    main.UniqueParticipants();
-
     $(".postTypeView").draggable({
         start : function() {
             //console.log('Drag started');
@@ -1837,7 +1837,8 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
      *	Returns thumbnail html of the user from ID
      */
     var main = this;
-    for (var n = 0; n < main.data.users.length; n++) {
+    var l = main.data.users.length;
+    for (var n = 0; n < l; n++) {
         var userIDName = main.data.users[n].UserID;
         if (userIDName == id) {
         	var name = main.data.users[n].firstName + " " + main.data.users[n].lastName; 
@@ -1846,16 +1847,19 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
                 if(main.data.users[n].userPictureURL){
                		return "<img class='userThumbSmall' src='" + main.data.users[n].userPictureURL + "' />";	                
                 } else {
-                	var color1 = main.Rainbow();
-	                return "<div class='userThumbSmall' style='background:"+color1+"'> "+initials+" </div>"; 
+                    var color1 = d3.hsl(n*17,1,0.5).toString();
+                    main.uColors.push({color:color1, user:userIDName});
+                    var comp  = d3.hsl((n*17)+180,1,0.5).toString();
+	                return "<div class='userThumbSmall' style='color:"+comp+";background:"+color1+"'> "+initials+" </div>"; 
                 }
             } else if (size == 'tiny') {
                 if(main.data.users[n].userPictureURL){
 	                return "<img class='userThumbTiny' src='" + main.data.users[n].userPictureURL + "' />";
 	            } else {
-                	var color2 = main.Rainbow();
-		            return "<div class='userThumbTiny' style='background:"+color2+"'> "+initials+" </div>"; 
-
+                	var color2 = d3.hsl(n*17,1,0.5).toString();
+                	main.uColors.push({color:color2, user:userIDName});
+                	var comp  = d3.hsl((n*17)+180,1,0.5).toString();
+		            return "<div class='userThumbTiny' style='color:"+comp+";background:"+color2+"'> "+initials+" </div>"; 
 	            }
             }
         }
@@ -1864,9 +1868,18 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
 
 Dscourse.prototype.UniqueParticipants = function() {
     /*
-     *	Returns html for unique participant buttons in the discussion Participant section.
+     *  Returns html for unique participant buttons in the discussion Participant section.
      */
     var main = this;
+
+    var btn = $('<button>').addClass('uList');
+    $('body').append(btn);
+    var width = btn.width()+4;
+    btn.remove();
+    
+    var maxWidth =  $('#keywordSearchDiv').position().left - ($('#participantList').position().left+$('#participantList').children().eq(0).width())-20;
+    var maxIcons = Math.floor(maxWidth/width)-1;
+    
     $('.uList').remove();
     var i, o, name, thumb, output;
     for ( i = 0; i < main.uParticipant.length; i++) {
@@ -1874,9 +1887,29 @@ Dscourse.prototype.UniqueParticipants = function() {
         name = main.getName(o);
         thumb = main.getAuthorThumb(o, 'small');
         output = '<button class="btn uList" rel="tooltip" active="false" title="' + name + '" authorID="' + o + '">' + thumb + ' </button>';
-        $('#participantList').append(output);
+        if(i < maxIcons)
+            $('#participantList').append(output);
+        else if(i==maxIcons){
+            $('#participantList').append($('<button class="btn uList" rel="tooltip" active="false" style="height:30px;"><span style="text-align:center">ALL</span></button>').on('click', function(){
+                $('#participantListOverflow').toggle();
+            }));
+            $('#toolbox').append($('<div>',{
+                id: 'participantListOverflow'
+            }).hide());
+            $('#participantListOverflow').append(output);
+        }
+        else{
+            $('#participantListOverflow').append(output);        
+        }
     }
-
+    if($('#participantListOverflow').length>0)
+        $('#participantListOverflow').css({
+                    position: 'absolute',
+                    left: $('#participantList').children().eq(1).offset().left+'px',
+                    width: maxWidth-width +'px',
+                    height: 'auto',
+                    zIndex: 1000
+        });
 }
 
 Dscourse.prototype.DiscResize = function() {
@@ -1997,6 +2030,7 @@ Dscourse.prototype.DiscResize = function() {
         $(this).children('.postTextWrap').css('width', thiswidth - 110 + 'px');
     });
     // main.AddLog('discussion',discID,'DiscResize',0,'Height: ' + wHeight + ' Width: ' +wWidth); This is not a good idea! It will use too much processing power
+    main.UniqueParticipants();
 }
 
 Dscourse.prototype.ClearVerticalHeatmap = function() {
@@ -2362,12 +2396,6 @@ Dscourse.prototype.ToTimestamp = function(epoch){
     var s = ("00"+d.getSeconds().toString()).slice(-2);
     
     return y+"-"+m+"-"+da+" "+h+":"+mi+":"+s;
-}
-
-
-Dscourse.prototype.Rainbow = function () {
-    var r = function () { return Math.floor(Math.random()*256) };
-    return "rgb(" + r() + "," + r() + "," + r() + ")";
 }
 
 Dscourse.prototype.Initials = function (fullname) {

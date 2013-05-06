@@ -111,7 +111,7 @@ ini_set('display_errors',1);
 		include ('php/header_includes.php');
   ?>
         <script type="text/javascript" src="js/dscourse.js"></script>
-
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript">
           // Add some global variables about current user if we need them:
 			<?php echo "var lti = " . (($LTI) ? 'true' : 'false') . ";"; ?>
