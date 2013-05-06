@@ -10,3 +10,4 @@ php/config.php
 db_timezone_patch.php
 tst.php
 clearSessions.php
+genusers.php
