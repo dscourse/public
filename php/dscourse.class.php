@@ -869,18 +869,15 @@ class Dscourse {
 				if(empty($lastView)){
 					$lastView = $d_row['courseDiscussionTime'];					
 				}
-				$q = "SELECT postAuthorID, postMessage, postTime, users.firstName, postID FROM posts INNER JOIN users ON posts.postAuthorID = users.userID WHERE postID IN (SELECT logActionID FROM logs INNER JOIN discussionPosts ON discussionPosts.postID = logs.logActionID WHERE logs.logAction = 'addPost' AND logs.logTime > '$lastView' AND logs.logPageID = $dID)";
+				$q = "SELECT postAuthorID, postMessage, postTime, users.firstName, postID, postType FROM posts INNER JOIN users ON posts.postAuthorID = users.userID WHERE postID IN (SELECT logActionID FROM logs INNER JOIN discussionPosts ON discussionPosts.postID = logs.logActionID WHERE logs.logAction = 'addPost' AND logs.logTime > '$lastView' AND logs.logPageID = $dID)";
 				$posts = mysql_query($q);
 				if($posts === FALSE){
 					echo "error";
 					return -1;
 				}
 				while($p_row = mysql_fetch_assoc($posts)){
-					$route = $_SERVER['REQUEST_URI'];
-					$route = preg_replace('/\/\w*?\.php$/', '', $route);
-					$route = substr($route, 1);
-					$path = $route."/discussion.php?c=".$cID."&d=".$dID."&p=".$p_row['postID'];
-					array_push($actions, array('action'=>'post','actionTime'=>$p_row['postTime'], 'context'=>'discussion', 'contextLabel'=>$d_row['dTitle'] ,'contextID'=>$dID, 'agentLabel'=> $p_row['firstName'],'agentID'=>$p_row['postAuthorID'], 'content'=>substr($p_row['postMessage'],0,120), 'actionPath'=>$path));
+					$path = "/discussion.php?c=$cID&d=$dID&p=".$p_row['postID'];
+					array_push($actions, array('action'=>'post','actionTime'=>$p_row['postTime'], 'actionType'=>$p_row['postType'], 'context'=>'discussion', 'contextLabel'=>$d_row['dTitle'] ,'contextID'=>$dID, 'agentLabel'=> $p_row['firstName'],'agentID'=>$p_row['postAuthorID'], 'content'=>substr($p_row['postMessage'],0,120), 'actionPath'=>$path));
 				}
 			}
 		}
