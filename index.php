@@ -103,7 +103,7 @@ ini_set('display_errors',1);
 
 			$.each(actions, function(i, val){
 				var msg = [val.agentLabel, val.action+"ed", "in your", val.context, val.contextLabel].join(" ");
-				$('#newsFeed').append("<li actionsIndex=\""+i+"\">"+msg+"<br /><a href=\"/"+val.actionPath+"\">Click to view</a></li>");	
+				$('#newsFeed').append("<li actionsIndex=\""+i+"\">"+msg+"<br /><a href=\""+val.actionPath+"\">Click to view</a></li>");	
 			});		
 		}); 
 	</script>

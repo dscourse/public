@@ -12,7 +12,8 @@ ini_set('display_errors',1);
 		$LTI = FALSE;
 	
 	include_once('php/dscourse.class.php');
-	$launch = $dscourse->LTI("course");
+	$from = "course";
+	$launch = $dscourse->LTI($from);
 	if($launch != FALSE){
 		$LTI = TRUE;
 	}
