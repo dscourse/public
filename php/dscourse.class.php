@@ -687,6 +687,11 @@ class Dscourse {
 			while ($res = mysql_fetch_assoc($a)) {
 				$courseOptions[$res['optionsName']] = $res['optionsValue'];
 			}
+			if(empty($courseOptions)){
+				$f = file_get_contents("/web/curry.edschool.virginia.edu/curry_aux_sites/dscourse/php/courseOptions.json");
+				$defaults = json_decode($f, true);
+				$courseOptions = $defaults;				
+			}
 			if(!$cMember){
 				//User lacks valid access code and is not a course member
 				header("Location: info.php");
@@ -876,7 +881,7 @@ class Dscourse {
 					return -1;
 				}
 				while($p_row = mysql_fetch_assoc($posts)){
-					$path = "/discussion.php?c=$cID&d=$dID&p=".$p_row['postID'];
+					$path = "/discussion.php?c=".$cID."&d=".$dID."&p=".$p_row['postID'];
 					array_push($actions, array('action'=>'post','actionTime'=>$p_row['postTime'], 'actionType'=>$p_row['postType'], 'context'=>'discussion', 'contextLabel'=>$d_row['dTitle'] ,'contextID'=>$dID, 'agentLabel'=> $p_row['firstName'],'agentID'=>$p_row['postAuthorID'], 'content'=>substr($p_row['postMessage'],0,120), 'actionPath'=>$path));
 				}
 			}
