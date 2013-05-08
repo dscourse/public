@@ -235,17 +235,14 @@ $(function(){
     <header class="jumbotron subhead">
         <div class="container-fluid">
             <h1>Edit Course</h1>
-                 <div id="addCourseCancel" class="pull-right">
-                    <a href="course.php?c=<?php echo $cID; ?>" class="btn">Cancel</a>
-                </div>
         </div>
     </header>
 
-    <div id="addcoursePage" class=" wrap page">
+    <div id="addcoursePage" class=" wrap page formPage">
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span10 offset1">
-                    <div id="courseForm">
+                    <div id="courseForm" class="formClass">
                         <form class="form-horizontal " name="addCourseForm" action="php/data.php" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="editCourse">
                         <input type="hidden" name="courseID" value="<?php  echo $cID; ?>" >
@@ -325,10 +322,12 @@ $(function(){
                                 </div>
                             </div>
                             <hr class="soften">
-                            <button type="submit" name="submitEditCourse" id="submitEditCourse" class="btn btn-primary pull-right">Save</button>
+                            <div class="formButtonWrap">
+	                             <a href="course.php?c=<?php echo $cID; ?>" class="btn">Cancel</a>
+	                             <button type="submit" name="submitEditCourse" id="submitEditCourse" class="btn btn-primary pull-right">Save</button>
+                            </div>
                         </form>
                         <div>
-                        <hr class="soften" />
                         </div>
                     </div>
                 </div>

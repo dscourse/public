@@ -202,7 +202,6 @@ ini_set('display_errors',1);
 
     <div id="overlay"></div>
     
-     <div id="coursePage" class=" wrap page" >
         <header class="jumbotron subhead">
             <div class="container-fluid">
 	            <div class="row-fluid">
@@ -211,8 +210,8 @@ ini_set('display_errors',1);
 							<p><?php echo $courseInfo['courseDescription']; ?></p>
 							<div id="editCourseButton" class="pull-right">
 							    <?php if($currentRole == 'Instructor' || $currentRole == 'TA'){ ?>
-							    	<a href="editcourse.php?c=<?php echo $cID; ?>" id="editCourseButton" class="btn">Edit Course</a>
-									<a href="courseoptions.php?c=<?php echo $cID; ?>" id="courseOptionsButton" class="btn">Course Settings</a>
+							    	<a href="editcourse.php?c=<?php echo $cID; ?>" id="editCourseButton" class="btn btn-warning"><i class="icon-white icon-edit"></i> Edit Course</a>
+									<a href="courseoptions.php?c=<?php echo $cID; ?>" id="courseOptionsButton" class="btn btn-info"> <i class="icon-white icon-cog"></i> Course Settings</a>
 						    
 							    <?php } ?>
 							</div>                
@@ -220,6 +219,8 @@ ini_set('display_errors',1);
 	            </div>             
             </div>
         </header>
+
+     <div id="coursePage" class=" wrap page" >
 
         <div class="container-fluid">
             <div class="row-fluid">
@@ -275,7 +276,7 @@ ini_set('display_errors',1);
                         <h3 >Course Discussions
                         <?php if(($currentRole != "Viewer") && ($currentRole == 'Instructor' || $currentRole == 'TA' || (isset($preProcess['options']['studentCreateDisc']) && $preProcess['options']['studentCreateDisc']=="Yes"))){ ?>
 
-                         <a href="adddisc.php?c=<?php echo $courseInfo['courseID']?>" id="addDiscussionView" class="btn btn-small"> Add Discussion</a>
+                         <a href="adddisc.php?c=<?php echo $courseInfo['courseID']?>" id="addDiscussionView" class="btn btn-small btn-primary"> <i class="icon-white icon-plus"></i> Add Discussion</a>
                          <?php }?>
                          </h3>
 

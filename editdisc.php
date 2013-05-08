@@ -117,19 +117,7 @@ $(function(){
                 var func = (associatedCourses.indexOf($(this).attr('id'))==-1)?"no":"yes";
                 $(this).siblings('.deleteToggle').val(func);
                 $(this).closest('tr').hide();
-				/*                
-                var currentVal = $(this).siblings('.deleteToggle').val(); // get the delete toggle value
-                if(currentVal == 'no'){ // if no 
-                	 $(this).siblings('.deleteToggle').val('yes');// toggle value to yes
-                	 $(this).addClass('btn-warning');// add class btn-warning
-                	 alert("Every discussion must be associated with at least one course.")
-               } else if(currentVal == 'yes'){ // if yes 
-               		$(this).siblings('.deleteToggle').val('yes'); // toggle value to no
-               		$(this).removeClass('btn-warning');// remove class btn warning
-               } else if(currentVal == 'add'){
-	               	$(this).closest('tr').remove(); // remove this row 
-               }
-               */
+
             });
 
             $("#discussionStartDate").datepicker({ dateFormat: "yy-mm-dd"});          
@@ -397,18 +385,20 @@ $(function(){
     
     <!-- Begin Discussions.php -->
 
-    <div id="addDiscussionPage" class=" wrap page">
         <header class="jumbotron subhead">
             <div class="container-fluid">
                 <h1>Edit Discussion </h1>
             </div>
         </header>
 
+    <div id="addDiscussionPage" class=" wrap page formPage">
+
+
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span12 ">
-                    <div id="discussionForm">
-                        <form class="form-horizontal well" name="editDiscussionForm" action="php/data.php" method="post" >
+                <div class="span10 offset1 ">
+                    <div id="discussionForm" class="formClass">
+                        <form class="form-horizontal" name="editDiscussionForm" action="php/data.php" method="post" >
                         <input type="hidden" name="action" value="editDiscussion">
                         <input type="hidden" name="discID" value="<?php echo $discID; ?>">
                         <input type="hidden" name="courseID" value="<?php echo $cID; ?>"> 
@@ -790,8 +780,8 @@ $(function(){
                             </div>
                             <hr class="soften">
 
-                            <div id="discussionButtondiv">
-                                <button class="btn btn-primary" id="discussionFormSubmit">Submit</button> <a href="course.php?c=<?php echo $cID.'&n='.$nID; ?>"  id="editDiscussionCancel" class="btn">Cancel</a>
+                            <div class="formButtonWrap">
+                                <button class="btn btn-primary" id="discussionFormSubmit">Save</button> <a href="course.php?c=<?php echo $cID.'&n='.$nID; ?>"  id="editDiscussionCancel" class="btn">Cancel</a>
                             </div>
                         </form>
                     </div>

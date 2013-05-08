@@ -78,11 +78,11 @@ ini_set('display_errors',1);
     
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
-            <div class="container-fluid">
+            <div class="container-fluid pageMargin">
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel active"><a href="#" id="userNav"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></a></li>
+                    <li class="navLevel"><a href="#" id="userNav"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></a></li>
                 </ul>
 
                 <ul class="nav pull-right">
@@ -104,23 +104,21 @@ ini_set('display_errors',1);
 
     <!-- Begin profile.php-->
 
-    <div id="profilePage" class=" wrap page">
         <header class="jumbotron subhead">
             <div class="container-fluid">
             	<div class="row-fluid">
-		            <div class="span3">
-			            	<div id="userPicture"><img src="<?php  echo $userInfo['userPictureURL']; ?>"> </div>
-			            </div>
-			            <div class="span9">
-			                <h1><span id="profileName"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></span></h1><h1> <small><span id="profileEmail"><?php  echo $userInfo['username']; ?></span></small></h1>
+			            <div class="span12">
+			                <h1><span id="profileName"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></span> <small><span id="profileEmail"><?php  echo $userInfo['username']; ?></span></small></h1>
 			
 			                <div id="editProfileButtons" class="pull-right">
-			                    <a href="editprofile.php?u=<?php echo $userID; ?>" id="editProfileButton" class="btn">Edit Profile</a>
+			                    <a href="editprofile.php?u=<?php echo $userID; ?>" id="editProfileButton" class="btn btn-info">Edit Profile</a>
 			                </div>
 			            </div>
             	</div>
             </div>
         </header>
+
+    <div id="profilePage" class=" wrap page ">
 
         <div class="container-fluid">
             <div class="row-fluid" id="profileDetails">
@@ -131,6 +129,9 @@ ini_set('display_errors',1);
                         <div id="profileInfo">
                             <table class="table">
                                 <tbody>
+                                	<tr>
+			            	<div id="userPicture"><img src="<?php  echo $userInfo['userPictureURL']; ?>"> </div>
+                                	</tr>
                                     <tr>
                                         <td class="profileHead">About Me:</td>
 

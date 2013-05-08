@@ -589,7 +589,7 @@ class Dscourse {
 					header('Location: info.php' . $q);
 					
 				} else {
-					header('Location: login.php?r="' . $query . '"');					
+					header('Location: login.php?r=' . $query . '');					
 				}						
 				exit;
 				// Not logged and and does not have cookie

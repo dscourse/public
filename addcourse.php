@@ -219,13 +219,6 @@ $(function(){
             <div class="container-fluid">
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
-<!--
------- MARKED FOR DELETION SINCE WE ARE REMOVING VISIBLE NETWORK COMPONENTS  -------
-                <ul class="nav">
-                    <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li>
-                </ul>
--->
-
                 <ul class="nav pull-right">
                     <li class="dropdown">
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#"><img class="thumbNav" src="<?php echo $userNav['userPictureURL']; ?>" />  <?php echo $_SESSION['firstName'] . " " .$_SESSION['lastName']; ?> <b class="caret"></b> </a>
@@ -251,12 +244,12 @@ $(function(){
         </div>
     </header>
 
-    <div id="addcoursePage" class=" wrap page">
+    <div id="addcoursePage" class=" wrap page formPage">
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span10 offset1">
-                    <div id="courseForm">
-                        <form class="form-horizontal well" name="addCourseForm" action="php/data.php" method="post" enctype="multipart/form-data">
+                    <div id="courseForm" class="formClass">
+                        <form class="form-horizontal" name="addCourseForm" action="php/data.php" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="addCourse">
 
 
@@ -354,9 +347,10 @@ $(function(){
                                 </div>
                             </div>
                             <hr class="soften">
-                            <button type="submit" name="submitNewCourse" id="submitNewCourse" class="btn btn-primary">Add Course </button>
-                            	<a href="index.php" class="btn">Cancel</a>
-                            <!-- <a href="network.php?n=<?php echo $nID; ?>" class="btn">Cancel</a> -->
+							<div class="formButtonWrap">
+									<a href="index.php" class="btn">Cancel</a>
+							        <button type="submit" name="submitNewCourse" id="submitNewCourse" class="btn btn-primary">Add Course </button>
+							</div>
                         </form>
                     </div>
                 </div>

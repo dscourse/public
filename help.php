@@ -41,6 +41,7 @@ ini_set('display_errors',1);
         
 	    	      
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
+        $userNav = $dscourse->UserInfo($userID); 
         
 
 		
@@ -95,7 +96,6 @@ ini_set('display_errors',1);
 
     <div id="overlay"></div>
     
-     <div id="helpPage" class=" wrap page" >
         <header class="jumbotron subhead">
             <div class="container-fluid">
 	            <div class="row-fluid">
@@ -107,6 +107,9 @@ ini_set('display_errors',1);
 	            </div>             
             </div>
         </header>
+
+     <div id="helpPage" class=" wrap page" >
+
 
         <div class="container-fluid">
             <div class="row-fluid">

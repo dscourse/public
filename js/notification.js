@@ -52,8 +52,8 @@
 		
 		hide.addClass("hide");
 
-		left = $("<div class='Nleft'>");
-		right = $("<div class='Nright'>");
+		left = $("<div class='left'>");
+		right = $("<div class='right'>");
 		
 		if(settings.title != undefined) {
 			var htmlTitle = "<h2>" + settings.title + "</h2>";

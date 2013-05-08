@@ -99,7 +99,7 @@ ini_set('display_errors',1);
 						action: 'saveOptions'							
 					},
 					  success: function(data) {						// If connection is successful . 							
-						  	alert('Your changes have been successfully saved!');
+                                window.location.href = 'course.php?c=<?php echo $cID ?>'; 
 						}, 
 					  error: function(data) {					// If connection is not successful.  
 
@@ -150,7 +150,7 @@ ini_set('display_errors',1);
             <p>Customize your course and general discussion settings.</p>
 
             <div id="addCourseCancel" class="pull-right">
-                <a href="course.php?c=<?php echo $cID;?>" class="btn">Back</a>
+                <a href="course.php?c=<?php echo $cID;?>" class="btn">Cancel</a>
                 <button type="submit" name="submitCourseOptions" id="submitCourseOptions" class="btn btn-primary">Save Changes</button>
             </div>
         </div>

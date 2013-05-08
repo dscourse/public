@@ -1712,10 +1712,11 @@ Dscourse.prototype.listDiscussionCourses = function(dID) {
      */
     var main = this;
     var o, print = '';
-    ;
+    var comma;
     for (var i = 0; i < main.data.courses.length; i++) {
         o = main.data.courses[i];
-        print += ' <span courseid="' + o.courseID + '">' + o.courseName + '</span>';
+        if(i == 0){comma = ''} else {comma = ', '}; 
+        print += comma + ' <span courseid="' + o.courseID + '">' + o.courseName + '</span>';
     }
     return print;
 }

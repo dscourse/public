@@ -281,8 +281,6 @@ $(function(){
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
                 
                 <ul class="nav">
-<!--                     <li class="navLevel"><a href="network.php?n=<?php echo $nID; ?>" id="networkNav"><?php echo $networkInfo['networkName']; ?></a></li> -->
-<!--                     <li class="navLevel"><a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li> -->
                         <li class="navLevel"><a href="course.php?c=<?php echo $cID; ?>" id="coursesNav"><?php echo $setCourseInfo['courseName']; ?></a></li> 
                 </ul>
 
@@ -305,21 +303,21 @@ $(function(){
     
     <!-- Begin Discussions.php -->
 
-    <div id="addDiscussionPage" class=" wrap page">
         <header class="jumbotron subhead">
             <div class="container-fluid">
-                <h1>Add discussions</h1>
+                <h1>Add discussion</h1>
             </div>
         </header>
 
+    <div id="addDiscussionPage" class=" wrap page formPage">
+
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span12 ">
-                    <div id="discussionForm">
-                        <form class="form-horizontal well" name="addDiscussionForm" action="php/data.php" method="post" >
+                <div class="span10 offset1">
+                    <div id="discussionForm" class="formClass">
+                        <form class="form-horizontal " name="addDiscussionForm" action="php/data.php" method="post" >
                         <input type="hidden" name="action" value="addDiscussion">
                         <input type="hidden" name="courseID" value="<?php echo $cID; ?>"> 
-<!--                         <input type="hidden" name="networkID" value="<?php echo $nID; ?>">  -->
                         
                             <div class="control-group" id="discussionQuestionControl">
                                 <label class="control-label" for="discussionQuestion">Discussion Question</label>
@@ -694,9 +692,8 @@ $(function(){
                             </div>
                             <hr class="soften">
 
-                            <div id="discussionButtondiv">
+							<div class="formButtonWrap">
                                 <button class="btn btn-primary" id="discussionFormSubmit">Save</button>
-<!--                                 <a href="course.php?n=<?php echo $nID; ?>&c=<?php echo $cID; ?>" id="addDiscussionCancel" class="btn">Cancel</a> -->
                                 <a href="course.php?c=<?php echo $cID; ?>" id="addDiscussionCancel" class="btn">Cancel</a>
  
                             </div>

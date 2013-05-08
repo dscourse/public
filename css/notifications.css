@@ -13,7 +13,7 @@
 	box-shadow: white 0px -1px 0px inset, rgba(0,0,0,0.5) 0px 4px 30px;
 	overflow: hidden;
 	position: absolute;
-	z-index: 1099;
+	z-index: 1;
 	max-height: 529px;
 	overflow-y: hidden;
 	text-shadow: white 0px 1px 0px;
@@ -41,7 +41,7 @@
 	color: white!important;
 	text-shadow: rgba(0,0,0,0.4) 0px 1px 1px!important;
 }
-.notification.error .Nleft:after {
+.notification.error .left:after {
 	background: rgba(255,255,255,0.5)!important;
 	box-shadow: rgba(0,0,0,0.4) 0px 1px 1px!important;
 }
@@ -58,7 +58,7 @@
 	font-weight: bold;
 	width: 12px;
 	height: 12px;
-	background: url(../img/icon-close.png) no-repeat;
+	background: url(img/icon-close.png) no-repeat;
 	opacity: 0.7;
 	display: none;
 	text-indent: -999px;
@@ -74,7 +74,7 @@
 .notification .hide:hover {
 	opacity: 1;
 }
-.notification .Nright, .notification .Nleft {
+.notification .right, .notification .left {
 	width: 350px;
 	height: 100%;
 	float: left;
@@ -84,13 +84,13 @@
 	font-size: 9px;
 	position: relative;
 }
-.notification .Nright .time {
+.notification .right .time {
 	margin-left: 10px;
 	margin-top: -8px;
 	margin-bottom: 10px;
 	opacity: 0.4;
 }
-.notification .Nleft {
+.notification .left {
 	height: 100%;
 	width: 30px;
 	padding: 10px;
@@ -99,13 +99,13 @@
 	padding-bottom: 0px;
 	overflow: hidden;
 }
-.notification .Nright {
+.notification .right {
 	margin-left: 50px;
 }
-.notification .Nright .inner {
+.notification .right .inner {
 	padding: 10px;
 }
-.notification .Nleft:after {
+.notification .left:after {
 	content: '';
 	background: #c1c1c1;
 	-moz-box-shadow: white 1px 0px 0px;
@@ -162,7 +162,7 @@
 	-webkit-border-bottom-left-radius: 5px;
 	border-bottom-left-radius: 5px;
 }
-.notification .Nleft > .icon {
+.notification .left > .icon {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -173,7 +173,7 @@
 	font: normal 40px/28px 'EntypoRegular';
 	text-shadow: white 0px 1px 0px;
 }
-.notification.big .Nleft > .icon {
+.notification.big .left > .icon {
 	font-size: 60px;
 	line-height: 38px;
 }
@@ -383,11 +383,12 @@
 }
 @font-face {
     font-family: 'EntypoRegular';
-    src: url('../fonts/entypo-webfont.eot');
-    src: url('../fonts/entypo-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/entypo-webfont.woff') format('woff'),
-         url('../fonts/entypo-webfont.ttf') format('truetype'),
-         url('../fonts/entypo-webfont.svg#EntypoRegular') format('svg');
+    src: url('glyphs/entypo-webfont.eot');
+    src: url('glyphs/entypo-webfont.eot?#iefix') format('embedded-opentype'),
+         url('glyphs/entypo-webfont.woff') format('woff'),
+         url('glyphs/entypo-webfont.ttf') format('truetype'),
+         url('glyphs/entypo-webfont.svg#EntypoRegular') format('svg');
     font-weight: normal;
     font-style: normal;
+
 }

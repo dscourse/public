@@ -14,7 +14,8 @@ ini_set('display_errors',1);
         $uID = $_GET["u"];                      // The user ID from link
         
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
-        
+         $userNav = $dscourse->UserInfo($userID); 
+       
         // GET Info About This User
         $userInfo = $dscourse->UserInfo($uID);
 
@@ -93,7 +94,7 @@ $(function(){
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel active"><a href="#" id="userNav"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></a></li>
+                    <li class="navLevel"><a href="#" id="userNav"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></a></li>
                 </ul>
 
                 <ul class="nav pull-right">
@@ -115,17 +116,18 @@ $(function(){
 
 <!-- Begin Edit Profile-->
 
-    <div id="editProfilePage" class="wrap page">
         <header class="jumbotron subhead">
             <div class="container-fluid">
                 <h1><span id="profileName"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></span> <small><span id="profileEmail"><?php  echo $userInfo['username']; ?></span></small></h1>
             </div>
         </header>
 
+    <div id="editProfilePage" class="wrap page formPage">
+
         <div class="container-fluid" id="editLayer">
             <div class="row-fluid" id="profileDetails">
-                <form name="editProfileForm" action="php/data.php" method="post" enctype="multipart/form-data" class="form-horizontal ">
-                    <div class="span8 well offset1">
+                <form name="editProfileForm" action="php/data.php" method="post" enctype="multipart/form-data" class="form-horizontal">
+                    <div class="span10 offset1 formClass">
                         <input type="hidden" name="action" value="editUserInfo">
                         <input type="hidden" name="userEditID" value="<?php  echo $userID; ?>" >
                         
@@ -224,11 +226,11 @@ $(function(){
                             <p class="help-inline">Website</p>
                         </div>
                     </div>
+                 <div class="formButtonWrap"> 
+                 	<a href="profile.php?u=<?php echo $userID; ?>" id="cancelEditButton" class="btn">Cancel</a> <button id="submitEditButton" type="submit" class="btn btn-primary">Save</button>
+                 </div> 
             </div>
-
-            <div class="span2">
-                <a href="profile.php?u=<?php echo $userID; ?>" id="cancelEditButton" class="btn">Cancel</a> <button id="submitEditButton" type="submit" class="btn">Save</button>
-            </div>
+            
         </form>	
           
         </div>

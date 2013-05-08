@@ -42,6 +42,7 @@ ini_set('display_errors',1);
 		$discussionInfo = $dscourse->DiscussionInfo($discId);
 		$courseId = $launch->props['courseId']; 
 		$courseInfo = $dscourse->CourseInfo($courseId);
+
 		
 		//FAKE THE REQUEST
 		$_GET['d'] = $discId;
@@ -68,25 +69,8 @@ ini_set('display_errors',1);
        
         $cID = $_GET['c']; 
         $courseInfo = $dscourse->CourseInfo($cID);
-		
-	
-	/*
-	//Check if user needs to register
-	if((!$preProcess['member']) && $preProcess['register']){
-		if($preProcess['dMember']){
-			//already on dscourse
-			$q = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES ('$cID', '$uId', 'Student')");
-			if($q == FALSE){
-				//handle the error?
-				exit("Error");
-			}
-			$preProcess['courseMember'] = TRUE;
-		}
-		else{
-			//needs to register
-			header('Location: register.php');
-		}
-	}*/
+		$userNav = $dscourse->UserInfo($uId); 
+
 	//Try loading
 	$load = $dscourse->LoadDiscussion($discId, $uId);
     if($load){
@@ -173,7 +157,6 @@ ini_set('display_errors',1);
         	</div>
     	</div><!-- End of header content-->	
 	<?php } ?>
-    <div id="discussionWrap" class=" page" >
         <header class="jumbotron subhead">
             <div class="container-fluid">
                 <div class="btn-toolbar" id="toolbox">
@@ -194,6 +177,9 @@ ini_set('display_errors',1);
                 </div>
             </div>
         </header>
+
+
+    <div id="discussionWrap" class=" page" >
 
         <div class="container-fluid">
             <div class="row-fluid" id="controlsRow">
