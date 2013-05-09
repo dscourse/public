@@ -225,7 +225,34 @@ $(function(){
                         </div>
                     </div>
             </div>
-
+			 <div class="span8 well offset1">
+				<div class="control-group" id="notificationControl">
+				<label>Send me an email to let me know when someone </label>	
+                <div class="controls">
+     				<label class="checkbox">
+      				<input type="checkbox" name="comment" value="true">
+     					comments on
+    				</label>
+    				<label class="checkbox">
+      				<input type="checkbox" name="agree" value="agree">
+      					agrees with
+    				</label>
+    				<label class="checkbox">
+      				<input type="checkbox" name="disagree" value="disagree">
+      					disagrees with
+    				</label>
+    				<label class="checkbox">
+      				<input type="checkbox" name="clarify" value="clarify">
+      					asks me to clarify
+    				</label>
+    				<label class="checkbox">
+      				<input type="checkbox" name="offtopic" value="offtopic">
+      					marks as off topic
+    				</label>
+            	</div>
+            	<label class="offset2">a post I've made.</label>	
+            </div>
+			</div>
             <div class="span2">
                 <a href="profile.php?u=<?php echo $userID; ?>" id="cancelEditButton" class="btn">Cancel</a> <button id="submitEditButton" type="submit" class="btn">Save</button>
             </div>
@@ -234,7 +261,5 @@ $(function(){
         </div>
     </div><!-- close container -->
    </div> <!-- end edit profile -->
-    <?php
-            ?>
 </body>
 </html>
