@@ -645,6 +645,8 @@ function AddPost()
 			$addPosttoDiscussion = mysql_query("INSERT INTO discussionPosts (discussionID, postID) VALUES(".$currentDiscussion.", '".$postID."')");  			 		
 			
 			//check notifications
+			//need postFrom, postType, postAuthor
+			
 			$res = mysql_query("SELECT * FROM options WHERE optionsType = 'user' AND optionsTypeID = $postFromId AND 'optionsName' = 'notify_on_$postType'");
 			while($row = mysql_fetch_assoc($res)){
 				if($row['optionsValue']){
@@ -692,14 +694,9 @@ function AddPost()
 					$email = $user['username'];
 					$name = $user['firstName'];
 					$msg = "Hi $name, <br /> $from($fromUsername) $act in one of your discussions: <br /> <div style=\"outline:2px gray;\"> $truncated </div> <br /> <a href=\"$link\">Click here to view</a><br />";
-					if(!mail($email, "Notification from Dscourse", $msg)){
-						$fh = fopen('mailLog.txt', 'a') or die("can't open file");
-						fwrite($fh, "\n\n---------------------------------------------------------------\n");
-						fwrite($fh, "Not sent to $email: $msg");
-						fclose($fh);
-					}				
-				}		
-			}			
+					mail($email, "Notification from Dscourse", $msg);
+				}
+			}
 }
 
 function EditPost()
@@ -755,6 +752,7 @@ function CheckNewPosts()
 function AddLog()
 {
 			$log = $_POST['log'];
+			
 				$logUserID	= $log['logUserID'];
 				$logPageType= $log['logPageType'];
 				$logPageID	= $log['logPageID'];
