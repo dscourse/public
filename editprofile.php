@@ -18,7 +18,21 @@ ini_set('display_errors',1);
         // GET Info About This User
         $userInfo = $dscourse->UserInfo($uID);
 
-        
+		// GET notification settings
+		$triggers = array('comment','agree','disagree','clarify','offTopic');
+		$q = mysql_query("SELECT * FROM options WHERE optionsType = 'user' AND optionsTypeID = $uID");
+		$notifications = array();
+		while($row = mysql_fetch_assoc($q)){
+			$opt = $row['optionsName'];
+			$opt = explode('_',$opt);
+			$opt = $opt[2];
+			$notifications[$opt] = $row['optionsValue'];
+		}
+		//set up defaults
+		foreach($triggers as $trigger){
+			if(!isset($notifications[$trigger]))
+				$notifications[$trigger] = 0;
+		}
 ?>
 <!DOCTYPE html>
 
@@ -230,23 +244,23 @@ $(function(){
 				<label>Send me an email to let me know when someone </label>	
                 <div class="controls">
      				<label class="checkbox">
-      				<input type="checkbox" name="comment" value="true">
+      				<input type="checkbox" name="comment" value="1" <?php echo ($notifications['comment'])?'checked':'';?>>
      					comments on
     				</label>
     				<label class="checkbox">
-      				<input type="checkbox" name="agree" value="agree">
+      				<input type="checkbox" name="agree" value="1" <?php echo ($notifications['agree'])?'checked':'';?>>
       					agrees with
     				</label>
     				<label class="checkbox">
-      				<input type="checkbox" name="disagree" value="disagree">
+      				<input type="checkbox" name="disagree" value="1" <?php echo ($notifications['disagree'])?'checked':'';?>>
       					disagrees with
     				</label>
     				<label class="checkbox">
-      				<input type="checkbox" name="clarify" value="clarify">
+      				<input type="checkbox" name="clarify" value="1" <?php echo ($notifications['clarify'])?'checked':'';?>>
       					asks me to clarify
     				</label>
     				<label class="checkbox">
-      				<input type="checkbox" name="offtopic" value="offtopic">
+      				<input type="checkbox" name="offTopic" value="1" <?php echo ($notifications['offTopic'])?'checked':'';?>>
       					marks as off topic
     				</label>
             	</div>
