@@ -1,7 +1,6 @@
 /*
 *  All Course related code
 */
-
 // Search for "TODO" in page for items that need attention
 
 function Dscourse(lti) {
@@ -1837,6 +1836,7 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
      *	Returns thumbnail html of the user from ID
      */
     var main = this;
+    var colors = main.scatter(0,360, main.data.users.length);
     for (var n = 0; n < main.data.users.length; n++) {
         var userIDName = main.data.users[n].UserID;
         if (userIDName == id) {
@@ -1846,15 +1846,19 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
                 if(main.data.users[n].userPictureURL){
                		return "<img class='userThumbSmall' src='" + main.data.users[n].userPictureURL + "' />";	                
                 } else {
-                	var color1 = main.Rainbow();
-	                return "<div class='userThumbSmall' style='background:"+color1+"'> "+initials+" </div>"; 
+                    var fade = 0.25+(Math.random()*0.75);
+                	var color1 = d3.hsl(colors[n],1,fade);
+                	var font = d3.hsl(180+colors[n],1, Math.abs(fade-1));
+	                return "<div class='userThumbSmall' style='color:"+font+";background:"+color1+"'> "+initials+" </div>"; 
                 }
             } else if (size == 'tiny') {
                 if(main.data.users[n].userPictureURL){
 	                return "<img class='userThumbTiny' src='" + main.data.users[n].userPictureURL + "' />";
 	            } else {
-                	var color2 = main.Rainbow();
-		            return "<div class='userThumbTiny' style='background:"+color2+"'> "+initials+" </div>"; 
+	                  var fade = 1-(n/12)%1;
+                	var color2 =  d3.hsl(colors[n],fade,0.5);
+                	var font = d3.hsl(180+colors[n],fade,0.5);
+		            return "<div class='userThumbTiny' style='color:"+font+";background:"+color2+"'> "+initials+" </div>"; 
 
 	            }
             }
@@ -1867,6 +1871,14 @@ Dscourse.prototype.UniqueParticipants = function() {
      *	Returns html for unique participant buttons in the discussion Participant section.
      */
     var main = this;
+    var btn = $('<button>').addClass('uList');
+    $('body').append(btn);
+    var width = btn.width()+4;
+    btn.remove();
+    
+    var maxWidth =  $('#keywordSearchDiv').position().left - ($('#participantList').position().left+$('#participantList').children().eq(0).width())-20;
+    var maxIcons = Math.floor(maxWidth/width)-1;
+    
     $('.uList').remove();
     var i, o, name, thumb, output;
     for ( i = 0; i < main.uParticipant.length; i++) {
@@ -1874,9 +1886,29 @@ Dscourse.prototype.UniqueParticipants = function() {
         name = main.getName(o);
         thumb = main.getAuthorThumb(o, 'small');
         output = '<button class="btn uList" rel="tooltip" active="false" title="' + name + '" authorID="' + o + '">' + thumb + ' </button>';
-        $('#participantList').append(output);
+        if(i < maxIcons)
+            $('#participantList').append(output);
+        else if(i==maxIcons){
+            $('#participantList').append($('<button class="btn uList" rel="tooltip" active="false" style="height:30px;"><span style="text-align:center">ALL</span></button>').on('click', function(){
+                $('#participantListOverflow').toggle();
+            }));
+            $('#toolbox').append($('<div>',{
+                id: 'participantListOverflow'
+            }).hide());
+            $('#participantListOverflow').append(output);
+        }
+        else{
+            $('#participantListOverflow').append(output);        
+        }
     }
-
+    if($('#participantListOverflow').length>0)
+        $('#participantListOverflow').css({
+                    position: 'absolute',
+                    left: $('#participantList').children().eq(1).offset().left+'px',
+                    width: maxWidth-width +'px',
+                    height: 'auto',
+                    zIndex: 1000
+         });
 }
 
 Dscourse.prototype.DiscResize = function() {
@@ -2375,3 +2407,21 @@ Dscourse.prototype.Initials = function (fullname) {
 	var initials = matches.join('');                  
 	return initials; 
 }
+Dscourse.prototype.scatter = function (start, stop, qty){
+            //cover base case
+            var res = [stop/2];
+            var n = 2;
+            while(res.length<qty){
+                var step = stop/(Math.pow(2,n));
+                var back = n-1;
+                var uni = [];
+                for(var i=0; i<back; i++){
+                    var pos = res[(res.length-1)-i];
+                    uni.push(pos-step);
+                    uni.push(pos+step);     
+                }
+                res= res.concat(uni);       
+                n++;
+            }   
+            return res;
+        }
