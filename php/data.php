@@ -646,8 +646,13 @@ function AddPost()
 			
 			//check notifications
 			//need postFrom, postType, postAuthor
+			$q= "SELECT postAuthorId FROM posts WHERE postID = $postFromId";
+			$fromAuthor = mysql_query("SELECT postAuthorId FROM posts WHERE postID = $postFromId");
+			$fromAuthor = mysql_fetch_assoc($fromAuthor);
+			$fromAuthor = $fromAuthor['postAuthorId'];
 			
-			$res = mysql_query("SELECT * FROM options WHERE optionsType = 'user' AND optionsTypeID = $postFromId AND 'optionsName' = 'notify_on_$postType'");
+			$q = "SELECT * FROM options WHERE optionsType = 'user' AND optionsTypeID = $fromAuthor AND optionsName = 'notify_on_$postType'";
+			$res = mysql_query($q);
 			while($row = mysql_fetch_assoc($res)){
 				if($row['optionsValue']){
 					$act = "";
@@ -670,10 +675,8 @@ function AddPost()
 						break;
 					}
 					$truncated = substr($postMessage, 0,100)."...";
-					
 					$link= "";
 					if(isset($_SERVER['SCRIPT_URI'])){
-						$host = $_SERVER["HTTP_HOST"];
 						$path = rtrim($_SERVER['PHP_SELF'], '\W')."discussion.php";
 						$query = "?";
 						$d = mysql_query("SELECT courseDiscussions.discussionID, courseDiscussions.courseID FROM discussionPosts INNER JOIN courseDiscussions on discussionPosts.discussionID = courseDiscussions.discussionID WHERE discussionPosts.discussionID in (SELECT discussionID FROM discussionPosts WHERE postID = $postID) LIMIT 1");
@@ -689,12 +692,25 @@ function AddPost()
 					$from  = $ufrom['firstName'];
 					$fromUsername = $ufrom['username'];
 					
-					$e = mysql_query("SELECT username, firstName FROM users WHERE userID = $postFromId");	
+					$e = mysql_query("SELECT username, firstName FROM users WHERE userID = $fromAuthor");	
 					$user = mysql_fetch_assoc($e);
 					$email = $user['username'];
 					$name = $user['firstName'];
-					$msg = "Hi $name, <br /> $from($fromUsername) $act in one of your discussions: <br /> <div style=\"outline:2px gray;\"> $truncated </div> <br /> <a href=\"$link\">Click here to view</a><br />";
-					mail($email, "Notification from Dscourse", $msg);
+
+					require_once '../mail/class.phpmailer.php';
+					require_once '../mail/mail_init.php';
+					$mail = new PHPMailer();
+					$mail = mail_init($mail);
+					$body = file_get_contents('../mail/templates/notify.html');
+					$head = "Hi $name, <br /> $from($fromUsername) $act in one of your discussions:";
+					$body = str_replace('%head%',$head,$body);
+					$body = str_replace('%msg%', $truncated, $body);
+					$body = str_replace('%link%', $link, $body);
+					$mail->MsgHTML($body);
+					$mail->Subject = 'Notification from dscourse.org';
+					$mail->AddAddress($email, $name);
+					
+					$mail->Send();		
 				}
 			}
 }

@@ -17,6 +17,7 @@ function Dscourse(lti) {
     this.sPostID// Synthesis post id global
     this.sPostContent// Synthesis post content global
     this.uParticipant = new Array;
+    this.colors = new Array;
     // Unique list of participants.
     this.post = { };
     this.currentSelected = '';
@@ -1836,9 +1837,20 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
      *	Returns thumbnail html of the user from ID
      */
     var main = this;
-    var colors = main.scatter(0,360, main.data.users.length);
+    if (main.colors.length==0){
+        var hues = main.scatter(0,360, main.data.users.length);
+        for(var i=0;i<main.data.users.length;i++){
+            var fade = 0.25+(Math.random()*0.75);
+            var color = d3.hsl(hues[i],1,fade);
+            var font = d3.hsl(180+hues[i],1, Math.abs(fade-1));
+            main.colors.push({color:color,font:font});     
+        }
+    }
+    
     for (var n = 0; n < main.data.users.length; n++) {
         var userIDName = main.data.users[n].UserID;
+        var color = main.colors[n].color;
+        var font = main.colors[n].font;
         if (userIDName == id) {
         	var name = main.data.users[n].firstName + " " + main.data.users[n].lastName; 
             var initials = main.Initials(name); 
@@ -1846,19 +1858,13 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
                 if(main.data.users[n].userPictureURL){
                		return "<img class='userThumbSmall' src='" + main.data.users[n].userPictureURL + "' />";	                
                 } else {
-                    var fade = 0.25+(Math.random()*0.75);
-                	var color1 = d3.hsl(colors[n],1,fade);
-                	var font = d3.hsl(180+colors[n],1, Math.abs(fade-1));
-	                return "<div class='userThumbSmall' style='color:"+font+";background:"+color1+"'> "+initials+" </div>"; 
+	                return "<div class='userThumbSmall' style='color:"+font+";background:"+color+"'> "+initials+" </div>"; 
                 }
             } else if (size == 'tiny') {
                 if(main.data.users[n].userPictureURL){
 	                return "<img class='userThumbTiny' src='" + main.data.users[n].userPictureURL + "' />";
 	            } else {
-	                  var fade = 1-(n/12)%1;
-                	var color2 =  d3.hsl(colors[n],fade,0.5);
-                	var font = d3.hsl(180+colors[n],fade,0.5);
-		            return "<div class='userThumbTiny' style='color:"+font+";background:"+color2+"'> "+initials+" </div>"; 
+		            return "<div class='userThumbTiny' style='color:"+font+";background:"+color+"'> "+initials+" </div>"; 
 
 	            }
             }
@@ -1876,7 +1882,7 @@ Dscourse.prototype.UniqueParticipants = function() {
     var width = btn.width()+4;
     btn.remove();
     
-    var maxWidth =  $('#keywordSearchDiv').position().left - ($('#participantList').position().left+$('#participantList').children().eq(0).width())-20;
+    var maxWidth =  $('#keywordSearchDiv').position().left - ($('#participantList').position().left+$('#participantList').children().eq(0).width())-50;
     var maxIcons = Math.floor(maxWidth/width)-1;
     
     $('.uList').remove();
@@ -2418,7 +2424,9 @@ Dscourse.prototype.scatter = function (start, stop, qty){
                 for(var i=0; i<back; i++){
                     var pos = res[(res.length-1)-i];
                     uni.push(pos-step);
-                    uni.push(pos+step);     
+                    uni.push(pos+step);  
+                    if(res.length == qty)
+                        break;   
                 }
                 res= res.concat(uni);       
                 n++;
