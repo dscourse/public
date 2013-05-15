@@ -241,7 +241,7 @@ $(function(){
     <div id="addcoursePage" class=" wrap page formPage">
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span10 offset1">
+                <div class="span12">
                     <div id="courseForm" class="formClass">
                         <form class="form-horizontal " name="addCourseForm" action="php/data.php" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="editCourse">

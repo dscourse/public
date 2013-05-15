@@ -254,6 +254,23 @@ class Dscourse {
 		return $results;
 	}
 
+	public function GetDiscPosts($discID) {
+		/*
+		 *  Gets the posts from this discussion.
+		 */
+		$postData = mysql_query("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$discID."'");
+		$num_rows = mysql_num_rows($postData);
+		$posts = array(); 	
+		if($num_rows > 0){
+			$i = 0;
+			while($row = mysql_fetch_array($postData)) :
+				array_push($posts, $row);  // Add to the array of posts
+				$i++;
+			endwhile;
+		}
+		return $posts; 
+	}
+
 	public function UserCourseRole($cID, $userID) {
 		/*
 		 *  Gets the course role of the user for specific course
