@@ -688,7 +688,7 @@ class Dscourse {
 				$courseOptions[$res['optionsName']] = $res['optionsValue'];
 			}
 			if(empty($courseOptions)){
-				$f = file_get_contents("/web/curry.edschool.virginia.edu/curry_aux_sites/dscourse/php/courseOptions.json");
+				$f = file_get_contents("php/courseOptions.json");
 				$defaults = json_decode($f, true);
 				$courseOptions = $defaults;				
 			}

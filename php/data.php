@@ -199,13 +199,12 @@ function UpdateNetwork(){
 						$userPicture =  'uploads/userImg/'. $newName ;
 				    }
 			    }
-		  } else {
+		  } /*else {
 		  		$message =  "10";
 		  	  	$gotoPage = "../profile.php?u=".$UserID."&m=".$message;  // All good
 		  	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
-		  }	  
+		  }	 */ 
 	}
-
 
 	// If there is a password 
 	if(strlen($_POST['password']) === 0){
@@ -217,11 +216,27 @@ function UpdateNetwork(){
 			// Update with password 	
 			$userUpdate = mysql_query("UPDATE users SET firstName = '".$firstName."', lastName = '".$lastName."', userAbout = '".$userAbout."', userPictureURL = '".$userPicture."', userFacebook = '".$userFacebook."', userTwitter = '".$userTwitter."', userPhone = '".$userPhone."', userWebsite = '".$userWebsite."', password = '".$userPassword."' WHERE UserID = '".$UserID."' "); // UPDATE	
 	}
-
+	
+	$notifications = array("comment", "agree", "disagree","clarify", "offTopic");
+	foreach($notifications as $param){
+		$val = 0;
+		if(isset($_REQUEST[$param])){
+			$val = $_REQUEST[$param];	
+		}
+		//check for old entries
+		$old = mysql_query("SELECT optionsID FROM options WHERE optionsType='user' AND optionsTypeID = $UserID AND optionsName = 'notify_on_$param'");
+		$res = mysql_fetch_assoc($old);
+		if(!empty($res)){
+			$oID = $res['optionsID'];
+			mysql_query("UPDATE options SET optionsValue = $val WHERE optionsID = $oID");		
+		}
+		else{
+			mysql_query("INSERT INTO options(optionsType, optionsTypeID, optionsName, optionsValue) VALUES('user', $UserID, 'notify_on_$param', $val)");
+		}
+	}
 
   	$gotoPage = "../profile.php?u=".$UserID."&m=1";  // All good
 	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
-
 }
  
  function AddUsersToNetwork() {
@@ -628,7 +643,76 @@ function AddPost()
 			$currentDiscussion =   $_POST['currentDiscussion'];
 			 
 			$addPosttoDiscussion = mysql_query("INSERT INTO discussionPosts (discussionID, postID) VALUES(".$currentDiscussion.", '".$postID."')");  			 		
+			
+			//check notifications
+			//need postFrom, postType, postAuthor
+			$q= "SELECT postAuthorId FROM posts WHERE postID = $postFromId";
+			$fromAuthor = mysql_query("SELECT postAuthorId FROM posts WHERE postID = $postFromId");
+			$fromAuthor = mysql_fetch_assoc($fromAuthor);
+			$fromAuthor = $fromAuthor['postAuthorId'];
+			
+			$q = "SELECT * FROM options WHERE optionsType = 'user' AND optionsTypeID = $fromAuthor AND optionsName = 'notify_on_$postType'";
+			$res = mysql_query($q);
+			while($row = mysql_fetch_assoc($res)){
+				if($row['optionsValue']){
+					$act = "";
+					$generic = " one of your posts";
+					switch($postType){
+						case 'comment':
+							$act = "commented on".$generic;
+						break;
+						case 'agree':
+							$act = "agreed with".$generic;
+						break;
+						case 'disagree':
+							$act = "disagreed with".$generic;
+						break;
+						case 'clarify':
+							$act = "asked you to clarify".$generic;
+						break;
+						case 'offTopic':
+							$act = "marked ".$generic." as off topic";
+						break;
+					}
+					$truncated = substr($postMessage, 0,100)."...";
+					$link= "";
+					if(isset($_SERVER['SCRIPT_URI'])){
+						$path = rtrim($_SERVER['PHP_SELF'], '\W')."discussion.php";
+						$query = "?";
+						$d = mysql_query("SELECT courseDiscussions.discussionID, courseDiscussions.courseID FROM discussionPosts INNER JOIN courseDiscussions on discussionPosts.discussionID = courseDiscussions.discussionID WHERE discussionPosts.discussionID in (SELECT discussionID FROM discussionPosts WHERE postID = $postID) LIMIT 1");
+						$info = mysql_fetch_assoc($d);
+						$dID = $info['discussionID'];
+						$cID = $info['courseID'];
+						$query.="d=$dID&c=$cID&p=$postID";
+						$link = 'http://'.$host.$path.$query;
+					}
+					
+					$userFrom = mysql_query("SELECT username, firstName FROM users WHERE userID = $postAuthorId");	
+					$ufrom = mysql_fetch_assoc($userFrom);
+					$from  = $ufrom['firstName'];
+					$fromUsername = $ufrom['username'];
+					
+					$e = mysql_query("SELECT username, firstName FROM users WHERE userID = $fromAuthor");	
+					$user = mysql_fetch_assoc($e);
+					$email = $user['username'];
+					$name = $user['firstName'];
 
+					require_once '../mail/class.phpmailer.php';
+					require_once '../mail/mail_init.php';
+					$mail = new PHPMailer();
+					$mail = mail_init($mail);
+					$body = file_get_contents('../mail/templates/notify.html');
+					$head = "Hi $name, <br /> $from($fromUsername) $act in one of your discussions:";
+					$body = str_replace('%head%',$head,$body);
+					$body = str_replace('%msg%', $truncated, $body);
+					$body = str_replace('%link%', $link, $body);
+					$mail->MsgHTML($body);
+					$mail->Subject = 'Notification from dscourse.org';
+					$mail->AddAddress($email, $name);
+					
+					$mail->Send();		
+				}
+			}
 }
 
 function EditPost()
@@ -684,6 +768,7 @@ function CheckNewPosts()
 function AddLog()
 {
 			$log = $_POST['log'];
+			
 				$logUserID	= $log['logUserID'];
 				$logPageType= $log['logPageType'];
 				$logPageID	= $log['logPageID'];

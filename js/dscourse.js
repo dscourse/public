@@ -1,7 +1,6 @@
 /*
 *  All Course related code
 */
-
 // Search for "TODO" in page for items that need attention
 
 function Dscourse(lti) {
@@ -17,8 +16,13 @@ function Dscourse(lti) {
     // Maximum value for the timeline
     this.sPostID// Synthesis post id global
     this.sPostContent// Synthesis post content global
+<<<<<<< HEAD
     this.uParticipant = new Array();
     this.uColors = new Array();
+=======
+    this.uParticipant = new Array;
+    this.colors = new Array;
+>>>>>>> local
     // Unique list of participants.
     this.post = { };
     this.currentSelected = '';
@@ -1838,9 +1842,25 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
      *	Returns thumbnail html of the user from ID
      */
     var main = this;
+<<<<<<< HEAD
     var l = main.data.users.length;
     for (var n = 0; n < l; n++) {
+=======
+    if (main.colors.length==0){
+        var hues = main.scatter(0,360, main.data.users.length);
+        for(var i=0;i<main.data.users.length;i++){
+            var fade = 0.25+(Math.random()*0.75);
+            var color = d3.hsl(hues[i],1,fade);
+            var font = d3.hsl(180+hues[i],1, Math.abs(fade-1));
+            main.colors.push({color:color,font:font});     
+        }
+    }
+    
+    for (var n = 0; n < main.data.users.length; n++) {
+>>>>>>> local
         var userIDName = main.data.users[n].UserID;
+        var color = main.colors[n].color;
+        var font = main.colors[n].font;
         if (userIDName == id) {
         	var name = main.data.users[n].firstName + " " + main.data.users[n].lastName; 
             var initials = main.Initials(name); 
@@ -1848,19 +1868,28 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
                 if(main.data.users[n].userPictureURL){
                		return "<img class='userThumbSmall' src='" + main.data.users[n].userPictureURL + "' />";	                
                 } else {
+<<<<<<< HEAD
                     var color1 = d3.hsl(n*17,1,0.5).toString();
                     main.uColors.push({color:color1, user:userIDName});
                     var comp  = d3.hsl((n*17)+180,1,0.5).toString();
 	                return "<div class='userThumbSmall' style='color:"+comp+";background:"+color1+"'> "+initials+" </div>"; 
+=======
+	                return "<div class='userThumbSmall' style='color:"+font+";background:"+color+"'> "+initials+" </div>"; 
+>>>>>>> local
                 }
             } else if (size == 'tiny') {
                 if(main.data.users[n].userPictureURL){
 	                return "<img class='userThumbTiny' src='" + main.data.users[n].userPictureURL + "' />";
 	            } else {
+<<<<<<< HEAD
                 	var color2 = d3.hsl(n*17,1,0.5).toString();
                 	main.uColors.push({color:color2, user:userIDName});
                 	var comp  = d3.hsl((n*17)+180,1,0.5).toString();
 		            return "<div class='userThumbTiny' style='color:"+comp+";background:"+color2+"'> "+initials+" </div>"; 
+=======
+		            return "<div class='userThumbTiny' style='color:"+font+";background:"+color+"'> "+initials+" </div>"; 
+
+>>>>>>> local
 	            }
             }
         }
@@ -1872,13 +1901,20 @@ Dscourse.prototype.UniqueParticipants = function() {
      *  Returns html for unique participant buttons in the discussion Participant section.
      */
     var main = this;
+<<<<<<< HEAD
 
+=======
+>>>>>>> local
     var btn = $('<button>').addClass('uList');
     $('body').append(btn);
     var width = btn.width()+4;
     btn.remove();
     
+<<<<<<< HEAD
     var maxWidth =  $('#keywordSearchDiv').position().left - ($('#participantList').position().left+$('#participantList').children().eq(0).width())-20;
+=======
+    var maxWidth =  $('#keywordSearchDiv').position().left - ($('#participantList').position().left+$('#participantList').children().eq(0).width())-50;
+>>>>>>> local
     var maxIcons = Math.floor(maxWidth/width)-1;
     
     $('.uList').remove();
@@ -1910,7 +1946,11 @@ Dscourse.prototype.UniqueParticipants = function() {
                     width: maxWidth-width +'px',
                     height: 'auto',
                     zIndex: 1000
+<<<<<<< HEAD
         });
+=======
+         });
+>>>>>>> local
 }
 
 Dscourse.prototype.DiscResize = function() {
@@ -2404,3 +2444,23 @@ Dscourse.prototype.Initials = function (fullname) {
 	var initials = matches.join('');                  
 	return initials; 
 }
+Dscourse.prototype.scatter = function (start, stop, qty){
+            //cover base case
+            var res = [stop/2];
+            var n = 2;
+            while(res.length<qty){
+                var step = stop/(Math.pow(2,n));
+                var back = n-1;
+                var uni = [];
+                for(var i=0; i<back; i++){
+                    var pos = res[(res.length-1)-i];
+                    uni.push(pos-step);
+                    uni.push(pos+step);  
+                    if(res.length == qty)
+                        break;   
+                }
+                res= res.concat(uni);       
+                n++;
+            }   
+            return res;
+        }

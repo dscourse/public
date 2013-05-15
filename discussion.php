@@ -93,7 +93,7 @@ ini_set('display_errors',1);
     <title> dscourse | <?php echo $discussionInfo['dTitle']; ?></title>
         <?php
 		include ('php/header_includes.php');
-  ?>
+  		?>
         <script type="text/javascript" src="js/dscourse.js"></script>
 		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript">
