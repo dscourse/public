@@ -108,11 +108,7 @@ ini_set('display_errors',1);
             <div class="container-fluid">
             	<div class="row-fluid">
 			            <div class="span12">
-			                <h1><span id="profileName"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></span> <small><span id="profileEmail"><?php  echo $userInfo['username']; ?></span></small></h1>
-			
-			                <div id="editProfileButtons" class="pull-right">
-			                    <a href="editprofile.php?u=<?php echo $userID; ?>" id="editProfileButton" class="btn btn-info">Edit Profile</a>
-			                </div>
+			                <h1><span id="profileName"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></span> </h1>
 			            </div>
             	</div>
             </div>
@@ -123,7 +119,7 @@ ini_set('display_errors',1);
         <div class="container-fluid">
             <div class="row-fluid" id="profileDetails">
                 <div id="userInfoWrap">
-                    <div class="span4">
+                    <div class="span4 greenBox">
                         <div id="profilePicture"></div>
 
                         <div id="profileInfo">
@@ -163,14 +159,15 @@ ini_set('display_errors',1);
                                     </tr>
                                 </tbody>
                             </table>
+                            <div><a href="editprofile.php?u=<?php echo $userID; ?>" id="editProfileButton" class="btn btn-block btn-info">Edit Profile</a></div>
                         </div>
 
                         <div class=""></div>
                     </div><!-- end span4 -->
 
-                    <div class="span8 ">
-                        <h2>My Courses:</h2>
-
+                    <div class="span8 greenBox">
+                        <h2><?php  if($uID == $userID) { echo 'My'; } else { echo $userInfo['firstName'].'\'s'; } ?> Courses:</h2>
+ 
                         <table class="table table-striped">
                             <thead>
                                 <tr>

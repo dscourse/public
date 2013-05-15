@@ -75,6 +75,9 @@ ini_set('display_errors',1);
 <html lang="en">
 <head>
     <title>dscourse</title>
+<noscript>
+<meta http-equiv=refresh content="0; URL=noscript.php" />
+</noscript>
     <?php include('php/header_includes.php');  ?>
     
 	<script type="text/javascript" src="js/counter.js"></script>
@@ -101,8 +104,12 @@ ini_set('display_errors',1);
 			}
 			?>	
 
+			if(actions.lenght > 0){
+				$('#noPosts').remove(); 
+			}
 			$.each(actions, function(i, val){
 				var msg = [val.agentLabel, val.action+"ed", "in your", val.context, val.contextLabel].join(" ");
+				
 				$('#newsFeed').append("<li actionsIndex=\""+i+"\">"+msg+"<br /><a href=\""+val.actionPath+"\">Click to view</a></li>");	
 			});		
 		}); 
@@ -128,8 +135,6 @@ ini_set('display_errors',1);
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                             <li><a id="profileNav" href="profile.php?u=<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
 
-                            <li><a id="mycourseNav" href="mycourses.php">My Courses</a></li>
-
                             <li><a id="helpNav" href="help.php">Help</a></li>
 
                             <li><a href="php/logout.php">Logout</a></li>
@@ -154,32 +159,30 @@ ini_set('display_errors',1);
         <div class="container-fluid">
             <div class="row-fluid">
 
-                <div class="span4">
+                <div class="span4 greenBox indexBox">
                 	<div class="">
                 		<h4 class="lightBox"> News Feed </h4>
+                		<p> </p>
                 		<ul class="unstyled dashboardList" id="newsFeed">
-                        <p></p>
-                        <li class="lightBoxListEnd"> </li>
+                			<p id="noPosts"> There hasn't been any posting since your last visit! </p> 
                         </ul>
 					 </div>
                 </div>
-                <div class="span4">
+                <div class="span4 greenBox indexBox">
                     <div class="">
                         <h4 class="lightBox">My Courses</h4>     <a class="lightBoxLink pull-right" href="addcourse.php"><i class="icon-plus "></i>  Add Course </a>
 
-                        <hr class="soften">
                         
                         <ul class="unstyled dashboardList" id="courseList">
                         <p><?php echo $coursePrint; ?></p>
-                        <li class="lightBoxListEnd"> <a href="mycourses.php" class="pull-right"> See all...</a> </li>
+                        <li class="lightBoxListEnd"> <a href="profile.php?u=<?php echo $_SESSION['UserID']; ?>" class="pull-right"> See all...</a> </li>
                         </ul>
 
                     </div>
                 </div>
-                <div class="span4">                                                          
+                <div class="span4 greenBox indexBox">                                                          
                     <div class="">
                         <h4 class="lightBox">My Discussions</h4>
-                        <hr class="soften">
 
                         <p></p>
 

@@ -107,10 +107,10 @@ ini_set('display_errors',1);
 				});
 				
            }); 
-				$('div.btn-group .btn').click( function () { 
-					$(this).siblings().removeClass('active'); 
-					$(this).addClass('active'); 
-				});              
+			$('div.btn-group .btn').click( function () { 
+				$(this).siblings().removeClass('active'); 
+				$(this).addClass('active'); 
+			});              
     });                        
     </script>
 </head>

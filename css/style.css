@@ -6,6 +6,10 @@
  
  
  /********** Global  ************/
+html,body {
+    background-color: #f5f5f5;
+}
+
 body {
 	padding-top:40px;
 }
@@ -32,11 +36,18 @@ h1, h2, h3, h4, h5 {
 
 .jumbotron {
 	position:relative;
-	padding:11px 0;
-	color:#4a4a4a;
-	background:#f5f5f5 url(../img/dusk.jpg) no-repeat 0% 50% ;
+	padding:5px 0;
+	//color:#4a4a4a;
+	//background:#f5f5f5 url(../img/dusk.jpg) no-repeat 0% 50% ;
 	border-bottom:1px solid rgb(202, 202, 202);
+background: #438eb9;
+color: white;
 }
+
+.discjumbotron {
+	background-color: rgb(231, 231, 231) !important;
+}
+
 .jumbotron h4 {
 line-height: 25px; 
 }
@@ -90,7 +101,7 @@ margin-right: 3px;
 }
 
 .navLevel {
-background:url(../img/right_arr.png) no-repeat left;
+background:url(../img/right_arr.png) no-repeat -6% 0%;
 padding-left: 10px;
 font-size: 18px; 
 font-weight: 200; 
@@ -113,6 +124,11 @@ font-weight: 200;
 
 .profileHead {
 	font-weight: bold; 
+}
+
+.center {
+	margin:auto; 
+	text-align: center;
 }
 
 /* 
@@ -147,6 +163,12 @@ font-weight: 200;
 	padding:10px; 
 }
 
+.greenBox {
+	border: 1px solid #ccc;
+padding: 10px;
+border-top: 3px solid rgba(131, 192, 131, 0.66);
+background: white;
+}
 
 /* 
  *  General Form Elements
@@ -225,14 +247,22 @@ font-size: 18px;
  /********** Index.php  ************/
   
   .lightBox {
-	  background: #eee;
-padding: 15px;
-margin-bottom: -20px;
+background: rgba(245, 245, 245, 0.46);
+padding: 15px 25px;
+margin-bottom: -4px;
+font-size: 20px;
+margin-top: -10px;
+width: 92%;
+margin-left: -10px;
+border-bottom: 1px solid #eee;
   }
   
   .lightBoxLink {
-	  padding: 10px;
-margin-top: -29px;
+padding: 7px;
+margin-top: -37px;
+border-bottom: 1px solid #ccc;
+background: white;
+margin-right: 7px;
   }
   
   .lightBoxListEnd {
@@ -244,6 +274,9 @@ line-height: 0px;
     	margin-bottom: -20px; 
     	}
 
+.indexBox {
+	min-height: 500px; 
+}
   
  /********** Home.php  ************/
 
@@ -289,14 +322,12 @@ background: #fff;
 max-width: 300px;
 padding: 19px 29px 29px;
 background-color: #fff;
-border: 1px solid #e5e5e5;
-order: 1px solid #e5e5e5;
--webkit-border-radius: 5px;
--moz-border-radius: 5px;
-border-radius: 5px;
--webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
--moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+border: 7px solid rgb(204, 204, 204);
+-moz-border-radius: 20px;
+border-radius: 20px;
+-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, .75);
+-moz-box-shadow: 0 1px 10px rgba(0, 0, 0, .75);
+box-shadow: 0 1px 10px rgba(0, 0, 0, .75);
 }
 .authForms h1 {
 text-align: center;
@@ -314,30 +345,20 @@ text-align: center;
 padding: 10px 0px;
 }
 
-#registerLink {
+#registerLink, #loginLink {
 	background: rgba(0, 128, 0, 0.12);
 padding: 20px 40px;
 margin-left: -30px;
 width: 280px;
-border-top: 1px solid rgba(0, 128, 0, 0.27);
-border-bottom: 1px solid rgba(0, 128, 0, 0.27);
+border-top: 1px solid rgba(0, 128, 0, 0.15);
+border-bottom: 1px solid rgba(0, 128, 0, 0.15);
 margin-top: 20px;
 margin-bottom: 10px;
 text-align: center;
+box-shadow: inset 3px 0px 22px -4px #cecece;
 
 }
 
-#loginLink {
-	background: rgba(0, 128, 0, 0.12);
-padding: 20px 40px;
-margin-left: -30px;
-width: 280px;
-border-top: 1px solid rgba(0, 128, 0, 0.27);
-border-bottom: 1px solid rgba(0, 128, 0, 0.27);
-margin-top: 20px;
-margin-bottom: 10px;
-text-align: center;
-}
  /********** network.php  ************/
 
 
@@ -351,7 +372,38 @@ text-align: center;
 	width:240px;
 }
 
+#courseTabs a {
+	font-size: 18px;
+	border: none; 
+	border-bottom: 3px solid #eee;
+font-weight: 200;
+font-size: 18px;
+margin: 5px 10px;
+}
 
+#courseTabs {
+	border: none; 
+}
+
+#courseTabs .active a {
+	border-bottom: 3px solid red; 
+font-weight: 200;
+font-size: 20px;	
+}
+
+.analyticsBox {
+	border: 1px solid #eee;
+	padding: 0px 15px;
+}
+
+.analyticsBox h5 {
+	font-weight: 200;
+	font-size: 20px; 
+}
+
+.analyticsN {
+	font-weight: 600;
+}
  /********** courseoptions.php  Settings ************/
 
 .settingBox {
@@ -650,10 +702,10 @@ font-weight: 200;
 
 .topLevelMessage {
 padding: 10px!important;
-border: 2px solid #eee!important;
+border: 1px solid #ddd!important;
 margin-left: 0!important;
-margin-bottom: 10px;
-border-radius: 5px;
+margin-top: 10px;
+border-radius: 0px;
 }
 
 .dCollapse h4 {
@@ -1336,6 +1388,9 @@ span .highlight {
 	margin-top:-36px;
 }
 
+#discussionWrap {
+	background-color: white;
+}
 #discussionWrap .jumbotron {
 	padding:5px 0 0;
 	width:100%;

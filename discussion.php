@@ -157,7 +157,7 @@ ini_set('display_errors',1);
         	</div>
     	</div><!-- End of header content-->	
 	<?php } ?>
-        <header class="jumbotron subhead">
+        <header class="jumbotron subhead discjumbotron">
             <div class="container-fluid">
                 <div class="btn-toolbar" id="toolbox">
                 	<?php if(isset($preProcess['options']['useTimeline']) && $preProcess['options']['useTimeline'] == "Yes"){ ?>
@@ -179,7 +179,7 @@ ini_set('display_errors',1);
         </header>
 
 
-    <div id="discussionWrap" class=" page" >
+    <div id="discussionWrap" class="page" >
 
         <div class="container-fluid">
             <div class="row-fluid" id="controlsRow">
