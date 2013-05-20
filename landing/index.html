@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en" >
+  <![endif]-->
+  <!--[if gt IE 8]>
+  <!-->
+  <html class="no-js" lang="en" >
+    <!--<![endif]-->
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Software App Laning Page</title>
+
+    <link rel="stylesheet" href="css/normalize.css" />
+
+    <link rel="stylesheet" href="css/foundation.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/general_foundicons.css">
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="css/general_foundicons_ie7.css">
+    <![endif]-->
+    <link href="http://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet" type="text/css">
+
+    <script src="js/vendor/custom.modernizr.js"></script>
+
+</head>
+<body>
+  <!-- Begin Menu Bar -->
+      <nav class="top-bar">
+        <ul class="title-area">
+          <!-- Title Area -->
+          <li class="name">
+            <h1>
+              <a href="#">APPSTER</a>
+            </h1>
+          </li>
+          <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+          <li class="toggle-topbar menu-icon">
+            <a href="#">
+              <span>Menu</span>
+            </a>
+          </li>
+        </ul>
+
+        <section class="top-bar-section">
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li class="divider"></li>
+            <!-- "active" class is applied to the Features link -->
+            <li class="active">
+              <a href="#">FEATURES</a>
+            </li>
+            <li class="divider"></li>
+            <li>
+              <a href="#">DOCS</a>
+            </li>
+            <li class="divider"></li>
+            <!-- has-dropdown class creates a dropdown menu -->
+            <li class="has-dropdown"> 
+              <a href="#">EXAMPLES</a>
+
+              <ul class="dropdown">
+                <li class="has-dropdown">
+                  <a href="#">Dropdown Level 1a</a>
+
+                  <ul class="dropdown">
+                    <li>
+                      <label>Dropdown Level 2 Label</label>
+                    </li>
+                    <li>
+                      <a href="#">Dropdown Level 2a</a>
+                    </li>
+                    <li>
+                      <a href="#">Dropdown Level 2b</a>
+                    </li>
+                    <li class="has-dropdown">
+                      <a href="#">Dropdown Level 2c</a>
+
+                      <ul class="dropdown">
+                        <li>
+                          <label>Dropdown Level 3 Label</label>
+                        </li>
+                        <li>
+                          <a href="#">Dropdown Level 3a</a>
+                        </li>
+                        <li>
+                          <a href="#">Dropdown Level 3b</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                          <a href="#">Dropdown Level 3c</a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a href="#">Dropdown Level 2d</a>
+                    </li>
+                    <li>
+                      <a href="#">Dropdown Level 2e</a>
+                    </li>
+                    <li>
+                      <a href="#">Dropdown Level 2f</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="#">Dropdown Level 1b</a>
+                </li>
+                <li>
+                  <a href="#">Dropdown Level 1c</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="#">Dropdown Level 1d</a>
+                </li>
+                <li>
+                  <a href="#">Dropdown Level 1e</a>
+                </li>
+                <li>
+                  <a href="#">Dropdown Level 1f</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="#">See all &rarr;</a>
+                </li>
+              </ul>
+            </li>
+            <li class="divider"></li>
+          </ul>
+
+          <!-- Right Nav Section -->
+          <ul class="right">
+            <li class="divider hide-for-small"></li>
+            <li>
+              <a href="#">PRICING</a>
+            </li>
+            <li class="divider"></li>
+
+            <li class="divider show-for-small"></li>
+            <!-- Button -->
+            <li class="has-form">
+              <a class="button" href="#">Buy this theme!</a>
+            </li>
+          </ul>
+        </section>
+      </nav>
+      <!-- End Top Navigation Bar -->
+
+    <!-- Begin main Above the fold Header -->
+    <div class="full-row grey"> 
+      <!-- "full-row" class allows background to stretch to 100% width -->
+      <div class="row header">
+        <div class="large-5 columns features-intro">
+          <!-- Main Heading -->
+          <h1>Dynamic landing pages that visitors love.</h1>
+          <p class="main">
+            Provide your visitors with a great landing page, including <b>video</b>
+            —
+which is proven to increase conversions.
+          </p>
+              
+          <!-- Email Subscribe Form -->
+          <div class="large-9 columns">
+            <div class="row collapse email">
+              <form action="php/submit-sub.php" method="POST" id="email-form">
+                <p class="top-email">Sign up to receive updates:</p>
+
+                <div class="small-9 columns">
+                  <input type="email" name="email" placeholder="your email address" /> 
+                </div>
+
+                <div class="small-3 columns">
+                  <!-- Submit button -->
+                  <input class="button postfix radius" type="submit" />              
+                </div>
+                <!-- Return a Thankyou message when the form is submitted -->
+                <div id="success-message"></div>
+
+              </form>
+              <!-- End Email Row -->
+            </div>
+          </div>
+
+        </div>
+
+        <div class="large-7 columns">
+          <!-- Begin HTML5 Video -->
+          <img src="img/laptop-blank.png" class="laptop">
+          <video class="demo-video" preload="" loop="" autoplay="" controls="" muted="">
+            <source src="video/on-site-demo.mov.mp4" type="video/mp4">
+            <source src="video/on-site-demo.mov.webm" type="video/webm">
+            <source src="video/on-site-demo.mov.ogv" type="video/ogg"></video>
+        </div>
+
+      <!-- End row -->
+      </div>
+      <!-- End "full-row" -->
+    </div>
+
+    <!-- Begin Features -->
+    <div class="row features">
+
+      <!-- Divided in to columns of 4 to create a layout of thirds -->
+      <div class="large-4 columns">
+        <!-- Feature name -->
+        <h2>Built on Foundation 4</h2>
+        <!-- Feature Description -->
+        <p>
+          Based around the Zurb Foundation 4 Framework this templte comes bundled with all kinds of goodies, including easy to use forms and buttons.
+        </p>
+        <!-- Corresponding Image -->
+        <img src="img/IDE-2.png" width="720" height="719" alt="">
+        <!-- End Feature -->
+      </div>
+
+      <!-- Begin Feature 2 -->
+      <div class="large-4 columns">
+        <h2>Flexible Grid System</h2>
+        <p>
+          The Foundation framework uses a simple 12 column grid allowing expressive and flexible layouts across all popular desktop and mobile devices.
+        </p>
+        <img src="img/code-behind-page.png" width="720" height="707" alt="">
+        <!-- End Feature 2 -->
+      </div>
+
+      <!-- Begin Feature 3 -->
+      <div class="large-4 columns">
+        <h2>Easy to Edit</h2>
+        <p>
+          Well documentated code means adding your changes is easy. No previous coding knowledge is required and all default content is included.
+        </p>
+        <img src="img/IDE-2.png" width="720" height="719" alt="">
+        <!-- End Feature 3 -->
+      </div>
+
+      <!-- End Row -->
+    </div>
+
+    <!-- Large Video Section -->
+    <div class="full-row darkgrey">
+      <div class="row">
+        <div class="large-12 columns video">
+          <h1>Convert with Video.</h1>
+
+          <!-- In Description use <b></b> tags for emphasis -->
+          <p>
+            Just change add your <b>video link</b>
+            and you’re good to go.
+            <p>
+              <!-- Provide 3 video formats if you can to maximise compatibility, 
+              more info here: http://www.w3schools.com/html/html5_video.asp
+              Remove "muted" tag to unmute video
+              -->
+              <video class="" preload="" loop="" autoplay="" controls="" muted="">
+                <source src="video/on-site-demo.mov.mp4" type="video/mp4">
+                <source src="video/on-site-demo.mov.webm" type="video/webm">
+                <source src="video/on-site-demo.mov.ogv" type="video/ogg">
+              <!-- Provide a Fall back image & message if video is not supported -->
+                <img src="img/video-bu.png" width="720" height="719" alt="">Sorry, your browser does not support video</video>
+
+            </div>
+            <!-- End Row -->
+          </div>
+          <!-- End Full row section -->
+        </div>
+
+        <!-- Begin Large Feature Blocks -->
+        <div class="full-row grey">
+          <div class="row tour">
+            <div class="small-12 columns">
+              <!-- Main Title & Subtitle -->
+              <h1>Let your content be seen.</h1>
+              <p class="header">
+                Well positioned text draws the users eye to what's important.
+              </p>
+            </div>
+
+            <!-- Begin Features Tour -->
+            <!-- Feature 1 -->
+            <!-- Large Image -->
+            <div class="large-8 columns">
+              <img src="img/magnifier-620x350.png">
+            </div>
+            <!-- Side Text -->
+            <div class="large-4 columns description">
+              <h2>Product Tour</h2>
+              <p class="description">Create as many blocks as you like, simply copy and paste.</p>
+              <p class="description">
+                Perfect for things like Apps, Software, Photography or design work.
+              </p>
+            </div>
+            <!-- Horizontal Rule -->
+            <hr>
+            <!-- End Feature 1 -->
+
+            <!-- Feature 2 -->
+            <div class="large-4 columns description">
+              <h2>Sections</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              <p>Ut quam urna, feugiat at mollis in, faucibus sit amet neque.</p>
+            </div>
+            <div class="large-8 columns">
+              <img src="img/free-admin-template-psd.png"></div>
+            <hr>
+            <!-- End Feature 2 --> 
+          </div>
+          <!-- End Row -->
+        </div>
+
+        <!-- Begin Second Dark Grey Features Section -->
+        <div class="full-row darkgrey">
+          <div class="row">
+            <div class="large-12 columns video">
+              <!-- Heading & Subtitle -->
+              <h1>Your visitors will love you.</h1>
+              <p>Because your App makes their life easy.</p>
+              <div class="dark-hr"></div>
+            </div>
+
+            <!-- Start features -->
+            <div class="large-4 columns darkgrey">
+              <h2>Included Icon Font</h2>
+              <img src="img/on-site-gallery.png" width="720" height="450" alt="">
+              <p class="description">
+                Foundation comes with a really great icon font, this allows you to add numerous icons just by specifying their classes.
+              </p>
+            </div>
+
+            <div class="large-4 columns darkgrey">
+              <h2>Focus on Typography</h2>
+              <img src="img/rich-text-editor.png" width="720" height="450" alt="">
+              <p class="description">
+                Large text draws the users eye to what you are saying. The fonts are easy on the eye and display brilliantly on all devices.
+              </p>
+            </div>
+
+            <div class="large-4 columns darkgrey">
+              <h2>Email Form</h2>
+              <img src="img/white-labeling.png" width="720" height="450" alt="">
+              <p class="description">
+                Visitors can enter their email address if they wish to receive more information, these emails are then sent to you instantly.
+              </p>
+
+            </div>
+
+            <!-- Start Icons Section -->
+            <div class="large-12 columns video">
+              <!-- Dark Horizontal Rule Divider -->
+              <div class="dark-hr"></div>
+
+              <h1>The perfect landing page.</h1>
+              <p>All the features you need and more.</p>
+            </div>
+
+            <div class= "small-4 columns ">
+            <!-- Begin Icon List -->
+              <ul class="icons">
+                 <!-- Each Feature is a <li> item -->
+                <li> 
+                  <!-- Specify the icon using the "foundicon-name" class format 
+                  more info: http://zurb.com/playground/foundation-icons
+                  -->
+                  <i class="foundicon-cloud"></i>
+                  Email collection form
+                </li>
+                <li> <i class="foundicon-clock"></i>
+                  Great design
+                </li>
+                <li>
+                  <i class="foundicon-website"></i>
+                  Great neutral colours
+                </li>
+              </ul>
+            </div>
+
+            <div class= "small-4 columns">
+              <ul class="icons">
+                <li>
+                  <i class="foundicon-search"></i>
+                  Integrated autoplay video
+                </li>
+                <li>
+                  <i class="foundicon-lock"></i>
+                  Well written code
+                </li>
+                <li>
+                  <i class="foundicon-refresh"></i>
+                  Multiple sections
+                </li>
+              </ul>
+            </div>
+
+            <div class= "small-4 columns">
+              <ul class="icons">
+                <li>
+                  <i class="foundicon-heart"></i>
+                  Mobile device friendly
+                </li>
+                <li>
+                  <i class="foundicon-plus"></i>
+                  Cross Browser
+                </li>
+                <li>
+                  <i class="foundicon-idea"></i>
+                  Included support
+                </li>
+              </ul>
+              <!-- End List -->
+            </div>
+
+            <!-- End Row -->
+          </div>
+          <!-- End Dark Grey Container --> 
+        </div>
+
+        <!-- Start Call To Action -->
+        <div class="full-row grey">
+          <div class="row tour">
+
+            <div class="large-6 columns">
+              <img src="img/iphone.png" class="iphone" width="561" height="614" alt=""></div>
+            <div class="large-6 columns cta">
+              <h2>Sign up now</h2>
+              <p>
+                <b>30 days free trial.</b>
+                Sign up in 60 seconds. Upgrade, downgrade, cancel at any time.
+              </p>
+              <!-- Button -->
+              <a href="#" class="small button">Start your free trial</a>
+              <!-- End CTA -->
+            </div>
+            <!-- End Row -->
+          </div>
+          <!-- End Grey Container -->
+        </div>
+
+        <!-- Footer -->
+        <div class="full-row darkgrey footer">
+          <div class="row">
+            <!-- Begin Footer Links, Repeat this Block -->
+            <div class="small-6 large-3 columns">
+              <!-- Header -->
+              <h5>Product</h5>
+              <!-- List Items -->
+              <ul class="footer-nav">
+                <li>
+                  <a href="#">Features</a>
+                </li>
+                <li>
+                  <a href="#">Docs</a>
+                </li>
+                <li>
+                  <a href="#">Pricing</a>
+                </li>
+                <li>
+                  <a href="#">Learn More</a>
+                </li>
+              </ul>
+              <!-- End this List -->
+            </div>
+
+            <div class="small-6 large-3 columns">
+              <h5>Company</h5>
+              <ul class="footer-nav">
+                <li>
+                  <a href="#">Blog</a>
+                </li>
+                <li>
+                  <a href="#">About</a>
+                </li>
+                <li>
+                  <a href="#">Contact</a>
+                </li>
+                <li>
+                  <a href="#">Press</a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="large-3 columns">
+              <h5>Community</h5>
+              <ul class="footer-nav">
+                <li>
+                  <a href="#">Support Forums</a>
+                </li>
+                <li>
+                  <a href="#">Directory</a>
+                </li>
+                <li>
+                  <a href="#">Twitter</a>
+                </li>
+                <li>
+                  <a href="#">Facebook</a>
+                </li>
+                <li>
+                  <a href="#">Github</a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="large-3 columns">
+              <h5>Get in touch</h5>
+              <ul class="footer-nav">
+                <li>85 London Road, Somewhere, London, SW1 123</li>
+                <li>email@youraddress.com</li>
+              </ul>
+            </div>
+
+            <div class="dark-hr"></div>
+            <!-- End Row -->
+          </div>
+          <!-- End Container -->
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+        <!-- Ajax Form -->
+      <script type="text/javascript">
+    $(document).ready(function() { 
+    // bind form using ajaxForm 
+    $('#email-form').ajaxForm({ 
+        resetForm: true,
+
+        // target identifies the element(s) to update with the server response 
+        target: '#success-message', 
+ 
+        // success identifies the function to invoke when the server response 
+        // has been received; here we apply a fade-in effect to the new content 
+        success: function() { 
+            $('#success-message').fadeIn('slow'); 
+        } 
+    }); 
+});
+    </script>
+
+      <script src="js/foundation.min.js"></script>
+
+      <script src="js/foundation/foundation.js"></script>
+
+      <!--
+      <script src="js/foundation/foundation.alerts.js"></script>
+
+      <script src="js/foundation/foundation.clearing.js"></script>
+
+      <script src="js/foundation/foundation.cookie.js"></script>
+    -->
+      <script src="js/foundation/foundation.dropdown.js"></script>
+
+      <script src="js/foundation/foundation.forms.js"></script>
+      <!--
+      <script src="js/foundation/foundation.joyride.js"></script>
+
+      <script src="js/foundation/foundation.magellan.js"></script>
+
+      <script src="js/foundation/foundation.orbit.js"></script>
+    -->
+      <script src="js/foundation/foundation.placeholder.js"></script>
+<!--
+      <script src="js/foundation/foundation.reveal.js"></script>
+
+      <script src="js/foundation/foundation.section.js"></script>
+
+      <script src="js/foundation/foundation.tooltips.js"></script>
+-->
+      <script src="js/foundation/foundation.topbar.js"></script>
+
+      <script src="js/jquery.form.js"></script> 
+
+
+      <script>$(document).foundation();</script>
+  </body>
+</html>
