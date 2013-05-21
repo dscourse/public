@@ -17,7 +17,7 @@
 		//Whether to use SMTP authentication
 		$mail -> SMTPAuth = false;
 		//Set who the message is to be sent from
-		$mail -> SetFrom('notifications@dscourse.org', 'no-reply');
+		$mail -> SetFrom('no-reply@dscourse.org', 'dscourse.org');
 		//Set an alternative reply-to address
 		$mail -> AddReplyTo('no-reply@dscourse.org', 'no-reply');
 		//Read an HTML message body from an external file, convert referenced images to embedded, convert HTML into a basic plain-text alternative body

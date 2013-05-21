@@ -26,11 +26,22 @@ ini_set('display_errors',1);
 	    $coursePrint = ''; 
 	    $discussionPrint = ''; 
 	    $discussionCount = 'none'; 
-		$courseQuery = mysql_query("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID=courses.courseID WHERE userID = $userID AND courseRoles.userRole != 'Blocked' ORDER BY courseRoles.courseRoleTime DESC LIMIT 8");
+		$courseQuery = mysql_query("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID=courses.courseID WHERE userID = $userID AND courseRoles.userRole != 'Blocked'");
 		$filtered = array();
 		while($row = mysql_fetch_assoc($courseQuery)){
-			array_push($filtered, $row);
+			$last = $row['courseRoleTime'];
+			$c = $row['courseID'];
+			$q =  "SELECT logTime FROM logs WHERE logAction = 'view' AND logPageID IN(SELECT discussionID from courseDiscussions WHERE courseID = $c) ORDER BY logTime DESC LIMIT 1";
+			$l = mysql_query("SELECT logTime FROM logs WHERE logAction = 'view' AND logPageID IN(SELECT discussionID from courseDiscussions WHERE courseID = $c) ORDER BY logTime DESC LIMIT 1");
+			if(!count($r= mysql_fetch_assoc($l)>0)){
+				$last = $r['logTime'];
+			}
+			array_push($filtered, $row + array('lastView'=>$last));
 		}
+		usort($filtered, function($a,$b){
+			return strtotime($b['lastView']) - strtotime($a['lastView']);
+		});
+		$filtered = array_slice($filtered,0,8);
 		$totalCourses =count($filtered);
 		$courseData = $filtered;
 		

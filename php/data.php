@@ -677,8 +677,9 @@ function AddPost()
 					$truncated = myTruncate($postMessage, 100, $break = " ", $pad = "..."); 
 					//(strlen($postMessage)>100)?substr($postMessage, 0,100)."...":$postMessage;
 					$link= "";
-					if(isset($_SERVER['SCRIPT_URI'])){
-						$path = rtrim($_SERVER['PHP_SELF'], '\W')."discussion.php";
+					if(isset($_SERVER["HTTP_HOST"])){
+						$host = $_SERVER["HTTP_HOST"];
+						$path = '/discussion.php';
 						$query = "?";
 						$d = mysql_query("SELECT courseDiscussions.discussionID, courseDiscussions.courseID FROM discussionPosts INNER JOIN courseDiscussions on discussionPosts.discussionID = courseDiscussions.discussionID WHERE discussionPosts.discussionID in (SELECT discussionID FROM discussionPosts WHERE postID = $postID) LIMIT 1");
 						$info = mysql_fetch_assoc($d);
