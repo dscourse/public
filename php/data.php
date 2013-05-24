@@ -621,6 +621,10 @@ function JoinNetwork() {
 
 function AddPost()
 {
+		ignore_user_abort(true);
+		set_time_limit(0);
+
+		ob_start();
 			// Save post first
 			$post = $_POST['post'];
 			
@@ -637,7 +641,13 @@ function AddPost()
 			
 			$postID = mysql_insert_id();
 			
-			echo json_encode($postID);
+			$res = json_encode($postID);
+			echo $res;
+			header('Connection: close');
+			header('Content-Length: '.ob_get_length());
+			ob_end_flush();
+			ob_flush();
+			flush();
 			
 			// Then save the post id to the discussion
 			$currentDiscussion =   $_POST['currentDiscussion'];
@@ -656,7 +666,7 @@ function AddPost()
 			while($row = mysql_fetch_assoc($res)){
 				if($row['optionsValue']){
 					$act = "";
-					$generic = " one of your posts";
+					$generic = " a post";
 					switch($postType){
 						case 'comment':
 							$act = "commented on".$generic;
