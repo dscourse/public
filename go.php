@@ -34,6 +34,5 @@ ini_set('display_errors',1);
 	else{
 		header('Location: info.php');
 	}
-	
 	header("Location: $location");
 ?>

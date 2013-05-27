@@ -862,10 +862,12 @@ class Dscourse {
 	}
 	
 	public function GetRecentActivity($user = null, $length = 20){
-		if($user==null)
+		if($user==null){
 			$user = ((isset($_SESSION['UserID']))?$_SESSION['UserID']:FALSE);
-		if($user==FALSE)
+			}
+		if($user==FALSE){
 			return -1;
+			}
 		
 		$actions = array();
 		
@@ -913,3 +915,5 @@ class Dscourse {
 }// Closing class
 
 $dscourse = new Dscourse();
+
+?>

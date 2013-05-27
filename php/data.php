@@ -621,6 +621,10 @@ function JoinNetwork() {
 
 function AddPost()
 {
+		ignore_user_abort(true);
+		set_time_limit(0);
+
+		ob_start();
 			// Save post first
 			$post = $_POST['post'];
 			
@@ -637,7 +641,13 @@ function AddPost()
 			
 			$postID = mysql_insert_id();
 			
-			echo json_encode($postID);
+			$res = json_encode($postID);
+			echo $res;
+			header('Connection: close');
+			header('Content-Length: '.ob_get_length());
+			ob_end_flush();
+			ob_flush();
+			flush();
 			
 			// Then save the post id to the discussion
 			$currentDiscussion =   $_POST['currentDiscussion'];
@@ -656,7 +666,7 @@ function AddPost()
 			while($row = mysql_fetch_assoc($res)){
 				if($row['optionsValue']){
 					$act = "";
-					$generic = " one of your posts";
+					$generic = " a post";
 					switch($postType){
 						case 'comment':
 							$act = "commented on".$generic;
@@ -674,10 +684,12 @@ function AddPost()
 							$act = "marked ".$generic." as off topic";
 						break;
 					}
-					$truncated = substr($postMessage, 0,100)."...";
+					$truncated = myTruncate($postMessage, 100, $break = " ", $pad = "..."); 
+					//(strlen($postMessage)>100)?substr($postMessage, 0,100)."...":$postMessage;
 					$link= "";
-					if(isset($_SERVER['SCRIPT_URI'])){
-						$path = rtrim($_SERVER['PHP_SELF'], '\W')."discussion.php";
+					if(isset($_SERVER["HTTP_HOST"])){
+						$host = $_SERVER["HTTP_HOST"];
+						$path = '/discussion.php';
 						$query = "?";
 						$d = mysql_query("SELECT courseDiscussions.discussionID, courseDiscussions.courseID FROM discussionPosts INNER JOIN courseDiscussions on discussionPosts.discussionID = courseDiscussions.discussionID WHERE discussionPosts.discussionID in (SELECT discussionID FROM discussionPosts WHERE postID = $postID) LIMIT 1");
 						$info = mysql_fetch_assoc($d);
@@ -822,3 +834,21 @@ function SaveOptions()
 
 			}
 }
+// Original PHP code by Chirp Internet: www.chirp.com.au
+	// Please acknowledge use of this code by including this header.
+	// http://www.the-art-of-web.com/php/truncate/
+
+	function myTruncate($string, $limit, $break = ".", $pad = "...") {
+		// return with no change if string is shorter than $limit
+		if (strlen($string) <= $limit)
+			return $string;
+
+		// is $break present between $limit and the end of the string?
+		if (false !== ($breakpoint = strpos($string, $break, $limit))) {
+			if ($breakpoint < strlen($string) - 1) {
+				$string = substr($string, 0, $breakpoint) . $pad;
+			}
+		}
+
+		return $string;
+	}
