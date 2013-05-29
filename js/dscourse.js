@@ -16,13 +16,8 @@ function Dscourse(lti) {
     // Maximum value for the timeline
     this.sPostID// Synthesis post id global
     this.sPostContent// Synthesis post content global
-<<<<<<< HEAD
     this.uParticipant = new Array();
-    this.uColors = new Array();
-=======
-    this.uParticipant = new Array;
-    this.colors = new Array;
->>>>>>> local
+    this.colors = [];
     // Unique list of participants.
     this.post = { };
     this.currentSelected = '';
@@ -758,6 +753,28 @@ function Dscourse(lti) {
         top.VerticalHeatmap();
 
     });
+    
+    var users = $.map(discUsers, 
+        function(user){
+            return {name: user['firstName']+' '+user['lastName'], username: user.username.split('@')[0]}  
+        }
+    );
+    //Mentions
+    $('textarea').mention({
+        queryBy: ['name'],
+        sensitive: true,
+        delimiter: '@',
+        users: users,
+        typeaheadOpts: {
+            updater: function(match){
+                var n = users.filter(function(item){
+                    return match == item['username'];    
+                })[0].name;
+                return '@'+n;
+            }
+        }
+    });
+         
 }// End function Dscourse()
 
 
@@ -1202,9 +1219,9 @@ Dscourse.prototype.AddPost = function() {
         'postMediaType' : main.postMediaType,
         'postContext' : postContext
     };
-
+    
     // run Ajax to save the post object
-    console.log(post);
+    //console.log(post);
     $.ajax({
         type : "POST",
         url : "php/data.php",
@@ -1842,22 +1859,19 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
      *	Returns thumbnail html of the user from ID
      */
     var main = this;
-<<<<<<< HEAD
     var l = main.data.users.length;
     for (var n = 0; n < l; n++) {
-=======
-    if (main.colors.length==0){
-        var hues = main.scatter(0,360, main.data.users.length);
-        for(var i=0;i<main.data.users.length;i++){
-            var fade = 0.25+(Math.random()*0.75);
-            var color = d3.hsl(hues[i],1,fade);
-            var font = d3.hsl(180+hues[i],1, Math.abs(fade-1));
-            main.colors.push({color:color,font:font});     
+        if (main.colors.length==0){
+            var hues = main.scatter(0,360, main.data.users.length);
+            for(var i=0;i<main.data.users.length;i++){
+                var fade = 0.25+(Math.random()*0.75);
+                var color = d3.hsl(hues[i],1,fade);
+                var font = d3.hsl(180+hues[i],1, Math.abs(fade-1));
+                main.colors.push({color:color,font:font});     
+            }
         }
     }
-    
     for (var n = 0; n < main.data.users.length; n++) {
->>>>>>> local
         var userIDName = main.data.users[n].UserID;
         var color = main.colors[n].color;
         var font = main.colors[n].font;
@@ -1868,28 +1882,13 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
                 if(main.data.users[n].userPictureURL){
                		return "<img class='userThumbSmall' src='" + main.data.users[n].userPictureURL + "' />";	                
                 } else {
-<<<<<<< HEAD
-                    var color1 = d3.hsl(n*17,1,0.5).toString();
-                    main.uColors.push({color:color1, user:userIDName});
-                    var comp  = d3.hsl((n*17)+180,1,0.5).toString();
-	                return "<div class='userThumbSmall' style='color:"+comp+";background:"+color1+"'> "+initials+" </div>"; 
-=======
 	                return "<div class='userThumbSmall' style='color:"+font+";background:"+color+"'> "+initials+" </div>"; 
->>>>>>> local
                 }
             } else if (size == 'tiny') {
                 if(main.data.users[n].userPictureURL){
 	                return "<img class='userThumbTiny' src='" + main.data.users[n].userPictureURL + "' />";
 	            } else {
-<<<<<<< HEAD
-                	var color2 = d3.hsl(n*17,1,0.5).toString();
-                	main.uColors.push({color:color2, user:userIDName});
-                	var comp  = d3.hsl((n*17)+180,1,0.5).toString();
-		            return "<div class='userThumbTiny' style='color:"+comp+";background:"+color2+"'> "+initials+" </div>"; 
-=======
 		            return "<div class='userThumbTiny' style='color:"+font+";background:"+color+"'> "+initials+" </div>"; 
-
->>>>>>> local
 	            }
             }
         }
@@ -1901,20 +1900,12 @@ Dscourse.prototype.UniqueParticipants = function() {
      *  Returns html for unique participant buttons in the discussion Participant section.
      */
     var main = this;
-<<<<<<< HEAD
-
-=======
->>>>>>> local
     var btn = $('<button>').addClass('uList');
     $('body').append(btn);
     var width = btn.width()+4;
     btn.remove();
     
-<<<<<<< HEAD
-    var maxWidth =  $('#keywordSearchDiv').position().left - ($('#participantList').position().left+$('#participantList').children().eq(0).width())-20;
-=======
     var maxWidth =  $('#keywordSearchDiv').position().left - ($('#participantList').position().left+$('#participantList').children().eq(0).width())-50;
->>>>>>> local
     var maxIcons = Math.floor(maxWidth/width)-1;
     
     $('.uList').remove();
@@ -1946,11 +1937,7 @@ Dscourse.prototype.UniqueParticipants = function() {
                     width: maxWidth-width +'px',
                     height: 'auto',
                     zIndex: 1000
-<<<<<<< HEAD
-        });
-=======
          });
->>>>>>> local
 }
 
 Dscourse.prototype.DiscResize = function() {

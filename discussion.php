@@ -74,6 +74,12 @@ ini_set('display_errors',1);
 	//Try loading
 	$load = $dscourse->LoadDiscussion($discId, $uId);
     if($load){
+    	$discUsers = array();
+		$u = mysql_query("SELECT users.UserID, users.username, users.firstName, users.lastName FROM users INNER JOIN courseRoles ON users.UserID = courseRoles.userID WHERE courseRoles.courseID = $cID");
+		while($row = mysql_fetch_assoc($u)){
+			array_push($discUsers, $row);
+		}
+		
 		$currentSession = session_id(); 
 	   // Show content
 		//get last view log time
@@ -94,7 +100,9 @@ ini_set('display_errors',1);
         <?php
 		include ('php/header_includes.php');
   		?>
+		<link rel="stylesheet" href="css/atwho.css">		
         <script type="text/javascript" src="js/dscourse.js"></script>
+        <script type="text/javascript" src="js/mention.min.js" /></script>
 		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript">
           // Add some global variables about current user if we need them:
@@ -105,6 +113,7 @@ ini_set('display_errors',1);
             <?php echo "var discID = " . $discId . ";"; ?>
             <?php echo "var currentSession = '" . $currentSession . "';"; ?>
             <?php echo "var settings = '".json_encode($preProcess) . "';";?>
+            <?php echo "var discUsers = ".json_encode($discUsers).";";?>
             <?php echo "var lastView = '$lastView';";?> 
             <?php if(isset($_REQUEST['p'])){
             	$pID = $_REQUEST['p'];
