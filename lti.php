@@ -14,7 +14,7 @@ class User{
 	public $attrs = array('firstName'=>'lis_person_name_given','lastName'=>'lis_person_name_family','username'=>'lis_person_contact_email_primary', 'role'=>'roles', 'uID'=>NULL);
 }
 class LTILaunch{
-	public $params = array('discID'=>'resource_link_id','courseName'=>'context_title','courseId'=>'context_id');	
+	public $params = array('discID'=>'resource_link_id','courseName'=>'context_title','courseHash'=>'context_id');	
 	public $user;
 }
 
