@@ -20,7 +20,7 @@ ini_set('display_errors',1);
         $userInfo = $dscourse->UserInfo($uID);
 
 		// GET notification settings
-		$triggers = array('comment','agree','disagree','clarify','offTopic');
+		$triggers = array('comment','agree','disagree','clarify','offTopic', 'mention');
 		$q = mysql_query("SELECT * FROM options WHERE optionsType = 'user' AND optionsTypeID = $uID");
 		$notifications = array();
 		while($row = mysql_fetch_assoc($q)){
@@ -244,12 +244,9 @@ $(function(){
                  	<a href="profile.php?u=<?php echo $userID; ?>" id="cancelEditButton" class="btn">Cancel</a> <button id="submitEditButton" type="submit" class="btn btn-primary">Save</button>
                  </div> 
             </div>
-<<<<<<< HEAD
-            
-=======
 			 <div class="span8 well offset1">
 				<div class="control-group" id="notificationControl">
-				<label>Send me an email to let me know when someone </label>	
+				<label class="control-label">Send me an email to let me know when someone </label>	
                 <div class="controls">
      				<label class="checkbox">
       				<input type="checkbox" name="comment" value="1" <?php echo ($notifications['comment'])?'checked':'';?>>
@@ -272,15 +269,16 @@ $(function(){
       					marks as off topic
     				</label>
             	</div>
-            	<label class="offset2">a post I've made.</label>	
+            	<label class="offset3">a post I've made.</label>	
+            	<br />
+            	<label class="control-label offset">Or mentions me in a post</label>
+      				<input style="margin-left:20px" type="checkbox" name="mention" value="1" <?php echo ($notifications['mention'])?'checked':'';?>>
             </div>
 			</div>
             <div class="span2">
                 <a href="profile.php?u=<?php echo $userID; ?>" id="cancelEditButton" class="btn">Cancel</a> <button id="submitEditButton" type="submit" class="btn">Save</button>
             </div>
->>>>>>> local
         </form>	
-          
         </div>
     </div><!-- close container -->
    </div> <!-- end edit profile -->

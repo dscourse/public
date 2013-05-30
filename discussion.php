@@ -15,7 +15,6 @@ ini_set('display_errors',1);
 	if($launch != FALSE){
 		$LTI = TRUE;
 	}
-	
 	$cID;
 	$discId;
 	$uId;
@@ -28,6 +27,7 @@ ini_set('display_errors',1);
 	
     if($LTI)                        // Checks to see if user is logged in, if not sends the user to login.php
     {
+    	exit("LTI");
     	//CREATE A SESSION
 		$uId = $launch->user->attrs['uID'];
 		
@@ -100,7 +100,6 @@ ini_set('display_errors',1);
         <?php
 		include ('php/header_includes.php');
   		?>
-		<link rel="stylesheet" href="css/atwho.css">		
         <script type="text/javascript" src="js/dscourse.js"></script>
         <script type="text/javascript" src="js/mention.min.js" /></script>
 		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>

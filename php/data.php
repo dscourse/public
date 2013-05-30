@@ -87,6 +87,9 @@ if($user_context == ''){
     {
     	SaveOptions(); 
     }
+	if ($action == 'mention'){
+		Mention();
+	}
 }
             
 function UpdateNetwork(){
@@ -217,7 +220,7 @@ function UpdateNetwork(){
 			$userUpdate = mysql_query("UPDATE users SET firstName = '".$firstName."', lastName = '".$lastName."', userAbout = '".$userAbout."', userPictureURL = '".$userPicture."', userFacebook = '".$userFacebook."', userTwitter = '".$userTwitter."', userPhone = '".$userPhone."', userWebsite = '".$userWebsite."', password = '".$userPassword."' WHERE UserID = '".$UserID."' "); // UPDATE	
 	}
 	
-	$notifications = array("comment", "agree", "disagree","clarify", "offTopic");
+	$notifications = array("comment", "agree", "disagree","clarify", "offTopic", "mention");
 	foreach($notifications as $param){
 		$val = 0;
 		if(isset($_REQUEST[$param])){
@@ -685,7 +688,6 @@ function AddPost()
 						break;
 					}
 					$truncated = myTruncate($postMessage, 100, $break = " ", $pad = "..."); 
-					//(strlen($postMessage)>100)?substr($postMessage, 0,100)."...":$postMessage;
 					$link= "";
 					if(isset($_SERVER["HTTP_HOST"])){
 						$host = $_SERVER["HTTP_HOST"];
@@ -725,6 +727,65 @@ function AddPost()
 					$mail->Send();		
 				}
 			}
+}
+
+function Mention(){
+	$post = $_POST['post'];
+			
+	$postFromId		= 	$post['postFromId'];
+	$postAuthorId	= 	$post['postAuthorId'];
+	$postMessage	= 	$post['postMessage'];
+	$postType		= 	$post['postType'];
+	$postSelection	= 	$post['postSelection'];			
+	$postMedia		= 	$post['postMedia'];
+	$postMediaType  = 	$post['postMediaType'];
+	$postContext	= 	$post['postContext'];
+	$postID = $post['postID'];
+	
+	$truncated = myTruncate($postMessage, 100, $break = " ", $pad = "..."); 
+	$link= "";
+	if(isset($_SERVER["HTTP_HOST"])){
+		$host = $_SERVER["HTTP_HOST"];
+		$path = '/discussion.php';
+		$query = "?";
+		$d = mysql_query("SELECT courseDiscussions.discussionID, courseDiscussions.courseID FROM discussionPosts INNER JOIN courseDiscussions on discussionPosts.discussionID = courseDiscussions.discussionID WHERE discussionPosts.discussionID in (SELECT discussionID FROM discussionPosts WHERE postID = $postID) LIMIT 1");
+		$info = mysql_fetch_assoc($d);
+		$dID = $info['discussionID'];
+		$cID = $info['courseID'];
+		$query.="d=$dID&c=$cID&p=$postID";
+		$link = 'http://'.$host.$path.$query;
+	}
+	
+	$userFrom = mysql_query("SELECT username, firstName FROM users WHERE userID = $postAuthorId");	
+	$ufrom = mysql_fetch_assoc($userFrom);
+	$from  = $ufrom['firstName'];
+	$fromUsername = $ufrom['username'];
+	
+	$mentions = $_POST['mentions'];
+	$m = "(".join(', ', $mentions).')';
+	$q = mysql_query("SELECT optionsTypeID FROM options WHERE optionsType = 'user' AND optionsTypeID IN $m AND optionsName = 'notify_on_mention' AND optionsValue = 1");
+	
+	while($row = mysql_fetch_assoc($q)){
+		$e = mysql_query("SELECT username, firstName FROM users WHERE userID =".$row['optionsTypeID']);	
+		$user = mysql_fetch_assoc($e);
+		$email = $user['username'];
+		$name = $user['firstName'];
+
+		require_once '../mail/class.phpmailer.php';
+		require_once '../mail/mail_init.php';
+		$mail = new PHPMailer();
+		$mail = mail_init($mail);
+		$body = file_get_contents('../mail/templates/notify.html');
+		$head = "Hi $name, <br /> $from($fromUsername) mentioned you in one of their posts:";
+		$body = str_replace('%head%',$head, $body);
+		$body = str_replace('%msg%', $truncated, $body);
+		$body = str_replace('%link%', $link, $body);
+		$mail->MsgHTML($body);
+		$mail->Subject = 'Notification from dscourse.org';
+		$mail->AddAddress($email, $name);
+			
+		$mail->Send();
+	}
 }
 
 function EditPost()

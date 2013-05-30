@@ -754,24 +754,41 @@ function Dscourse(lti) {
 
     });
     
+     //Mentions
+     //prepare a list of users for the Mentions.js plugin
     var users = $.map(discUsers, 
         function(user){
             return {name: user['firstName']+' '+user['lastName'], username: user.username.split('@')[0]}  
         }
     );
-    //Mentions
     $('textarea').mention({
         queryBy: ['name'],
         sensitive: true,
         delimiter: '@',
         users: users,
         typeaheadOpts: {
-            updater: function(match){
-                var n = users.filter(function(item){
-                    return match == item['username'];    
-                })[0].name;
-                return '@'+n;
-            }
+            updater: function(item){
+                        //most of this is borrowed, with some hacks
+                        var data = this.query,
+                        caratPos = this.$element[0].selectionStart,
+                        i;
+                        for (i = caratPos; i >= 0; i--) {
+                            if (data[i] == '@') {
+                                break;
+                            }
+                        }
+                        var replace = data.substring(i, caratPos);
+                        var textBefore = data.substring(0, i);
+                        var textAfter = data.substring(caratPos);
+                        var u = users.filter(function(a){
+                            return a['username'] == item;
+                        })[0];
+                        data = textBefore + '@' + u['name'] + textAfter;
+                        
+                        this.tempQuery = data;
+
+                        return data;
+                    }
         }
     });
          
@@ -1249,6 +1266,26 @@ Dscourse.prototype.AddPost = function() {
                 offset : -100
             });
             main.AddLog('discussion',currentDisc,'addPost',data,' ');
+            
+            //extract mentions from the postBody
+            var mentions = [];
+            for(var i=0; i<discUsers.length;i++){
+            var u = discUsers[i];
+            if(RegExp('@'+u['firstName']+' '+u['lastName']).test(postMessage))
+                mentions.push(u['UserID']);
+            }
+            $.ajax({
+                type: 'POST',
+                url: 'php/data.php',
+                data:  {
+                    post: post,
+                    action: 'mention',
+                    mentions: mentions
+                },
+                success: function(data){
+                    console.log(data);
+                }
+            });
         },
         error : function() {// If connection is not successful.
             main.AddLog('discussion',currentDisc,'addPost','','Error: Dscourse Log: the connection to data.php failed. ');

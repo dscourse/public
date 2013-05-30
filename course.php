@@ -8,8 +8,8 @@ ini_set('display_errors',1);
     include "php/config.php"; 
     date_default_timezone_set('UTC');
 		
-		//CHECK IF LTI
-		$LTI = FALSE;
+	//CHECK IF LTI
+	$LTI = FALSE;
 	
 	include_once('php/dscourse.class.php');
 	$from = "course";
@@ -226,12 +226,8 @@ ini_set('display_errors',1);
 				  
 				  }
 		}
-								
-								
  // Load Course Options and Place them in Required Sections
  $courseOptions = $dscourse->LoadCourseOptions($cID); // This is all we need. The printout of sections are done below. 
-       
-       
 ?>
 <!DOCTYPE html>
 
