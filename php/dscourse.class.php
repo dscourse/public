@@ -4,9 +4,8 @@
  *
  */
 date_default_timezone_set('UTC');
-
 class Dscourse {
-
+	
 	public function __construct() {
 
 	}
@@ -571,6 +570,8 @@ class Dscourse {
 	}
 
 	public function PreProcess($query, $isIndex = FALSE) {
+		include "config.php";
+		
 		$query = ltrim($query, '/');
 		$parts = explode('?', $query);
 		$q = "";
@@ -666,10 +667,21 @@ class Dscourse {
 						}
 						if($viewer){
 							if(!$cMember){
-								$q = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES ($cID, $uID, 'Viewer')");
+								$q = "INSERT INTO courseRoles (courseID, userID, userRole) VALUES (?, ?, 'Viewer')"; 		
+								$stmt = $mysqli->stmt_init();
+								if($stmt->prepare($q)){
+									if(!$stmt->bind_param("ii", $cID, $uID)){
+										exit("Bind fail: ".$stmt->error);	
+									}
+									if(!$stmt->execute()){
+										exit("Excecute fail: ".$stmt->error);
+									}
+									$stmt->close();
+								}
+								/*$q = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES ($cID, $uID, 'Viewer')");
 								if($q===FALSE){
 									exit("Bad");
-								}
+								}*/
 								$cMember = TRUE;
 								$role = "Viewer";
 							}
@@ -901,7 +913,7 @@ class Dscourse {
 				}
 				while($p_row = mysql_fetch_assoc($posts)){
 					$path = "/discussion.php?c=".$cID."&d=".$dID."&p=".$p_row['postID'];
-					array_push($actions, array('action'=>'post','actionTime'=>$p_row['postTime'], 'actionType'=>$p_row['postType'], 'context'=>'discussion', 'contextLabel'=>$d_row['dTitle'] ,'contextID'=>$dID, 'agentLabel'=> $p_row['firstName'],'agentID'=>$p_row['postAuthorID'], 'content'=>substr($p_row['postMessage'],0,120), 'actionPath'=>$path));
+					array_push($actions, array("action" => 'post',"actionTime" =>$p_row['postTime'], "actionType" =>$p_row['postType'], "context" =>'discussion', "contextLabel" =>$d_row['dTitle'] ,"contextID" =>$dID, "agentLabel" => $p_row['firstName'], "agentID" =>$p_row['postAuthorID'], "content" =>substr($p_row['postMessage'],0,120), "actionPath" =>$path)); 
 				}
 			}
 		}
