@@ -1286,6 +1286,9 @@ Dscourse.prototype.AddPost = function() {
                 },
                 success: function(data){
                     console.log(data);
+                },
+                error: function(xhr){
+                    console.log(xhr);
                 }
             });
         },

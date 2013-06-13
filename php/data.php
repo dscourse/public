@@ -12,7 +12,7 @@ if (!defined('MyConst')) define('MyConst', TRUE);								// Avoids direct access
 include_once "config.php"; 
 include_once "dscourse.class.php"; 
 include "simpleImage.class.php"; 
-mysql_query("SET time_zone = '+00:00'"); 
+$pdo->query("SET time_zone = '+00:00'"); 
 
 $user_context = '';
 if(array_key_exists('lis_person_contact_email_primary', $_REQUEST)||!isset($_POST['action'])){
@@ -90,7 +90,7 @@ if($user_context == ''){
 		Mention();
 	}
 }
-            
+ ///Obsolete???           
 function UpdateNetwork(){
  	/**
  	 * network
@@ -148,6 +148,7 @@ function UpdateNetwork(){
  } 
  
  function EditUserInfo(){
+ 	global $pdo;
 
 	$UserID 		= $_POST['userEditID'];
 	$firstName	    = $_POST['firstName'];
@@ -207,40 +208,54 @@ function UpdateNetwork(){
 		  	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 		  }	 */ 
 	}
-
+	$query ="UPDATE users SET firstName = :firstName, lastName = :lastName, userAbout = :userAbout, userPictureURL = :userPicture, userFacebook = :userFacebook, userTwitter = :userTwitter, userPhone = :userPhone, userWebsite = :userWebsite WHERE UserID = :UserID";
+	$params = array(':firstName'=>$firstName,':lastName'=>$lastName,':userAbout'=>$userAbout,':userPicture'=>$userPicture,':userFacebook'=>$userFacebook,':userTwitter'=>$userTwitter,':userPhone'=>$userPhone,':userWebsite'=>$userWebsite,':UserID'=>$UserID);
+	$stmt = $pdo->prepare($query); // UPDATE
 	// If there is a password 
 	if(strlen($_POST['password']) === 0){
 			// Update without password
-			$userUpdate = mysql_query("UPDATE users SET firstName = '".$firstName."', lastName = '".$lastName."', userAbout = '".$userAbout."', userPictureURL = '".$userPicture."', userFacebook = '".$userFacebook."', userTwitter = '".$userTwitter."', userPhone = '".$userPhone."', userWebsite = '".$userWebsite."' WHERE UserID = '".$UserID."' "); // UPDATE
-
+			//$userUpdate = mysql_query("UPDATE users SET firstName = '".$firstName."', lastName = '".$lastName."', userAbout = '".$userAbout."', userPictureURL = '".$userPicture."', userFacebook = '".$userFacebook."', userTwitter = '".$userTwitter."', userPhone = '".$userPhone."', userWebsite = '".$userWebsite."' WHERE UserID = '".$UserID."' "); // UPDATE
+			$stmt->execute($params);
 	} else {
 			$userPassword 	= md5($_POST['password']);
-			// Update with password 	
-			$userUpdate = mysql_query("UPDATE users SET firstName = '".$firstName."', lastName = '".$lastName."', userAbout = '".$userAbout."', userPictureURL = '".$userPicture."', userFacebook = '".$userFacebook."', userTwitter = '".$userTwitter."', userPhone = '".$userPhone."', userWebsite = '".$userWebsite."', password = '".$userPassword."' WHERE UserID = '".$UserID."' "); // UPDATE	
+			$params[':password'] = $userPassword;
+			// Update with password 
+			$parts = explode('WHERE', $query);
+			$parts[0].= "password = :password ";
+			$query = join('WHERE', $parts);	
+			//$userUpdate = mysql_query("UPDATE users SET firstName = '".$firstName."', lastName = '".$lastName."', userAbout = '".$userAbout."', userPictureURL = '".$userPicture."', userFacebook = '".$userFacebook."', userTwitter = '".$userTwitter."', userPhone = '".$userPhone."', userWebsite = '".$userWebsite."', password = '".$userPassword."' WHERE UserID = '".$UserID."' "); // UPDATE	
+			$stmt = $pdo->prepare($query);
+			$stmt->execute($params);
 	}
 	
 	$notifications = array("comment", "agree", "disagree","clarify", "offTopic", "mention");
+	$stmt = $pdo->prepare("SELECT optionsID FROM options WHERE optionsType='user' AND optionsTypeID = :UserID AND optionsName = :option");
+	$up = $pdo->prepare("UPDATE options SET optionsValue = :val WHERE optionsID = :oID");
+	$in = $pdo->prepare("INSERT INTO options(optionsType, optionsTypeID, optionsName, optionsValue) VALUES('user', :UserID, :option, :val)");
 	foreach($notifications as $param){
+		$params = array(':UserID'=>$UserID,':option'=>"notify_on_$param");
 		$val = 0;
 		if(isset($_REQUEST[$param])){
 			$val = $_REQUEST[$param];	
 		}
 		//check for old entries
-		$old = mysql_query("SELECT optionsID FROM options WHERE optionsType='user' AND optionsTypeID = $UserID AND optionsName = 'notify_on_$param'");
-		$res = mysql_fetch_assoc($old);
+		//$old = mysql_query("SELECT optionsID FROM options WHERE optionsType='user' AND optionsTypeID = $UserID AND optionsName = 'notify_on_$param'");
+		$stmt->execute($params);
+		$res = $stmt->fetch();
 		if(!empty($res)){
 			$oID = $res['optionsID'];
-			mysql_query("UPDATE options SET optionsValue = $val WHERE optionsID = $oID");		
+			$up->execute(array(':val'=>$val,':oID'=>$oID));	
+			//mysql_query("UPDATE options SET optionsValue = $val WHERE optionsID = $oID");		
 		}
 		else{
-			mysql_query("INSERT INTO options(optionsType, optionsTypeID, optionsName, optionsValue) VALUES('user', $UserID, 'notify_on_$param', $val)");
+			$in->execute($params + array(':val'=>$val));
+			//mysql_query("INSERT INTO options(optionsType, optionsTypeID, optionsName, optionsValue) VALUES('user', $UserID, 'notify_on_$param', $val)");
 		}
 	}
-
   	$gotoPage = "../profile.php?u=".$UserID."&m=1";  // All good
 	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
 }
- 
+ ///Obsolete???
  function AddUsersToNetwork() {
 	 $items 	= $_POST['items'];
 	 $networkID = intval($_POST['networkID']);
@@ -264,12 +279,15 @@ function UpdateNetwork(){
  }
 
 
-function AddCourse() { 
+function AddCourse() {
+	global $pdo;
+	 
 	$courseName  	=  $_POST['courseName'];
 	$courseDesc  	=  $_POST['courseDescription'];
 	$courseStart  	=  $_POST['courseStartDate'];
 	$courseEnd  	=  $_POST['courseEndDate'];
 	$courseURL  	=  $_POST['courseURL'];
+	$courseImage = '';
 	
 	$message = "";
 	// But if there is a new picture
@@ -323,17 +341,23 @@ function AddCourse() {
 	}
 	
 	// Add course to database
-	$insertCourse = mysql_query("INSERT INTO courses (courseName, courseStartDate, courseEndDate, courseDescription, courseImage, courseURL) VALUES('".$courseName."', '".$courseStart."', '".$courseEnd."', '".$courseDesc."', '".$courseImage."', '".$courseURL."')"); 
-	$courseID = mysql_insert_id(); 
-
+	$stmt = $pdo->prepare("INSERT INTO courses (courseName, courseStartDate, courseEndDate, courseDescription, courseImage, courseURL) VALUES(:courseName, :courseStart, :courseEnd, :courseDesc, :courseImage, :courseURL)");
+	$stmt->excute(array(':courseName'=>$courseName, ':courseStart'=>$courseStart, ':courseEnd'=>$courseEnd, ':courseDesc'=>$courseDesc, ':courseImage'=>$courseImage, ':courseURL'=>$courseURL));
+	//$insertCourse = mysql_query("INSERT INTO courses (courseName, courseStartDate, courseEndDate, courseDescription, courseImage, courseURL) VALUES('".$courseName."', '".$courseStart."', '".$courseEnd."', '".$courseDesc."', '".$courseImage."', '".$courseURL."')"); 
+	//$courseID = mysql_insert_id(); 
+	$courseID = $pdo->lastInsertId();
+	
 	// Add Users to courses		
 	if(isset($_POST['user'])){
 		$user = $_POST['user'];
 		$totalUser = count($user); 
 		$i = 0; 
+		$stmt = $pdo->prepare("INSERT INTO courseRoles (courseID, userID, userRole) VALUES(:cID, :uID, :role')");
+		$params = array(':cID'=>$courseID);
 		while($i < $totalUser) {
 			if($i%2 == 0){
-					$CourseUserInsert = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES('".$courseID."', '".$user[$i]."', '".$user[$i+1]."')"); 
+				$stmt->execute($params+array(':uID'=>$user[$i],':role'=>$user[$i+1]));
+				//$CourseUserInsert = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES('".$courseID."', '".$user[$i]."', '".$user[$i+1]."')"); 
 			}
 			$i = $i+1; 
 		}		
@@ -347,40 +371,43 @@ function AddCourse() {
 }
  
 function GenerateCodes($courseID){
+	global $pdo;
 	//generate view and register links
 	$view = "";
 	$reg = "";
+	
+	$v = $pdo->prepare("SELECT * FROM options WHERE optionsValue=:view");
+	$r = $pdo->prepare("SELECT * FROM options WHERE optionsValue=:reg");
 	while($view==$reg){
 		for($i=0;$i<8;$i++){
 			$view.=mt_rand(0,9);
 			$reg.=mt_rand(0,9);
 		}
-		$a = mysql_query("SELECT * FROM options WHERE optionsValue='$view'");
-		if(count(mysql_fetch_array($a))!=0){
+		//$a = mysql_query("SELECT * FROM options WHERE optionsValue='$view'");
+		$v->execute(array(':view'=>$view));
+		if(count($v->fetch())!=0){
 			$view = "";
 			for($i=0;$i<8;$i++){
 				$view.=mt_rand(0,9);
 			}
-			$a = mysql_query("SELECT * FROM options WHERE optionsValue='$view'");
+			$v->execute(array(':view'=>$view));
 		}
-		$b = mysql_query("SELECT * FROM options WHERE optionsValue='$reg'");
-		if(count(mysql_fetch_array($b))!=0){
+		//$b = mysql_query("SELECT * FROM options WHERE optionsValue='$reg'");
+		$r->execute(array(':reg'=>$reg));
+		if(count($r->fetch())!=0){
 			$reg = "";
 			for($i=0;$i<8;$i++){
 				$reg.=mt_rand(0,9);
 			}
-			$b = mysql_query("SELECT * FROM options WHERE optionsValue='$reg'");
+			//$b = mysql_query("SELECT * FROM options WHERE optionsValue='$reg'");
+			$r->execute(array(':reg'=>$reg));
 		}
 	}
-	
-	$a=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'viewCode', '$view', '{\\\"active\\\":\\\"false\\\"}')");
-	if($a==FALSE){
-		exit("SQL syntax error 1");
-	}
-	$b=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'registerCode', '$reg', '{\\\"active\\\":\\\"false\\\"}')");
- 	if($b==FALSE){
- 		exit("SQL syntax error 2");
- 	}
+	$stmt = $pdo->prepare("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', :courseID, :type, :view, '{\\\"active\\\":\\\"false\\\"}')");
+	$stmt->execute(array(':courseID'=>$courseID,':view'=>$view, ':type'=>'viewCode'));
+	//$a=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'viewCode', '$view', '{\\\"active\\\":\\\"false\\\"}')");
+	$stmt->execute(array(':courseID'=>$courseID,':view'=>$reg, ':type'=>'registerCode'));
+	//$b=mysql_query("INSERT INTO options (optionsType, optionsTypeID, optionsName, optionsValue, optionAttr) VALUES ('course', '$courseID', 'registerCode', '$reg', '{\\\"active\\\":\\\"false\\\"}')");
 } 
  
 function EditCourse() {
@@ -474,7 +501,6 @@ function EditCourse() {
 			}
 			$i = $i+1; 
 		}
-		
 	}
 	
 	$message =  10;
@@ -529,7 +555,9 @@ function EditDiscussion(){
 		$courseID	= $_POST['courseID']; 
 		$networkID	= $_POST['networkID'];
 		// Add row to discussions table
-		$discInsert = mysql_query("UPDATE discussions SET dTitle = '".$dTitle."', dPrompt = '".$dPrompt."', dStartDate = '".$dStartDate."', dOpenDate = '".$dOpenDate."', dEndDate = '".$dEndDate."' WHERE dID = '".$discID."'"); 
+		$stmt = $pdo->prepare("UPDATE discussions SET dTitle = :dTitle, dPrompt = :dPrompt, dStartDate = :dStartDate, dOpenDate = :dOpenDate, dEndDate = :dEndDate WHERE dID = :discID"); 
+		$stmt->execute(array(':dTitle'=>$dTitle,':dPrompt'=>$dPrompt,':dStartDate'=>$dStartDate,':dEndDate'=>$dEndDate, ':discID'=>$discID));
+		//$discInsert = mysql_query("UPDATE discussions SET dTitle = '".$dTitle."', dPrompt = '".$dPrompt."', dStartDate = '".$dStartDate."', dOpenDate = '".$dOpenDate."', dEndDate = '".$dEndDate."' WHERE dID = '".$discID."'"); 
 	
 	// Delete all rows from coursediscussion table that has this discussion
 	
@@ -673,6 +701,7 @@ function GetData(){
 		echo json_encode($data);			// Covert data into a json file.
 }
 
+///Obsolete???
 function JoinNetwork() {
 		$networkCode	=  intval($_POST['networkCode']);
 		$userID			=  $_POST['userID'];
@@ -728,7 +757,6 @@ function AddPost()
 			ob_end_flush();
 			ob_flush();
 			flush();
-			//Up to here works
 			
 			// Then save the post id to the discussion
 			$currentDiscussion =   $_POST['currentDiscussion'];
@@ -866,11 +894,17 @@ function Mention(){
 	$fromUsername = $ufrom['username'];
 	
 	$mentions = $_POST['mentions'];
-	$m = "(".join(', ', $mentions).')';
-	$stmt= $pdo->prepare("SELECT optionsTypeID FROM options WHERE optionsType = 'user' AND optionsTypeID IN :m AND optionsName = 'notify_on_mention' AND optionsValue = 1");
-	$stmt->exeucte(array(':m'=>$m));
+	$m = join(', ', $mentions);
+	$stmt= $pdo->prepare("SELECT optionsTypeID FROM options WHERE optionsType = 'user' AND optionsTypeID IN (:m) AND optionsName = 'notify_on_mention' AND optionsValue = 1");
+	$stmt->execute(array(':m'=>$m));
 	//$q = mysql_query("SELECT optionsTypeID FROM options WHERE optionsType = 'user' AND optionsTypeID IN $m AND optionsName = 'notify_on_mention' AND optionsValue = 1");
 	//while($row = mysql_fetch_assoc($q)){
+	echo json_encode($m);	
+	header('Connection: close');
+	header('Content-Length: '.ob_get_length());
+	ob_end_flush();
+	ob_flush();
+	flush();
 			
 	$uInfo = $pdo->prepare("SELECT username, firstName FROM users WHERE userID =:uID");	
 	while($row = $stmt->fetch()){		
@@ -957,6 +991,8 @@ function CheckNewPosts()
 
 function AddLog()
 {
+	global $pdo;
+	
 			$log = $_POST['log'];
 			
 				$logUserID	= $log['logUserID'];
@@ -967,9 +1003,10 @@ function AddLog()
 				$logMessage	= $log['logMessage'];
 				$logUserAgent	= $log['logUserAgent'];
 				$logSessionID   = $log['logSessionID']; 
-																
-			$addLogQuery = mysql_query("INSERT INTO logs (logUserID, logPageType,logPageID, logAction, logActionID, logMessage, logUserAgent, logSessionID) VALUES('$logUserID', '$logPageType', '$logPageID', '$logAction', '$logActionID', '$logMessage', '$logUserAgent', '$logSessionID')"); 
-			if($addLogQuery){
+			
+			$stmt = $pdo->prepare("INSERT INTO logs (logUserID, logPageType,logPageID, logAction, logActionID, logMessage, logUserAgent, logSessionID) VALUES(:logUserID, :logPageType, :logPageID, :logAction, :logActionID, :logMessage, :logUserAgent, :logSessionID)"); 
+			//$addLogQuery = mysql_query("INSERT INTO logs (logUserID, logPageType,logPageID, logAction, logActionID, logMessage, logUserAgent, logSessionID) VALUES('$logUserID', '$logPageType', '$logPageID', '$logAction', '$logActionID', '$logMessage', '$logUserAgent', '$logSessionID')"); 
+			if($stmt->execute(array(':logUserID'=>$logUserID,':loadPageType'=>$logPageType, ':logPageID'=>$logPageID,':logAction'=>$logAction,':logActionID'=>$logActionID,':logMessage'=>$logMessage,':logUserAgent'=>$logUserAgent,':logSessionID'=>$logSessionID))){
 				echo 1; 
 			} else {
 				echo 0; 
@@ -979,12 +1016,18 @@ function AddLog()
 			
 function SaveOptions()
 {
+	global $pdo;
+	
 			// Get option data
 			$optionsType = $_POST['optionsType'];
 			$optionsTypeID = $_POST['optionsTypeID'];
 			$options =  $_POST['optionsData'] ;			
 			$totalOptions = count($options); 
+			$optionsAttr;
 
+			$checkops = $pdo->prepare("SELECT * FROM options WHERE optionsType = :optionsType AND optionsTypeID = :optionsTypeID AND optionsName = :optionsName"); 
+			$update = $pdo->prepare("UPDATE options SET  optionsValue  = :optionsValue, optionAttr  = :optionsAttr  WHERE optionsType = :optionsType AND optionsTypeID = :optionsTypeID AND optionsName = :optionsName"); 						
+			$add = $pdo->prepare("INSERT INTO options (optionsType, optionsTypeID,optionsName, optionsValue, optionAttr) VALUES(:optionsType, :optionsTypeID, :optionsName, :optionsValue, :optionsAttr)"); 
 			for($i = 0; $i < $totalOptions; $i++) {   // Loop through individual options
 				if(empty($options[$i]['optionsAttr'])){
 					$optionsAttr = ' '; 
@@ -999,15 +1042,19 @@ function SaveOptions()
 						$optionsAttr = $options[$i]['optionsAttr']; 
 					}
 				}
+				$params = array(':optionsType'=>$optionsType,':optionsTypeID'=>$optionsTypeID, ':optionsName'=>$options[$i]['optionsName'],':optionsAttr'=>$optionsAttr, ':optionsValue'=>$options[$i]['optionsValue']);
 				
 				// Check if that option exists in the database									
-				$checkoption = mysql_query("SELECT * FROM options WHERE optionsType = '".$optionsType."' AND optionsTypeID = '".$optionsTypeID."' AND optionsName = '".$options[$i]['optionsName']."' "); 
-
-				$num_rows = mysql_num_rows($checkoption);
+				//$checkoption = mysql_query("SELECT * FROM options WHERE optionsType = '".$optionsType."' AND optionsTypeID = '".$optionsTypeID."' AND optionsName = '".$options[$i]['optionsName']."' "); 
+				$checkops->execute($params);
+				//$num_rows = mysql_num_rows($checkoption);
+				$num_rows = $checkops->rowCount();
 				if($num_rows == 1){     // if options does not exist create the option row
-					$update = mysql_query("UPDATE options SET  optionsValue  = '".$options[$i]['optionsValue']."', optionAttr  = '".$optionsAttr."'  WHERE optionsType = '".$optionsType."' AND optionsTypeID = '".$optionsTypeID."' AND optionsName = '".$options[$i]['optionsName']."' "); 				
+					//$update = mysql_query("UPDATE options SET  optionsValue  = '".$options[$i]['optionsValue']."', optionAttr  = '".$optionsAttr."'  WHERE optionsType = '".$optionsType."' AND optionsTypeID = '".$optionsTypeID."' AND optionsName = '".$options[$i]['optionsName']."' "); 				
+					$update->execute($params);
 				} else if ($num_rows == 0){  // if option exists edit the option
-					$add = mysql_query("INSERT INTO options (optionsType, optionsTypeID,optionsName, optionsValue, optionAttr) VALUES('".$optionsType."', '".$optionsTypeID."', '".$options[$i]['optionsName']."','".$options[$i]['optionsValue']."','".$optionsAttr."')"); 
+					//$add = mysql_query("INSERT INTO options (optionsType, optionsTypeID,optionsName, optionsValue, optionAttr) VALUES('".$optionsType."', '".$optionsTypeID."', '".$options[$i]['optionsName']."','".$options[$i]['optionsValue']."','".$optionsAttr."')"); 
+					$add->execute($params);
 				}
 
 			}
