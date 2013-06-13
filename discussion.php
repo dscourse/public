@@ -27,7 +27,7 @@ ini_set('display_errors',1);
 	
     if($LTI)                        // Checks to see if user is logged in, if not sends the user to login.php
     {
-    	exit("LTI");
+    	//exit("LTI");
     	//CREATE A SESSION
 		$uId = $launch->user->attrs['uID'];
 		
@@ -58,18 +58,18 @@ ini_set('display_errors',1);
 		$LTI = TRUE;
 		$crumbs = TRUE;
 	}
-        $uId = $_SESSION['UserID'];           // Allocate userID to use throughout the page
-        if(isset($_GET['d'])){                   // Check if discussion id is set. If not send them back to index
-            $discId = $_GET['d']; 
-            $discussionInfo = $dscourse->DiscussionInfo($discId); 
-        } else {
-            header("Location: index.php");  
-            exit(); 
-        }
+    $uId = $_SESSION['UserID'];           // Allocate userID to use throughout the page
+    if(isset($_GET['d'])){                   // Check if discussion id is set. If not send them back to index
+        $discId = $_GET['d']; 
+        $discussionInfo = $dscourse->DiscussionInfo($discId); 
+    } else {
+        header("Location: index.php");  
+        exit(); 
+    }
        
-        $cID = $_GET['c']; 
-        $courseInfo = $dscourse->CourseInfo($cID);
-		$userNav = $dscourse->UserInfo($uId); 
+    $cID = $_GET['c']; 
+    $courseInfo = $dscourse->CourseInfo($cID);
+	$userNav = $dscourse->UserInfo($uId); 
 
 	//Try loading
 	$load = $dscourse->LoadDiscussion($discId, $uId);

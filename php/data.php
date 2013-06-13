@@ -6,19 +6,18 @@
 date_default_timezone_set('UTC');
 
 ini_set('display_errors',1); 
- error_reporting(E_ALL);
-	if (!defined('MyConst')) define('MyConst', TRUE);								// Avoids direct access to config.php
- 	/*** Connect to Database ***/
-	include "config.php"; 
-	include_once "dscourse.class.php"; 
-	include "simpleImage.class.php"; 
-	
-	mysql_query("SET time_zone = '+00:00'"); 
-	
-	$user_context = '';
-	if(array_key_exists('lis_person_contact_email_primary', $_REQUEST)||!isset($_POST['action'])){
-		$user_context = "LTI";
-	}
+error_reporting(E_ALL);
+if (!defined('MyConst')) define('MyConst', TRUE);								// Avoids direct access to config.php
+/*** Connect to Database ***/
+include_once "config.php"; 
+include_once "dscourse.class.php"; 
+include "simpleImage.class.php"; 
+mysql_query("SET time_zone = '+00:00'"); 
+
+$user_context = '';
+if(array_key_exists('lis_person_contact_email_primary', $_REQUEST)||!isset($_POST['action'])){
+	$user_context = "LTI";
+}
 if($user_context == ''){
  	$action	= $_POST['action'];									// What the ajax call asks the php to do. 
 	$username = $_SESSION['Username'];
@@ -384,7 +383,9 @@ function GenerateCodes($courseID){
  	}
 } 
  
-function EditCourse() { 
+function EditCourse() {
+	global $pdo;	
+	 
 	$courseID		=  $_POST['courseID'];
 	$courseName  	=  $_POST['courseName'];
 	$courseDesc  	=  $_POST['courseDescription'];
@@ -436,26 +437,39 @@ function EditCourse() {
 	} 
 	
 	// Add course to database
-	$updateCourse = mysql_query("UPDATE courses SET courseName = '".$courseName."', courseStartDate = '".$courseStart."', courseEndDate = '".$courseEnd."', courseDescription = '".$courseDesc."', courseImage = '".$courseImage."', courseURL = '".$courseURL."'  WHERE courseID = '".$courseID."' "); // UPDATE
-
+	$stmt = $pdo->prepare("UPDATE courses SET courseName = :courseName, courseStartDate = :courseStart, courseEnd = :courseEnd, courseDescription = :courseDesc, courseImage = :courseImage, courseURL = :courseURL  WHERE courseID = :courseID");
+	$stmt->execute(array(':courseName'=>$courseName,':courseStart'=>$courseStart,':courseEnd'=>$courseEnd, ':courseDesc'=>$courseDesc,':courseImage'=>$courseImage, ':courseURL'=>$courseURL,':courseID'=>$courseID));
+	//$updateCourse = mysql_query("UPDATE courses SET courseName = '".$courseName."', courseStartDate = '".$courseStart."', courseEndDate = '".$courseEnd."', courseDescription = '".$courseDesc."', courseImage = '".$courseImage."', courseURL = '".$courseURL."'  WHERE courseID = '".$courseID."' "); // UPDATE
 
 	// Change User Information		
 	if(isset($_POST['user'])){
 		$user  	=  $_POST['user'];
 		$totalUser = count($user); 
 		$i = 0; 
+		$role = $pdo->prepare("SELECT * FROM courseRoles WHERE courseID = :courseID AND userID = :userID");
 		while($i < $totalUser) {
 			if($i%2 == 0){
-					$query = mysql_query("SELECT * FROM courseRoles WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'");
-					$results = mysql_fetch_array($query); 
+					$params = array(':courseID'=>$courseID,':userID'=>$user[$i]);
+					//$query = mysql_query("SELECT * FROM courseRoles WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'");
+					$stmt->execute($params);
+					//$results = mysql_fetch_array($query);
+					$results = $stmt->fetch(); 
 					if($results){
 							if($user[$i+1] == 'Delete'){
-								$deleteQuery = mysql_query("DELETE FROM courseRoles WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'"); 
+								$stmt = $pdo->prepare("DELETE FROM courseRoles WHERE courseID = :courseID AND userID = :userID");
+								$stmt->execute($params);
+								//$deleteQuery = mysql_query("DELETE FROM courseRoles WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'"); 
 							} else {
-								$CourseUserUpdate = mysql_query("UPDATE courseRoles SET userRole = '".$user[$i+1]."'  WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'"); // UPDATE							
+								$params[':role'] = $user[$i+1];
+								$stmt = $pdo->prepare("UPDATE courseRoles SET userRole = :role  WHERE courseID = :courseID AND userID = :userID");
+								$stmt->execute($params);
+								//$CourseUserUpdate = mysql_query("UPDATE courseRoles SET userRole = '".$user[$i+1]."'  WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'"); // UPDATE							
 							}
 					} else {
-						$CourseUserInsert = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES('".$courseID."', '".$user[$i]."', '".$user[$i+1]."')"); 
+						$params[':role'] = $user[$i+1];
+						$stmt = $pdo->prepare("INSERT INTO courseRoles (courseID, userID, userRole) VALUES(:courseID, :userID, :role)");
+						$stmt->execute($params);
+						//$CourseUserInsert = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES('".$courseID."', '".$user[$i]."', '".$user[$i+1]."')"); 
 					}
 			}
 			$i = $i+1; 
@@ -463,16 +477,13 @@ function EditCourse() {
 		
 	}
 	
-  	
 	$message =  10;
 	  	$gotoPage = "../course.php?c=".$courseID."&m=".$message;  // All good
 	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
-
-
- 
  }
  
 function AddDiscussion(){
+	global $pdo;
 	// get all elements from post
 		$dTitle		=  $_POST['discussionQuestion'] ;
 		$dPrompt	=  $_POST['discussionPrompt']	 ;
@@ -480,27 +491,34 @@ function AddDiscussion(){
 		$dOpenDate	=  $_POST['discussionOpenDate']  ." " .$_POST['oDateTime'] . ":00:00";
 		$dEndDate	=  $_POST['discussionEndDate']   ." " .$_POST['eDateTime'] . ":00:00"; 
 		$courseID	=  $_POST['courseID']; 
-		$networkID	=  $_POST['networkID'];
+		//$networkID	=  $_POST['networkID'];
 		
+		$stmt = $pdo->prepare("INSERT INTO discussions (dTitle, dPrompt, dStartDate, dOpenDate, dEndDate) VALUES(:dTitle, :dPrompt, :dStartDate, :dOpenDate, :dEndDate)");
+		$params = array(':dTitle'=>$dTitle, ':dPrompt'=>$dPrompt, ':dStartDate'=>$dStartDate, ':dOpenDate'=>$dOpenDate, ':dEndDate'=>$dEndDate);
+		$stmt->execute($params);
+		$discID = $pdo->lastInsertId();
+		/*
 		// Add row to discussions table
 		$discInsert = mysql_query("INSERT INTO discussions (dTitle, dPrompt, dStartDate, dOpenDate, dEndDate) VALUES('".$dTitle."', '".$dPrompt."', '".$dStartDate."', '".$dOpenDate."', '".$dEndDate."')"); 
 		$discID = mysql_insert_id(); 	
-	
-	// Add row to coursediscussions table
+		*/
+		// Add row to coursediscussions table
 		$courses	=  $_POST['course'] ;
 		$totalCourses = count($courses); 
 		$i = 0; 
+		$stmt = $pdo->prepare("INSERT INTO courseDiscussions (courseID, discussionID) VALUES(:courseID, :discID)");
 		while($i < $totalCourses) {
-				$discCourseInsert = mysql_query("INSERT INTO courseDiscussions (courseID, discussionID) VALUES('".$courses[$i]."', '".$discID."')"); 
+			$stmt->execute(array(':courseID'=>$courses[$i], ':discID'=>$discID));
+			//$discCourseInsert = mysql_query("INSERT INTO courseDiscussions (courseID, discussionID) VALUES('".$courses[$i]."', '".$discID."')"); 
 			$i = $i+1; 
 		}
   		$message =  'd';
 	  	$gotoPage = "../course.php?c=".$courseID."&n=".$networkID."&m=".$message;  // All good
 	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
-				
 }
 
 function EditDiscussion(){
+	global $pdo;
 	// get all elements from post
 		$dTitle		=  $_POST['discussionQuestion'] ;
 		$dPrompt	=  $_POST['discussionPrompt']	 ;
@@ -524,10 +542,15 @@ function EditDiscussion(){
 		while($i < $totalCourses) {
 			if($i%2 == 0){
 				$b = $i+1; 
+				$params = array(':courseID'=>$courses[$i], ':discID'=>$discID);
 				if($courses[$b] == 'yes'){
-					$discCourseDelete = mysql_query("DELETE FROM courseDiscussions WHERE courseID = '".$courses[$i]."' AND discussionID = '".$discID."' "); 
+					$stmt = $pdo->prepare("DELETE FROM courseDiscussions WHERE courseID = :courseID AND discussionID = :discID");
+					$stmt->exectue($params);
+					//$discCourseDelete = mysql_query("DELETE FROM courseDiscussions WHERE courseID = '".$courses[$i]."' AND discussionID = '".$discID."' "); 
 				} elseif ($courses[$b] == 'add') {
-					$discCourseInsert = mysql_query("INSERT INTO courseDiscussions (courseID, discussionID) VALUES('".$courses[$i]."', '".$discID."')"); 
+					$stmt = $pdo->prepare("INSERT INTO courseDiscussions (courseID, discussionID) VALUES(:courseID, :discID)");
+					$stmt->execute($params);
+					//$discCourseInsert = mysql_query("INSERT INTO courseDiscussions (courseID, discussionID) VALUES('".$courses[$i]."', '".$discID."')"); 
 				}
 			}
 			$i = $i+1; 
@@ -541,15 +564,30 @@ function EditDiscussion(){
 }
 
 function GetData(){
+	global $pdo;
 		$discID	=  $_POST['discID'];
 		$courses = array();
 		$users = array();
 		$cID;
+		$params = array(':discID'=>$discID);
+		$stmt = $pdo->prepare('SELECT * FROM discussions WHERE dID = :discID');
+		$stmt->execute($params);
+		$discussion =  $stmt->fetch();
 		
+		/*
 		// Get Discussion information
  		$discussionData = mysql_query("SELECT * FROM `discussions` WHERE dID = '".$discID."' ");  // Get everything 		   				
 		$discussion =  mysql_fetch_assoc($discussionData);
-
+		*/	
+		
+		$stmt = $pdo->prepare("SELECT * FROM courseDiscussions INNER JOIN courses ON courseDiscussions.courseID = courses.courseID WHERE courseDiscussions.discussionID = :discID");
+		$stmt->execute($params);
+		while($row = $stmt->fetch()){
+			$courses[] = $row;
+			$cID = $row['courseID'];
+		}
+		
+		/*
 		// Get courses for this discussion
 		$courseData = mysql_query("SELECT * FROM courseDiscussions INNER JOIN courses ON courseDiscussions.courseID = courses.courseID WHERE courseDiscussions.discussionID = '".$discID."'");
 		while($r = mysql_fetch_assoc($courseData)) 
@@ -557,6 +595,18 @@ function GetData(){
 			$courses[] = $r; 								// Put mysql results into an array 
 			$cID = $r['courseID']; 							// Get course ID for each course. We need this to get to all the other information about users, and networks. 
 		}
+		 */
+		$stmt = $pdo->prepare("SELECT DISTINCT postAuthorId FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = :discID");
+		$stmt->execute($params);
+		$inner = $pdo->prepare("SELECT * FROM users WHERE UserID = :id");
+		while($s = $stmt->fetch()){
+			$inner->execute(array(':id'=>$s['postAuthorId']));
+			//$oneuser = mysql_fetch_array($singleUser);\
+			$u = $inner->fetch(); 		
+			$users[] = $u;
+		} 
+		
+		/*
 		// Get Users Who posted in the discussion whether they are in the course or not
 		$userData = mysql_query("SELECT DISTINCT postAuthorId FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$discID."'");
 		while($s = mysql_fetch_assoc($userData)) 
@@ -565,13 +615,23 @@ function GetData(){
 					$oneuser = mysql_fetch_array($singleUser); 		
 					$users[] = $oneuser;
 				}
+		 */
+		  
+		$params = array(':courseID'=>$cID);
+		$stmt = $pdo->prepare("SELECT * FROM courseRoles INNER JOIN users ON courseRoles.userID = users.UserID WHERE courseRoles.courseID = :courseID");  
+		$stmt->execute($params);
+		while($t = $stmt->fetch()){
+			$users[] = $t;	
+		}
+		
+		/*
 		// Get all the users in the course but add them to data if they are not already there		
-
 		$userData2 = mysql_query("SELECT * FROM courseRoles INNER JOIN users ON courseRoles.userID = users.UserID WHERE courseRoles.courseID = '".$cID."' ");
 		while($t = mysql_fetch_assoc($userData2)) 
 				{					
 					$users[] = $t;
 				}
+		 */
 		// Get Networks
 		/*$networksData = mysql_query("SELECT * FROM networkCourses INNER JOIN networks ON networkCourses.networkID = networks.networkID WHERE networkCourses.courseID = '".$cID."'");
 		while($u = mysql_fetch_assoc($networksData)) 
@@ -580,6 +640,19 @@ function GetData(){
 				}	 
 		}*/
 		
+		$params = array(':discID'=>$discID);
+		$stmt = $pdo->prepare("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = :discID");
+		$stmt->execute($params);
+		if($stmt->rowCount() > 0){
+			$posts = array(); 	
+			$i = 0;
+			while($row = $stmt->fetch()){
+				array_push($posts, $row);  // Add to the array of posts
+				$i++;
+			}
+			$data['posts'] =  $posts;		
+		}
+		/*
 		// Get posts within this discussion as well as a list of users who posted so far. 
 		$data = array();
 		$postData = mysql_query("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$discID."'");
@@ -593,9 +666,10 @@ function GetData(){
 			endwhile;
 			$data['posts'] =  $posts;		 
 		} 
+		*/
 		$data['discussion'] = $discussion;	
 		$data['courses'] = $courses; 
-		$data['users'] = $users; 		 
+		$data['users'] = $users; 		
 		echo json_encode($data);			// Covert data into a json file.
 }
 
@@ -624,6 +698,7 @@ function JoinNetwork() {
 
 function AddPost()
 {
+	global $pdo;
 		ignore_user_abort(true);
 		set_time_limit(0);
 
@@ -640,9 +715,11 @@ function AddPost()
 			$postMediaType  = 	$post['postMediaType'];
 			$postContext	= 	$post['postContext'];
 			
-			$addPostQuery = mysql_query("INSERT INTO posts (postFromId, postAuthorId, postMessage, postType, postSelection, postMedia, postMediaType, postContext) VALUES('".$postFromId."', '".$postAuthorId."', '".$postMessage."','".$postType."','".$postSelection."','".$postMedia."','".$postMediaType."','".$postContext."')"); 
-			
-			$postID = mysql_insert_id();
+			$stmt = $pdo->prepare("INSERT INTO posts (postFromId, postAuthorId, postMessage, postType, postSelection, postMedia, postMediaType, postContext) VALUES(:postFromId, :postAuthorId, :postMessage, :postType, :postSelection,:postMedia,:postMediaType ,:postContext)"); 
+			$stmt->execute(array(':postFromId'=>$postFromId,':postAuthorId'=>$postAuthorId, ':postMessage'=>$postMessage, ':postType'=>$postType, ':postSelection'=>$postSelection, ':postMedia'=>$postMedia, ':postMediaType'=>$postMediaType,':postContext'=>$postContext));
+			//$addPostQuery = mysql_query("INSERT INTO posts (postFromId, postAuthorId, postMessage, postType, postSelection, postMedia, postMediaType, postContext) VALUES('".$postFromId."', '".$postAuthorId."', '".$postMessage."','".$postType."','".$postSelection."','".$postMedia."','".$postMediaType."','".$postContext."')"); 
+			//$postID = mysql_insert_id();
+			$postID = $pdo->lastInsertId();
 			
 			$res = json_encode($postID);
 			echo $res;
@@ -651,22 +728,33 @@ function AddPost()
 			ob_end_flush();
 			ob_flush();
 			flush();
+			//Up to here works
 			
 			// Then save the post id to the discussion
 			$currentDiscussion =   $_POST['currentDiscussion'];
-			 
-			$addPosttoDiscussion = mysql_query("INSERT INTO discussionPosts (discussionID, postID) VALUES(".$currentDiscussion.", '".$postID."')");  			 		
+			$addPost = $pdo->prepare("INSERT INTO discussionPosts (discussionID, postID) VALUES(:discID, :postID)");  
+			$addPost->execute(array(':discID'=>$currentDiscussion, ':postID'=>$postID));
+			//$addPosttoDiscussion = mysql_query("INSERT INTO discussionPosts (discussionID, postID) VALUES(".$currentDiscussion.", '".$postID."')");  			 		
 			
 			//check notifications
 			//need postFrom, postType, postAuthor
-			$q= "SELECT postAuthorId FROM posts WHERE postID = $postFromId";
-			$fromAuthor = mysql_query("SELECT postAuthorId FROM posts WHERE postID = $postFromId");
-			$fromAuthor = mysql_fetch_assoc($fromAuthor);
+			$author = $pdo->prepare("SELECT postAuthorId FROM posts WHERE postID = :postFromId");
+			$author->execute(array(':postFromId'=>$postFromId));
+			//$q= "SELECT postAuthorId FROM posts WHERE postID = $postFromId";
+			//$fromAuthor = mysql_query("SELECT postAuthorId FROM posts WHERE postID = $postFromId");
+			//$fromAuthor = mysql_fetch_assoc($fromAuthor);
+			$fromAuthor = $author->fetch();
 			$fromAuthor = $fromAuthor['postAuthorId'];
-			
-			$q = "SELECT * FROM options WHERE optionsType = 'user' AND optionsTypeID = $fromAuthor AND optionsName = 'notify_on_$postType'";
-			$res = mysql_query($q);
-			while($row = mysql_fetch_assoc($res)){
+
+			$options = $pdo->prepare("SELECT * FROM options WHERE optionsType = 'user' AND optionsTypeID = :fromAuthor AND optionsName = :notifyOn");			
+			$options->execute(array(':fromAuthor'=>$fromAuthor, ':notifyOn'=>"notify_on_$postType"));
+			//$q = "SELECT * FROM options WHERE optionsType = 'user' AND optionsTypeID = $fromAuthor AND optionsName = 'notify_on_$postType'";
+			//$res = mysql_query($q);
+			//while($row = mysql_fetch_assoc($res)){
+			$linkInfo = $pdo->prepare("SELECT courseDiscussions.discussionID, courseDiscussions.courseID FROM discussionPosts INNER JOIN courseDiscussions on discussionPosts.discussionID = courseDiscussions.discussionID WHERE discussionPosts.discussionID in (SELECT discussionID FROM discussionPosts WHERE postID = :postID) LIMIT 1");		
+			$userFrom = $pdo->prepare("SELECT username, firstName FROM users WHERE userID = :postAuthorId");		
+			$fromInfo = $pdo->prepare("SELECT username, firstName FROM users WHERE userID = :fromAuthor");
+			while($row = $options->fetch()){
 				if($row['optionsValue']){
 					$act = "";
 					$generic = " a post";
@@ -693,21 +781,27 @@ function AddPost()
 						$host = $_SERVER["HTTP_HOST"];
 						$path = '/discussion.php';
 						$query = "?";
-						$d = mysql_query("SELECT courseDiscussions.discussionID, courseDiscussions.courseID FROM discussionPosts INNER JOIN courseDiscussions on discussionPosts.discussionID = courseDiscussions.discussionID WHERE discussionPosts.discussionID in (SELECT discussionID FROM discussionPosts WHERE postID = $postID) LIMIT 1");
-						$info = mysql_fetch_assoc($d);
+						$linkInfo->execute(array(':postID'=>$postID));
+						//$d = mysql_query("SELECT courseDiscussions.discussionID, courseDiscussions.courseID FROM discussionPosts INNER JOIN courseDiscussions on discussionPosts.discussionID = courseDiscussions.discussionID WHERE discussionPosts.discussionID in (SELECT discussionID FROM discussionPosts WHERE postID = $postID) LIMIT 1");
+						//$info = mysql_fetch_assoc($d);
+						$info = $linkInfo->fetch();
 						$dID = $info['discussionID'];
 						$cID = $info['courseID'];
 						$query.="d=$dID&c=$cID&p=$postID";
 						$link = 'http://'.$host.$path.$query;
 					}
 					
-					$userFrom = mysql_query("SELECT username, firstName FROM users WHERE userID = $postAuthorId");	
-					$ufrom = mysql_fetch_assoc($userFrom);
-					$from  = $ufrom['firstName'];
-					$fromUsername = $ufrom['username'];
+					//$userFrom = mysql_query("SELECT username, firstName FROM users WHERE userID = $postAuthorId");	
+					//$ufrom = mysql_fetch_assoc($userFrom);
+					$userFrom->execute(array(':postAuthorId'=>$postAuthorId));
+					$uFrom = $userFrom->fetch();
+					$from  = $uFrom['firstName'];
+					$fromUsername = $uFrom['username'];
 					
-					$e = mysql_query("SELECT username, firstName FROM users WHERE userID = $fromAuthor");	
-					$user = mysql_fetch_assoc($e);
+					//$e = mysql_query("SELECT username, firstName FROM users WHERE userID = $fromAuthor");	
+					//$user = mysql_fetch_assoc($e);
+					$fromInfo->execute(array(':fromAuthor'=>$fromAuthor));
+					$user = $fromInfo->fetch();
 					$email = $user['username'];
 					$name = $user['firstName'];
 
@@ -715,6 +809,7 @@ function AddPost()
 					require_once '../mail/mail_init.php';
 					$mail = new PHPMailer();
 					$mail = mail_init($mail);
+					//micro-templating
 					$body = file_get_contents('../mail/templates/notify.html');
 					$head = "Hi $name, <br /> $from($fromUsername) $act in one of your discussions:";
 					$body = str_replace('%head%',$head,$body);
@@ -724,12 +819,16 @@ function AddPost()
 					$mail->Subject = 'Notification from dscourse.org';
 					$mail->AddAddress($email, $name);
 					
-					$mail->Send();		
+					if(!$mail->Send()){
+						echo $mail->ErrorInfo;
+					}
 				}
 			}
 }
 
 function Mention(){
+	global $pdo;	
+	
 	$post = $_POST['post'];
 			
 	$postFromId		= 	$post['postFromId'];
@@ -748,26 +847,37 @@ function Mention(){
 		$host = $_SERVER["HTTP_HOST"];
 		$path = '/discussion.php';
 		$query = "?";
-		$d = mysql_query("SELECT courseDiscussions.discussionID, courseDiscussions.courseID FROM discussionPosts INNER JOIN courseDiscussions on discussionPosts.discussionID = courseDiscussions.discussionID WHERE discussionPosts.discussionID in (SELECT discussionID FROM discussionPosts WHERE postID = $postID) LIMIT 1");
-		$info = mysql_fetch_assoc($d);
+		$stmt = $pdo->prepare("SELECT courseDiscussions.discussionID, courseDiscussions.courseID FROM discussionPosts INNER JOIN courseDiscussions on discussionPosts.discussionID = courseDiscussions.discussionID WHERE discussionPosts.discussionID in (SELECT discussionID FROM discussionPosts WHERE postID = :postID) LIMIT 1");
+		$stmt->execute(array(':postID'=>$postID));
+		//$d = mysql_query("SELECT courseDiscussions.discussionID, courseDiscussions.courseID FROM discussionPosts INNER JOIN courseDiscussions on discussionPosts.discussionID = courseDiscussions.discussionID WHERE discussionPosts.discussionID in (SELECT discussionID FROM discussionPosts WHERE postID = $postID) LIMIT 1");
+		//$info = mysql_fetch_assoc($d);
+		$info = $stmt->fetch();
 		$dID = $info['discussionID'];
 		$cID = $info['courseID'];
 		$query.="d=$dID&c=$cID&p=$postID";
 		$link = 'http://'.$host.$path.$query;
 	}
-	
-	$userFrom = mysql_query("SELECT username, firstName FROM users WHERE userID = $postAuthorId");	
-	$ufrom = mysql_fetch_assoc($userFrom);
+	$stmt = $pdo->prepare("SELECT username, firstName FROM users WHERE userID = :postAuthorId");
+	$stmt->execute(array(':postAuthorId'=>$postAuthorId));
+	//$userFrom = mysql_query("SELECT username, firstName FROM users WHERE userID = $postAuthorId");	
+	//$ufrom = mysql_fetch_assoc($userFrom);
+	$ufrom = $stmt->fetch();
 	$from  = $ufrom['firstName'];
 	$fromUsername = $ufrom['username'];
 	
 	$mentions = $_POST['mentions'];
 	$m = "(".join(', ', $mentions).')';
-	$q = mysql_query("SELECT optionsTypeID FROM options WHERE optionsType = 'user' AND optionsTypeID IN $m AND optionsName = 'notify_on_mention' AND optionsValue = 1");
-	
-	while($row = mysql_fetch_assoc($q)){
-		$e = mysql_query("SELECT username, firstName FROM users WHERE userID =".$row['optionsTypeID']);	
-		$user = mysql_fetch_assoc($e);
+	$stmt= $pdo->prepare("SELECT optionsTypeID FROM options WHERE optionsType = 'user' AND optionsTypeID IN :m AND optionsName = 'notify_on_mention' AND optionsValue = 1");
+	$stmt->exeucte(array(':m'=>$m));
+	//$q = mysql_query("SELECT optionsTypeID FROM options WHERE optionsType = 'user' AND optionsTypeID IN $m AND optionsName = 'notify_on_mention' AND optionsValue = 1");
+	//while($row = mysql_fetch_assoc($q)){
+			
+	$uInfo = $pdo->prepare("SELECT username, firstName FROM users WHERE userID =:uID");	
+	while($row = $stmt->fetch()){		
+		//$e = mysql_query("SELECT username, firstName FROM users WHERE userID =".$row['optionsTypeID']);	
+		$uInfo->execute(array(':uID'=>$row['optionsTypeID']));
+		//$user = mysql_fetch_assoc($e);
+		$user = $uInfo->fetch();
 		$email = $user['username'];
 		$name = $user['firstName'];
 
@@ -790,6 +900,7 @@ function Mention(){
 
 function EditPost()
 {
+	global $pdo;
 			// Save post first
 			$post = $_POST['post'];
 			
@@ -803,24 +914,30 @@ function EditPost()
 			$postMediaType  = 	$post['postMediaType'];
 			$postContext	= 	$post['postContext'];
 																		
-			$editPostQuery = mysql_query("UPDATE posts SET  postFromId = '".$postFromId."', postAuthorId = '".$postAuthorId."', postMessage = '".$postMessage."', postType  = '".$postType."', postSelection  = '".$postSelection."', postMedia  = '".$postMedia."', postMediaType = '".$postMediaType."', postContext  = '".$postContext."'  WHERE postID  = '".$postID."' "); 
-									
+			$stmt = $pdo->prepare("UPDATE posts SET  postFromId = :postFromId, postAuthorId = :postAuthorId, postMessage = :postMessage, postType  = :postType, postSelection  = :postSelection, postMedia  = :postMedia, postMediaType = :postMediaType, postContext  = :postContext  WHERE postID  = :postID");
+			$stmt->execute(array(':postFromId'=>$postFromId,':postAuthorId'=>$postAuthorId, ':postMessage'=>$postMessage, ':postType'=>$postType, ':postSelection'=>$postSelection, ':postMedia'=>$postMedia, ':postMediaType'=>$postMediaType,':postContext'=>$postContext, ':postID'=>$postID));
+			//$editPostQuery = mysql_query("UPDATE posts SET  postFromId = '".$postFromId."', postAuthorId = '".$postAuthorId."', postMessage = '".$postMessage."', postType  = '".$postType."', postSelection  = '".$postSelection."', postMedia  = '".$postMedia."', postMediaType = '".$postMediaType."', postContext  = '".$postContext."'  WHERE postID  = '".$postID."' "); 
 }
 
 
 
 function CheckNewPosts()
 {
+	global $pdo;
 	// Checks to see if there are new posts in this discussion, returns number
 			$currentDiscussion =   $_POST['currentDiscussion'];
 			$currentPosts =   $_POST['currentPosts'];
 	// Get posts within this discussion
-			$postData = mysql_query("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$currentDiscussion."'");
-			$num_rows = mysql_num_rows($postData);
+		$stmt = $pdo->prepare("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = :currentDisc");
+		$stmt->execute(array(':currentDisc'=>$currentDiscussion));	
+			//$postData = mysql_query("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$currentDiscussion."'");
+			//$num_rows = mysql_num_rows($postData);
+			$num_rows = $stmt->rowCount();
 			$posts = array(); 	
 			if($num_rows > 0){
 				$i = 0;
-				while($row = mysql_fetch_array($postData)) :
+				//while($row = mysql_fetch_array($postData)) :
+				while($row = $stmt->fetch()) :
 					array_push($posts, $row);
 					$i++;
 				endwhile;

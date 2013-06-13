@@ -18,10 +18,8 @@ class Dscourse {
 		// Get all the data from the users table
 
 		while ($r = mysql_fetch_assoc($userData)) {// Populate the rows for individual users
-
 			$users[] = $r;
 			// Add row to array
-
 		}
 
 		return $users;
@@ -570,7 +568,7 @@ class Dscourse {
 	}
 
 	public function PreProcess($query, $isIndex = FALSE) {
-		include "config.php";
+		include_once "config.php";
 		
 		$query = ltrim($query, '/');
 		$parts = explode('?', $query);
@@ -752,7 +750,7 @@ class Dscourse {
 		if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$courseId;
 				$LTI = TRUE;
-				include "lti.php";
+				include_once "lti.php";
 				$launch = parseLTIrequest(http_build_query($_REQUEST));
 				if (!$launch) {
 					return FALSE;
@@ -927,5 +925,4 @@ class Dscourse {
 }// Closing class
 
 $dscourse = new Dscourse();
-
 ?>
