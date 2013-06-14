@@ -954,6 +954,8 @@ class Dscourse {
 	}
 	
 	public function GetRecentActivity($user = null, $length = 20){
+		global $pdo;
+		
 		if($user==null){
 			$user = ((isset($_SESSION['UserID']))?$_SESSION['UserID']:FALSE);
 			}
@@ -985,7 +987,7 @@ class Dscourse {
 				if(empty($lastView)){
 					$lastView = $d_row['courseDiscussionTime'];					
 				}
-				$posts->exectue(array(':lastView'=>$lastView,':dID'=>$dID));
+				$posts->execute(array(':lastView'=>$lastView,':dID'=>$dID));
 				while($p_row = $posts->fetch()){
 					$path = "/discussion.php?c=".$cID."&d=".$dID."&p=".$p_row['postID'];
 					array_push($actions, array("action" => 'post',"actionTime" =>$p_row['postTime'], "actionType" =>$p_row['postType'], "context" =>'discussion', "contextLabel" =>$d_row['dTitle'] ,"contextID" =>$dID, "agentLabel" => $p_row['firstName'], "agentID" =>$p_row['postAuthorID'], "content" =>substr($p_row['postMessage'],0,120), "actionPath" =>$path)); 
