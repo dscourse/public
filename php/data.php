@@ -1006,7 +1006,7 @@ function AddLog()
 			
 			$stmt = $pdo->prepare("INSERT INTO logs (logUserID, logPageType,logPageID, logAction, logActionID, logMessage, logUserAgent, logSessionID) VALUES(:logUserID, :logPageType, :logPageID, :logAction, :logActionID, :logMessage, :logUserAgent, :logSessionID)"); 
 			//$addLogQuery = mysql_query("INSERT INTO logs (logUserID, logPageType,logPageID, logAction, logActionID, logMessage, logUserAgent, logSessionID) VALUES('$logUserID', '$logPageType', '$logPageID', '$logAction', '$logActionID', '$logMessage', '$logUserAgent', '$logSessionID')"); 
-			if($stmt->execute(array(':logUserID'=>$logUserID,':loadPageType'=>$logPageType, ':logPageID'=>$logPageID,':logAction'=>$logAction,':logActionID'=>$logActionID,':logMessage'=>$logMessage,':logUserAgent'=>$logUserAgent,':logSessionID'=>$logSessionID))){
+			if($stmt->execute(array(':logUserID'=>$logUserID,':logPageType'=>$logPageType, ':logPageID'=>$logPageID,':logAction'=>$logAction,':logActionID'=>$logActionID,':logMessage'=>$logMessage,':logUserAgent'=>$logUserAgent,':logSessionID'=>$logSessionID))){
 				echo 1; 
 			} else {
 				echo 0; 

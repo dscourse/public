@@ -128,7 +128,7 @@ ini_set('display_errors',1);
 		
 									
 		// Get Course Discussions
-		$courseDiscussions = $dscourse->GetCourseDiscussions($cID);        
+		$courseDiscussions = $dscourse->GetCourseDiscussions($cID);   
  	    $totalDiscussions = count($courseDiscussions);
 	    $discPrint = ''; 
 	    $totalPosts = 0; 

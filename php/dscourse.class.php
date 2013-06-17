@@ -339,25 +339,78 @@ class Dscourse {
 
 		return $load;
 	}
-
-	public function GetUserCourses($userID) {
+	
+	//Fetch a list of all discussions for a given user, sort them by how recently they were viewed
+	public function GetUserCourses($uID, $limit=8){
 		global $pdo;
-		/*
-		 *  Gets the list of networks the user belongs to
-		 */
-		 $stmt = $pdo->prepare("SELECT * FROM courses INNER JOIN courseRoles ON courses.courseID = courseRoles.courseID WHERE courseRoles.userID = :userID");
-		$stmt->execute(array(':userID'=>$userID));
-		//$query = mysql_query("SELECT * FROM courses INNER JOIN courseRoles ON courses.courseID = courseRoles.courseID WHERE courseRoles.userID = '" . $userID . "'");
-		//$results = array();
-		$results = $stmt->fetchAll();
-		/*
-		$i = 0;
-		while ($row = mysql_fetch_array($query)) :
-			array_push($results, $row);
-			$i++;
-		endwhile;
-		*/
-		return $results;
+		
+		$discussions = $pdo->prepare("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID=courses.courseID WHERE userID = :uID AND courseRoles.userRole != 'Blocked'");
+		$discussions->execute(array(':uID'=>$uID));
+		$filtered = array();
+		//prepared statement for getting last view
+		$lastView = $pdo->prepare("SELECT logTime FROM logs WHERE logAction = 'view' AND logPageID IN(SELECT discussionID from courseDiscussions WHERE courseID = :c) ORDER BY logTime DESC LIMIT 1");
+		while($row = $discussions->fetch()){
+			$last = $row['courseRoleTime'];
+			$c = $row['courseID'];
+			$lastView->execute(array(':c'=>$c));
+			if(!count($r= $lastView->fetch())>0){
+				$last = $r['logTime'];
+			}
+			array_push($filtered, $row + array('lastView'=>$last));
+		}
+		usort($filtered, function($a,$b){
+			return strtotime($b['lastView']) - strtotime($a['lastView']);
+		});
+		$filtered = array_slice($filtered,0,$limit);
+		return $filtered;
+	}
+	
+	public function GetIndexInfo($uID, $cLimit=-1, $dLimit=-1){
+		global $pdo;
+		
+		$cList = array();
+		$dList = array();
+		//Get a list of all the user's courses
+		$courses = $pdo->prepare("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID=courses.courseID WHERE userID = :uID AND courseRoles.userRole != 'Blocked'");
+		$courses->execute(array(':uID'=>$uID));
+		//prepared statement for getting last view
+		$lastView = $pdo->prepare("SELECT logs.logTime FROM logs WHERE logAction = 'view' AND logUserID = :uID AND logPageID IN(SELECT discussionID from courseDiscussions WHERE courseID = :c) ORDER BY logTime DESC LIMIT 1");
+		while($row = $courses->fetch()){
+			$last = $row['courseRoleTime'];
+			$c = $row['courseID'];
+			$lastView->execute(array(':c'=>$c, ':uID'=>$uID));
+			$info = $lastView->fetch();
+			if(count($info) > 0){
+				$last = $info['logTime'];
+			}
+			array_push($cList, $row + array('lastView'=>$last));
+		}
+		usort($cList, function($a,$b){
+			return strtotime($b['lastView']) - strtotime($a['lastView']);
+		});
+		//Get a list of all the user's discussions
+		$discs = $pdo->prepare("SELECT * FROM `discussions` INNER JOIN `courseDiscussions` ON `discussions`.`dID` = `courseDiscussions`.`discussionID` WHERE `dID` IN (SELECT `discussionID` FROM `courseDiscussions` WHERE `courseID` IN (SELECT `courseID` FROM `courseRoles` WHERE `userID` = :uID))");
+		$discs->execute(array(':uID'=>$uID));
+		//prepared statement for getting last view
+		$lastView = $pdo->prepare("SELECT logTime FROM logs WHERE logPageID = :pID AND logUserID = :uID AND logAction='view' ORDER BY logTime DESC LIMIT 1");
+		while($d = $discs->fetch()){
+			$last = 0;
+			$dID = $d['dID'];
+			$lastView->execute(array(':pID'=>$dID,':uID'=>$uID));
+			$info = $lastView->fetch();
+			if(count($info) > 0){
+				$last = $info['logTime'];
+			}
+			array_push($dList, $d+array('lastView'=>$last));					
+		}
+		usort($dList, function($a,$b){
+			return strtotime($b['lastView']) - strtotime($a['lastView']);
+		});
+		if($cLimit>0)
+			$cList = array_slice($cList,0,$cLimit);
+		if($dLimit>0)
+			$dList = array_slice($dList,0,$dLimit);
+		return array('courseList'=>$cList,'discList'=>$dList);
 	}
 
 	public function GetCourseDiscussions($cID) {
@@ -365,8 +418,9 @@ class Dscourse {
 		/*
 		 *  Gets the list of discussions in this course
 		 */
-		 $stmt = $pdo->prepare("SELECT * FROM courseDiscussions INNER JOIN discussions ON courseDiscussions.discussionID = discussions.dID WHERE courseDiscussions.courseID = cID");
+		 $stmt = $pdo->prepare("SELECT * FROM courseDiscussions INNER JOIN discussions ON courseDiscussions.discussionID = discussions.dID WHERE courseDiscussions.courseID = :cID");
 		 $stmt->execute(array(':cID'=>$cID));
+		 
 		//$query = mysql_query("SELECT * FROM courseDiscussions INNER JOIN discussions ON courseDiscussions.discussionID = discussions.dID WHERE courseDiscussions.courseID = '" . $cID . "'");
 		//$results = array();
 		$results = $stmt->fetchAll();
@@ -457,7 +511,7 @@ class Dscourse {
 		//$query = mysql_query("SELECT discussionPostID FROM discussionPosts WHERE discussionID = '" . $discID . "'");
 		$stmt->execute(array(':discID'=>$discID));
 		//$num_rows = mysql_num_rows($query);
-		$num_rows = $stmt->countRows();
+		$num_rows = $stmt->rowCount();
 		return $num_rows;
 
 	}
@@ -704,7 +758,7 @@ class Dscourse {
 			//$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
 			$res = $role->fetch();
 			//$res = mysql_fetch_assoc($a);
-			if (mysql_num_rows($a) == 0) {
+			if (count($res) == 0) {
 				$cMember = FALSE;
 			} else {
 				$cMember = TRUE;
@@ -713,7 +767,7 @@ class Dscourse {
 					header('Location: info.php');
 				}
 			}
-			
+			//exit("OK");
 			//2. Check User Permission (based on qs)
 			if (isset($args['a'])) {
 				$accessCode = $args['a'];
@@ -977,7 +1031,6 @@ class Dscourse {
 			$cID = $row['courseID'];
 			if(!$discs->execute(array(':cID'=>$cID)))
 				return -1;
-			//when course memberships are available in logs
 			while($d_row = $discs->fetch()){
 				$dID = $d_row['dID'];
 				//find out when the user last visited this disucssion
