@@ -87,23 +87,14 @@ class Dscourse {
 		return $results;
 	}
 	
-	public function GetUsers() {
+	public function GetUsers($cID) {
 		global $pdo;
 		/*
 		 *  Gets users in the network with their user information
 		 */
-		$users = $pdo->query("SELECT * FROM users"); 
-		//$query = mysql_query("SELECT * FROM users");
-		//$results = array();
-
+		$users = $pdo->prepare("SELECT users.UserID, users.username, users.firstName, users.lastName FROM users INNER JOIN courseRoles ON users.UserID = courseRoles.userID WHERE courseRoles.courseID = :cID");
+		$users->execute(array(':cID'=>$cID));
 		$results = $users->fetchAll();
-		/*
-		$i = 0;
-		while ($row = mysql_fetch_array($query)) :
-			array_push($results, $row);
-			$i++;
-		endwhile;
-		*/
 		return $results;
 	}
 	///DUPLICATE OF GetUsers()
@@ -179,7 +170,6 @@ class Dscourse {
 
 	public function UserInfo($uID) {
 		global $pdo;
-		
 		/*
 		 *  Gets all the information about the user
 		 */
@@ -250,21 +240,22 @@ class Dscourse {
 	public function CourseRoles($cID) {
 		global $pdo;
 		/*
-		 *  Gets users in the network with their user information
-		 */
-		 $cRoles = $pdo->prepare("SELECT * FROM courseRoles INNER JOIN users ON courseRoles.userID = users.UserID WHERE courseRoles.courseID = :cID");
-		//$query = mysql_query("SELECT * FROM courseRoles INNER JOIN users ON courseRoles.userID = users.UserID WHERE courseRoles.courseID = '" . $cID . "'");
+		*  Gets users in the network with their user information
+		*/
+		$cRoles = $pdo->prepare("SELECT * FROM courseRoles INNER JOIN users ON courseRoles.userID = users.UserID WHERE courseRoles.courseID = :cID");
 		$cRoles->execute(array(':cID'=>$cID));
-		//$results = array();
 		
 		$results = $cRoles->fetchAll();
-		/*	
-		$i = 0;
-		while ($row = mysql_fetch_array($query)) :
-			array_push($results, $row);
-			$i++;
-		endwhile;
-		*/
+		//This is kind of a hack, but works
+		$set = array();
+		for($i=0;$i<count($results); $i++){
+			if(in_array($results[$i]['userID'], $set)){
+				$results = array_slice($results,0,$i)+array_slice($results,$i);
+			}
+			else{
+				array_push($set, $results[$i]['userID']);
+			}
+		}
 		return $results;
 	}
 	
@@ -313,8 +304,8 @@ class Dscourse {
 		/*
 		 *  Gets the course role of the user for specific course
 		 */
-		 $stmt= $pdo->prepare("SELECT userRole FROM courseRoles WHERE courseID = :cID AND userID = :userID");
-		 $stmt->execute(array(':cID'=>$cID,':userID'=>$userID));
+		$stmt= $pdo->prepare("SELECT userRole FROM courseRoles WHERE courseID = :cID AND userID = :userID");
+		$stmt->execute(array(':cID'=>$cID,':userID'=>$userID));
 		//$query = mysql_query("SELECT userRole FROM courseRoles WHERE courseID = '$cID' AND userID = '$userID'");
 		//$results = mysql_fetch_array($query);
 		$results = $stmt->fetch();
@@ -507,12 +498,12 @@ class Dscourse {
 		 *  Counts total number of posts in discussion
 		 */
 
-		$stmt = $pdo->prepare("SELECT discussionPostID FROM discussionPosts WHERE discussionID = :discID");
+		$stmt = $pdo->prepare("SELECT COUNT(discussionPostID) FROM discussionPosts WHERE discussionID = :discID");
 		//$query = mysql_query("SELECT discussionPostID FROM discussionPosts WHERE discussionID = '" . $discID . "'");
 		$stmt->execute(array(':discID'=>$discID));
 		//$num_rows = mysql_num_rows($query);
-		$num_rows = $stmt->rowCount();
-		return $num_rows;
+		$num_rows = $stmt->fetch();
+		return $num_rows[0];
 
 	}
 
@@ -748,25 +739,25 @@ class Dscourse {
 		$location = explode('/', $location);
 		$location = array_pop($location);
 
+		$cID = $args['c'];
+		// Check courseRole 
+		$role = $pdo->prepare("SELECT * FROM courseRoles WHERE userID = :uID AND courseID = :cID");
+		$role->execute(array(':uID'=>$uID, ':cID'=>$cID));
+		//$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
+		$res = $role->fetch();
+		//$res = mysql_fetch_assoc($a);
+		if (empty($res)) {
+			$cMember = FALSE;
+		} else {
+			$cMember = TRUE;
+			$role = $res['userRole'];
+			if($role == "blocked"){
+				header('Location: info.php');
+			}
+		}
+
 		//we only need to protect courses and discussions
 		if ($location == "course.php" || $location == "discussion.php") {
-			$cID = $args['c'];
-			
-			// Check courseRole 
-			$role = $pdo->prepare("SELECT * FROM courseRoles WHERE userID = :uID AND courseID = :cID");
-			$role->execute(array(':uID'=>$uID, ':cID'=>$cID));
-			//$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
-			$res = $role->fetch();
-			//$res = mysql_fetch_assoc($a);
-			if (count($res) == 0) {
-				$cMember = FALSE;
-			} else {
-				$cMember = TRUE;
-				$role = $res['userRole'];
-				if($role == "blocked"){
-					header('Location: info.php');
-				}
-			}
 			//exit("OK");
 			//2. Check User Permission (based on qs)
 			if (isset($args['a'])) {
@@ -775,14 +766,13 @@ class Dscourse {
 				//if yes then check courseRole, and see if it matches the code type
 				//if a courseRole doesn't already exist, add it
 				//promotion is allowed for all but blocked users
-				
 				$perm = $pdo->prepare("SELECT * FROM options WHERE optionsValue = :accessCode");
 				$perm->execute(array(':accessCode'=>$accessCode));
 				$res = $perm->fetch();
 				if ($res) {
 					$attrs = json_decode($res['optionAttr'], TRUE);
+					$params = array(':cID'=>$cID,':uID'=>$uID);
 					if ($res['optionsName'] == "viewCode") {
-						$params = array(':cID'=>$cID,':uID'=>$uID);
 						if ($attrs['active'] == 'true') {
 							$viewer = TRUE;
 						} else {
@@ -1054,6 +1044,40 @@ class Dscourse {
 		
 		return $actions;
 	}
+
+	public function GetLastView($disc, $user){
+		global $pdo;
+		
+		$last = $pdo->prepare("SELECT logTime FROM logs WHERE logUserID = :uID AND logPageID = :discID AND logAction = 'view' ORDER BY logTime DESC LIMIT 1");
+		$last->execute(array(':uID'=>$user, ':discID'=>$disc));
+		$result = $last->fetch();
+		if(empty($result)){
+			$result['logTime']='never';
+		}
+		return $result['logTime'];
+	}
+	
+	public function GetNotificationSettings($uID){
+		global $pdo;
+		
+		$settings = $pdo->prepare("SELECT * FROM options WHERE optionsType = 'user' AND optionsTypeID = :uID");
+		$settings->execute(array(':uID'=>$uID));
+		
+		$triggers = array('comment','agree','disagree','clarify','offTopic', 'mention');
+		$notifications = array();
+		while($result = $settings->fetch()){
+			$opt = $row['optionsName'];
+			$opt = explode('_',$opt);
+			$opt = $opt[2];
+			$notifications[$opt] = $row['optionsValue'];	
+		}
+		foreach($triggers as $trigger){
+			if(!isset($notifications[$trigger]))
+				$notifications[$trigger] = 0;
+		}
+		return $notifications;
+	}
+	
 }// Closing class
 
 $dscourse = new Dscourse();

@@ -466,37 +466,31 @@ function EditCourse() {
 	// Add course to database
 	$stmt = $pdo->prepare("UPDATE courses SET courseName = :courseName, courseStartDate = :courseStart, courseEnd = :courseEnd, courseDescription = :courseDesc, courseImage = :courseImage, courseURL = :courseURL  WHERE courseID = :courseID");
 	$stmt->execute(array(':courseName'=>$courseName,':courseStart'=>$courseStart,':courseEnd'=>$courseEnd, ':courseDesc'=>$courseDesc,':courseImage'=>$courseImage, ':courseURL'=>$courseURL,':courseID'=>$courseID));
-	//$updateCourse = mysql_query("UPDATE courses SET courseName = '".$courseName."', courseStartDate = '".$courseStart."', courseEndDate = '".$courseEnd."', courseDescription = '".$courseDesc."', courseImage = '".$courseImage."', courseURL = '".$courseURL."'  WHERE courseID = '".$courseID."' "); // UPDATE
-
 	// Change User Information		
 	if(isset($_POST['user'])){
 		$user  	=  $_POST['user'];
 		$totalUser = count($user); 
 		$i = 0; 
 		$role = $pdo->prepare("SELECT * FROM courseRoles WHERE courseID = :courseID AND userID = :userID");
+		$delete = $pdo->prepare("DELETE FROM courseRoles WHERE courseID = :courseID AND userID = :userID");
+		$update = $pdo->prepare("UPDATE courseRoles SET userRole = :role  WHERE courseID = :courseID AND userID = :userID");
 		while($i < $totalUser) {
 			if($i%2 == 0){
 					$params = array(':courseID'=>$courseID,':userID'=>$user[$i]);
-					//$query = mysql_query("SELECT * FROM courseRoles WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'");
-					$stmt->execute($params);
+					$role->execute($params);
 					//$results = mysql_fetch_array($query);
-					$results = $stmt->fetch(); 
-					if($results){
+					$results = $role->fetch(); 
+					if(!empty($results)){
 							if($user[$i+1] == 'Delete'){
-								$stmt = $pdo->prepare("DELETE FROM courseRoles WHERE courseID = :courseID AND userID = :userID");
-								$stmt->execute($params);
-								//$deleteQuery = mysql_query("DELETE FROM courseRoles WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'"); 
+								$delete->execute($params);
 							} else {
 								$params[':role'] = $user[$i+1];
-								$stmt = $pdo->prepare("UPDATE courseRoles SET userRole = :role  WHERE courseID = :courseID AND userID = :userID");
-								$stmt->execute($params);
-								//$CourseUserUpdate = mysql_query("UPDATE courseRoles SET userRole = '".$user[$i+1]."'  WHERE courseID = '".$courseID."' AND userID = '".$user[$i]."'"); // UPDATE							
+								$update->execute($params);
 							}
 					} else {
 						$params[':role'] = $user[$i+1];
 						$stmt = $pdo->prepare("INSERT INTO courseRoles (courseID, userID, userRole) VALUES(:courseID, :userID, :role)");
 						$stmt->execute($params);
-						//$CourseUserInsert = mysql_query("INSERT INTO courseRoles (courseID, userID, userRole) VALUES('".$courseID."', '".$user[$i]."', '".$user[$i+1]."')"); 
 					}
 			}
 			$i = $i+1; 
@@ -1017,7 +1011,6 @@ function AddLog()
 function SaveOptions()
 {
 	global $pdo;
-	
 			// Get option data
 			$optionsType = $_POST['optionsType'];
 			$optionsTypeID = $_POST['optionsTypeID'];
@@ -1042,7 +1035,7 @@ function SaveOptions()
 						$optionsAttr = $options[$i]['optionsAttr']; 
 					}
 				}
-				$params = array(':optionsType'=>$optionsType,':optionsTypeID'=>$optionsTypeID, ':optionsName'=>$options[$i]['optionsName'],':optionsAttr'=>$optionsAttr, ':optionsValue'=>$options[$i]['optionsValue']);
+				$params = array(':optionsType'=>$optionsType,':optionsTypeID'=>$optionsTypeID, ':optionsName'=>$options[$i]['optionsName']);
 				
 				// Check if that option exists in the database									
 				//$checkoption = mysql_query("SELECT * FROM options WHERE optionsType = '".$optionsType."' AND optionsTypeID = '".$optionsTypeID."' AND optionsName = '".$options[$i]['optionsName']."' "); 
@@ -1051,12 +1044,12 @@ function SaveOptions()
 				$num_rows = $checkops->rowCount();
 				if($num_rows == 1){     // if options does not exist create the option row
 					//$update = mysql_query("UPDATE options SET  optionsValue  = '".$options[$i]['optionsValue']."', optionAttr  = '".$optionsAttr."'  WHERE optionsType = '".$optionsType."' AND optionsTypeID = '".$optionsTypeID."' AND optionsName = '".$options[$i]['optionsName']."' "); 				
-					$update->execute($params);
+					$update->execute($params + array(':optionsValue'=>$options[$i]['optionsValue'],':optionsAttr'=>$optionsAttr));
 				} else if ($num_rows == 0){  // if option exists edit the option
 					//$add = mysql_query("INSERT INTO options (optionsType, optionsTypeID,optionsName, optionsValue, optionAttr) VALUES('".$optionsType."', '".$optionsTypeID."', '".$options[$i]['optionsName']."','".$options[$i]['optionsValue']."','".$optionsAttr."')"); 
-					$add->execute($params);
+					$add->execute($params+array(':optionsValue'=>$options[$i]['optionsValue'],':optionsAttr'=>$optionsAttr));
 				}
-
+			
 			}
 }
 // Original PHP code by Chirp Internet: www.chirp.com.au

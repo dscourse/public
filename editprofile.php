@@ -14,26 +14,13 @@ ini_set('display_errors',1);
         $uID = $_GET["u"];                      // The user ID from link
         
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
-         $userNav = $dscourse->UserInfo($userID); 
+        $userNav = $dscourse->UserInfo($userID); 
        
         // GET Info About This User
         $userInfo = $dscourse->UserInfo($uID);
 
 		// GET notification settings
-		$triggers = array('comment','agree','disagree','clarify','offTopic', 'mention');
-		$q = mysql_query("SELECT * FROM options WHERE optionsType = 'user' AND optionsTypeID = $uID");
-		$notifications = array();
-		while($row = mysql_fetch_assoc($q)){
-			$opt = $row['optionsName'];
-			$opt = explode('_',$opt);
-			$opt = $opt[2];
-			$notifications[$opt] = $row['optionsValue'];
-		}
-		//set up defaults
-		foreach($triggers as $trigger){
-			if(!isset($notifications[$trigger]))
-				$notifications[$trigger] = 0;
-		}
+		$notifications = $dscourse->GetNotificationsSettings($uID);
 ?>
 <!DOCTYPE html>
 

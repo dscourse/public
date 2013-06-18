@@ -74,23 +74,11 @@ ini_set('display_errors',1);
 	//Try loading
 	$load = $dscourse->LoadDiscussion($discId, $uId);
     if($load){
-    	$discUsers = array();
-		$u = mysql_query("SELECT users.UserID, users.username, users.firstName, users.lastName FROM users INNER JOIN courseRoles ON users.UserID = courseRoles.userID WHERE courseRoles.courseID = $cID");
-		while($row = mysql_fetch_assoc($u)){
-			array_push($discUsers, $row);
-		}
-		
+    	$discUsers = $dscourse->GetUsers($cID);
 		$currentSession = session_id(); 
 	   // Show content
 		//get last view log time
-		$query ="SELECT logTime FROM logs WHERE logUserID = $uId AND logPageID = $discId AND logAction = 'view' ORDER BY logTime DESC LIMIT 1";
-		$q = mysql_query($query);
-		$res = mysql_fetch_assoc($q);
-		$lastView;
-		if(count($res) > 0)
-			$lastView = $res['logTime'];
-		else 
-			$lastView = "never";
+		$lastView = $dscourse->GetLastView($discId,$uId);
 ?>
 <!DOCTYPE html>
 

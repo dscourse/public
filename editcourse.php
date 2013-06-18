@@ -10,6 +10,10 @@ ini_set('display_errors',1);
         include_once('php/dscourse.class.php');
 		$query = $_SERVER["REQUEST_URI"];
 		$preProcess = $dscourse->PreProcess($query);
+		if($preProcess['role'] != 'Instructor' && $preProcess['role'] != 'TA' ){
+		     header('Location: index.php');                  
+		     exit(); 
+	    }
         
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
         
@@ -18,13 +22,8 @@ ini_set('display_errors',1);
 
         $userNav = $dscourse->UserInfo($userID); 
 
-	    $userCourseRole = $dscourse->UserCourseRole($cID, $userID); 
+	    //$userCourseRole = $dscourse->UserCourseRole($cID, $userID); 
 	    
-	    if($userCourseRole[0] != 'Instructor' && $userCourseRole[0] != 'TA' ){
-		     header('Location: index.php');                  
-		     exit(); 
-	    }
-
         // Get Course Roles
         $courseRoles = $dscourse->CourseRoles($cID);
  	    $totalRoles = count($courseRoles);
@@ -86,7 +85,7 @@ $(function(){
             var nameList = [
                 <?php 
                 // Get people in this network 
-                $users = $dscourse->GetUsers(); 
+                $users = $dscourse->GetUsers($cID); 
                 $totalUsers = count($users);
                 for($i = 0; $i < $totalUsers; $i++) 
                         {                        
