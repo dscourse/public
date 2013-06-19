@@ -10,7 +10,7 @@
 
 	define('MyConst', TRUE);	// Avoids direct access to config.php
 	include "config.php"; 
-	
+	global $pdo;
 	
 
 if(!empty($_POST['emailRegister']) && !empty($_POST['passwordRegister']))  
@@ -21,18 +21,19 @@ if(!empty($_POST['emailRegister']) && !empty($_POST['passwordRegister']))
     $lastName = mysql_real_escape_string($_POST['lastName']); 
     $sysRole = "user"; 
       
-     $checkusername = mysql_query("SELECT * FROM users WHERE username = '".$username."'");  
- 
+	 $checkusername = $pdo->prepare("SELECT * FROM users WHERE username = :username");
+	 $checkusername->execute(array(':username'=>$username));  
+     $checkusername = $checkusername->fetch();  
   
-     if(mysql_num_rows($checkusername) == 1)  
+     if(!empty($checkusername))  
      {  
         echo "<h1>Error</h1>";  
         echo "<p>Sorry, that username is taken. Please go back and try again.</p>";  
      }  
      else  
-     {  
-        $registerquery = mysql_query("INSERT INTO users (username, password, firstName, lastName, sysRole) VALUES('".$username."', '".$password."', '".$firstName."', '".$lastName."', '".$sysRole."')");  
-        if($registerquery)  
+     {
+     	$registerquery = $pdo->prepare("INSERT INTO users (username, password, firstName, lastName, sysRole) VALUES(:username, :password, :firstName, :lastName, :sysRole)");
+        if($registerquery->execute(array(':username'=>$username,':password'=>$password,':firstName'=>$firstName,':lastName'=>$lastName,':sysRole'=>$sysRole)))  
         {  
             echo "<h1>Success</h1>";  
             echo "<p>Your account was successfully created. Please <a href=\"login.php\">click here to login</a>.</p>";  
@@ -46,7 +47,6 @@ if(!empty($_POST['emailRegister']) && !empty($_POST['passwordRegister']))
 }  
 else  
 {  
-
             echo "<h1>Ooops!</h1>";  
             echo "<p>Sorry, There was a problem.</p>"; 
 

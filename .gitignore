@@ -11,3 +11,4 @@ db_timezone_patch.php
 tst.php
 clearSessions.php
 genusers.php
+mail_init.php

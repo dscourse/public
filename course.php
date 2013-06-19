@@ -71,7 +71,6 @@ ini_set('display_errors',1);
        	$userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
 
         $userNav = $dscourse->UserInfo($userID); 
-
 		
 		if($dscourse->LoadCourse($cID, $userID) == false ) {
 	           header('Location: index.php');                   // The course is set up that this user can't view it. 
@@ -128,7 +127,7 @@ ini_set('display_errors',1);
 		
 									
 		// Get Course Discussions
-		$courseDiscussions = $dscourse->GetCourseDiscussions($cID);        
+		$courseDiscussions = $dscourse->GetCourseDiscussions($cID);   
  	    $totalDiscussions = count($courseDiscussions);
 	    $discPrint = ''; 
 	    $totalPosts = 0; 
@@ -288,7 +287,6 @@ ini_set('display_errors',1);
 				var option = {};  // individual option object
 				$('.saveOption').each(function () {
 					optionsName = $(this).find('.controls').attr('id');  // Run through all components and get option
-					console.log(optionsName);
 					option = {}; 
 					switch (optionsName)
 					{

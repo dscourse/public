@@ -1,0 +1,272 @@
+/*Load Foundation Icons*/
+@font-face {
+	font-family: '[set]Foundicons';
+	src: url('fonts/[set]_foundicons.eot');
+	src: url('fonts/[set]_foundicons.eot?#iefix') format('embedded-opentype'), url('fonts/[set]_foundicons.woff') format('woff'), url('fonts/[set]_foundicons.ttf') format('truetype'), url('fonts/[set]_foundicons.svg#[set]Foundicons') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class*="foundicon-"] {
+	display: inline;
+	width: auto;
+	height: auto;
+	line-height: inherit;
+	vertical-align: baseline;
+	background-image: none;
+	background-position: 0 0;
+	background-repeat: repeat;
+}
+
+[class*="foundicon-"]:before {
+	font-family: "[set]Foundicons";
+	font-weight: normal;
+	font-style: normal;
+	text-decoration: inherit;
+}
+
+/*Begin General Styles*/
+.top-bar {
+	margin-bottom: 0;
+}
+
+.top-bar-section ul li > a {
+	font-weight: 400;
+}
+
+body {
+	color: #222;
+	font-family: "Raleway", Arial, Helvetica, Sans-serif;
+}
+
+.full-row {
+	width: 100%;
+}
+
+.full-row.grey {
+	background: #EFEFEF;
+}
+
+.features {
+	text-align: center;
+}
+
+.description {
+	float: left;
+	text-align: left;
+}
+
+.header img {
+	margin-top: 40px;
+}
+
+.features-intro {
+	margin-top: 70px;
+}
+.top-email {
+	margin-bottom: 5px;
+}
+h1 {
+	color: #312A2A;
+	font-family: "Raleway", Arial, Helvetica, Sans-serif;
+	font-weight: 400;
+	margin-bottom: 10px;
+}
+
+.header h1 {
+	font-size: 32px;
+}
+
+.features h1 {
+	margin-top: 60px;
+}
+
+.tour h1 {
+	text-align: center;
+	margin-top: 60px;
+}
+
+h2 {
+	font-size: 25px;
+	color: #222;
+	font-family: "Raleway", Arial, Helvetica, Sans-serif;
+	font-weight: 500;
+	margin-top: 100px;
+}
+
+.features h2 {
+	margin-top: 60px;
+}
+
+p.main {
+	font-size: 20px;
+	color: #312A2A;
+}
+
+p {
+	font-size: 16px;
+	color: #222;
+	letter-spacing: 0px;
+}
+
+p.description {
+	text-align: left;
+}
+
+p.header {
+	text-align: center;
+	font-size: 20px;
+}
+
+.full-row.darkgrey {
+	background: #494747;
+	color: #efefef;
+	text-align: center;
+	padding-bottom: 50px;
+	position: relative;
+	z-index: 10;
+}
+
+.video h1 {
+	color: #efefef;
+}
+
+.full-row.darkgrey p {
+	color: #efefef;
+	font-size: 20px;
+}
+
+.video>h1 {
+	margin-top: 60px;
+}
+
+img {
+	margin-bottom: 40px;
+}
+
+hr {
+	border-bottom: solid white 1px;
+}
+
+.darkgrey h2 {
+	color: #efefef;
+	margin-top: 0px;
+	margin-bottom: 10px;
+}
+
+.darkgrey img {
+	margin-bottom: 0px;
+}
+
+.full-row.darkgrey p.description {
+	font-size: 15px;
+	text-align: center;
+	margin-bottom: 50px;
+}
+
+.dark-hr {
+	border-top: 1px solid rgb(58, 58, 58);
+	border-bottom: 1px solid rgb(82, 82, 82);
+	margin-bottom: 60px;
+}
+
+.icons {
+	list-style: none;
+	font-size: 16px;
+	text-align: left;
+}
+
+ul li {
+	font-size: 16px;
+	letter-spacing: 1px;
+}
+
+[class*="foundicon-"] {
+	display: inline;
+	width: auto;
+	height: auto;
+	line-height: inherit;
+	vertical-align: baseline;
+	background-image: none;
+	background-position: 0 0;
+	background-repeat: repeat;
+	font-size: 28px;
+	top: 6px;
+	position: relative;
+	margin-right: 10px;
+	text-shadow: 0px 0px 1px rgba(253, 253, 253, 1);
+}
+
+.button {
+	font-family: "Raleway", Arial, Helvetica, Sans-serif;
+	font-weight: 400;
+	border-radius: 3px;
+
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.iphone {
+	width: 350px;
+	height: auto;
+	float: right;
+	z-index: 5;
+	position: relative;
+	top: 40px;
+	margin-bottom: -50px;
+}
+
+.footer {
+	background: #222 !important;
+	text-align: left !important;
+}
+
+.footer li,a {
+	color: rgb(143,143,143);
+	list-style: none;
+	letter-spacing: 0;
+	font-size: 14px;
+}
+
+h5 {
+	color: #EFEFEF;
+	padding-top: 50px;
+}
+
+.email {
+	margin-left: -15px !important;
+}
+
+.demo-video {
+	position: absolute;
+	top: 75px;
+	left: 50%;
+	margin-left: -197px;
+	width: 397px;
+}
+
+@media screen and (max-width: 950px) {
+	.demo-video {
+	display: none;
+}
+
+}
+
+@media screen and (max-width: 480px) {
+	.demo-video {
+	display: none;
+}
+
+h2 {
+	margin-top: 20px;
+}
+
+.cta {
+	margin-top: 120px;
+}
+
+}
+
+.team h2 {
+	font-size: 17px;
+}

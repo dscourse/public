@@ -21,66 +21,45 @@ ini_set('display_errors',1);
 	    
 	    $actions = $dscourse->GetRecentActivity($userID, 8);
 		
-	    $courseData = $dscourse->GetUserCourses($userID);
-	    $totalCourses = count($courseData);
+	   // $courseData = $dscourse->GetUserCourses($userID);
+	    //$totalCourses = count($courseData);
 	    $coursePrint = ''; 
 	    $discussionPrint = ''; 
-	    $discussionCount = 'none'; 
-		$courseQuery = mysql_query("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID=courses.courseID WHERE userID = $userID AND courseRoles.userRole != 'Blocked'");
-		$filtered = array();
-		while($row = mysql_fetch_assoc($courseQuery)){
-			$last = $row['courseRoleTime'];
-			$c = $row['courseID'];
-			$q =  "SELECT logTime FROM logs WHERE logAction = 'view' AND logPageID IN(SELECT discussionID from courseDiscussions WHERE courseID = $c) ORDER BY logTime DESC LIMIT 1";
-			$l = mysql_query("SELECT logTime FROM logs WHERE logAction = 'view' AND logPageID IN(SELECT discussionID from courseDiscussions WHERE courseID = $c) ORDER BY logTime DESC LIMIT 1");
-			if(!count($r= mysql_fetch_assoc($l)>0)){
-				$last = $r['logTime'];
-			}
-			array_push($filtered, $row + array('lastView'=>$last));
-		}
-		usort($filtered, function($a,$b){
-			return strtotime($b['lastView']) - strtotime($a['lastView']);
-		});
-		$filtered = array_slice($filtered,0,8);
-		$totalCourses =count($filtered);
-		$courseData = $filtered;
+		//$courseData = $dscourse->GetUserCourses($userID);
+		//$totalCourses =count($courseData);
 		
+		$info = $dscourse->GetIndexInfo($userID, 8);
+		$totalCourses = count($info['courseList']);
+		$totalDiscussions = count($info['discList']);
+		$courseData = $info['courseList'];
 	    if($totalCourses > 0){	
-		    for($i = 0; $i < $totalCourses; $i++) 
-					{
-					$cName 	= $courseData[$i]['courseName'];
-					$cID	= $courseData[$i]['courseID'];
-					$cRole	= $courseData[$i]['userRole'];
-					$courseImage = $courseData[$i]['courseImage'];
-					if($courseData[$i]['courseImage'] != ''){
-						$courseImage= $courseData[$i]['courseImage'];
-					} else {
-						$courseImage= 'img/course_default.jpg';					
-					}
-					
-						$coursePrint .='<li courseID="'.$cID.'"><a href="course.php?c='.$cID.'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a>  <i>'.$cRole.'</i></li>'; 						
-						// Get discussions for each course
-						$discussionData = $dscourse->GetCourseDiscussions($cID);
-						$totalDiscussions = count($discussionData);
-						if($totalDiscussions > 0){ 
-							$discussionCount = 'some'; 
-							for($j = 0; $j < $totalDiscussions; $j++)
-								{
-									$discID = $discussionData[$j]['dID']; 
-									$discussionName = $discussionData[$j]['dTitle'];  // Name
-									$discussionPrint .='<li discID="'.$cID.'"><a href="discussion.php?d='.$discID.'&c='.$cID.'">'.$discussionName.'</a></li>'; 
-								}						
-						}
+		    for($i = 0; $i < $totalCourses; $i++){
+				$cName 	= $courseData[$i]['courseName'];
+				$cID	= $courseData[$i]['courseID'];
+				$cRole	= $courseData[$i]['userRole'];
+				$courseImage = $courseData[$i]['courseImage'];
+				if($courseData[$i]['courseImage'] != ''){
+					$courseImage= $courseData[$i]['courseImage'];
+				} else {
+					$courseImage= 'img/course_default.jpg';					
 				}
-				if($discussionCount == 'none'){
-						$discussionPrint .= '<div class="alert alert-info">You are not part of any discussions yet.</div>'; 	
-
-				} 	
-			} else {
-			    $coursePrint .= '<div class="alert alert-info">  You are not part of any courses yet. To start a course enter or create a network that you belong to and click Add Course.</div> '; 
-						$discussionPrint .= '<div class="alert alert-info">You are not part of any discussions yet because you don\'t have any courses.</div>'; 	
-
-			}	
+				$coursePrint .='<li courseID="'.$cID.'"><a href="course.php?c='.$cID.'"><img class="thumbSmall" src="'.$courseImage.'" />'.$cName.'</a>  <i>'.$cRole.'</i></li>'; 						
+			}
+		} else {
+		    $coursePrint .= '<div class="alert alert-info">  You are not part of any courses yet. To start a course enter or create a network that you belong to and click Add Course.</div> '; 
+		}
+		if($totalDiscussions> 0){
+			$discussionData = $info['discList'];
+			foreach($discussionData as $d){
+				$discID = $d['dID']; 
+				$cID = $d['courseID'];
+				$discussionName = $d['dTitle'];  // Name
+				$discussionPrint .='<li discID="'.$cID.'"><a href="discussion.php?d='.$discID.'&c='.$cID.'">'.$discussionName.'</a></li>'; 
+			}						
+		}
+		else{
+			$discussionPrint .= '<div class="alert alert-info">You are not part of any discussions yet because you don\'t have any courses.</div>'; 	
+		}
 ?>
 <!DOCTYPE html>
 <html lang="en">

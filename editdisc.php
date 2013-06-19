@@ -357,6 +357,7 @@ $(function(){
 </head>
 
 <body>
+		<!-- <?php echo print_r($dStartDate)."<br />".print_r($dOpenDate)."<br />".print_r($dEndDate); ?> -->
             <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container-fluid">
@@ -401,9 +402,8 @@ $(function(){
                         <form class="form-horizontal" name="editDiscussionForm" action="php/data.php" method="post" >
                         <input type="hidden" name="action" value="editDiscussion">
                         <input type="hidden" name="discID" value="<?php echo $discID; ?>">
-                        <input type="hidden" name="courseID" value="<?php echo $cID; ?>"> 
-                        <input type="hidden" name="networkID" value="<?php echo $nID; ?>"> 
  
+                        <input type="hidden" name="courseID" value="<?php echo $cID; ?>"> 
                             <div class="control-group" id="discussionQuestionControl">
                                 <label class="control-label" for="discussionQuestion">Discussion Question</label>
 

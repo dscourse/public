@@ -816,8 +816,10 @@ Dscourse.prototype.GetData = function(discID) {
             //console.log(main.data);
             main.AddLog('discussion',discID,'getData',0,' ') // Add Log
         },
-        error : function() {// If there was an error
+        error : function(xhr, status) {// If there was an error
             console.log('There was an error talking to data.php');
+            console.log(xhr);
+            console.log(status);
         }
     });
 
@@ -1284,10 +1286,13 @@ Dscourse.prototype.AddPost = function() {
                 },
                 success: function(data){
                     console.log(data);
+                },
+                error: function(xhr){
+                    console.log(xhr);
                 }
             });
         },
-        error : function() {// If connection is not successful.
+        error : function(xhr) {// If connection is not successful.
             main.AddLog('discussion',currentDisc,'addPost','','Error: Dscourse Log: the connection to data.php failed. ');
             //console.log("Dscourse Log: the connection to data.php failed.");
         }
