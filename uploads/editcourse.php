@@ -57,6 +57,15 @@ ini_set('display_errors',1);
 						break;
 					}
 		}
+	$users = $dscourse->AllUsers();
+	$users = array_map(function($a){
+		$id = $a['UserID'];
+		$name = $a['firstName'].' '.$a['lastName'];
+		$email = $a['username'];
+		return "{value : $id, label: $name, email: $email}";
+	}, $users); 
+    $totalUsers = count($users);
+
 ?>
 <!DOCTYPE html>
 
@@ -83,22 +92,11 @@ $(function(){
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
             
-            var nameList = [
+            var nameList = 
                 <?php 
                 // Get people in this network 
-                $users = $dscourse->GetUsers(); 
-                $totalUsers = count($users);
-                for($i = 0; $i < $totalUsers; $i++) 
-                        {                        
-                            $uFirstName = $users[$i]['firstName'];
-                            $uLastName  = $users[$i]['lastName'];
-                            $uID        = $users[$i]['UserID'];
-                            $uEmail     = $users[$i]['username'];
-                        if($i == $totalUsers-1){ $comma = "";} else { $comma = ",";}
-                        echo "{ value: '$uID', label : '$uFirstName $uLastName', email : '$uEmail'}".$comma; 
-                        } 
+                echo json_encode($users).";";
                 ?>  
-            ];
             
 			
 			$('#roleButtons .btn').live('click', function () {

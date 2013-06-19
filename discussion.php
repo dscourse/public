@@ -72,8 +72,9 @@ ini_set('display_errors',1);
 	$userNav = $dscourse->UserInfo($uId); 
 
 	//Try loading
-	$load = $dscourse->LoadDiscussion($discId, $uId);
-    if($load){
+	//handled in preProcessor
+	//$load = $dscourse->LoadDiscussion($discId, $uId);
+    if($preProcess['status'] == "OK" || $preProcess['staus']=="VIEW"){
     	$discUsers = $dscourse->GetUsers($cID);
 		$currentSession = session_id(); 
 	   // Show content
@@ -118,7 +119,7 @@ ini_set('display_errors',1);
                 <a href="<?php echo ($LTI)?"javascript:void(0)":"index.php";?>" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel"><a href="course.php?c=<?php echo $cID ?>&lti=true" id="coursesNav"><?php echo $dscourse -> myTruncate($courseInfo['courseName'], 15, ' ', '...'); ?></a></li>
+                    <li class="navLevel"><a href="course.php?c=<?php echo $cID.(($LTI)?"&lti=true":"")?>" id="coursesNav"><?php echo $dscourse -> myTruncate($courseInfo['courseName'], 15, ' ', '...'); ?></a></li>
                     <?php if(!$LTI) { ?> <li class="navLevel"><a href="discussion.php?d=<?php echo $discId . '&c=' . $cID ?>" id="discussionNav"><?php echo $dscourse -> myTruncate($discussionInfo['dTitle'], 15, ' ', '...'); ?></a></li> <?php } ?>
 
                 </ul>

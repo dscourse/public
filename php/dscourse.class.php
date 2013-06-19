@@ -90,14 +90,14 @@ class Dscourse {
 	public function GetUsers($cID) {
 		global $pdo;
 		/*
-		 *  Gets users in the network with their user information
+		 *  Gets users in a specific course
 		 */
 		$users = $pdo->prepare("SELECT users.UserID, users.username, users.firstName, users.lastName FROM users INNER JOIN courseRoles ON users.UserID = courseRoles.userID WHERE courseRoles.courseID = :cID");
 		$users->execute(array(':cID'=>$cID));
 		$results = $users->fetchAll();
 		return $results;
 	}
-	///DUPLICATE OF GetUsers()
+	
 	public function AllUsers() {
 		global $pdo;
 		/*
@@ -327,7 +327,6 @@ class Dscourse {
 		if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor' || $courseStatus[0] =='Viewer') {// check if this user is a member
 			$load = true;
 		}
-
 		return $load;
 	}
 	
@@ -372,7 +371,7 @@ class Dscourse {
 			$c = $row['courseID'];
 			$lastView->execute(array(':c'=>$c, ':uID'=>$uID));
 			$info = $lastView->fetch();
-			if(count($info) > 0){
+			if(!empty($info)){
 				$last = $info['logTime'];
 			}
 			array_push($cList, $row + array('lastView'=>$last));
@@ -386,7 +385,7 @@ class Dscourse {
 		//prepared statement for getting last view
 		$lastView = $pdo->prepare("SELECT logTime FROM logs WHERE logPageID = :pID AND logUserID = :uID AND logAction='view' ORDER BY logTime DESC LIMIT 1");
 		while($d = $discs->fetch()){
-			$last = 0;
+			$last = $d['dChangeDate'];
 			$dID = $d['dID'];
 			$lastView->execute(array(':pID'=>$dID,':uID'=>$uID));
 			$info = $lastView->fetch();
@@ -453,40 +452,18 @@ class Dscourse {
 		 */
 		$load = false;
 		// Default status is to not load the discussion
-
 		$stmt = $pdo->prepare("SELECT * FROM courseDiscussions  WHERE discussionID = :discID");
-		//$query = mysql_query("SELECT * FROM courseDiscussions  WHERE discussionID = '" . $discID . "'");
 		$stmt->execute(array(':discID'=>$discID));
-		// Get courses this discussion belongs to
-
 		$i = 0;
 		//while ($row = mysql_fetch_array($query)) :// For each of these courses...
 		while ($row = $stmt->fetch()) :// For each of these courses...
 			$courseStatus = $this -> UserCourseRole($row['courseID'], $userID);
 			// See if this user is in the course
 			$courseInfo = $this -> CourseInfo($row['courseID']);
-			// Who does this course allow for viewing?
-			//$courseNetworks = $this->CourseNetworks($row['courseID']); 										// Which networks does this course belong to?
-			//$totalNetworks = count($courseNetworks); 														// Count networks for a loop later
+			//see if the courseRole is OK
 			if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor' || $courseStatus[0] == 'Viewer' || $courseStatus[0] == 'Member') {// check if this user is a member
 				$load = true;
 			}
-			/*case "network":																				// If the course should only be viewed by network members
-			 for($j = 0; $j < $totalNetworks; $j++){
-			 if($this->IsUserInNetwork($courseNetworks[$j]['networkID'], $userID)) {				// Check if this user is in any of the networks the course belongs to
-			 $load = true;
-			 }
-			 if($courseNetworks[$j]['networkStatus'] == "public" ){
-			 $load = true;
-			 }
-			 }
-			 break;*/
-			/*	case "everyone" :
-			 // If this course can be viewed by everyone
-			 $load = true;
-			 // Just load everything
-			 break;
-			 }*/
 			$i++;
 		endwhile;
 
@@ -746,17 +723,18 @@ class Dscourse {
 		
 		$cID = $args['c'];
 		// Check courseRole 
-		$role = $pdo->prepare("SELECT * FROM courseRoles WHERE userID = :uID AND courseID = :cID");
-		$role->execute(array(':uID'=>$uID, ':cID'=>$cID));
+		$roleQuery = $pdo->prepare("SELECT * FROM courseRoles WHERE userID = :uID AND courseID = :cID");
+		$roleQuery->execute(array(':uID'=>$uID, ':cID'=>$cID));
 		//$a = mysql_query("SELECT * FROM courseRoles WHERE userID = '$uID' AND courseID = '$cID'");
-		$res = $role->fetch();
+		$res = $roleQuery->fetch();
 		//$res = mysql_fetch_assoc($a);
 		if (empty($res)) {
+			$role = "none";
 			$cMember = FALSE;
 		} else {
 			$cMember = TRUE;
 			$role = $res['userRole'];
-			if($role == "blocked"){
+			if(preg_match('/blocked/i', $role)){
 				header('Location: info.php');
 			}
 		}

@@ -459,11 +459,10 @@ function EditCourse() {
 		  	  	exit(); 
 		  }	  
 	} 
-	
 	// Add course to database
 	$stmt = $pdo->prepare("UPDATE courses SET courseName = :courseName, courseStartDate = :courseStart, courseEnd = :courseEnd, courseDescription = :courseDesc, courseImage = :courseImage, courseURL = :courseURL  WHERE courseID = :courseID");
-	$stmt->execute(array(':courseName'=>$courseName,':courseStart'=>$courseStart,':courseEnd'=>$courseEnd, ':courseDesc'=>$courseDesc,':courseImage'=>$courseImage, ':courseURL'=>$courseURL,':courseID'=>$courseID));
-	// Change User Information		
+	$params = array(':courseName'=>$courseName,':courseStart'=>$courseStart,':courseEnd'=>$courseEnd, ':courseDesc'=>$courseDesc,':courseImage'=>$courseImage, ':courseURL'=>$courseURL,':courseID'=>$courseID);
+	$stmt->execute($params);	// Change User Information		
 	if(isset($_POST['user'])){
 		$user  	=  $_POST['user'];
 		$totalUser = count($user); 
@@ -476,7 +475,7 @@ function EditCourse() {
 					$params = array(':courseID'=>$courseID,':userID'=>$user[$i]);
 					$role->execute($params);
 					//$results = mysql_fetch_array($query);
-					$results = $role->fetch(); 
+					$results = $role->fetch();
 					if(!empty($results)){
 							if($user[$i+1] == 'Delete'){
 								$delete->execute($params);
@@ -495,8 +494,8 @@ function EditCourse() {
 	}
 	
 	$message =  10;
-	  	$gotoPage = "../course.php?c=".$courseID."&m=".$message;  // All good
-	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
+	$gotoPage = "../course.php?c=".$courseID."&m=".$message;  // All good
+	header("Location: ". $gotoPage);  // Take the user to the page according to the result. 
  }
  
 function AddDiscussion(){

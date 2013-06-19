@@ -10,10 +10,6 @@ ini_set('display_errors',1);
         include_once('php/dscourse.class.php');
 		$query = $_SERVER["REQUEST_URI"];
 		$preProcess = $dscourse->PreProcess($query);
-		if($preProcess['role'] != 'Instructor' && $preProcess['role'] != 'TA' ){
-		     header('Location: index.php');                  
-		     exit(); 
-	    }
         
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
         
@@ -22,8 +18,13 @@ ini_set('display_errors',1);
 
         $userNav = $dscourse->UserInfo($userID); 
 
-	    //$userCourseRole = $dscourse->UserCourseRole($cID, $userID); 
+	    $userCourseRole = $dscourse->UserCourseRole($cID, $userID); 
 	    
+	    if($userCourseRole[0] != 'Instructor' && $userCourseRole[0] != 'TA' ){
+		     header('Location: index.php');                  
+		     exit(); 
+	    }
+
         // Get Course Roles
         $courseRoles = $dscourse->CourseRoles($cID);
  	    $totalRoles = count($courseRoles);
@@ -56,6 +57,15 @@ ini_set('display_errors',1);
 						break;
 					}
 		}
+	$users = $dscourse->AllUsers();
+	$users = array_map(function($a){
+		$id = $a['UserID'];
+		$name = $a['firstName'].' '.$a['lastName'];
+		$email = $a['username'];
+		return "{value : $id, label: '$name', email: '$email'}";
+	}, $users); 
+    $totalUsers = count($users);
+
 ?>
 <!DOCTYPE html>
 
@@ -82,22 +92,11 @@ $(function(){
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
             
-            var nameList = [
+            var nameList = 
                 <?php 
                 // Get people in this network 
-                $users = $dscourse->GetUsers($cID); 
-                $totalUsers = count($users);
-                for($i = 0; $i < $totalUsers; $i++) 
-                        {                        
-                            $uFirstName = $users[$i]['firstName'];
-                            $uLastName  = $users[$i]['lastName'];
-                            $uID        = $users[$i]['UserID'];
-                            $uEmail     = $users[$i]['username'];
-                        if($i == $totalUsers-1){ $comma = "";} else { $comma = ",";}
-                        echo "{ value: '$uID', label : '$uFirstName $uLastName', email : '$uEmail'}".$comma; 
-                        } 
+                echo "[".join(',', $users)."];";
                 ?>  
-            ];
             
 			
 			$('#roleButtons .btn').live('click', function () {

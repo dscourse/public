@@ -10,6 +10,9 @@ ini_set('display_errors',1);
         include_once('php/dscourse.class.php');
 		$query = $_SERVER["REQUEST_URI"];
 		$preProcess = $dscourse->PreProcess($query);
+		if($preProcess['role'] == 'none'){
+			header('Location: index.php');
+		}
 		
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
         $userNav = $dscourse->UserInfo($userID); 

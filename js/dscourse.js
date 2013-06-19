@@ -1121,7 +1121,11 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
     }
     else{
         //Build the recentPosts header
-        $('#recentPostsHeader').html("Posts since you visited "+jQuery.timeago(new Date(main.GetUniformDate(lastView, false))));
+        if(lastView!='never')   
+            $('#recentPostsHeader').html("Posts since you visited "+jQuery.timeago(new Date(main.GetUniformDate(lastView, false))));
+        else{
+            $('#recentPostsHeader').html("Posts since before you joined");
+        }
     }
     if (synthesisCount == 'some') {
         $('#synthesisHelpText').hide();

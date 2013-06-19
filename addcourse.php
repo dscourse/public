@@ -19,6 +19,15 @@ ini_set('display_errors',1);
         $userID = $_SESSION['UserID'];          // Allocate userID to use throughout the page
         $userNav = $dscourse->UserInfo($userID); 
    
+   $users = $dscourse->AllUsers();
+	$users = array_map(function($a){
+		$id = $a['UserID'];
+		$name = $a['firstName'].' '.$a['lastName'];
+		$email = $a['username'];
+		return "{value : $id, label: '$name', email: '$email'}";
+	}, $users); 
+    $totalUsers = count($users);
+   
 ?>
 <!DOCTYPE html>
 
@@ -47,23 +56,12 @@ $(function(){
             <?php echo "var currentUserID = '" .  $_SESSION['UserID'] . "';"; ?>
             <?php echo "var dUserAgent = '" .  $_SERVER['HTTP_USER_AGENT'] . "';"; ?>
             
-            var nameList = [
+           var nameList = 
                 <?php 
-	                // Get all usersr
-                $allUsers = $dscourse->AllUsers();  // AllUsers is a function in dscourse.class.php
-                $totalUsers = count($allUsers);
-                for($i = 0; $i < $totalUsers; $i++) 
-                        {
-                            $uFirstName = $allUsers[$i]['firstName'];
-                            $uLastName  = $allUsers[$i]['lastName'];
-                            $uID        = $allUsers[$i]['UserID'];
-                            $uEmail     = $allUsers[$i]['username'];
-                        if($i == $totalUsers-1){ $comma = "";} else { $comma = ",";}
-                        echo '{ value: '.$uID.', label : "'.$uFirstName. ' ' .$uLastName.'", email : "'.$uEmail.'"}'.$comma; 
-                        } 
- 
-                        ?>
-            ];
+                // Get people in this network 
+                echo "[".join(',', $users)."];";
+                ?>  
+            
             
            $('.removePeople').live('click', function() {
 				$(this).closest('tr').remove();
