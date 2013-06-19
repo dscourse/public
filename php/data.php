@@ -317,7 +317,6 @@ function AddCourse() {
 				      }
 				    else
 				      {
-				    
 					     ## Image resize block
 				      	   $image = new SimpleImage();
 						   $image->load($_FILES["courseImage"]["tmp_name"]);
@@ -334,7 +333,7 @@ function AddCourse() {
 		  } else {
 		  		$message =  4;
 		  	  	$gotoPage = "../addcourse.php?m=".$message;  
-		  	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
+		  	  	header("Location: ". $gotoPage);  // Take the user to the page according to the result. 
 		  }	  
 	} else {
 		$courseImage = $_POST['courseImageURL'];
@@ -342,9 +341,7 @@ function AddCourse() {
 	
 	// Add course to database
 	$stmt = $pdo->prepare("INSERT INTO courses (courseName, courseStartDate, courseEndDate, courseDescription, courseImage, courseURL) VALUES(:courseName, :courseStart, :courseEnd, :courseDesc, :courseImage, :courseURL)");
-	$stmt->excute(array(':courseName'=>$courseName, ':courseStart'=>$courseStart, ':courseEnd'=>$courseEnd, ':courseDesc'=>$courseDesc, ':courseImage'=>$courseImage, ':courseURL'=>$courseURL));
-	//$insertCourse = mysql_query("INSERT INTO courses (courseName, courseStartDate, courseEndDate, courseDescription, courseImage, courseURL) VALUES('".$courseName."', '".$courseStart."', '".$courseEnd."', '".$courseDesc."', '".$courseImage."', '".$courseURL."')"); 
-	//$courseID = mysql_insert_id(); 
+	$stmt->execute(array(':courseName'=>$courseName, ':courseStart'=>$courseStart, ':courseEnd'=>$courseEnd, ':courseDesc'=>$courseDesc, ':courseImage'=>$courseImage, ':courseURL'=>$courseURL));
 	$courseID = $pdo->lastInsertId();
 	
 	// Add Users to courses		
@@ -352,7 +349,7 @@ function AddCourse() {
 		$user = $_POST['user'];
 		$totalUser = count($user); 
 		$i = 0; 
-		$stmt = $pdo->prepare("INSERT INTO courseRoles (courseID, userID, userRole) VALUES(:cID, :uID, :role')");
+		$stmt = $pdo->prepare("INSERT INTO courseRoles (courseID, userID, userRole) VALUES(:cID, :uID, :role)");
 		$params = array(':cID'=>$courseID);
 		while($i < $totalUser) {
 			if($i%2 == 0){

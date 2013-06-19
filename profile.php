@@ -19,7 +19,7 @@ ini_set('display_errors',1);
         // GET Info About This User
         $userInfo = $dscourse->UserInfo($uID);
 
-        $courseData = $dscourse->GetUserCourses($uID);
+        $courseData = $dscourse->GetUserCourses($uID, 'none');
 	    $totalCourses = count($courseData);
 	    $coursePrint = ''; 
 	    for($i = 0; $i < $totalCourses; $i++) 

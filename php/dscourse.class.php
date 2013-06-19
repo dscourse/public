@@ -352,7 +352,8 @@ class Dscourse {
 		usort($filtered, function($a,$b){
 			return strtotime($b['lastView']) - strtotime($a['lastView']);
 		});
-		$filtered = array_slice($filtered,0,$limit);
+		if($limit!="none")
+			$filtered = array_slice($filtered,0,$limit);
 		return $filtered;
 	}
 	
@@ -738,7 +739,11 @@ class Dscourse {
 		$location = $parts[0];
 		$location = explode('/', $location);
 		$location = array_pop($location);
-
+		
+		if($isIndex || $location == "addcourse.php" || preg_match('/profile/i', $location)){
+			return;
+		}
+		
 		$cID = $args['c'];
 		// Check courseRole 
 		$role = $pdo->prepare("SELECT * FROM courseRoles WHERE userID = :uID AND courseID = :cID");
@@ -884,12 +889,26 @@ class Dscourse {
 					$create->execute(array(':username'=>$username,':pass'=>$pass, ':first'=>$first,':last'=>$last));
 					$uId = $pdo->lastInsertId();
 					
-					$to = $username;
-			 		$subject = "Welcome to dscourse";
-					$body = "Hi $first,\n\nAn account on the dscourse discussion platform has been automatically created for you. A temporary password has been set up with your account. Your temporary password is: $dummy. \n\n Please change this password next time you log on to dscourse. Thank you!";
-					$headers = "From: admin@dscourse.org";
-		 			if(!mail($to, $subject, $body, $headers)){
-			 		}
+					require_once '../mail/class.phpmailer.php';
+					require_once '../mail/mail_init.php';
+					$mail = new PHPMailer();
+					$mail = mail_init($mail);
+					$body = file_get_contents('../mail/templates/notify.html');
+					$head = "Hi $first,";
+					$msg = "An account on the dscourse discussion platform has been automatically created for you. A temporary password has been set up with your account. Your temporary password is: $dummy. \n\n Please change this password next time you log on to dscourse. Please not that any time you enter dscourse through your institution's LMS you will not need to use a password. Thank you!";
+					$body = str_replace('%head%',$head, $body);
+					$body = str_replace('%message%', $msg, $body);
+					$mail->MsgHTML($body);
+					$mail->Subject = 'Welcome to dscourse.org';
+					$mail->AddAddress($username, $first.' '.$last);
+					
+					//$to = $username;
+			 		//$subject = "Welcome to dscourse";
+					//$msg = "An account on the dscourse discussion platform has been automatically created for you. A temporary password has been set up with your account. Your temporary password is: $dummy. \n\n Please change this password next time you log on to dscourse. Thank you!";
+					//$headers = "From: admin@dscourse.org";
+		 			if(!$mail->Send()){
+						echo $mail->ErrorInfo;
+					}
 				} else {
 					$uId = $u['UserID'];
 				}
@@ -1065,7 +1084,7 @@ class Dscourse {
 		
 		$triggers = array('comment','agree','disagree','clarify','offTopic', 'mention');
 		$notifications = array();
-		while($result = $settings->fetch()){
+		while($row = $settings->fetch()){
 			$opt = $row['optionsName'];
 			$opt = explode('_',$opt);
 			$opt = $opt[2];

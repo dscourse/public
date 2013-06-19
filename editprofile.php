@@ -17,10 +17,10 @@ ini_set('display_errors',1);
         $userNav = $dscourse->UserInfo($userID); 
        
         // GET Info About This User
-        $userInfo = $dscourse->UserInfo($uID);
+        $userInfo = $userNav;
 
 		// GET notification settings
-		$notifications = $dscourse->GetNotificationsSettings($uID);
+		$notifications = $dscourse->GetNotificationSettings($uID);
 ?>
 <!DOCTYPE html>
 
