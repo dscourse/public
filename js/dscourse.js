@@ -1154,6 +1154,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
     $('.editPostButton').on('click', function(e){
         var parentPostID = $(this).parent().parent().attr('level');
         var parentPost = main.data.posts.filter(function(a){return a.postID == parentPostID})[0];
+        var parentPostMessage = $(this).parent().find('.postMessageView').html();
         
         var discID = $('#dIDhidden').val();
         var dStatus = main.DiscDateStatus(discID);
@@ -1882,29 +1883,28 @@ Dscourse.prototype.HighlightRelevant = function(postID) {
 
     // get selection of this post ID
     var i, o, thisSelection, j, m, highlight, newHighlight, n, selector;
-    for ( i = 0; i < main.data.posts.length; i++) {
-        o = main.data.posts[i];
-        if (o.postID == postID) {
-            if (o.postSelection !== "") {// If there is selection do highlighting
+    var f = main.data.posts.filter(function(a){
+        return a.postID == postID;
+    });
+    if(f.length > 0){
+        o = f[0];
+        if (o.postSelection !== "") {// If there is selection do highlighting
                 thisSelection = o.postSelection.split(",");
                 var num1 = parseInt(thisSelection[0]);
                 var num2 = parseInt(thisSelection[1]);
                 // var num3 = num2-num1;   // delete if substring() works.
                 // find the selection in reference post
-                for ( j = 0; j < main.data.posts.length; j++) {
-                    m = main.data.posts[j];
-                    if (m.postID == o.postFromId) {
-                        highlight = m.postMessage.substring(num1, num2);
-                        newHighlight = '<span class="highlight">' + highlight + '</span>';
-                        n = m.postMessage.replace(highlight, newHighlight);
-                        selector = 'div[level="' + o.postFromId + '"]';
-                        $(selector).children('.postTextWrap').children('.postMessageView').html(n);
-                    }
-                }
+                var ref = main.data.posts.filter(function(a){
+                    return a.postID == o.postFromId;
+                })[0];
+                highlight = ref.postMessage.substring(num1, num2);
+                newHighlight = '<span class="highlight">' + highlight + '</span>';
+                n = ref.postMessage.substring(0, num1)+newHighlight+ref.postMessage.substring(num2);
+                selector = 'div[level="' + o.postFromId + '"]';
+                $(selector).children('.postTextWrap').children('.postMessageView').html(n);
             } else {
-                // If there is no selection remove highlighting		-- Check This --TODO
+                // If there is no selection remove highlighting     -- Check This --TODO
             }
-        }
     }
 }
 

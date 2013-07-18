@@ -207,7 +207,10 @@ background: white;
 .ui-datepicker-calendar td {
 	border:1px solid #fff;
 }
-
+textarea{
+	word-break: break-all;
+	line-height: 16px;
+}
 .textareaFixed {
 	height:100px;
 	resize:none;
