@@ -1154,8 +1154,31 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
     $('.editPostButton').on('click', function(e){
         var parentPostID = $(this).parent().parent().attr('level');
         var parentPost = main.data.posts.filter(function(a){return a.postID == parentPostID})[0];
-        var parentPostMessage = $(this).parent().find('.postMessageView').html();
-        
+        /* can't put spans in a <textarea> 
+        var colors = ['#FFFFB1', '#D8FFB1', '#B1FFB1', '#B1FFD8', '#B1FFFF', '#B1D8FF', '#B1B1FF', '#D8B1FF', '#FFB1FF', '#FFB1D8', '#FFB1B1', '#FFD8B1'];
+        var highlights = $(this).closest('.threadText').find('.postTypeView').filter(function(){
+            var a  = this;
+            var those = main.data.posts.filter(function(b){
+                return b.postID == $(a).attr('slevel')
+            });
+            return those[0].postSelection != '';
+        }).map(function(){
+            var a = this;
+            return main.data.posts.filter(function(b){
+               return b.postID==$(a).attr('slevel');
+           }).map(function(a){
+               var sel = a.postSelection.split(','); 
+               return {start: sel[0], stop: sel[1]}
+           }); 
+        });
+        $.each(highlights, function(i, val){
+           parentPostMessage = parentPostMessage.substring(0,val.start)+
+           '<span class="highlight" style="background-color:'+colors[i]+'">'
+           +parentPostMessage.substring(val.start, val.stop)
+           +'</span>'
+           +parentPostMessage.substring(val.stop);
+        });
+        */
         var discID = $('#dIDhidden').val();
         var dStatus = main.DiscDateStatus(discID);
         var postID, participate; 
@@ -1174,8 +1197,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
                             'left' : '30%'
                         });
                         $('.threadText').removeClass('highlight');
-                        postID = $(this).attr("postID");
-                        console.log(postID);
+                        postID = "EDIT|||"+$(this).parent().parent().attr('level');
                         if (postQuote != '') {
                             $('#highlightDirection').show();
                             $('#highlightShow').show().html(postQuote);
@@ -1188,7 +1210,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
                         $.scrollTo($('#commentWrap'), 400, {
                             offset : -100
                         });
-                          main.AddLog('discussion',discID,'SayButtonClicked',postID,' '); //postID is the parent post. 
+                        main.AddLog('discussion',discID,'SayButtonClicked',postID,' '); //postID is the parent post. 
                     }
             } else {
                 alert('This discussion is closed.');
@@ -1326,6 +1348,19 @@ Dscourse.prototype.AddPost = function() {
         'postMediaType' : main.postMediaType,
         'postContext' : postContext
     };
+    
+     if(/EDIT/.test(postFromId)){
+        main.EditPost({
+            postID: postFromId.split('|||')[1],
+            postAuthorId : postAuthorId,
+            postMessage : postMessage.replace('\'', '\\\''),
+            postType : postType,
+            postSelection : postSelection,
+            postMedia : postMedia,
+            postMediaType : main.postMediaType,
+            postContext : postContext 
+        }, currentDisc);        
+    }
     
     // run Ajax to save the post object
     //console.log(post);
@@ -2579,4 +2614,18 @@ Dscourse.prototype.scatter = function (start, stop, qty){
                 n++;
             }   
             return res;
+}
+
+Dscourse.prototype.EditPost= function(post, cDisc){
+    var main = this;
+    $.post('php/data.php',{action:'editPost',post:post}, function(pID){
+        var oldPost = main.data.posts.filter(function(a){return a.postID == pID})[0];
+        var keys = Object.keys(post);
+        for(var i=0; i<keys.length; i++){
+            oldPost[keys[i]] = post[keys[i]];
         }
+        main.SingleDiscussion(cDisc);
+        main.DiscResize();
+        main.VerticalHeatmap();
+    });
+}

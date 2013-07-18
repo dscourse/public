@@ -933,20 +933,23 @@ function EditPost()
 	global $pdo;
 			// Save post first
 			$post = $_POST['post'];
-			
-			$postID			= 	$post['postID'];
-			$postFromId		= 	$post['postFromId'];
-			$postAuthorId	= 	$post['postAuthorId'];
-			$postMessage	= 	$post['postMessage'];
-			$postType		= 	$post['postType'];
-			$postSelection	= 	$post['postSelection'];			
-			$postMedia		= 	$post['postMedia'];
-			$postMediaType  = 	$post['postMediaType'];
-			$postContext	= 	$post['postContext'];
+			$postID = $post['postID'];
+			unset($post['postID']);
+            
+			$params = array();
+            $query = "UPDATE posts SET ";
+			foreach($post as $key=>$value){
+			    $params[':'.$key] = $value;
+                $query.="$key = :$key, ";
+			}
+            rtrim($query, ', ');
+            $query.=" WHERE postID = :postID";
+            $params[':postID'] = $postID;
 																		
-			$stmt = $pdo->prepare("UPDATE posts SET  postFromId = :postFromId, postAuthorId = :postAuthorId, postMessage = :postMessage, postType  = :postType, postSelection  = :postSelection, postMedia  = :postMedia, postMediaType = :postMediaType, postContext  = :postContext  WHERE postID  = :postID");
-			$stmt->execute(array(':postFromId'=>$postFromId,':postAuthorId'=>$postAuthorId, ':postMessage'=>$postMessage, ':postType'=>$postType, ':postSelection'=>$postSelection, ':postMedia'=>$postMedia, ':postMediaType'=>$postMediaType,':postContext'=>$postContext, ':postID'=>$postID));
+			$stmt = $pdo->prepare($query);
+			$stmt->execute($params);
 			//$editPostQuery = mysql_query("UPDATE posts SET  postFromId = '".$postFromId."', postAuthorId = '".$postAuthorId."', postMessage = '".$postMessage."', postType  = '".$postType."', postSelection  = '".$postSelection."', postMedia  = '".$postMedia."', postMediaType = '".$postMediaType."', postContext  = '".$postContext."'  WHERE postID  = '".$postID."' "); 
+    echo $postID;
 }
 
 
