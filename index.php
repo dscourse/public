@@ -9,8 +9,7 @@ ini_set('display_errors',1);
     
 	    include_once('php/dscourse.class.php');
 		$query = $_SERVER["REQUEST_URI"];
-		$isIndex = TRUE; 
-		$preProcess = $dscourse->PreProcess($query, $isIndex); 
+		$preProcess = $dscourse->PreProcess($query, TRUE); 
 	    $userID = $_SESSION['UserID'];			// Allocate userID to use throughout the page
         $userNav = $dscourse->UserInfo($userID); 
 	     
@@ -94,7 +93,7 @@ ini_set('display_errors',1);
 			}
 			?>	
 
-			if(actions.lenght > 0){
+			if(actions.length > 0){
 				$('#noPosts').remove(); 
 			}
 			$.each(actions, function(i, val){

@@ -363,7 +363,7 @@ class Dscourse {
 		$cList = array();
 		$dList = array();
 		//Get a list of all the user's courses
-		$courses = $pdo->prepare("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID=courses.courseID WHERE userID = :uID AND courseRoles.userRole != 'Blocked'");
+		$courses = $pdo->prepare("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID = courses.courseID WHERE userID = :uID AND (courseRoles.userRole != 'Blocked' AND courseRoles.userRole != 'Delete')");
 		$courses->execute(array(':uID'=>$uID));
 		//prepared statement for getting last view
 		$lastView = $pdo->prepare("SELECT logs.logTime FROM logs WHERE logAction = 'view' AND logUserID = :uID AND logPageID IN(SELECT discussionID from courseDiscussions WHERE courseID = :c) ORDER BY logTime DESC LIMIT 1");
@@ -381,7 +381,7 @@ class Dscourse {
 			return strtotime($b['lastView']) - strtotime($a['lastView']);
 		});
 		//Get a list of all the user's discussions
-		$discs = $pdo->prepare("SELECT * FROM `discussions` INNER JOIN `courseDiscussions` ON `discussions`.`dID` = `courseDiscussions`.`discussionID` WHERE `dID` IN (SELECT `discussionID` FROM `courseDiscussions` WHERE `courseID` IN (SELECT `courseID` FROM `courseRoles` WHERE `userID` = :uID))");
+		$discs = $pdo->prepare("SELECT * FROM `discussions` INNER JOIN `courseDiscussions` ON `discussions`.`dID` = `courseDiscussions`.`discussionID` WHERE `dID` IN (SELECT `discussionID` FROM `courseDiscussions` WHERE `courseID` IN (SELECT `courseID` FROM `courseRoles` WHERE `userID` = :uID AND (courseRoles.userRole != 'Blocked' AND courseRoles.userRole != 'Delete')))");
 		$discs->execute(array(':uID'=>$uID));
 		//prepared statement for getting last view
 		$lastView = $pdo->prepare("SELECT logTime FROM logs WHERE logPageID = :pID AND logUserID = :uID AND logAction='view' ORDER BY logTime DESC LIMIT 1");
@@ -681,7 +681,6 @@ class Dscourse {
 
 	public function PreProcess($query, $isIndex = FALSE) {
 		global $pdo;
-		
 		$query = ltrim($query, '/');
 		$parts = explode('?', $query);
 		$q = "";
@@ -698,9 +697,11 @@ class Dscourse {
 		{
 			// is cookie set?
 			if (array_key_exists('userCookieDscourse', $_COOKIE)) {
-				$getUserInfo = mysql_query("SELECT * FROM users WHERE UserID = '" . $_COOKIE["userCookieDscourse"] . "' ");
-				if (mysql_num_rows($getUserInfo) == 1) {
-					$row = mysql_fetch_array($getUserInfo);
+				$cookie = $pdo->prepare("SELECT * FROM users WHERE UserID = :id");
+				$cookie->execute(array(':id'=>$_COOKIE['userCookieDscourse']));
+				$res = $cookie->fetch();
+				if (!empty($res)) {
+					$row = $res;
 					$_SESSION['Username'] = $row[1];
 					$_SESSION['firstName'] = $row[3];
 					$_SESSION['lastName'] = $row[4];
@@ -712,7 +713,6 @@ class Dscourse {
 					echo "Error: Could not load user info from cookie.";
 				}
 			} else {
-					
 				if($isIndex){
 					header('Location: info.php' . $q);
 					

@@ -25,22 +25,24 @@ if($action == 'login'){
     $something = ''; 
     if(!empty($checkusername))  
     {  
- 	   $row = $checkusername;   	  
+ 	   $row = $checkusername;   	 
        
-        if($row[11] == 'inactive'){
+        if($row['userStatus'] == 'inactive'){
 	         echo "<div class=\"alert alert-error animated flash \">This user is registered to the website but the email is not yet verified. Please check your email for the verification link. If you can't find the email we can <a href='#' id='reVerify'>send it again</a>. </div>"; 
         } else {
+        	session_start();
 	        $_SESSION['Username'] = $username; 
-	        $_SESSION['firstName'] = $row[3]; 
-	        $_SESSION['lastName'] = $row[4];   
+	        $_SESSION['firstName'] = $row['firstName']; 
+	        $_SESSION['lastName'] = $row['lastName'];   
 	        $_SESSION['LoggedIn'] = 1;  
-			$_SESSION['status'] = $row[5];
-			$_SESSION['UserID'] = $row[0];  	
+			$_SESSION['status'] = $row['userStatus'];
+			$_SESSION['UserID'] = $row['UserID'];  	
 			if($autologin == 'checked'){
 				$expire=time()+60*60*24*10;
 				setcookie("userCookieDscourse", $row[0] , $expire, '/');
-			}	        
-         echo  "redirect"; 										// Sends back a redirect message which the ajax will use to redirect to home.php         
+			}
+         echo  "redirect";  // Sends back a redirect message which the ajax will use to redirect to home.php         
+       	  
         }
     }  
     else  

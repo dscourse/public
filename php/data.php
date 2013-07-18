@@ -89,6 +89,12 @@ if($user_context == ''){
 	if ($action == 'mention'){
 		Mention();
 	}
+	if ($action == 'delete'){
+		Delete();
+	}
+	if ($action == 'archive'){
+		Archive();
+	}
 }
  ///Obsolete???           
 function UpdateNetwork(){
@@ -459,11 +465,10 @@ function EditCourse() {
 		  	  	exit(); 
 		  }	  
 	} 
-	
 	// Add course to database
 	$stmt = $pdo->prepare("UPDATE courses SET courseName = :courseName, courseStartDate = :courseStart, courseEnd = :courseEnd, courseDescription = :courseDesc, courseImage = :courseImage, courseURL = :courseURL  WHERE courseID = :courseID");
-	$stmt->execute(array(':courseName'=>$courseName,':courseStart'=>$courseStart,':courseEnd'=>$courseEnd, ':courseDesc'=>$courseDesc,':courseImage'=>$courseImage, ':courseURL'=>$courseURL,':courseID'=>$courseID));
-	// Change User Information		
+	$params = array(':courseName'=>$courseName,':courseStart'=>$courseStart,':courseEnd'=>$courseEnd, ':courseDesc'=>$courseDesc,':courseImage'=>$courseImage, ':courseURL'=>$courseURL,':courseID'=>$courseID);
+	$stmt->execute($params);	// Change User Information		
 	if(isset($_POST['user'])){
 		$user  	=  $_POST['user'];
 		$totalUser = count($user); 
@@ -476,7 +481,7 @@ function EditCourse() {
 					$params = array(':courseID'=>$courseID,':userID'=>$user[$i]);
 					$role->execute($params);
 					//$results = mysql_fetch_array($query);
-					$results = $role->fetch(); 
+					$results = $role->fetch();
 					if(!empty($results)){
 							if($user[$i+1] == 'Delete'){
 								$delete->execute($params);
@@ -495,8 +500,8 @@ function EditCourse() {
 	}
 	
 	$message =  10;
-	  	$gotoPage = "../course.php?c=".$courseID."&m=".$message;  // All good
-	  	header("Location: ". $gotoPage);  // Take the user to the page according to te result. 
+	$gotoPage = "../course.php?c=".$courseID."&m=".$message;  // All good
+	header("Location: ". $gotoPage);  // Take the user to the page according to the result. 
  }
  
 function AddDiscussion(){
@@ -660,7 +665,7 @@ function GetData(){
 		}*/
 		
 		$params = array(':discID'=>$discID);
-		$stmt = $pdo->prepare("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = :discID");
+		$stmt = $pdo->prepare("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = :discID AND discussionPosts.postStatus != 'deleted' ");
 		$stmt->execute($params);
 		if($stmt->rowCount() > 0){
 			$posts = array(); 	
@@ -952,8 +957,8 @@ function CheckNewPosts()
 	// Checks to see if there are new posts in this discussion, returns number
 			$currentDiscussion =   $_POST['currentDiscussion'];
 			$currentPosts =   $_POST['currentPosts'];
-	// Get posts within this discussion
-		$stmt = $pdo->prepare("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = :currentDisc");
+		// Get posts within this discussion
+		$stmt = $pdo->prepare("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = :currentDisc AND discussionPosts.postStatus != 'deleted'");
 		$stmt->execute(array(':currentDisc'=>$currentDiscussion));	
 			//$postData = mysql_query("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$currentDiscussion."'");
 			//$num_rows = mysql_num_rows($postData);
@@ -1049,6 +1054,46 @@ function SaveOptions()
 			
 			}
 }
+function Delete(){
+	global $pdo;
+	
+	$id = $_POST['contextID'];
+	$context = $_POST['context'];
+	$params = array(':id'=>$id);
+	switch($context){
+		case 'course':
+			$del = $pdo->prepare("UPDATE courses SET courseStatus='deleted' WHERE courseID = :id");
+			$del->execute($params);
+			echo 'http://' . $_SERVER['HTTP_HOST']. '/index.php';
+		break;
+		case 'post':
+			$del = $pdo->prepare("UPDATE discussionPosts SET postStatus = 'deleted' WHERE postID = :id");
+			$del->execute($params);
+			//Also set the postFrom ID to the next highest node in the tree or 0
+			
+			echo $id;
+		break; 
+	}
+}
+function Archive(){
+	global $pdo;
+	
+	$context = $_POST['context'];
+	switch($context){
+		case 'course':
+			$ar = $pdo->prepare("UPDATE courses SET courseStatus='archived' WHERE courseID = :id");
+			if(!$ar->execute(array(':id'=>$id))){
+				echo -1;
+				return;
+			}	
+			else {
+				echo 1;
+				return;
+			}	
+		break;
+	}
+}
+
 // Original PHP code by Chirp Internet: www.chirp.com.au
 	// Please acknowledge use of this code by including this header.
 	// http://www.the-art-of-web.com/php/truncate/

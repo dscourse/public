@@ -91,13 +91,14 @@ function Dscourse(lti) {
         $(this).find('span').replaceWith(spannedText);
         top.currentSelected = top.GetSelectedText();
         var element = document.getElementById("highlightShow");
-        top.currentStart = top.GetSelectedLocation(element).start;
-        top.currentEnd = top.GetSelectedLocation(element).end;
+        var range = top.GetSelectedLocation(element);
+        top.currentStart = range.start;
+        top.currentEnd = range.end;
         $('#locationIDhidden').val(top.currentStart + ',' + top.currentEnd);
         // Add location value to form value;
         var replaceText = $('#highlightShow').html();
         var newSelected = '<span class="highlight">' + top.currentSelected + '</span>';
-        var n = replaceText.replace(top.currentSelected, newSelected);
+        var n = replaceText.substring(0,range.start)+newSelected+replaceText.substring(range.end);
         $('#highlightShow').html(n);
     });
 
@@ -136,6 +137,12 @@ function Dscourse(lti) {
                 $(this).addClass('lightHighlight');
             }
         }
+        $(this).find('.deletePostButton').show();
+        var aID = $(this).attr('postauthorid');
+        var pID = $(this).attr('level');
+        var time = top.GetUniformDate(top.data.posts.filter(function(a){return a.postID == pID})[0].postTime) > new Date().getTime() - (15000+1000*240);
+        if((aID == currentUserID && time)|| settings.role=="Instructor"||settings.role=="TA")        
+            $(this).find('.editPostButton').show();
     });
 
     /* When mouse hovers out of the post */
@@ -143,7 +150,8 @@ function Dscourse(lti) {
         event.stopImmediatePropagation();
         $(this).children('.sayBut2').hide();
         $(this).removeClass('lightHighlight');
-
+        $(this).find('.deletePostButton').hide();
+        $(this).find('.editPostButton').hide();
     });
 
     /* When there are new posts and a refresh is required */
@@ -1030,8 +1038,8 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
                 showPost = 'no';
             }
         }
-        console.log(showPost);
-        console.log(userRole);
+        //console.log(showPost);
+        //console.log(userRole);
 
         // Is this post part of any synthesis?
         var synthesis = '';
@@ -1047,7 +1055,9 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
             		+  '<div class="postTypeView" slevel="' + d.postID + '"> ' + typeText + '</div>' 
             		+  '<div class="postTextWrap">'
             			 + '<span class="postAuthorView" rel="tooltip"  title="' + authorThumb + '"> ' + authorID + '</span>' 
-            			 + '<span class="postMessageView"> ' + message + '</span>' 
+            			 + '<span class="postMessageView"> ' + message + '</span>'
+            			 + ((userRole == 'Instructor' || userRole == "TA")?'<i class="icon-trash deletePostButton" style="float:right; position:relative;top: 3px"></i>':'') 
+            			 + '<i class="icon-edit editPostButton" style="float:right; position: relative;top:3px; right:5px"></i>'
             			 + media + selection + synthesis 
             		 + '</div>' 
             		 + ' <button class="btn btn-small btn-success sayBut2" style="display:none" postID="' + d.postID + '"><i class="icon-comment icon-white"></i> </button> '
@@ -1112,6 +1122,79 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
         } // end if showpost.
     }// End looping through posts
     
+    $('.deletePostButton').on('click', function(){
+       var del = confirm("Are you sure you would like to delete this post? This option is irreversible."); 
+       if(del){
+            $.ajax({
+                type: 'POST',
+                url: 'php/data.php',
+                data: {
+                    action: 'delete',
+                    context: 'post',
+                    contextID: $(this).parent().parent().attr('level')
+                },
+                success: function(data){
+                    //remove deleted post
+                    main.data.posts = main.data.posts.filter(function(a){
+                       return parseInt(a.postID) != data; 
+                    });
+                    //re-draw
+                    var currentDisc = $('#dIDhidden').val();
+                    main.SingleDiscussion(currentDisc);
+                    main.DiscResize();
+                    main.VerticalHeatmap();                 
+                },
+                error: function(xhr){
+                    console.log(xhr);    
+                }
+            })    
+       }
+    });
+    $('.deletePostButton').hide();
+    $('.editPostButton').on('click', function(e){
+        var parentPostID = $(this).parent().parent().attr('level');
+        var parentPost = main.data.posts.filter(function(a){return a.postID == parentPostID})[0];
+        
+        var discID = $('#dIDhidden').val();
+        var dStatus = main.DiscDateStatus(discID);
+        var postID, participate; 
+            if (dStatus != 'closed') {
+                    participate = (settings.status=="OK")?true:false; 
+                    // Check if participate value if anyone or network          
+                    if(participate == true){
+                        $('#highlightDirection').hide();
+                        $('#highlightShow').hide();
+                        var postQuote = $(this).parent().children('.postTextWrap').children('.postMessageView').html();
+                        postQuote = $.trim(postQuote);
+                        var xLoc = e.pageX - 80;
+                        var yLoc = e.pageY + 10;
+                        $('#commentWrap').css({
+                            'top' : '20%',
+                            'left' : '30%'
+                        });
+                        $('.threadText').removeClass('highlight');
+                        postID = $(this).attr("postID");
+                        console.log(postID);
+                        if (postQuote != '') {
+                            $('#highlightDirection').show();
+                            $('#highlightShow').show().html(postQuote);
+                        }
+                        $('#postIDhidden').val(postID);
+                        $('#overlay').show();
+                        $('#commentWrap').fadeIn('fast');
+                        $(this).parent('.threadText').removeClass('agree disagree comment offTopic clarify').addClass('highlight');
+                        $('#text').val(parentPost.postMessage);
+                        $.scrollTo($('#commentWrap'), 400, {
+                            offset : -100
+                        });
+                          main.AddLog('discussion',discID,'SayButtonClicked',postID,' '); //postID is the parent post. 
+                    }
+            } else {
+                alert('This discussion is closed.');
+            }
+    });        
+    $('.editPostButton').hide();
+    
     if($("#recentContent").children().length==0){
         $("#recentPostsHeader").html("Recent posts");
         $("#recentContent").append('<span>There are no new posts since you last visited</span>');
@@ -1121,7 +1204,11 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
     }
     else{
         //Build the recentPosts header
-        $('#recentPostsHeader').html("Posts since you visited "+jQuery.timeago(new Date(main.GetUniformDate(lastView, false))));
+        if(lastView!='never')   
+            $('#recentPostsHeader').html("Posts since you visited "+jQuery.timeago(new Date(main.GetUniformDate(lastView, false))));
+        else{
+            $('#recentPostsHeader').html("Posts since before you joined");
+        }
     }
     if (synthesisCount == 'some') {
         $('#synthesisHelpText').hide();

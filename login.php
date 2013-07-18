@@ -90,7 +90,6 @@
                         action : 'login'
                     },
                       success: function(data) { 
-                            
                             if (data == "redirect"){
                                 window.location.href = '<?php echo $redirect ?>'; 
                             }else {                     // If script ran successfully 
