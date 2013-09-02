@@ -125,7 +125,19 @@ ini_set('display_errors',1);
 
 		$dayHour = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		
-									
+		
+		// Split course dates into weeks
+		$beginDate = strtotime($courseInfo['courseStartDate']); 		// Get the course begin date
+		$endDate   = strtotime($courseInfo['courseEndDate']);			// Get the course end date 
+		$datediff = $endDate - $beginDate;					// Get difference between dates
+		$totalDays = floor($datediff/(60*60*24));			// Count the total number of days in between
+		if(($totalDays % 7) > 0) { $totalWeeks = ($totalDays/7)+1; } else { $totalWeeks = ($totalDays/7); };  // Get how many weeks there are in those days. 
+		$allWeeks = array();
+		for ($i1 = 0; $i1 < $totalWeeks; $i1++){
+			array_push($allWeeks, 0);				
+		} 
+
+								
 		// Get Course Discussions
 		$courseDiscussions = $dscourse->GetCourseDiscussions($cID);   
  	    $totalDiscussions = count($courseDiscussions);
@@ -219,10 +231,13 @@ ini_set('display_errors',1);
 						
 						// Hour of the day
 						$hour = intval(date('H', strtotime($allPosts[$k]['postTime']))); 
-
 						$dayHour[$hour]++; 	 				  
 				  
-				  
+						// Find which week this post belongs to and add one to that week
+						$weekofCourse = strtotime($allPosts[$k]['postTime']) - $beginDate; // Subtract the time of the post from the beginning of course. 
+						$weekofCourse = floor($weekofCourse/(60*60*24));			// Count the total number of days in between
+						if(($weekofCourse % 7) > 0) { $weekNumber = ($weekofCourse/7)+1; } else { $weekNumber = ($weekofCourse/7); };  // Get how many weeks there are in those days. 
+						$allWeeks[$weekNumber]++; 		  
 				  }
 		}
  // Load Course Options and Place them in Required Sections
@@ -399,11 +414,22 @@ ini_set('display_errors',1);
 			xaxis: {
 				mode: "categories",
 				tickLength: 0
+			},
+			yaxis: {
+				show: true,
+				position: 'left',
+				tickSize: 1,
+				tickDecimals: 0,
+				labelWidth: 10
+			},
+			grid : {
+				borderWidth: 2,
+				borderColor : '#ccc'
 			}
 	  };
 					
 											
-			// Charts
+			// Chart for WeekDay
 			$.plot('#weekDayChart', [ weekDayData ] , weekDayOptions );					
 
 
@@ -428,13 +454,65 @@ ini_set('display_errors',1);
 			xaxis: {
 				mode: "categories",
 				tickLength: 0
+			},
+			yaxis: {
+				show: true,
+				position: 'left',
+				tickSize: 1,
+				tickDecimals: 0,
+				labelWidth: 10
+			},
+			grid : {
+				borderWidth: 2,
+				borderColor : '#ccc'
 			}
 	  };
 					
 											
-			// Charts
+			// Chart for dayHour
 			$.plot('#dayHourChart', [ dayHourData ] , dayHourOptions );					
 
+
+
+
+		var weekCourseData = [
+				<?php 
+					$totalWeeksCount = count($allWeeks); 
+					for($h1 = 0; $h1 <$totalWeeksCount; $h1++){
+						echo '["'. $h1.'", '. $allWeeks[$h1].']'; 
+						if($h < $totalWeeksCount-1){
+							echo ','; 
+						}
+					}
+				?>
+					];
+		var weekCourseOptions	= { 
+			series: {
+				bars: {
+					show: true,
+					barWidth: 0.6,
+					align: "left"
+				}
+			},
+			xaxis: {
+				show: false
+			},
+			yaxis: {
+				show: true,
+				position: 'left',
+				tickSize: 1,
+				tickDecimals: 0,
+				labelWidth: 10
+			}, 
+			grid : {
+				borderWidth: 2,
+				borderColor : '#ccc'
+			}
+	  };
+					
+											
+			// Chart for dayHour
+			$.plot('#weekCourseChart', [ weekCourseData ] , weekCourseOptions );					
 
 			
         }); 
@@ -620,6 +698,8 @@ ini_set('display_errors',1);
 					            <div class="row-fluid">
 						            <div class="span12 analyticsBox">
 						                <h5>Weekly Post Count</h5>
+
+						                <div id="weekCourseChart" style="width: 800px;height:200px"></div>
 
 					                </div>
 					            </div>

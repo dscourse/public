@@ -407,6 +407,11 @@ font-size: 20px;
 .analyticsN {
 	font-weight: 600;
 }
+
+.flot-tick-label {
+	margin-right: 10px; 
+	font-size:  11px; 
+}
  /********** courseoptions.php  Settings ************/
 
 .settingBox {
