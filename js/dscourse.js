@@ -1664,8 +1664,13 @@ Dscourse.prototype.DrawTimeline = function()// Draw the timeline.
         n = n.replace(/-/g, "/");
         //n = main.ParseDate(n, 'yyyy/mm/dd');
         var time = Date.parse(n);
-        var timeRange = main.timelineMax - main.timelineMin;
-        var dotDistance = ((time - main.timelineMin) * 100) / timeRange;
+        var minTime = main.timelineMin.replace(/-/g, "/");
+            minTime = Date.parse(minTime);
+        var maxTime = main.timelineMax.replace(/-/g, "/");
+            maxTime = Date.parse(maxTime);
+        var timeRange = maxTime - minTime;
+        var dotDistance = ((time - minTime) * 100) / timeRange;
+        console.log('n: ' + n + '   timeRange: ' + timeRange + '    timelineMax: ' + main.timelineMax + '     timelineMin: ' + main.timelineMin)
         var singleDotDiv = '<div class="singleDot" style="left: ' + dotDistance + '%; "></div>';
         $('#dots').append(singleDotDiv);
     }
@@ -2052,7 +2057,7 @@ Dscourse.prototype.getAuthorThumb = function(id, size) {
                 if(main.data.users[n].userPictureURL){
 	                return "<img class='userThumbTiny' src='" + main.data.users[n].userPictureURL + "' />";
 	            } else {
-		            return "<div class='userThumbTiny' style='color:"+font+";background:"+color+"'> "+initials+" </div>"; 
+		            return "<div class='userThumbTiny' style=' color:"+font+";background:"+color+"'> "+initials+" </div>"; 
 	            }
             }
         }
@@ -2116,20 +2121,20 @@ Dscourse.prototype.DiscResize = function() {
         wWidth = window.innerWidtht;
         wHeight = window.innerHeight;
     }
-    else{
+    else{ 
         wHeight = $(window).height();
         wWidth = $(window).width();
     }
     // Get height of #navbar
     nbHeight = $('.navbar').height();
     // Get height of jumbutron
-    jHeight = $('#discussionWrap > header').height();
+    jHeight = 0; //$('#discussionWrap > header').height();  
     // Get height of #controlsWrap
-    cHeight = $('#controlsRow').height();
+    cHeight = $('#controlsWrap').height();
     // resize #dRowMiddle accordingly.
-    height = wHeight - (nbHeight + jHeight + cHeight + 30);
+    height = wHeight - (nbHeight + jHeight + cHeight + 74);
     height = height + 'px';
-    mHeight = wHeight - (nbHeight + jHeight + cHeight + 30);
+    mHeight = wHeight - (nbHeight + jHeight + cHeight + 74);
     mHeight = -mHeight;
     $('#dSidebar').css({
         'height' : height,

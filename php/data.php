@@ -465,10 +465,12 @@ function EditCourse() {
 		  	  	exit(); 
 		  }	  
 	} 
-	// Add course to database
-	$stmt = $pdo->prepare("UPDATE courses SET courseName = :courseName, courseStartDate = :courseStart, courseEnd = :courseEnd, courseDescription = :courseDesc, courseImage = :courseImage, courseURL = :courseURL  WHERE courseID = :courseID");
+	// Edit course to database
+//	$stmt = $pdo->prepare("INSERT INTO courses (courseName, courseStartDate, courseEndDate, courseDescription, courseImage, courseURL) VALUES(:courseName, :courseStart, :courseEnd, :courseDesc, :courseImage, :courseURL)");
+	$stmt = $pdo->prepare("UPDATE courses SET courseName = :courseName, courseStartDate = :courseStart, courseEndDate = :courseEnd, courseDescription = :courseDesc, courseImage = :courseImage, courseURL = :courseURL  WHERE courseID = :courseID");
 	$params = array(':courseName'=>$courseName,':courseStart'=>$courseStart,':courseEnd'=>$courseEnd, ':courseDesc'=>$courseDesc,':courseImage'=>$courseImage, ':courseURL'=>$courseURL,':courseID'=>$courseID);
-	$stmt->execute($params);	// Change User Information		
+	$stmt->execute($params);	
+	// Change User Information		
 	if(isset($_POST['user'])){
 		$user  	=  $_POST['user'];
 		$totalUser = count($user); 
@@ -552,7 +554,7 @@ function EditDiscussion(){
 		$networkID	= $_POST['networkID'];
 		// Add row to discussions table
 		$stmt = $pdo->prepare("UPDATE discussions SET dTitle = :dTitle, dPrompt = :dPrompt, dStartDate = :dStartDate, dOpenDate = :dOpenDate, dEndDate = :dEndDate WHERE dID = :discID"); 
-		$stmt->execute(array(':dTitle'=>$dTitle,':dPrompt'=>$dPrompt,':dStartDate'=>$dStartDate,':dEndDate'=>$dEndDate, ':discID'=>$discID));
+		$stmt->execute(array(':dTitle'=>$dTitle,':dPrompt'=>$dPrompt,':dStartDate'=>$dStartDate,':dOpenDate'=>$dOpenDate,':dEndDate'=>$dEndDate, ':discID'=>$discID));
 		//$discInsert = mysql_query("UPDATE discussions SET dTitle = '".$dTitle."', dPrompt = '".$dPrompt."', dStartDate = '".$dStartDate."', dOpenDate = '".$dOpenDate."', dEndDate = '".$dEndDate."' WHERE dID = '".$discID."'"); 
 	
 	// Delete all rows from coursediscussion table that has this discussion

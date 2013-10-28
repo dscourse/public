@@ -781,7 +781,7 @@ $(function(){
                             <hr class="soften">
 
                             <div class="formButtonWrap">
-                                <button class="btn btn-primary" id="discussionFormSubmit">Save</button> <a href="course.php?c=<?php echo $cID.'&n='.$nID; ?>"  id="editDiscussionCancel" class="btn">Cancel</a>
+                                <button class="btn btn-primary" id="discussionFormSubmit">Save</button> <a href="course.php?c=<?php echo $cID; ?>"  id="editDiscussionCancel" class="btn">Cancel</a>
                             </div>
                         </form>
                     </div>

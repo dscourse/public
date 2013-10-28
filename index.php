@@ -138,8 +138,8 @@ ini_set('display_errors',1);
         <header class="jumbotron subhead">
         <div class="container-fluid">
             <h1> Welcome to Dscourse </h1>
-            <p>dscourse is a project that aims to provide the next generation platform-agnostic discussion tool for online learning. You are using stable version 1.2; which means you will not lose any data but functional errors may occur from time to time. In such instances please go to the support discussion for help. If you are new to dscourse please read our documentation. </p>
-            <p> <a href="help.php" class="btn btn-small"> Read Documentation </a> <a role="button" class="btn btn-small"> Support Discussion </a> </p>
+            <p>dscourse is a project that aims to provide the next generation platform-agnostic discussion tool for online learning. Thank you for using dscourse for your project. Please join the support course by clicking the button below to register. You will find there dscourse discussions for reporting issues, getting help on how to use dscourse and feature requests.   </p>
+            <p> <a href="http://dscourse.org/go.php?a=41137245" role="button" class="btn btn-small btn-success"> Join Support Course </a> </p>
             
         </div>
     </header>

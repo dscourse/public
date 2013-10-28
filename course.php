@@ -478,14 +478,15 @@ ini_set('display_errors',1);
 		var weekCourseData = [
 				<?php 
 					$totalWeeksCount = count($allWeeks); 
-					for($h1 = 0; $h1 <$totalWeeksCount; $h1++){
+					for($h1 = 0; $h1 < $totalWeeksCount; $h1++){
 						echo '["'. $h1.'", '. $allWeeks[$h1].']'; 
-						if($h < $totalWeeksCount-1){
+						if($h1 < $totalWeeksCount-1){
 							echo ','; 
 						}
 					}
 				?>
 					];
+				
 		var weekCourseOptions	= { 
 			series: {
 				bars: {
@@ -682,15 +683,17 @@ ini_set('display_errors',1);
 						  <div class="tab-pane" id="courseAnalytics">
 					        <div class="container-fluid">
 					            <div class="row-fluid">
+<!-- 
 					                <div class="span4 analyticsBox">
 						                <h5><span class="analyticsN">13</span> Active Users</h5>
 					                </div>
+ -->
 					                
-					                <div class="span4 analyticsBox">
+					                <div class="span6 analyticsBox">
 						                <h5><span class="analyticsN"><?php echo $totalDiscussions; ?></span> Discussions</h5>
 					                </div>
 
-					                <div class="span4 analyticsBox">
+					                <div class="span6 analyticsBox">
 						                <h5><span class="analyticsN"><?php echo $totalPosts; ?></span> Posts</h5>
 					                </div>
 					            </div>
@@ -699,7 +702,7 @@ ini_set('display_errors',1);
 						            <div class="span12 analyticsBox">
 						                <h5>Weekly Post Count</h5>
 
-						                <div id="weekCourseChart" style="width: 800px;height:200px"></div>
+						                <div id="weekCourseChart" class="" style="width: 600px;height:200px"></div>
 
 					                </div>
 					            </div>
@@ -707,32 +710,36 @@ ini_set('display_errors',1);
 					            <div class="row-fluid">
 						            <div class="span6 analyticsBox">
 						                <h5>Post in Time of Day</h5>
-						                <div id="dayHourChart" style="width:400px;height:200px"></div>
+						                <div id="dayHourChart" style="width:300px;height:200px"></div>
 
 					                </div>
 						            <div class="span6 analyticsBox">
 						                <h5>Post in Day of Week</h5>
-						                <div id="weekDayChart" style="width:400px;height:200px"></div>
+						                <div id="weekDayChart" style="width:300px;height:200px"></div>
 
 					                </div>
 					            </div>
 					            <hr class="soften" />
 					            <div class="row-fluid">
+<!-- 
 						            <div class="span6 analyticsBox">
 						                <h5>Most Active Students</h5>
 					                </div>
-						            <div class="span6 analyticsBox">
+ -->
+						            <div class="span12 analyticsBox">
 						                <h5>Frequency of Type of Comment</h5>
-						                <div id="postTypeChart" style="width:300px;height:200px"></div>
-						                <div id="postTypeLegend"> </div>
+						                <div id="postTypeChart" style="width:300px;height:200px; float: left;"></div>
+						                <div id="postTypeLegend" style="float:left;"> </div>
 					                </div>
 					            </div>
 					            <hr class="soften" />
-					            <div class="row-fluid">
+					            <!-- 
+<div class="row-fluid">
 						            <div class="span12 analyticsBox">
 						                <h5>Word Cloud</h5>
 					                </div>
 					            </div>
+ -->
 					        </div>
 							  
 						  </div>

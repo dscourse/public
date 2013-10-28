@@ -14,16 +14,18 @@
 	$server = $_SERVER['HTTP_HOST']; 
 
 if($action == 'login'){
+
 	$username = mysql_real_escape_string($_POST['username']);  
     $password = md5(mysql_real_escape_string($_POST['password']));  
     $autologin = $_POST['autologin']; 
-  	
+    
 	$checkusername = $pdo->prepare("SELECT * FROM users WHERE username = :username AND password = :password");
 	$checkusername->execute(array(':username'=>$username, ':password'=>$password));  
-    $checkusername = $checkusername->fetch();  
+
+	$checkusername = $checkusername->fetch();  
     //$checklogin = mysql_query("SELECT * FROM users WHERE Username = '".$username."' AND Password = '".$password."'");  
     $something = ''; 
-    if(!empty($checkusername))  
+        if(!empty($checkusername))  
     {  
  	   $row = $checkusername;   	 
        

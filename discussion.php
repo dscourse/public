@@ -107,6 +107,12 @@ ini_set('display_errors',1);
 				echo "var goTo='$pID';";
             }?>
     </script>
+<style>
+.synTop .userThumbTiny {
+display: inline; 
+}
+</style>
+
 </head>
 
 <body>
