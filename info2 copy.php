@@ -24,20 +24,6 @@
 
     <script src="landing/js/vendor/custom.modernizr.js"></script>
 
-<style>
-.borderimg {
-border: 1px solid #ccc;
-box-shadow: 0 0 15px 2px #ccc;
-}
-.top-bar {
-position: fixed;
-top: 0px;
-width: 100%;
-z-index: 999;
-box-shadow: 0 0 21px 7px #000;
-height: 46px;
-}
-</style>
 </head>
 <body>
   <!-- Begin Menu Bar -->
@@ -45,8 +31,8 @@ height: 46px;
         <ul class="title-area">
           <!-- Title Area -->
           <li class="name">
-            <h1 >
-              <a href="#" style="font-size: 30px !important">DSCOURSE</a>
+            <h1>
+              <a href="#">DSCOURSE</a>
             </h1>
           </li>
           <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
@@ -63,14 +49,14 @@ height: 46px;
           <ul class="right">
             <li class="divider hide-for-small"></li>
             <li>
-              <a href="http://dscourse.org/login.php" style="font-size: 18px" > Login </a>
+              <a href="#">Login </a>
             </li>
             <li class="divider"></li>
 
             <li class="divider show-for-small"></li>
             <!-- Button -->
             <li class="">
-              <a class="" href="http://dscourse.org/register.php" style="font-size: 18px" > Register</a>
+              <a class="" href="#">Register</a>
             </li>
           </ul>
         </section>
@@ -83,7 +69,7 @@ height: 46px;
 
       <!-- "full-row" class allows background to stretch to 100% width -->
       <div class="row header">
-        <div class="large-10 large-offset-1 columns features-intro" style="text-align: center; margin-top: 0px; ">
+        <div class="large-5 columns features-intro">
           <!-- Main Heading -->
           <h1>A revolutionary new discussion tool for online learning</h1>
           <p class="main">
@@ -91,7 +77,7 @@ height: 46px;
           </p>
               
           <!-- Email Subscribe Form -->
-          <div class="large-10 large-offset-1 columns">
+          <div class="large-9 columns">
             <div class="row collapse email">
               <form action="php/submit-sub.php" method="POST" id="email-form">
                 <p class="top-email">Sign up to receive updates:</p>
@@ -114,6 +100,15 @@ height: 46px;
 
         </div>
 
+        <div class="large-7 columns">
+          <!-- Begin HTML5 Video -->
+          <img src="landing/img/laptop-blank.png" class="laptop">
+          <video class="demo-video" preload="" loop="" autoplay="" controls="" muted="">
+            <source src="landing/video/on-site-demo.mov.mp4" type="video/mp4">
+            <source src="landing/video/on-site-demo.mov.webm" type="video/webm">
+            <source src="landing/video/on-site-demo.mov.ogv" type="video/ogg"></video>
+        </div>
+
       <!-- End row -->
       </div>
       <!-- End "full-row" -->
@@ -130,7 +125,7 @@ height: 46px;
         <p>
 Dscourse is a web application and it will work on almost any operating system and tablets. All you need is an internet connection.        </p>
         <!-- Corresponding Image -->
-        <img src="img/chromebook.jpeg" alt="">
+        <img src="landing/img/IDE-2.png" width="720" height="719" alt="">
         <!-- End Feature -->
       </div>
 
@@ -139,7 +134,7 @@ Dscourse is a web application and it will work on almost any operating system an
         <h2>Built for Discussion</h2>
         <p>
 Dscourse integrates many tools designed specifically for the needs of a classrooom discussion online, whether you have 5 or 500 students.          </p>
-        <img src="img/shot1.png" alt="" class="borderimg">
+        <img src="landing/img/code-behind-page.png" width="720" height="707" alt="">
         <!-- End Feature 2 -->
       </div>
 
@@ -148,7 +143,7 @@ Dscourse integrates many tools designed specifically for the needs of a classroo
         <h2>LTI Integration</h2>
         <p>
 Using LTI standards, Dscourse can connect to many Learning Management Systems so you won't have to recreate your classroom environment.        </p>
-        <img src="img/shot2.jpg" alt="" class="borderimg">
+        <img src="landing/img/IDE-2.png" width="720" height="719" alt="">
         <!-- End Feature 3 -->
       </div>
 
@@ -165,9 +160,17 @@ Using LTI standards, Dscourse can connect to many Learning Management Systems so
           <p>
             Watch our introduction video that walks through the essentials of using dscourse to get you started right away. 
             <p>
+              <!-- Provide 3 video formats if you can to maximise compatibility, 
+              more info here: http://www.w3schools.com/html/html5_video.asp
+              Remove "muted" tag to unmute video
+              -->
+              <video class="" preload="" loop="" autoplay="" controls="" muted="">
+                <source src="landing/video/on-site-demo.mov.mp4" type="video/mp4">
+                <source src="landing/video/on-site-demo.mov.webm" type="video/webm">
+                <source src="landing/video/on-site-demo.mov.ogv" type="video/ogg">
+              <!-- Provide a Fall back image & message if video is not supported -->
+                <img src="landing/img/video-bu.png" width="720" height="719" alt="">Sorry, your browser does not support video</video>
 
-<iframe width="853" height="480" src="//www.youtube.com/embed/9bYoeA6Igz0?rel=0" frameborder="0" allowfullscreen></iframe>
-					
             </div>
             <!-- End Row -->
           </div>
@@ -188,7 +191,7 @@ Explore the main features of Dscourse that will help your discussion flow. </p>
             <!-- Feature 1 -->
             <!-- Large Image -->
             <div class="large-8 columns">
-              <img src="img/shot3.png" class="borderimg">
+              <img src="landing/img/magnifier-620x350.png">
             </div>
             <!-- Side Text -->
             <div class="large-4 columns description">
@@ -205,19 +208,18 @@ Explore the main features of Dscourse that will help your discussion flow. </p>
               <p>You can post with predefined categories such as Comment, Agree, Disagree, Clarify and Off Topic to contextualize your post and refine notifications. Dscourse also allows for <b>rich media attachments</b> from images, video embed, website embed and advanced drawing options. </p>
             </div>
             <div class="large-8 columns">
-              <img src="img/shot4.png" class="borderimg">
-              </div>
+              <img src="landing/img/free-admin-template-psd.png"></div>
             <hr>
             <!-- End Feature 2 --> 
             <!-- Feature 3 -->
             <!-- Large Image -->
             <div class="large-8 columns">
-              <img src="img/shot5.png" class="borderimg">
+              <img src="landing/img/magnifier-620x350.png">
             </div>
             <!-- Side Text -->
             <div class="large-4 columns description">
-              <h2>Timeline Slider</h2>
-              <p class="description"> You can view all the conversations in dscourse in a timeline and see a visual representation of the progress of the discussion. You can also drag the timeline to eliminate all posts after a certain date to see a snapshot of the discussion at any given time. </p>
+              <h2>Individual Discussion</h2>
+              <p class="description">Dscourse allows instructors to interact individually with students before opening the discussion to the entire group. Works great for checking understanding. </p>
             </div>
             <!-- Horizontal Rule -->
             <hr>
@@ -225,76 +227,100 @@ Explore the main features of Dscourse that will help your discussion flow. </p>
 
             <!-- Feature 4 -->
             <div class="large-4 columns description">
-              <h2>Smart Search and Navigation</h2>
-              <p>Even if your discussion grows up to hundreds of posts you can search for any text and find real-time locations. Our blue vertical navigation bar shows the relative locations and clicking on them will take you to the post right away. Dscourse discussions keep you in the same location and help you move around posts intuitively.   </p>
+              <h2>Multiple ways to post</h2>
+              <p>You can post with predefined categories such as Comment, Agree, Disagree, Clarify and Off Topic to contextualize your post and refine notifications. Dscourse also allows for <b>rich media attachments</b> from images, video embed, website embed and advanced drawing options. </p>
             </div>
             <div class="large-8 columns">
-              <img src="img/shot6.png" class="borderimg">
-              </div>
+              <img src="landing/img/free-admin-template-psd.png"></div>
             <hr>
             <!-- End Feature 4 --> 
-            <!-- Feature 5 -->
-            <!-- Large Image -->
-            <div class="large-8 columns">
-              <img src="img/shot7.png" class="borderimg">
-            </div>
-            <!-- Side Text -->
-            <div class="large-4 columns description">
-              <h2>Connected Posts</h2>
-              <p class="description"> There comes a time in your discussion where you want to synthesize several posts at different parts of the discussion. Dscourse allows you to make Connected Posts that link different posts together so that you can take your contributions to the meta level. </p>
-            </div>
-            <!-- Horizontal Rule -->
-            <hr>
-            <!-- End Feature 5 -->
+
 
           </div>
           <!-- End Row -->
         </div>
 
-<div class="full-row grey">
-          <div class="row tour" style="text-align: center;">
+        <!-- Begin Second Dark Grey Features Section -->
+        <div class="full-row darkgrey team">
+          <div class="row">
+            <div class="large-12 columns video">
+              <!-- Heading & Subtitle -->
+              <h1>Our Team</h1>
+              <p>Dscourse is developed at the Curry School of Education by Instructional Technology faculty and graduate students. </p>
+              <div class="dark-hr"></div>
+            </div>
 
-            <div class="large-10 large-offset-1 columns ">
-              <h2 style="margin-top: 20px; ">Want to learn more? </h2>
-              <p>
-                <b>Sign up now and test it yourself. </b>
-                Dscourse is open to interested parties to try out the software and use in their class or project. Please keep in mind that Dscourse is not a commercial product and does not provide any official support. If you have questions or comments however you will be able to use our support forums. 
+            <!-- Start features -->
+            <div class="large-2 columns darkgrey">
+              <h2>Mable Kinzie</h2>
+<img src="landing/img/user.png" alt="user" width="125" height="125">
+              <p class="description">
+	              Associate Professor in Instructional Technology
               </p>
-              <!-- Button -->
-              <a href="http://dscourse.org/login.php" class=" button">Try it now!</a>
-              <!-- End CTA -->
+            </div>
+
+            <div class="large-2 columns darkgrey">
+              <h2>Bill Ferster</h2>
+<img src="landing/img/user.png" alt="user" width="125" height="125">
+              <p class="description">
+					Senior Scientist and Project Director
+				</p>
+            </div>
+
+            <div class="large-2 columns darkgrey">
+              <h2>Caner Uguz</h2>
+<img src="landing/img/user.png" alt="user" width="125" height="125">
+              <p class="description">
+	              Research Assistant and Lead Developer
+              </p>
+
+            </div>
+            
+            <div class="large-2 columns darkgrey">
+              <h2>Sam Chrisinger</h2>
+<img src="landing/img/user.png" alt="user" width="125" height="125">
+              <p class="description">
+	              Developer and Genius
+              </p>
+            </div>
+
+            <div class="large-2 columns darkgrey">
+              <h2>Crystal Dejaegher</h2>
+<img src="landing/img/user.png" alt="user" width="125" height="125">
+              <p class="description">
+	              User Experience and Support
+              </p>
+            </div>
+
+            <div class="large-2 columns darkgrey">
+              <h2>and more</h2>
+<img src="landing/img/user.png" alt="user" width="125" height="125">
+              <p class="description">
+	              Thanks to Curry School students and faculty for testing our app.</p>
+
+            </div>
+
             <!-- End Row -->
           </div>
-          <!-- End Grey Container -->
+          <!-- End Dark Grey Container --> 
         </div>
-</div>
+
+
 
         <!-- Footer -->
- <div class="full-row darkgrey footer">
+        <div class="full-row darkgrey footer">
           <div class="row">
             <!-- Begin Footer Links, Repeat this Block -->
-            <div class="large-8 columns">
-              <h5>Disclaimer</h5>
-              <ul class="footer-nav">
-                <li>Dscourse is a proof-of-concept project aimed to improve online discussions. This website exists with the purpose of demonstration and is not a final product aimed at general use. This service is provided "as is" and dscourse.org or University of Virginia cannot be held responsible for any loss of data on this site and cannot guarantee safety of sensitive information. </li>
-              </ul>
-            </div>
-
-
-            <div class="large-4 columns">
-              <h5>Get in Touch </h5>
-              <ul class="footer-nav">
-                <li>For any questions or comments please send an email to <b>Bill Ferster</b>: <br /> bferster - at - virginia.edu </li>
-              </ul>
-            </div>
             
-            
-            <div class="dark-hr"></div>
+            <div class= "small-12 columns">
+	            <p>
+            Dscourse is a project of University of Virginia's Curry School of Education. Please get in touch with us for any questions or comments.
+	            </p></div>
             <!-- End Row -->
           </div>
           <!-- End Container -->
-        </div>       
-        
+        </div>
+
     <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
 
         <!-- Ajax Form -->
@@ -317,11 +343,34 @@ Explore the main features of Dscourse that will help your discussion flow. </p>
     </script>
 
       <script src="landing/js/foundation.min.js"></script>
-      <script src="landing/js/foundation/foundation.js"></script>		   
-      <script src="landing/js/foundation/foundation.dropdown.js"></script>				   
-      <script src="landing/js/foundation/foundation.forms.js"></script>		   
-      <script src="landing/js/foundation/foundation.placeholder.js"></script>		   
-      <script src="landing/js/foundation/foundation.topbar.js"></script>				   
+      <script src="landing/js/foundation/foundation.js"></script>
+      <!--		   
+      <script src="landing/js/foundation/foundation.alerts.js"></script>
+				   
+      <script src="landing/js/foundation/foundation.clearing.js"></script>
+				   
+      <script src="landing/js/foundation/foundation.cookie.js"></script>
+    -->			   
+      <script src="landing/js/foundation/foundation.dropdown.js"></script>
+				   
+      <script src="landing/js/foundation/foundation.forms.js"></script>
+      <!--		   
+      <script src="landing/js/foundation/foundation.joyride.js"></script>
+				   
+      <script src="landing/js/foundation/foundation.magellan.js"></script>
+				   
+      <script src="landing/js/foundation/foundation.orbit.js"></script>
+    -->			   
+      <script src="landing/js/foundation/foundation.placeholder.js"></script>
+<!--			   
+      <script src="landing/js/foundation/foundation.reveal.js"></script>
+				   
+      <script src="landing/js/foundation/foundation.section.js"></script>
+				   
+      <script src="landing/js/foundation/foundation.tooltips.js"></script>
+-->				   
+      <script src="landing/js/foundation/foundation.topbar.js"></script>
+				   
       <script src="landing/js/jquery.form.js"></script> 
 
 
