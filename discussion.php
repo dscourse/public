@@ -136,9 +136,6 @@ display: inline;
 
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                             <li><a id="profileNav" href="profile.php?u=<?php echo $_SESSION['UserID']; ?>">Profile</a></li>
-
-                            <li><a id="helpNav" href="help.php">Help</a></li>
-
                             <li><a href="php/logout.php">Logout</a></li>
                         </ul>
                     </li>
