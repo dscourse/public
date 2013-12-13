@@ -12,27 +12,41 @@ For developers who would like to contribute to dscourse here is some information
 
 
 **admin**: Very basic administrative layer that allows dscourse site administrators to complete CRUD operations. 
+
 **assets**: Folder for add ons and other scripts that may be put on the main dscourse fuctionality
+
 **css**: Main css files, dscourse specific css is under *style.css*.
+
 **fonts**: Dscourse relies on typicon and entypo web fonts which are stored here. 
+
 **img**: Image files 
+
 **js**: All javascript code including libraries and the main dscourse js code in dscourse.js file.   
+
 **landing**: Files used in the info.php landing page. This theme is purchased for a single use license; DO NOT use these files unless you bought the theme (http://themeforest.net/item/appster-video-app-software-landing-page/4623611). 
+
 **mail**: Files required for the mailing functionalities in the discussion. 
+
 **php**: All relevant php scripts
+
 **uploads**: Folder for uploads that include user and course images. 
 
 ###Main files
 
 **/php/data.php**: Php scripts for ajax calls
+
 **php/dscourse.class.php**: Main dscourse php functions in a class. 
+
 **/js/dscourse.js**: The most important file in the system, includes majority of the dscourse javascript code. 
 
 
 ###Libraries and other Code
 Dscourse uses the following:
+
 **Jquery**: http://jquery.com/
+
 **Jquery UI**: http://jqueryui.com/ 
+
 **animate.cs**: https://daneden.me/animate/
 
 ###Security
