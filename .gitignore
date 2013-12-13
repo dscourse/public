@@ -14,5 +14,5 @@ genusers.php
 mail_init.php
 try.php
 test.php
-uploads/userImg
-uploads/courseImg
+uploads/userImg/
+uploads/courseImg/
