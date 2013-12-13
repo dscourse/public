@@ -5,7 +5,7 @@ date_default_timezone_set('UTC');
 
 	if(!empty($_SESSION['LoggedIn']) && !empty($_SESSION['Username']))  
 	{  
-	     header('Location: home.php');   // If the user is actually logged in sends the user to home page
+	     header('Location: index.php');   // If the user is actually logged in sends the user to home page
 	} 
 ?>
 <!DOCTYPE html>
@@ -70,10 +70,11 @@ if (isset($_POST['emailRecover']))
 		        {  
 		             
 				    //send email
-				      $headers .= "Content-type: text/html\r\n"; 
-					  $email = $_POST['emailRecover'] ;
+					  $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+
+					  $email = $_POST['emailRecover'];
 					  $subject = "Reset your Dscourse password" ;
-					  $message = " You requested your password to be changed. If you forgot your password click on the link below to set a new password. If this email was not sent by you, you don't need to take any action, your password is not reset until you click the link: <a href=\"http://dscourse.caneruguz.com/recover.php?code=".$code."&user=".$email."\" > Reset Password </a>. Mbr /> This link will expire in 24 hours.   ";
+					  $message = " You requested your password to be changed. If you forgot your password click on the link below to set a new password. If this email was not sent by you, you don't need to take any action, your password is not reset until you click the link: <a href=\"http://dscourse.org/recover.php?code=".$code."&user=".$email."\" > Reset Password </a>. <br /> This link will expire in 24 hours.   ";
 					  mail($email, "Subject: $subject",
 					  $message, "From: admin@dscourse.com", $headers);
 					  
@@ -131,20 +132,20 @@ if (isset($_POST['emailRecover']))
 	  	$user = $_GET['user'];
 	  	
 	  	// Check the link code with the database, if valid show the box to change password, if not throw error
-	  	$checkTimeQuery = mysql_query("SELECT * FROM `users` WHERE `userRecovery` = \"".$linkcode."\" ");  
+	  	$checkTimeQuery = mysql_query("SELECT * FROM `users` WHERE `userRecovery` = ".$linkcode." ");  
 		    
 		    if(mysql_num_rows($checkTimeQuery) == 1)  			
 	        { 	
 	        	//Check if link has expired 
 	        	$row = mysql_fetch_array($checkTimeQuery);
 	        	$currentTime = time();  
-	        	$diff = $currentTime - $row[14];
+	        	$diff = $currentTime - $row['userRecoveryTime'];
 	        	if ($diff < 86400) {													// Link expires in 24 hours = 86400 seconds
 		        	
 
 
 echo <<<EOT
-	  	  <div class="span4 offset4">
+	  	   <div class="span4 offset4 authForms"> 	
 	  	<div class="page-header">
 		    <h1>Create New Password </h1>
 		  </div>
@@ -153,9 +154,10 @@ echo <<<EOT
 <form method="post" action="recover.php" name="registerform" id="registerform">  
 <div id="passwordRegister_div"><label for="passwordRecover">Password: </label><input type="password" name="passwordRecover" id="passwordRecover" /></div>
 <div id="passwordRegister2_div"><label for="passwordRecover2">Re-EnterPassword: </label><input type="password" name="passwordRecover" id="passwordRecover" /></div>
-<input type="userEmail" name="userEmail" id="userEmail" value="$user" />
+<input type="hidden" name="userEmail" id="userEmail" value="$user" />
 <p><button id="PasswordSubmit" class="btn btn-success">Change Password</button></p>		
 </form>
+</div>
 </div>
 EOT;
       	
@@ -166,7 +168,7 @@ EOT;
 					echo '			    <h1>Recover Password </h1> 	';
 					echo '			  </div>			  			';
 					echo '				<div class="">';
-					echo '					<p> <h2> Error! </h2> Your link has expired. <a href="recover.php" >Use the form again</a> to send a new key.</p><p><a href="index.php"><i class="icon-arrow-left"></i> Back to the home page </a></p>';
+					echo '					 <h2> Error! </h2> <p>Your link has expired. $diff: '.$diff.' <a href="recover.php" >Use the form again</a> to send a new key.</p><p><a href="index.php"><i class="icon-arrow-left"></i> Back to the home page </a></p>';
 					echo '				</div>';
 		        	
 	        	}

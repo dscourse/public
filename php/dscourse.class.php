@@ -1,6 +1,6 @@
 <?php
 /*
- * Dscourse php functions
+ * Dscourse php functions that do not use the ajax calls. These are incorporated as methods under the Dscourse class which gets assigned on the php pages.  
  *
  */
 date_default_timezone_set('UTC');
@@ -10,219 +10,93 @@ class Dscourse {
 
 	}
 
+	/*
+	 *  Gets only user ID and names
+	 */	 
 	public function GetUserMini() {
 		global $pdo;
-		/*
-		 *  Gets only user ID and names
-		 */
-		//$userData = mysql_query("SELECT UserID, firstName, lastName, username, userPictureURL FROM users ORDER BY firstName ASC");
 		$userData = $pdo->query("SELECT UserID, firstName, lastName, username, userPictureURL FROM users ORDER BY firstName ASC");
 		// Get all the data from the users table
 		$users = $userData->fetchAll();
-		/*while ($r = mysql_fetch_assoc($userData)) {// Populate the rows for individual users
-			$users[] = $r;
-			// Add row to array
-		}*/
 		return $users;
 	}
 
-	///Obsolete???
-	public function GetUserNetworks($userID) {
-		/*
-		 *  Gets the list of networks the user belongs to
-		 */
-		$query = mysql_query("SELECT * FROM networks INNER JOIN networkUsers ON networks.networkID = networkUsers.networkID WHERE networkUsers.userID = '" . $userID . "'");
-		$results = array();
-
-		$i = 0;
-		while ($row = mysql_fetch_array($query)) :
-			array_push($results, $row);
-			$i++;
-		endwhile;
-
-		// Get public networks
-		$query2 = mysql_query("SELECT * FROM networks WHERE networkStatus = 'public' ");
-
-		$j = 0;
-		while ($row2 = mysql_fetch_array($query2)) :
-			array_push($results, $row2);
-			$j++;
-		endwhile;
-
-		return $results;
-	}
-	///Obsolete???
-	public function CheckNetworkAccess($userID, $nID) {
-		/*
-		 *  Checks to see if the current user can access the network. Returns the user role.
-		 */
-		$status = 'unset';
-
-		// Check if user is in network, set the user role
-		$query = mysql_query("SELECT * FROM networks INNER JOIN networkUsers ON networks.networkID = networkUsers.networkID WHERE networkUsers.userID = '" . $userID . "' AND networkUsers.networkID = '" . $nID . "' ");
-		$results = mysql_fetch_array($query);
-		if ($results['networkUserRole'] == 'owner') {
-			$status = 'owner';
-		} else if ($results['networkUserRole'] == 'member') {
-			$status = 'member';
-		} else {
-			// Check if network is public
-			$query2 = mysql_query("SELECT * FROM networks WHERE networkID = '" . $nID . "' ");
-			$results2 = mysql_fetch_array($query2);
-			if ($results2['networkStatus'] == 'public') {
-				$status = 'public';
-			} else {
-				$status = 'restricted';
-			}
-		}
-		return $status;
-	}
-	///Obsolete???
-	public function NetworkInfo($nID) {
-		/*
-		 *  Gets information about the network
-		 */
-		$query = mysql_query("SELECT * FROM networks WHERE networkID = '" . $nID . "'");
-		$results = mysql_fetch_array($query);
-		return $results;
-	}
-	
+	/*
+	 *  Gets users in the network with their user information
+	 */
 	public function GetUsers($cID) {
 		global $pdo;
-		/*
-		 *  Gets users in the network with their user information
-		 */
 		$users = $pdo->prepare("SELECT users.UserID, users.username, users.firstName, users.lastName FROM users INNER JOIN courseRoles ON users.UserID = courseRoles.userID WHERE courseRoles.courseID = :cID");
 		$users->execute(array(':cID'=>$cID));
 		$results = $users->fetchAll();
 		return $results;
 	}
-	///DUPLICATE OF GetUsers()
+
+	/*
+	 *  Gets all users in the system
+	 */
 	public function AllUsers() {
 		global $pdo;
-		/*
-		 *  Gets all users in the system
-		 */
 		$users = $pdo->query("SELECT * FROM users"); 
-		//$query = mysql_query("SELECT * FROM users");
-		//$results = array();
-
 		$results = $users->fetchAll();
-		/*
-		$i = 0;
-		while ($row = mysql_fetch_array($query)) :
-			array_push($results, $row);
-			$i++;
-		endwhile;
-		*/
 		return $results;
 	}
-	///Obsolete???
-	public function NetworkCourses($nID) {
-		/*
-		 *  Gets users in the network with their user information
-		 */
 
-		$query = mysql_query("SELECT * FROM networkCourses INNER JOIN courses ON networkCourses.courseID = courses.courseID WHERE networkCourses.networkID = '" . $nID . "'");
-		$results = array();
-
-		$i = 0;
-		while ($row = mysql_fetch_array($query)) :
-			array_push($results, $row);
-			$i++;
-		endwhile;
-
-		return $results;
-	}
-	
+	/*
+	 *  Gets all courses
+	 */	
 	public function AllCourses() {
 		global $pdo;
-		/*
-		 *  Gets all courses
-		 */
 		$courses = $pdo->query("SELECT * FROM courses"); 
-		//$query = mysql_query("SELECT * FROM courses ");
-		//$results = array();
 		$results = $courses->fetchAll();
-		/*
-		$i = 0;
-		while ($row = mysql_fetch_array($query)) :
-			array_push($results, $row);
-			$i++;
-		endwhile;
-		*/
 		return $results;
 	}
-	///Obsolete???
-	public function IsUserInNetwork($nID, $userID) {
-		/*
-		 *  Gets users in the network with their user information
-		 */
-		$query = mysql_query("SELECT * FROM networkUsers WHERE networkID = '" . $nID . "' AND userID = '" . $userID . "' ");
-		//$results = mysql_fetch_array($query);
-		$num_rows = mysql_num_rows($query);
-		if ($num_rows > 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
+	/*
+	 *  Gets all the information about the user
+	 */
 	public function UserInfo($uID) {
 		global $pdo;
-		/*
-		 *  Gets all the information about the user
-		 */
-		//$query = mysql_query("SELECT * FROM users WHERE UserID = '" . $uID . "'");
 		$stmt = $pdo->prepare("SELECT * FROM users WHERE UserID = :uID");
 		$stmt->execute(array(':uID'=>$uID));
-		//$results = mysql_fetch_array($query);
 		$results = $stmt->fetch();
 		return $results;
 	}
 
+	/*
+	 *  Gets all the information about the course
+	 */
 	public function CourseInfo($cID) {
 		global $pdo;
-		/*
-		 *  Gets all the information about the course
-		 */
 		 $courseInfo = $pdo->prepare("SELECT * FROM courses WHERE courseID = :cID");
 		 $courseInfo->execute(array(':cID'=>$cID));
-		//$query = mysql_query("SELECT * FROM courses WHERE courseID = '" . $cID . "'");
-		//$results = mysql_fetch_array($query);
 		$results = $courseInfo->fetch();
 		return $results;
 	}
 
+	/*
+	 *  Gets all the information about the course
+	 */
 	public function DiscussionInfo($discID) {
 		global $pdo;
-		/*
-		 *  Gets all the information about the course
-		 */
 		$discInfo = $pdo->prepare("SELECT * FROM discussions INNER JOIN courseDiscussions ON discussions.dID = courseDiscussions.discussionID WHERE courseDiscussions.discussionID = :discID"); 
 		$discInfo->execute(array(':discID'=>$discID));
-		//$query = mysql_query("SELECT * FROM discussions INNER JOIN courseDiscussions ON discussions.dID = courseDiscussions.discussionID WHERE courseDiscussions.discussionID = '" . $discID . "'");
-		//$results = mysql_fetch_array($query);
 		$results = $discInfo->fetch();
 		return $results;
 	}
 
+	/*
+	 *  Checks to see the status of the discussion.
+	 */
 	public function DiscussionStatus($discID) {
 		global $pdo;
-		/*
-		 *  Checks to see the status of the discussion.
-		 */
 		$discStatus = $pdo->prepare("SELECT * FROM discussions WHERE dID = :discID");
-		//$query = mysql_query("SELECT * FROM discussions WHERE dID = '" . $discID . "'");
 		$discStatus->execute(array(':discID'=>$discID));
-		//$results = mysql_fetch_array($query);
 		$results = $discStatus->fetch();
-		
 		$startDate = strtotime($results['dStartDate']);
 		$openDate = strtotime($results['dOpenDate']);
 		$endDate = strtotime($results['dEndDate']);
 		$now = strtotime(date("Y-m-d H:i:s"));
-
 		$dStatus = 'closed';
 		if ($now <= $endDate && $now >= $startDate) {
 			if ($now <= $openDate) {
@@ -233,18 +107,16 @@ class Dscourse {
 		} else {
 			$dStatus = 'closed';
 		}
-
 		return $dStatus;
 	}
 
+	/*
+	 *  Gets users in the network with their user information
+	 */
 	public function CourseRoles($cID) {
 		global $pdo;
-		/*
-		*  Gets users in the network with their user information
-		*/
 		$cRoles = $pdo->prepare("SELECT * FROM courseRoles INNER JOIN users ON courseRoles.userID = users.UserID WHERE courseRoles.courseID = :cID");
-		$cRoles->execute(array(':cID'=>$cID));
-		
+		$cRoles->execute(array(':cID'=>$cID));		
 		$results = $cRoles->fetchAll();
 		//This is kind of a hack, but works
 		$set = array();
@@ -259,82 +131,49 @@ class Dscourse {
 		return $results;
 	}
 	
-	///Obsolete???
-	public function CourseNetworks($cID) {
-		/*
-		 *  Gets the networks this course belongs to.
-		 */
-		$query = mysql_query("SELECT * FROM networkCourses INNER JOIN networks ON networkCourses.networkID = networks.networkID WHERE networkCourses.courseID = '" . $cID . "'");
-		$results = array();
-
-		$i = 0;
-		while ($row = mysql_fetch_array($query)) :
-			array_push($results, $row);
-			$i++;
-		endwhile;
-
-		return $results;
-	}
-
+	/*
+	 *  Gets the posts from this discussion.
+	 */
 	public function GetDiscPosts($discID) {
 		global $pdo;
-		/*
-		 *  Gets the posts from this discussion.
-		 */
 		 $dPosts = $pdo->prepare("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = :discID");
-		//$postData = mysql_query("SELECT * FROM discussionPosts INNER JOIN posts ON discussionPosts.postID = posts.postID WHERE discussionPosts.discussionID = '".$discID."'");
 		$dPosts->execute(array(':discID'=>$discID));
-		//$num_rows = mysql_num_rows($postData);
 		$posts = $dPosts->fetchAll();
-		/*		
-		$posts = array(); 	
-		if($num_rows > 0){
-			$i = 0;
-			while($row = mysql_fetch_array($postData)) :
-				array_push($posts, $row);  // Add to the array of posts
-				$i++;
-			endwhile;
-		}
-		 */ 
 		return $posts; 
 	}
 
+	/*
+	 *  Gets the course role of the user for specific course
+	 */
 	public function UserCourseRole($cID, $userID) {
 		global $pdo;
-		/*
-		 *  Gets the course role of the user for specific course
-		 */
 		$stmt= $pdo->prepare("SELECT userRole FROM courseRoles WHERE courseID = :cID AND userID = :userID");
 		$stmt->execute(array(':cID'=>$cID,':userID'=>$userID));
-		//$query = mysql_query("SELECT userRole FROM courseRoles WHERE courseID = '$cID' AND userID = '$userID'");
-		//$results = mysql_fetch_array($query);
 		$results = $stmt->fetch();
 		return $results;
 	}
 
+	/*
+	 *  Checks to see if this course should be shown to the current user in different parts of the site (i.e. as listing in network.php or individual course page)
+	 */
 	public function LoadCourse($cID, $userID) {
 		global $pdo;
-		/*
-		 *  Checks to see if this course should be shown to the current user in different parts of the site (i.e. as listing in network.php or individual course page)
-		 */
-
 		$load = false;
 		// default is to not show it
-
 		$courseStatus = $this -> UserCourseRole($cID, $userID);
 		// See if this user is in the course
 		$courseInfo = $this -> CourseInfo($cID);
 		if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor' || $courseStatus[0] =='Viewer') {// check if this user is a member
 			$load = true;
 		}
-
 		return $load;
 	}
-	
-	//Fetch a list of all discussions for a given user, sort them by how recently they were viewed
+
+	/*
+	 *  Fetch a list of all discussions for a given user, sort them by how recently they were viewed
+	 */
 	public function GetUserCourses($uID, $limit=8){
 		global $pdo;
-		
 		$discussions = $pdo->prepare("SELECT * FROM courseRoles INNER JOIN courses ON courseRoles.courseID=courses.courseID WHERE userID = :uID AND courseRoles.userRole != 'Blocked'");
 		$discussions->execute(array(':uID'=>$uID));
 		$filtered = array();
@@ -356,10 +195,12 @@ class Dscourse {
 			$filtered = array_slice($filtered,0,$limit);
 		return $filtered;
 	}
-	
+
+	/*
+	 *  Get a list of discussions and courses that are shown in the index.php page.
+	 */	
 	public function GetIndexInfo($uID, $cLimit=-1, $dLimit=-1){
 		global $pdo;
-		
 		$cList = array();
 		$dList = array();
 		//Get a list of all the user's courses
@@ -405,137 +246,83 @@ class Dscourse {
 		return array('courseList'=>$cList,'discList'=>$dList);
 	}
 
+	/*
+	 *  Gets the list of discussions in this course
+	 */
 	public function GetCourseDiscussions($cID) {
 		global $pdo;
-		/*
-		 *  Gets the list of discussions in this course
-		 */
 		 $stmt = $pdo->prepare("SELECT * FROM courseDiscussions INNER JOIN discussions ON courseDiscussions.discussionID = discussions.dID WHERE courseDiscussions.courseID = :cID");
 		 $stmt->execute(array(':cID'=>$cID));
-		 
-		//$query = mysql_query("SELECT * FROM courseDiscussions INNER JOIN discussions ON courseDiscussions.discussionID = discussions.dID WHERE courseDiscussions.courseID = '" . $cID . "'");
-		//$results = array();
 		$results = $stmt->fetchAll();
-		/*
-		$i = 0;
-		while ($row = mysql_fetch_array($query)) :
-			array_push($results, $row);
-			$i++;
-		endwhile;
-		*/
 		return $results;
 	}
 
+	/*
+	 *  Gets the list of discussions in this course
+	 */
 	public function GetDiscussionCourses($discID) {
 		global $pdo;
-		/*
-		 *  Gets the list of discussions in this course
-		 */
 		$stmt = $pdo->prepare("SELECT * FROM courseDiscussions INNER JOIN courses ON courseDiscussions.courseID = courses.courseID WHERE courseDiscussions.discussionID = :discID");
 		$stmt->execute(array(':discID'=>$discID));
-		//$query = mysql_query("SELECT * FROM courseDiscussions INNER JOIN courses ON courseDiscussions.courseID = courses.courseID WHERE courseDiscussions.discussionID = '" . $discID . "'");
-		//$results = array();
 		$results = $stmt->fetchAll();
-		/*
-		$i = 0;
-		while ($row = mysql_fetch_array($query)) :
-			array_push($results, $row);
-			$i++;
-		endwhile;
-		*/
 		return $results;
 	}
 
+	/*
+	 *  Checks to see whether discussion should be loaded based on user status and discussion status
+	 */
 	public function LoadDiscussion($discID, $userID) {
 		global $pdo;
-		/*
-		 *  Checks to see whether discussion should be loaded based on user status and discussion status
-		 */
 		$load = false;
 		// Default status is to not load the discussion
-
 		$stmt = $pdo->prepare("SELECT * FROM courseDiscussions  WHERE discussionID = :discID");
-		//$query = mysql_query("SELECT * FROM courseDiscussions  WHERE discussionID = '" . $discID . "'");
 		$stmt->execute(array(':discID'=>$discID));
 		// Get courses this discussion belongs to
-
 		$i = 0;
-		//while ($row = mysql_fetch_array($query)) :// For each of these courses...
 		while ($row = $stmt->fetch()) :// For each of these courses...
 			$courseStatus = $this -> UserCourseRole($row['courseID'], $userID);
 			// See if this user is in the course
 			$courseInfo = $this -> CourseInfo($row['courseID']);
 			// Who does this course allow for viewing?
-			//$courseNetworks = $this->CourseNetworks($row['courseID']); 										// Which networks does this course belong to?
-			//$totalNetworks = count($courseNetworks); 														// Count networks for a loop later
 			if ($courseStatus[0] == 'Student' || $courseStatus[0] == 'TA' || $courseStatus[0] == 'Instructor' || $courseStatus[0] == 'Viewer' || $courseStatus[0] == 'Member') {// check if this user is a member
 				$load = true;
 			}
-			/*case "network":																				// If the course should only be viewed by network members
-			 for($j = 0; $j < $totalNetworks; $j++){
-			 if($this->IsUserInNetwork($courseNetworks[$j]['networkID'], $userID)) {				// Check if this user is in any of the networks the course belongs to
-			 $load = true;
-			 }
-			 if($courseNetworks[$j]['networkStatus'] == "public" ){
-			 $load = true;
-			 }
-			 }
-			 break;*/
-			/*	case "everyone" :
-			 // If this course can be viewed by everyone
-			 $load = true;
-			 // Just load everything
-			 break;
-			 }*/
 			$i++;
 		endwhile;
 
 		return $load;
 	}
 
+	/*
+	 *  Counts total number of posts in discussion
+	 */
 	public function CountPosts($discID) {
 		global $pdo;
-		/*
-		 *  Counts total number of posts in discussion
-		 */
-
 		$stmt = $pdo->prepare("SELECT COUNT(discussionPostID) FROM discussionPosts WHERE discussionID = :discID");
-		//$query = mysql_query("SELECT discussionPostID FROM discussionPosts WHERE discussionID = '" . $discID . "'");
 		$stmt->execute(array(':discID'=>$discID));
-		//$num_rows = mysql_num_rows($query);
 		$num_rows = $stmt->fetch();
 		return $num_rows[0];
-
 	}
 
+	/*
+	 *  Gets all course options
+	 */
 	public function LoadCourseOptions($cID) {
 		global $pdo;
-		/*
-		 *  Gets all course options
-		 */
 		 $ops = $pdo->prepare("SELECT * FROM options WHERE optionsType = 'course' AND optionsTypeID = :cID");
 		 $ops->execute(array(':cID'=>$cID));
-		//$query = mysql_query("SELECT * FROM options WHERE optionsType = 'course' AND optionsTypeID = '" . $cID . "'");
 		if (!$ops) {
 			return 'empty';
 		} else {
 			$results = $ops->fetchAll();
-			/*$results = array();
-			$i = 0;
-			while ($row = mysql_fetch_array($query)) :
-				array_push($results, $row);
-				$i++;
-			endwhile;
-			 * */
-			return $results;
+			$results;
 		}
 	}
 
+	/*
+	 *  Prints out the value of options. Needs array to include the option name as given
+	 */
 	public function OptionValue($array, $optionName, $attr = '') {
-		/*
-		 *  Prints out the value of options. Needs array to include the option name as given
-		 */
-		//if(!isset($attr)){ $attr = ''; };  // If attr is not set
 		$value = '';
 		$default = TRUE;
 		if (!empty($array)) {
@@ -594,91 +381,71 @@ class Dscourse {
 		return $value;
 	}
 
+	/*
+	 *  Returns message content
+	 */
 	public function Messages($m) {
-		/*
-		 *  Returns message content
-		 */
 		$message = array();
-		$message['icon'] = "N";
+		$message['icon'] = "N";  // icon characters: http://www.fonts2u.com/entypo.font
 		$message['color'] = "#333";
 		$message['error'] = "false";
 		switch ($m) {
 			case 1 :
 				$message['content'] = "Profile changes saved. ";
+				$message['icon'] = ".";
 				break;
 			case 2 :
 				$message['content'] = "Changes to the discussion were saved. ";
+				$message['icon'] = "9";
 				break;
 			case 3 : 
 				$message['content'] = "Course is created.";
-				$message['icon'] = "A";
-				$message['color'] = "#999";
-				$message['error'] = "true";
+				$message['icon'] = "l";
 				break;
 			case 4 :
 				$message['content'] = "You uploaded an invalid file please try again. ";
 				$message['color'] = "#999";
 				$message['error'] = "true";
-				break;
-			case 5 :
-				$message['content'] = "You were added to the network.";
-				break;
-			case 6 :
-				$message['content'] = "You are not part of that network.";
-				$message['icon'] = "A";
-				$message['color'] = "#999";
-				$message['error'] = "true";
-				break;
-			case 7 :
-				$message['content'] = "Network changes are saved.";
-				$message['icon'] = "A";
-				break;
-			case 8 :
-				$message['content'] = "Users were added to your network. ";
-				$message['icon'] = "A";
-				break;
-			case 9 :
-				$message['content'] = "You were just added to this network. ";
-				$message['icon'] = "Q";
+				$message['icon'] = "X";
 				break;
 			case 10 :
 				$message['content'] = "Course changes were saved ";
-				$message['icon'] = "Q";
+				$message['icon'] = "W";
 				break;
 			case 'e' :
 				$message['content'] = "There was an error reaching the database. Your changes were not saved.";
 				$message['color'] = "#999";
 				$message['error'] = "true";
+				$message['icon'] = "X";
 				break;
 			case 'd' :
 				$message['content'] = "Your discussion was added to this course.";
-				break;
-			case 11 :
-				$message['content'] = "Changes to the network were saved. ";
+				$message['icon'] = ":";
 				break;
 		}
 		return $message;
 	}
 
-	// Original PHP code by Chirp Internet: www.chirp.com.au
-	// Please acknowledge use of this code by including this header.
-	// http://www.the-art-of-web.com/php/truncate/
-
+	/*
+	 *  Truncates string
+	 */
 	function myTruncate($string, $limit, $break = ".", $pad = "...") {
+	// Original PHP code by Chirp Internet: http://www.the-art-of-web.com/php/truncate/
 		// return with no change if string is shorter than $limit
 		if (strlen($string) <= $limit)
 			return $string;
-
 		// is $break present between $limit and the end of the string?
 		if (false !== ($breakpoint = strpos($string, $break, $limit))) {
 			if ($breakpoint < strlen($string) - 1) {
 				$string = substr($string, 0, $breakpoint) . $pad;
 			}
 		}
-
 		return $string;
 	}
 
+	/*
+	 *  Checks permissions at entry to the site
+	 */
 	public function PreProcess($query, $isIndex = FALSE) {
 		global $pdo;
 		$query = ltrim($query, '/');
@@ -1015,55 +782,62 @@ class Dscourse {
 			$result = array_slice($result, 0, $limit);
 		return $result;
 	}
-	
-	public function GetRecentActivity($user = null, $length = 20){
-		global $pdo;
-		
-		if($user==null){
-			$user = ((isset($_SESSION['UserID']))?$_SESSION['UserID']:FALSE);
-			}
-		if($user==FALSE){
-			return -1;
-			}
-		
-		$actions = array();
-		
-		$courses = $pdo->prepare("SELECT courses.courseID, courses.courseName FROM courses INNER JOIN courseRoles on courses.courseID = courseRoles.courseID WHERE courseRoles.userRole != 'Blocked' AND courseRoles.userID = :user");
-		if(!$courses->execute(array(':user'=>$user)))
-			return -1;
-		// now we have an array of [courseID, courseName]
-		//prepare some statements for the big loop
-		$discs = $pdo->prepare("SELECT dID, dTitle, courseDiscussions.courseDiscussionTime FROM discussions INNER JOIN courseDiscussions on discussions.dID = courseDiscussions.discussionID WHERE courseDiscussions.courseID = :cID");
-		$last = $pdo->prepare("SELECT logTime from logs WHERE logAction = 'view' AND logUserID = :user AND logPageID = :dID ORDER BY logTime DESC LIMIT 1");
-		$posts = $pdo->prepare("SELECT postAuthorID, postMessage, postTime, users.firstName, postID, postType FROM posts INNER JOIN users ON posts.postAuthorID = users.userID WHERE postID IN (SELECT logActionID FROM logs INNER JOIN discussionPosts ON discussionPosts.postID = logs.logActionID WHERE logs.logAction = 'addPost' AND logs.logTime > :lastView AND logs.logPageID = :dID)");
-		while($row = $courses->fetch()){
-			$cID = $row['courseID'];
-			if(!$discs->execute(array(':cID'=>$cID)))
-				return -1;
-			while($d_row = $discs->fetch()){
-				$dID = $d_row['dID'];
-				//find out when the user last visited this disucssion
-				$last->execute(array(':user'=>$user,':dID'=>$dID));
-				$lastView = $last->fetch();
-				$lastView = $lastView['logTime'];
-				if(empty($lastView)){
-					$lastView = $d_row['courseDiscussionTime'];					
-				}
-				$posts->execute(array(':lastView'=>$lastView,':dID'=>$dID));
-				while($p_row = $posts->fetch()){
-					$path = "/discussion.php?c=".$cID."&d=".$dID."&p=".$p_row['postID'];
-					array_push($actions, array("action" => 'post',"actionTime" =>$p_row['postTime'], "actionType" =>$p_row['postType'], "context" =>'discussion', "contextLabel" =>$d_row['dTitle'] ,"contextID" =>$dID, "agentLabel" => $p_row['firstName'], "agentID" =>$p_row['postAuthorID'], "content" =>substr($p_row['postMessage'],0,120), "actionPath" =>$path)); 
-				}
-			}
-		}
-		usort($actions, function($a,$b){
-			return strtotime($b['actionTime']) - strtotime($a['actionTime']);
-		});
-		$actions = array_slice($actions,0,$length);
-		
-		return $actions;
-	}
 
+	/*
+	 *  This function is moved to data.php
+	 */	
+	// public function GetRecentActivity($user = null, $length = 20){
+// 		global $pdo;
+// 		
+// 		if($user==null){
+// 			$user = ((isset($_SESSION['UserID']))?$_SESSION['UserID']:FALSE);
+// 			}
+// 		if($user==FALSE){
+// 			return -1;
+// 			}
+// 		
+// 		$actions = array();
+// 		
+// 		$courses = $pdo->prepare("SELECT courses.courseID, courses.courseName FROM courses INNER JOIN courseRoles on courses.courseID = courseRoles.courseID WHERE courseRoles.userRole != 'Blocked' AND courseRoles.userID = :user");
+// 		if(!$courses->execute(array(':user'=>$user)))
+// 			return -1;
+// 		// now we have an array of [courseID, courseName]
+// 		//prepare some statements for the big loop
+// 		$discs = $pdo->prepare("SELECT dID, dTitle, courseDiscussions.courseDiscussionTime FROM discussions INNER JOIN courseDiscussions on discussions.dID = courseDiscussions.discussionID WHERE courseDiscussions.courseID = :cID");
+// 		$last = $pdo->prepare("SELECT logTime from logs WHERE logAction = 'view' AND logUserID = :user AND logPageID = :dID ORDER BY logTime DESC LIMIT 1");
+// 		$posts = $pdo->prepare("SELECT postAuthorID, postMessage, postTime, users.firstName, postID, postType FROM posts INNER JOIN users ON posts.postAuthorID = users.userID WHERE postID IN (SELECT logActionID FROM logs INNER JOIN discussionPosts ON discussionPosts.postID = logs.logActionID WHERE logs.logAction = 'addPost' AND logs.logTime > :lastView AND logs.logPageID = :dID) ");
+// 		while($row = $courses->fetch()){
+// 			$cID = $row['courseID'];
+// 			if(!$discs->execute(array(':cID'=>$cID)))
+// 				return -1;
+// 			while($d_row = $discs->fetch()){
+// 				$dID = $d_row['dID'];
+// 				//find out when the user last visited this disucssion
+// 				$last->execute(array(':user'=>$user,':dID'=>$dID));
+// 				$lastView = $last->fetch();
+// 				$lastView = $lastView['logTime'];
+// 				if(empty($lastView)){
+// 					$lastView = $d_row['courseDiscussionTime'];					
+// 				}
+// 				$posts->execute(array(':lastView'=>$lastView,':dID'=>$dID));
+// 				while($p_row = $posts->fetch()){
+// 					$path = "/discussion.php?c=".$cID."&d=".$dID."&p=".$p_row['postID'];
+// 					array_push($actions, array("action" => 'post',"actionTime" =>$p_row['postTime'], "actionType" =>$p_row['postType'], "context" =>'discussion', "contextLabel" =>$d_row['dTitle'] ,"contextID" =>$dID, "agentLabel" => $p_row['firstName'], "agentID" =>$p_row['postAuthorID'], "content" =>substr($p_row['postMessage'],0,120), "actionPath" =>$path)); 
+// 				}
+// 			}
+// 		}
+// 		usort($actions, function($a,$b){
+// 			return strtotime($b['actionTime']) - strtotime($a['actionTime']);
+// 		});
+// 		$actions = array_slice($actions,0,$length);
+// 		
+// 		return $actions;
+// 	}
+
+
+	/*
+	 *  Get the last time the logged in user viewed a discussion
+	 */
 	public function GetLastView($disc, $user){
 		global $pdo;
 		
@@ -1075,7 +849,10 @@ class Dscourse {
 		}
 		return $result['logTime'];
 	}
-	
+
+	/*
+	 *  Load user's settings for notifications 
+	 */	
 	public function GetNotificationSettings($uID){
 		global $pdo;
 		

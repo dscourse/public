@@ -246,7 +246,30 @@ Explore the main features of Dscourse that will help your discussion flow. </p>
             <!-- Horizontal Rule -->
             <hr>
             <!-- End Feature 5 -->
-
+            <!-- Feature 6 -->
+            <div class="large-4 columns description">
+              <h2>Email Notifications </h2>
+              <p>With dscourse you can get email notifications in your inbox when specific types of replies are made to your box or someone mentions you in a post with preceding @ sign. Notifications are opt in and you can change your settings any time.  </p>
+            </div>
+            <div class="large-8 columns">
+              <img src="img/shot8.png" class="borderimg">
+              </div>
+            <hr>
+            <!-- End Feature 6 --> 
+            <!-- Feature 7 -->
+            <!-- Large Image -->
+            <div class="large-8 columns">
+              <img src="img/shot9.png" class="borderimg">
+            </div>
+            <!-- Side Text -->
+            <div class="large-4 columns description">
+              <h2>Shiva Tools </h2>
+              <p class="description"> Dscourse integrates several of the SHIVA tools. You can attach documents, web pages, videos, create drawings and charts, as well as add maps. All features come with annotation tools, even the video. Check out more on the <a href="http://shiva.virginia.edu/"> SHIVA website</a>. </p>
+            </div>
+            <!-- Horizontal Rule -->
+            <hr>
+            <!-- End Feature 7 -->
+            
           </div>
           <!-- End Row -->
         </div>
@@ -258,7 +281,7 @@ Explore the main features of Dscourse that will help your discussion flow. </p>
               <h2 style="margin-top: 20px; ">Want to learn more? </h2>
               <p>
                 <b>Sign up now and test it yourself. </b>
-                Dscourse is open to interested parties to try out the software and use in their class or project. Please keep in mind that Dscourse is not a commercial product and does not provide any official support. If you have questions or comments however you will be able to use our support forums. 
+                Dscourse is open to interested parties to try out the software and use in their class or project. If you have questions or comments you will be able to use our support forums. 
               </p>
               <!-- Button -->
               <a href="http://dscourse.org/login.php" class=" button">Try it now!</a>

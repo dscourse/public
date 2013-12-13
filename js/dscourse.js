@@ -237,7 +237,7 @@ function Dscourse(lti) {
         }
     });
 
-    $('#text').live('keyup', function() {
+    $('#text').on('keyup', function() {
         var value = $('#text').val();
         var charLength = value.length;
         $('#charCount').html(charLength);
@@ -1181,7 +1181,7 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
         */
         var discID = $('#dIDhidden').val();
         var dStatus = main.DiscDateStatus(discID);
-        var postID, participate; 
+        var postID, participate, fromId; 
             if (dStatus != 'closed') {
                     participate = (settings.status=="OK")?true:false; 
                     // Check if participate value if anyone or network          
@@ -1197,7 +1197,10 @@ Dscourse.prototype.ListDiscussionPosts = function(dStatus, userRole, discID)// V
                             'left' : '30%'
                         });
                         $('.threadText').removeClass('highlight');
-                        postID = "EDIT|||"+$(this).parent().parent().attr('level');
+                        
+                        fromId = $(this).parent().parent().parent().attr('level'); 
+                        postID =  "EDIT|||"+$(this).parent().parent().attr('level')+'|||'+fromId;
+                        
                         if (postQuote != '') {
                             $('#highlightDirection').show();
                             $('#highlightShow').show().html(postQuote);
@@ -1350,8 +1353,10 @@ Dscourse.prototype.AddPost = function() {
     };
     
      if(/EDIT/.test(postFromId)){
+     	console.log('postfromID value: ' + postFromId);
         main.EditPost({
             postID: postFromId.split('|||')[1],
+            postFromId : postFromId.split('|||')[2],
             postAuthorId : postAuthorId,
             postMessage : postMessage.replace('\'', '\\\''),
             postType : postType,
@@ -1359,12 +1364,10 @@ Dscourse.prototype.AddPost = function() {
             postMedia : postMedia,
             postMediaType : main.postMediaType,
             postContext : postContext 
-        }, currentDisc);        
-    }
-    
-    // run Ajax to save the post object
-    //console.log(post);
-    $.ajax({
+        }, currentDisc);       
+    } else {
+    // if the post is not edit then save new. 
+		$.ajax({
         type : "POST",
         url : "php/data.php",
         data : {
@@ -1419,7 +1422,13 @@ Dscourse.prototype.AddPost = function() {
             main.AddLog('discussion',currentDisc,'addPost','','Error: Dscourse Log: the connection to data.php failed. ');
             //console.log("Dscourse Log: the connection to data.php failed.");
         }
-    });
+    });   
+    
+    
+    }
+    
+    // run Ajax to save the post object
+ 
     main.init = false;
 }
 
@@ -1635,6 +1644,7 @@ Dscourse.prototype.DrawTimeline = function()// Draw the timeline.
         slide : function(event, ui) {
             var date = main.GetUniformDate(ui.value);
             date = main.ToTimestamp(date);
+	    date = main.FormattedDate(date); 
             $("#amount").val(date);
             $('.threadText').each(function(index) {
                 var threadID = $(this).attr('time');
@@ -1654,7 +1664,9 @@ Dscourse.prototype.DrawTimeline = function()// Draw the timeline.
 
     // Show the value on the top div for reference.
     var initialDate = (main.ToTimestamp(main.GetUniformDate(main.timelineMax)));
-    $("#amount").val(initialDate);
+    	initialDate = main.FormattedDate(initialDate); 
+
+	$("#amount").val(initialDate);
 
     var j, d;
     for ( j = 0; j < main.data.posts.length; j++) {// Go through all the posts
@@ -2623,14 +2635,64 @@ Dscourse.prototype.scatter = function (start, stop, qty){
 
 Dscourse.prototype.EditPost= function(post, cDisc){
     var main = this;
-    $.post('php/data.php',{action:'editPost',post:post}, function(pID){
-        var oldPost = main.data.posts.filter(function(a){return a.postID == pID})[0];
-        var keys = Object.keys(post);
-        for(var i=0; i<keys.length; i++){
-            oldPost[keys[i]] = post[keys[i]];
+//     $.post('php/data.php',{action:'editPost',post:post}, function(pID){
+// console.log('hi---'); 
+//         var oldPost = main.data.posts.filter(function(a){return a.postID == pID})[0];
+//         var keys = Object.keys(post);
+//         for(var i=0; i<keys.length; i++){
+//             oldPost[keys[i]] = post[keys[i]];
+//         }
+//         main.SingleDiscussion(cDisc);
+//         main.DiscResize();
+//         main.VerticalHeatmap();
+//     });
+ 
+     $.ajax({// Add user to the database with php.
+        type : "POST",
+        url : "php/data.php",
+        data : {
+            action : 'editPost',
+            post : post
+        },
+        success : function(pID) { 
+	        for (var j = 0; j < main.data.posts.length; j++) {  // Go through all the posts
+        			var o = main.data.posts[j]; 
+        			if(o.postID == post.postID){
+        				        console.log('========================================');
+        				        console.log(o);
+        				        console.log(post);
+        				        o.postFromId		= post.postFromId,
+								o.postAuthorId		= post.postAuthorId,
+								o.postMessage		= post.postMessage,
+								o.postType			= post.postType,
+								o.postSelection		= post.postSelection,
+								o.postMedia			= post.postMedia,
+								o.postMediaType		= post.postMediaType,
+								o.postContext		= post.postContext
+        			}
+        	}
+        
+        
+// 			var oldPost = main.data.posts.filter(function(a){return a.postID == pID})[0];
+// 			var keys = Object.keys(post);
+// 						console.log(oldPost); 
+// 
+// 			for(var i=0; i<keys.length; i++){
+// 				oldPost[keys[i]] = post[keys[i]];
+// 			}
+ 
+            $('.levelWrapper[level="0"]').html('');
+		
+			main.SingleDiscussion(cDisc);
+			main.DiscResize();
+			main.VerticalHeatmap();
+            main.AddLog('discussion',cDisc,'editPost',pID,' ') // Add Log
+        },
+        error : function(xhr, status) {// If there was an error
+            console.log('There was an error talking to data.php');
+            console.log(xhr);
+            console.log(status);
         }
-        main.SingleDiscussion(cDisc);
-        main.DiscResize();
-        main.VerticalHeatmap();
-    });
+    });   
+    
 }

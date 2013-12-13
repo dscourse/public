@@ -1,0 +1,79 @@
+
+
+---------------------------------------------------------------
+HTTP_HOST = dscourse.org
+HTTP_CONNECTION = keep-alive
+HTTP_ACCEPT = text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+HTTP_ORIGIN = https://collab.itc.virginia.edu
+HTTP_USER_AGENT = Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36
+HTTP_ACCEPT_ENCODING = gzip,deflate,sdch
+HTTP_ACCEPT_LANGUAGE = en-US,en;q=0.8
+HTTP_COOKIE = userCookieDscourse=12; PHPSESSID=euspc12damjrepahl0pckjae44
+
+context_id=623cabef-35a9-41f0-9b34-4eeb0b92ac01&context_label=LTI+Test+3&context_title=LTI+Test+3&ext_basiclti_submit=Press+to+continue+to+external+tool.&ext_lms=sakai-2.9.1&ext_sakai_eid=cu5bn&ext_sakai_server=https%3A%2F%2Fcollab.itc.virginia.edu&ext_sakai_serverid=sakai16&ext_sakai_session=bc3e702e414080d4f44457b34949adc72de571db4383192f36b12b01fe1be811423f3572b8148e21&launch_presentation_css_url=https%3A%2F%2Fcollab.itc.virginia.edu%2Flibrary%2Fskin%2Fdefault%2Ftool.css&launch_presentation_locale=en_US&lis_person_contact_email_primary=cu5bn%40Virginia.EDU&lis_person_name_family=Uguz&lis_person_name_full=Caner+Uguz&lis_person_name_given=Caner&lis_person_sourcedid=cu5bn&lti_message_type=basic-lti-launch-request&lti_version=LTI-1p0&oauth_callback=about%3Ablank&oauth_consumer_key=key&oauth_nonce=3673942594581614&oauth_signature=PyKnRlFjBXZZW2yS4ue%2BsB%2FsK8U%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1383528604&oauth_version=1.0&resource_link_description=DS2&resource_link_id=44b4d69c-fbb3-43e7-a660-4cd748ae3233&resource_link_title=DS2&roles=Instructor&tool_consumer_info_product_family_code=2.9.1&tool_consumer_info_version=2.9.1&user_id=4cace1ae-fef6-46f1-84db-241c7221f94c
+
+---------------------------------------------------------------
+HTTP_HOST = dscourse.org
+HTTP_CONNECTION = keep-alive
+HTTP_ACCEPT = text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+HTTP_ORIGIN = https://collab.itc.virginia.edu
+HTTP_USER_AGENT = Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36
+HTTP_ACCEPT_ENCODING = gzip,deflate,sdch
+HTTP_ACCEPT_LANGUAGE = en-US,en;q=0.8
+HTTP_COOKIE = userCookieDscourse=12; PHPSESSID=euspc12damjrepahl0pckjae44
+
+context_id=623cabef-35a9-41f0-9b34-4eeb0b92ac01&context_label=LTI+Test+3&context_title=LTI+Test+3&ext_basiclti_submit=Press+to+continue+to+external+tool.&ext_lms=sakai-2.9.1&ext_sakai_eid=cu5bn&ext_sakai_server=https%3A%2F%2Fcollab.itc.virginia.edu&ext_sakai_serverid=sakai16&ext_sakai_session=bc3e702e414080d4f44457b34949adc72de571db4383192f36b12b01fe1be811423f3572b8148e21&launch_presentation_css_url=https%3A%2F%2Fcollab.itc.virginia.edu%2Flibrary%2Fskin%2Fdefault%2Ftool.css&launch_presentation_locale=en_US&lis_person_contact_email_primary=cu5bn%40Virginia.EDU&lis_person_name_family=Uguz&lis_person_name_full=Caner+Uguz&lis_person_name_given=Caner&lis_person_sourcedid=cu5bn&lti_message_type=basic-lti-launch-request&lti_version=LTI-1p0&oauth_callback=about%3Ablank&oauth_consumer_key=key&oauth_nonce=3673966656584115&oauth_signature=U83i%2FyKwsLAVtVdzrD%2F27hA7EWo%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1383528628&oauth_version=1.0&resource_link_id=097f403f-3673-4f4d-b670-ed1776f66d7d&resource_link_title=Dscourse&roles=Instructor&tool_consumer_info_product_family_code=2.9.1&tool_consumer_info_version=2.9.1&user_id=4cace1ae-fef6-46f1-84db-241c7221f94c
+
+---------------------------------------------------------------
+HTTP_HOST = dscourse.org
+HTTP_USER_AGENT = Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0
+HTTP_ACCEPT = text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+HTTP_ACCEPT_LANGUAGE = en-US,en;q=0.5
+HTTP_ACCEPT_ENCODING = gzip, deflate
+HTTP_CONNECTION = keep-alive
+
+context_id=623cabef-35a9-41f0-9b34-4eeb0b92ac01&context_label=LTI+Test+3&context_title=LTI+Test+3&ext_basiclti_submit=Press+to+continue+to+external+tool.&ext_lms=sakai-2.9.1&ext_sakai_eid=shc7pw&ext_sakai_server=https%3A%2F%2Fcollab.itc.virginia.edu&ext_sakai_serverid=sakai18&ext_sakai_session=9f5eeb5b358f2691de2a0d076682b431b201375a90a16ac5031062ef1339e1b2485cd23d1b84cc10&launch_presentation_css_url=https%3A%2F%2Fcollab.itc.virginia.edu%2Flibrary%2Fskin%2Fdefault%2Ftool.css&launch_presentation_locale=en_US&lis_person_contact_email_primary=shc7pw%40Virginia.EDU&lis_person_name_family=Chrisinger&lis_person_name_full=Sam+Chrisinger&lis_person_name_given=Sam&lis_person_sourcedid=shc7pw&lti_message_type=basic-lti-launch-request&lti_version=LTI-1p0&oauth_callback=about%3Ablank&oauth_consumer_key=key&oauth_nonce=1270106953046740&oauth_signature=5YNVW9Sha0xIMLk6Ekv6nRX5Gqk%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1385911302&oauth_version=1.0&resource_link_id=097f403f-3673-4f4d-b670-ed1776f66d7d&resource_link_title=Dscourse&roles=Instructor&tool_consumer_info_product_family_code=2.9.1&tool_consumer_info_version=2.9.1&user_id=68871b5e-736f-4eb2-894c-ea05af96061f
+
+---------------------------------------------------------------
+HTTP_HOST = dscourse.org
+HTTP_USER_AGENT = Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0
+HTTP_ACCEPT = text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+HTTP_ACCEPT_LANGUAGE = en-US,en;q=0.5
+HTTP_ACCEPT_ENCODING = gzip, deflate
+HTTP_COOKIE = PHPSESSID=347dpk83tld8imfjg04o5a7up4
+HTTP_CONNECTION = keep-alive
+
+context_id=623cabef-35a9-41f0-9b34-4eeb0b92ac01&context_label=LTI+Test+3&context_title=LTI+Test+3&ext_basiclti_submit=Press+to+continue+to+external+tool.&ext_lms=sakai-2.9.1&ext_sakai_eid=shc7pw&ext_sakai_server=https%3A%2F%2Fcollab.itc.virginia.edu&ext_sakai_serverid=sakai18&ext_sakai_session=9f5eeb5b358f2691de2a0d076682b431b201375a90a16ac5031062ef1339e1b2485cd23d1b84cc10&launch_presentation_css_url=https%3A%2F%2Fcollab.itc.virginia.edu%2Flibrary%2Fskin%2Fdefault%2Ftool.css&launch_presentation_locale=en_US&lis_person_contact_email_primary=shc7pw%40Virginia.EDU&lis_person_name_family=Chrisinger&lis_person_name_full=Sam+Chrisinger&lis_person_name_given=Sam&lis_person_sourcedid=shc7pw&lti_message_type=basic-lti-launch-request&lti_version=LTI-1p0&oauth_callback=about%3Ablank&oauth_consumer_key=key&oauth_nonce=1270120806646558&oauth_signature=IWuaBgjnnn1PNd5c9wH2o4vXYNc%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1385911315&oauth_version=1.0&resource_link_description=DS2&resource_link_id=44b4d69c-fbb3-43e7-a660-4cd748ae3233&resource_link_title=DS2&roles=Instructor&tool_consumer_info_product_family_code=2.9.1&tool_consumer_info_version=2.9.1&user_id=68871b5e-736f-4eb2-894c-ea05af96061f
+
+---------------------------------------------------------------
+HTTP_HOST = dscourse.org
+HTTP_USER_AGENT = Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0
+HTTP_ACCEPT = text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+HTTP_ACCEPT_LANGUAGE = en-US,en;q=0.5
+HTTP_ACCEPT_ENCODING = gzip, deflate
+HTTP_COOKIE = PHPSESSID=347dpk83tld8imfjg04o5a7up4
+HTTP_CONNECTION = keep-alive
+
+context_id=623cabef-35a9-41f0-9b34-4eeb0b92ac01&context_label=LTI+Test+3&context_title=LTI+Test+3&ext_basiclti_submit=Press+to+continue+to+external+tool.&ext_lms=sakai-2.9.1&ext_sakai_eid=shc7pw&ext_sakai_server=https%3A%2F%2Fcollab.itc.virginia.edu&ext_sakai_serverid=sakai18&ext_sakai_session=9f5eeb5b358f2691de2a0d076682b431b201375a90a16ac5031062ef1339e1b2485cd23d1b84cc10&launch_presentation_css_url=https%3A%2F%2Fcollab.itc.virginia.edu%2Flibrary%2Fskin%2Fdefault%2Ftool.css&launch_presentation_locale=en_US&lis_person_contact_email_primary=shc7pw%40Virginia.EDU&lis_person_name_family=Chrisinger&lis_person_name_full=Sam+Chrisinger&lis_person_name_given=Sam&lis_person_sourcedid=shc7pw&lti_message_type=basic-lti-launch-request&lti_version=LTI-1p0&oauth_callback=about%3Ablank&oauth_consumer_key=key&oauth_nonce=1270127975834978&oauth_signature=vxRyGGnCaHJkqXygr%2FROg1hDE7g%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1385911323&oauth_version=1.0&resource_link_id=097f403f-3673-4f4d-b670-ed1776f66d7d&resource_link_title=Dscourse&roles=Instructor&tool_consumer_info_product_family_code=2.9.1&tool_consumer_info_version=2.9.1&user_id=68871b5e-736f-4eb2-894c-ea05af96061f
+
+---------------------------------------------------------------
+HTTP_HOST = dscourse.org
+HTTP_USER_AGENT = Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0
+HTTP_ACCEPT = text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+HTTP_ACCEPT_LANGUAGE = en-US,en;q=0.5
+HTTP_ACCEPT_ENCODING = gzip, deflate
+HTTP_COOKIE = PHPSESSID=347dpk83tld8imfjg04o5a7up4
+HTTP_CONNECTION = keep-alive
+
+context_id=623cabef-35a9-41f0-9b34-4eeb0b92ac01&context_label=LTI+Test+3&context_title=LTI+Test+3&ext_basiclti_submit=Press+to+continue+to+external+tool.&ext_lms=sakai-2.9.1&ext_sakai_eid=shc7pw&ext_sakai_server=https%3A%2F%2Fcollab.itc.virginia.edu&ext_sakai_serverid=sakai18&ext_sakai_session=9f5eeb5b358f2691de2a0d076682b431b201375a90a16ac5031062ef1339e1b2485cd23d1b84cc10&launch_presentation_css_url=https%3A%2F%2Fcollab.itc.virginia.edu%2Flibrary%2Fskin%2Fdefault%2Ftool.css&launch_presentation_locale=en_US&lis_person_contact_email_primary=shc7pw%40Virginia.EDU&lis_person_name_family=Chrisinger&lis_person_name_full=Sam+Chrisinger&lis_person_name_given=Sam&lis_person_sourcedid=shc7pw&lti_message_type=basic-lti-launch-request&lti_version=LTI-1p0&oauth_callback=about%3Ablank&oauth_consumer_key=key&oauth_nonce=1270265242215719&oauth_signature=ZMfsJq%2BTEg92KENwMAK%2Fz69uf54%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1385911460&oauth_version=1.0&resource_link_description=DS2&resource_link_id=44b4d69c-fbb3-43e7-a660-4cd748ae3233&resource_link_title=DS2&roles=Instructor&tool_consumer_info_product_family_code=2.9.1&tool_consumer_info_version=2.9.1&user_id=68871b5e-736f-4eb2-894c-ea05af96061f
+
+---------------------------------------------------------------
+HTTP_HOST = dscourse.org
+HTTP_USER_AGENT = Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0
+HTTP_ACCEPT = text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+HTTP_ACCEPT_LANGUAGE = en-US,en;q=0.5
+HTTP_ACCEPT_ENCODING = gzip, deflate
+HTTP_COOKIE = PHPSESSID=347dpk83tld8imfjg04o5a7up4
+HTTP_CONNECTION = keep-alive
+
+context_id=623cabef-35a9-41f0-9b34-4eeb0b92ac01&context_label=LTI+Test+3&context_title=LTI+Test+3&ext_basiclti_submit=Press+to+continue+to+external+tool.&ext_lms=sakai-2.9.1&ext_sakai_eid=shc7pw&ext_sakai_server=https%3A%2F%2Fcollab.itc.virginia.edu&ext_sakai_serverid=sakai18&ext_sakai_session=9f5eeb5b358f2691de2a0d076682b431b201375a90a16ac5031062ef1339e1b2485cd23d1b84cc10&launch_presentation_css_url=https%3A%2F%2Fcollab.itc.virginia.edu%2Flibrary%2Fskin%2Fdefault%2Ftool.css&launch_presentation_locale=en_US&lis_person_contact_email_primary=shc7pw%40Virginia.EDU&lis_person_name_family=Chrisinger&lis_person_name_full=Sam+Chrisinger&lis_person_name_given=Sam&lis_person_sourcedid=shc7pw&lti_message_type=basic-lti-launch-request&lti_version=LTI-1p0&oauth_callback=about%3Ablank&oauth_consumer_key=key&oauth_nonce=1270419740925928&oauth_signature=lyHvLYKXZCgrQjELh2Qe%2Fc1ViEE%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1385911614&oauth_version=1.0&resource_link_description=DS2&resource_link_id=44b4d69c-fbb3-43e7-a660-4cd748ae3233&resource_link_title=DS2&roles=Instructor&tool_consumer_info_product_family_code=2.9.1&tool_consumer_info_version=2.9.1&user_id=68871b5e-736f-4eb2-894c-ea05af96061f

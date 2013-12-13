@@ -64,7 +64,7 @@ ini_set('display_errors',1);
 					        border:     true,
 					        fill:       true,
 					        showTime:   false,
-					        icon:       'N',
+					        icon:       '.',
 					        color:      'green'
 					    }
 					);
@@ -159,7 +159,7 @@ ini_set('display_errors',1);
                                     </tr>
                                 </tbody>
                             </table>
-                            <div><a href="editprofile.php?u=<?php echo $userID; ?>" id="editProfileButton" class="btn btn-block btn-info">Edit Profile</a></div>
+                            <div><a href="editprofile.php?u=<?php echo $userID; ?>" id="editProfileButton" class="btn btn-block btn-info">Edit Profile and Email Notifications</a></div>
                         </div>
 
                         <div class=""></div>

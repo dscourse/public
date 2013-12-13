@@ -1323,12 +1323,12 @@ span .highlight {
 	height:600px;
 	width:80%;
 	z-index:1099;
-	-webkit-border-radius:10px;
-	-moz-border-radius:10px;
-	border-radius:10px;
-	-webkit-box-shadow:inset 0 0 12px #999;
-	-moz-box-shadow:inset 0 0 12px #999;
-	box-shadow:inset 0 0 12px #999;
+	-webkit-border-radius:5px;
+	-moz-border-radius: 5px;
+	border-radius:5px;
+	-webkit-box-shadow:0 0 17px 0px #999;
+	-moz-box-shadow:0 0 17px 0px #999;
+	box-shadow:0 0 17px 0px #999;
 }
 
 #mediaWrap {

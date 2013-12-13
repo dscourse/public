@@ -95,7 +95,8 @@ $(function(){
                 <a href="index.php" class="brand" id="homeNav">dscourse</a>
 
                 <ul class="nav">
-                    <li class="navLevel"><a href="#" id="userNav"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></a></li>
+                    <li class="navLevel"><a href="profile.php?u=<?php echo $_SESSION['UserID']; ?>" id="userNav"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></a></li>
+                    <li class="navLevel"><a href="#"> Edit Profile </a> </li>
                 </ul>
 
                 <ul class="nav pull-right">
@@ -117,18 +118,16 @@ $(function(){
 
 <!-- Begin Edit Profile-->
 
-        <header class="jumbotron subhead">
-            <div class="container-fluid">
-                <h1><span id="profileName"><?php  echo $userInfo['firstName'] . ' '.$userInfo['lastName'];  ?></span> <small><span id="profileEmail"><?php  echo $userInfo['username']; ?></span></small></h1>
-            </div>
-        </header>
+
 
     <div id="editProfilePage" class="wrap page formPage">
 
         <div class="container-fluid" id="editLayer">
             <div class="row-fluid" id="profileDetails">
                 <form name="editProfileForm" action="php/data.php" method="post" enctype="multipart/form-data" class="form-horizontal">
-                    <div class="span10 offset1 formClass">
+                    <div class="span6 formClass">
+                                		<h3> Profile Information</h3>
+
                         <input type="hidden" name="action" value="editUserInfo">
                         <input type="hidden" name="userEditID" value="<?php  echo $userID; ?>" >
                         
@@ -183,7 +182,7 @@ $(function(){
                         <label class="control-label" for="UserAbout">About Me</label>
 
                         <div class="controls">
-                            <textarea class="span6 textareaFixed" id="userAbout" name="userAbout"><?php  echo $userInfo['userAbout']; ?></textarea><br>
+                            <textarea class="span10 textareaFixed" id="userAbout" name="userAbout"><?php  echo $userInfo['userAbout']; ?></textarea><br>
                             <p class="help-inline">Briefly introduce yourself. Please limit your text to 1000 characters.</p>
                         </div>
                     </div>
@@ -192,7 +191,7 @@ $(function(){
                         <label class="control-label" for="facebook">Facebook</label>
                         <div class="controls">
                             <div class="input-prepend">
-                                <span class="add-on">f</span><input class="span2" id="facebook" name="facebook" size="200" type="text" value="<?php  echo $userInfo['userFacebook']; ?>">
+                                <span class="add-on">f</span><input class="span6" id="facebook" name="facebook" size="200" type="text" value="<?php  echo $userInfo['userFacebook']; ?>">
                             </div>
                             <p class="help-inline">Facebook username</p>
                         </div>
@@ -202,7 +201,7 @@ $(function(){
                         <label class="control-label" for="twitter">Twitter</label>
                         <div class="controls">
                             <div class="input-prepend">
-                                <span class="add-on">t</span><input class="span2" id="twitter" name="twitter" size="200" type="text" value="<?php  echo $userInfo['userTwitter']; ?>">
+                                <span class="add-on">t</span><input class="span6" id="twitter" name="twitter" size="200" type="text" value="<?php  echo $userInfo['userTwitter']; ?>">
                             </div>
                             <p class="help-inline">Your Twitter username</p>
                         </div>
@@ -212,7 +211,7 @@ $(function(){
                         <label class="control-label" for="phone">Phone</label>
                         <div class="controls">
                             <div class="input-prepend">
-                                <span class="add-on">#</span><input class="span2" id="phone" name="phone" size="200" type="text" value="<?php  echo $userInfo['userPhone']; ?>"">
+                                <span class="add-on">#</span><input class="span6" id="phone" name="phone" size="200" type="text" value="<?php  echo $userInfo['userPhone']; ?>"">
                             </div>
                             <p class="help-inline">Mobile phone number</p>
                         </div>
@@ -222,7 +221,7 @@ $(function(){
                         <label class="control-label" for="website">Website</label>
                         <div class="controls">
                             <div class="input-prepend">
-                                <span class="add-on">url</span><input class="span2" id="website" name="website" size="200" type="text" value="<?php  echo $userInfo['userWebsite']; ?>">
+                                <span class="add-on">url</span><input class="span6" id="website" name="website" size="200" type="text" value="<?php  echo $userInfo['userWebsite']; ?>">
                             </div>
                             <p class="help-inline">Website</p>
                         </div>
@@ -231,7 +230,10 @@ $(function(){
                  	<a href="profile.php?u=<?php echo $userID; ?>" id="cancelEditButton" class="btn">Cancel</a> <button id="submitEditButton" type="submit" class="btn btn-primary">Save</button>
                  </div> 
             </div>
-			 <div class="span8 well offset1">
+
+        		
+        		<div class="span6 formClass">
+        		<h3> Email Notifications </h3>
 				<div class="control-group" id="notificationControl">
 				<label class="control-label">Send me an email to let me know when someone </label>	
                 <div class="controls">
@@ -260,12 +262,17 @@ $(function(){
             	<br />
             	<label class="control-label offset">Or mentions me in a post</label>
       				<input style="margin-left:20px" type="checkbox" name="mention" value="1" <?php echo ($notifications['mention'])?'checked':'';?>>
+            
+
             </div>
+            <div class=" pull-right">
+                <a href="profile.php?u=<?php echo $userID; ?>" id="cancelEditButton" class="btn">Cancel</a> <button id="submitEditButton" type="submit" class="btn btn-primary">Save</button>
+            </div>
+            
 			</div>
-            <div class="span2">
-                <a href="profile.php?u=<?php echo $userID; ?>" id="cancelEditButton" class="btn">Cancel</a> <button id="submitEditButton" type="submit" class="btn">Save</button>
-            </div>
         </form>	
+
+
         </div>
     </div><!-- close container -->
    </div> <!-- end edit profile -->
